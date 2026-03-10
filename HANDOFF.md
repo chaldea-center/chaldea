@@ -23,14 +23,14 @@ Update it at the end of each working session.
    - `fvm flutter run -d macos`
 
 ## Last Session Snapshot
-- Date: 2026-03-05
-- Branch: automation/upstream-sync-2026-03-05
-- Last commit: 26d53eb62
-- Working tree status: clean on sync branch
-- Active feature(s): upstream sync PR workflow hardening + PR conflict resolution
-- What is done: rebuilt sync branch from origin/main, merged upstream/main, added scripts/sync_fork_pr.sh, updated AGENTS.md/HANDOFF.md workflow docs
-- What is next: review and merge PR #1, then run full flutter analyze/test in unrestricted local env
-- Known blockers: sandboxed automation environment has intermittent GitHub API/network and Flutter runtime restrictions
+- Date: 2026-03-10
+- Branch: automation/upstream-sync-2026-03-10
+- Last commit: 5fa5c2f0c
+- Working tree status: clean after sync + validation (before handoff commit)
+- Active feature(s): upstream sync maintenance; custom Laplace Team Search 3T + My Box verification
+- What is done: merged upstream/main into a new sync branch; only upstream delta is `lib/models/userdata/battle.dart` (+11). Verified custom wiring remains in `lib/app/modules/battle/simulation_preview.dart`, `lib/custom/team_search/auto_three_turn_solver.dart`, `lib/custom/team_search/auto_three_turn_team_search.dart`, and `lib/custom/shared_teams/my_box_compatibility.dart`. Validation run: `fvm flutter pub get` passed, `fvm flutter analyze` reported existing 15 info-level lints, `fvm flutter test` failed due missing `APP_PATH` in `test/test_init.dart`.
+- What is next: push `automation/upstream-sync-2026-03-10`, open PR to `main`, and run full tests in an environment with `APP_PATH` test data configured.
+- Known blockers: sandbox run cannot provide required `APP_PATH` harness data, so full test suite cannot complete here.
 ## Files Touched In Current Workstream
 - `lib/custom/team_search/...`
 - `lib/custom/shared_teams/...`
