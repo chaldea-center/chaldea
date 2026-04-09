@@ -2180,7 +2180,6 @@ class BattleServantData {
     final BattleServantData? opponent,
     final CommandCardData? card,
     final List<int>? addTraits,
-    final bool useBuff = true,
   }) async {
     return await getBuff(battleData, buffAction, opponent: opponent, card: card, addTraits: addTraits, useBuff: true) !=
         null;
