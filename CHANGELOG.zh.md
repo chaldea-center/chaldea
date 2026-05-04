@@ -1,5 +1,9 @@
 # 更新日志
 
+## 2.5.27
+
+- bug fix and improvements
+
 ## 2.5.26
 
 - bug fix
