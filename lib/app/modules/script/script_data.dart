@@ -4,8 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 
-import 'package:csv/csv.dart';
-
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/tools/icon_cache_manager.dart';
@@ -338,13 +336,13 @@ class ScriptCommand extends ScriptComponent {
   String command;
   List<String> args;
   ScriptCommand(super.src, this.command, [this.args = const []]);
-  static final _csv = Csv(fieldDelimiter: " ", dynamicTyping: false);
 
   factory ScriptCommand.parse(String code) {
+    code = code.trim();
     if (code.startsWith('[') && code.endsWith(']')) {
       code = code.substring(1, code.length - 1);
     }
-    final cells = _csv.decode(code).first.map((e) => e.toString().trim()).toList();
+    final cells = code.split(RegExp(r'\s+'));
     return ScriptCommand(code, cells.first, cells.sublist(1));
   }
 
@@ -472,6 +470,9 @@ class ScriptCommand extends ScriptComponent {
       // case 'sceneSet':
       //   if (!filterData.scene) return [];
       //   return _buildImages([assetUrl.back(arg2n,state.fullscreen)]);
+      case 'bScene':
+        if (!filterData.scene) return [];
+        return _buildImages([for (final id in arg1.split(RegExp(r'[,，]'))) id.split(RegExp(r'[：:]'))[0]]);
       case 'masterScene':
         if (!filterData.scene) return [];
         return _buildImages(args.skip(1).take(2).map((e) => state.assetUrl.back(e, state.fullscreen)));
@@ -504,31 +505,25 @@ class ScriptCommand extends ScriptComponent {
           folder = 'SE';
         } else if (filename.startsWith('ar')) {
           folder = 'ResidentSE';
-        } else if (filename.startsWith('21')) {
-          folder = 'SE_21';
+        } else if (filename.startsWith(RegExp(r'2\d_'))) {
+          folder = 'SE_${filename.substring(0, 2)}';
         }
         return [
           WidgetSpan(
-            child: SoundPlayButton(
-              name: filename,
-              url: Atlas.asset('Audio/$folder/$filename.mp3', state.region),
-              player: state.sePlayer,
-            ),
+            child: SoundPlayButton(name: filename, url: state.assetUrl.audio(folder, filename), player: state.sePlayer),
           ),
         ];
       case 'cueSe':
+      case "cueSeContinue":
         if (!filterData.bgm) return [];
         if (args.length < 2) break;
         return [
           WidgetSpan(
-            child: SoundPlayButton(
-              name: arg2,
-              url: Atlas.asset('Audio/$arg1/$arg2.mp3', state.region),
-              player: state.sePlayer,
-            ),
+            child: SoundPlayButton(name: arg2, url: state.assetUrl.audio(arg1, arg2), player: state.sePlayer),
           ),
         ];
       case 'bgm':
+      case 'jingle':
         if (!filterData.bgm) return [];
         if (args.isEmpty) break;
         final filename = args[0];
@@ -536,24 +531,12 @@ class ScriptCommand extends ScriptComponent {
           WidgetSpan(
             child: SoundPlayButton(
               name: filename,
-              url: Atlas.asset('Audio/$filename/$filename.mp3', state.region),
+              url: state.assetUrl.audio(filename, filename),
               player: state.bgmPlayer,
             ),
           ),
         ];
       case 'tVoice': // valentine voice
-        if (!filterData.voice) return [];
-        if (args.length < 2) break;
-        final folder = args[0], filename = args[1];
-        return [
-          WidgetSpan(
-            child: SoundPlayButton(
-              name: null,
-              url: Atlas.asset('Audio/$folder/$filename.mp3', state.region),
-              player: state.voicePlayer,
-            ),
-          ),
-        ];
       case 'tVoiceUser': // female/male voices
         if (!filterData.voice) return [];
         return [
@@ -561,21 +544,19 @@ class ScriptCommand extends ScriptComponent {
             WidgetSpan(
               child: SoundPlayButton(
                 name: null,
-                url: Atlas.asset('Audio/${args[index * 2]}/${args[index * 2 + 1]}.mp3', state.region),
+                url: state.assetUrl.audio(args[index * 2], args[index * 2 + 1]),
                 player: state.voicePlayer,
               ),
             ),
         ];
       case 'voice':
         if (!filterData.voice) return [];
+        final result = _getCharaVoiceAssetUrl(state.assetUrl, arg1);
         return [
-          WidgetSpan(
-            child: SoundPlayButton(
-              name: null,
-              url: Atlas.asset('Audio/ChrVoice_${arg1.replaceFirst('_', '/')}.mp3', state.region),
-              player: state.voicePlayer,
+          if (result != null)
+            WidgetSpan(
+              child: SoundPlayButton(name: null, url: result.$1, player: state.voicePlayer),
             ),
-          ),
         ];
       case 'movie':
       case 'criMovie':
@@ -794,6 +775,7 @@ class ScriptCommand extends ScriptComponent {
       case 'messageAlign':
         return [];
       default:
+        if (_kSkipCommands000.contains(command)) return [];
         for (final prefix in const ['charaMove', 'subRender']) {
           if (command.startsWith(prefix)) return [];
         }
@@ -802,12 +784,30 @@ class ScriptCommand extends ScriptComponent {
     return [state.textSpan(text: '[$src]')];
   }
 
+  (String url, String name)? _getCharaVoiceAssetUrl(AssetURL assetUrl, String name) {
+    final segs = name.split('_');
+    segs.removeWhere((e) => e.isEmpty);
+    if (name.startsWith('NP_')) {
+      return (assetUrl.audio('NoblePhantasm_${segs[1]}', name), name);
+    } else if (segs.length >= 3) {
+      final svtId = segs[0], fn = segs[2];
+      if (fn.startsWith('B')) {
+        if (fn.length == 4 && const ["B05", "B06", "B07", "B80", "B81", "B82"].contains(fn.substring(0, 3))) {
+          return (assetUrl.audio('NoblePhantasm_$svtId', name.substring(svtId.length + 1)), 'NoblePhantasm/$name}');
+        }
+        return (assetUrl.audio('Servants_$svtId', name.substring(svtId.length + 1)), 'Servants/$name}');
+      }
+      return (assetUrl.audio('ChrVoice_$svtId', name.substring(svtId.length + 1)), 'ChrVoice/$name');
+    }
+    return null;
+  }
+
   List<InlineSpan> _buildImages(Iterable<String?> urls) {
     return [
       for (final url in urls)
         // black, white
         if (url != null &&
-            [
+            const [
               '/Back/back10000.png',
               '/Back/back10001.png',
               '/Back/back10000_1344_626.png',
@@ -830,3 +830,42 @@ abstract class ScriptComponent {
   ScriptComponent(this.src);
   List<InlineSpan> build(BuildContext context, ScriptState state);
 }
+
+List<String> _kSkipCommands000 = [
+  //
+  "advActorHide", "advActorShow", "advPlayAnimator", "advPrepare", "advRelease", "advSet", "autoAndBackLog",
+  "backCameraColor", "backEffectStart", "backlogEnd", "backlogStart", "blur", "blurOff", "cameraFilter",
+  "cameraHome", "cameraMove", "cameraMoveEase", "cameraMove～", "cameraRoll", "cameraRollMove", "capture",
+  "captureRelease", "charaAttack", "charaClear", "charaCutStop", "charaCutin", "charaCutinPause", "charaCutinStart",
+  "charaCutout", "charaDepth", "charaEffectEdgeBlur", "charaEffectEdgeBlurDestroy", "charaEffectEdgeBlurPause",
+  "charaEffectEdgeBlurStart", "charaEffectEdgeBlurStop", "charaFace", "charaFaceFade", "charaFaceIcon", "charaFadeTime",
+  "charaFadein", "charaFadeinFSL", "charaFadeinFSLNotNotch", "charaFadeinFSR", "charaFadeinFSRNotNotch",
+  "charaFadeinFSSideL", "charaFadeinFSSideR", "charaFadeout", "charaFilter", "charaLayer", "charaMask", "charaMove",
+  "charaMoveEase", "charaMoveEaseFSL", "charaMoveEaseFSR", "charaMoveEaseFSSideL", "charaMoveEaseFSSideR",
+  "charaMoveFSL", "charaMoveFSR", "charaMoveFSSideL", "charaMoveFSSideR", "charaMoveReturn", "charaMoveReturnEase",
+  "charaMoveReturnEaseFSL", "charaMoveReturnEaseFSR", "charaMoveReturnEaseFSSideL", "charaMoveReturnEaseFSSideR",
+  "charaMoveReturnFSL", "charaMoveReturnFSR", "charaMoveReturnFSSideL", "charaMoveReturnFSSideR", "charaMoveScale",
+  "charaMoveScaleEase", "charaPut", "charaPutFSL", "charaPutFSR", "charaPutFSSideL", "charaPutFSSideR",
+  "charaRelativeLoopMove", "charaRelativeLoopMoveEase", "charaRelativeLoopMoveStop", "charaReturn", "charaRoll",
+  "charaRollAxis", "charaRollAxisLoopStop", "charaRollMove", "charaRollMoveEx", "charaScale", "charaShadow",
+  "charaShake", "charaShakeStop", "charaSpecialEffect", "charaSpecialEffectStop", "charaTalk", "clear",
+  "communicationCharaClear", "communicationCharaFace", "communicationCharaStop", "delay", "delayStop",
+  "distortionstart", "distortionstop", "else", "enableFullScreen", "enableWaitLoadAssetWhenResume", "end",
+  "endFade", "endIf", "faceTalkScreen", "fadeMove", "fadein", "fadeout", "fadeout～", "flashOff", "flashin",
+  "flashin～", "flashout", "fowardEffect～", "fsmObjDestroy", "fsmObjLayer", "fsmObjSet", "fsmObjSetFloat",
+  "fsmObjSetState", "fsmObjSetString", "ifClear", "insertionAnimationEnd", "insertionAnimationSet",
+  "insertionAnimationSetFSSideL", "insertionAnimationSetFSSideR", "insertionAnimationStart", "interruption",
+  "jump", "k", "maskin", "maskout", "masterNameWidth", "messageAlign", "messageChange", "messageOff", "messageOn",
+  "messageShake", "messageShakeStop", "messageSpeedForcedNormal", "notification", "overlayFadein", "overwrite",
+  "page", "q", "questMessageOverwrite", "r", "rewardSwitch", "s", "scrollStop", "shake", "shakeStop", "skip",
+  "soundStopAll", "soundStopAllEnd", "soundStopAllFade", "specialEffect", "speed", "spriteMaskOff", "spriteMaskSet",
+  "stretchin", "stretchout", "subBlur", "subBlur2", "subBlur2Off", "subBlurOff", "subCameraHome", "subCameraMove",
+  "subCameraMoveEase", "subCameraOff", "subCameraOn", "subCameraRoll", "subCameraRollMove", "subRenderDepth",
+  "subRenderFadein", "subRenderFadeinFSL", "subRenderFadeinFSR", "subRenderFadeinFSSideL", "subRenderFadeinFSSideR",
+  "subRenderFadeout", "subRenderMove", "subRenderMoveEase", "subRenderMoveEaseFSL", "subRenderMoveEaseFSR",
+  "subRenderMoveEaseFSSideL", "subRenderMoveEaseFSSideR", "subRenderMoveFSL", "subRenderMoveFSR",
+  "subRenderMoveFSSideL", "subRenderMoveFSSideR", "subRenderMoveScale", "subRenderMoveScaleEase", "subRenderScale",
+  "subRenderShake", "subRenderShakeStop", "subStretch", "subStretchout", "tRaidShortName", "tapSkip", "tdelay",
+  "turnPageOff", "turnPageOn", "twt", "wait", "warBoardTalkScreen", "warCharaFadein", "warEffectOff", "warEffectPiece",
+  "warMoveCameraPiece", "warMoveCameraPos", "wipeFilter", "wipeOff", "wipein", "wipeout", "wt",
+];

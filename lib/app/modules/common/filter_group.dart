@@ -101,7 +101,7 @@ class FilterGroup<T> extends StatelessWidget {
             }
           },
           enabled: enabled,
-          child: optionBuilder == null ? Text(key.toString()) : optionBuilder!(key),
+          child: optionBuilder == null ? Text((key is Enum ? key.name : key).toString()) : optionBuilder!(key),
         ),
       );
     }

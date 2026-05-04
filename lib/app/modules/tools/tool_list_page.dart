@@ -4,6 +4,7 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/app_info.dart';
+import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../exp/master_exp_page.dart';
@@ -17,6 +18,7 @@ import 'combine_image_page.dart';
 import 'custom_chara_figure.dart';
 import 'event_fatigue.dart';
 import 'realtime_svt_filter.dart';
+import 'script_cmd.dart';
 import 'skipped_svt_id.dart';
 import 'tree_size.dart';
 
@@ -61,6 +63,7 @@ class ToolListPage extends StatelessWidget {
               buildOne('Ciphers', const CipherTestPage()),
               buildOne('Skipped Svt ID', const SkippedSvtIdPage()),
               buildOne('Combine Images', const CombineImagePage()),
+              if (PlatformU.isDesktop) buildOne('Script Commands', const ScriptCmdPage()),
               if (db.settings.secrets.user?.isAdmin == true)
                 buildOne('Admin Tools', AdminToolsPage(), supportWeb: false),
               if (!kIsWeb) buildOne('TreeSize', const TreeSizePage()),

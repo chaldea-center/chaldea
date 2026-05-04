@@ -128,6 +128,8 @@ class _WarAssetListPageState extends State<WarAssetListPage> with AfterLayoutMix
         if (args.isEmpty) continue;
         try {
           _parseCmd(cmd, args, fullscreen);
+        } on RangeError {
+          //
         } catch (e, s) {
           logger.d('parse cmd failed', e, s);
         }
@@ -187,81 +189,135 @@ class _WarAssetListPageState extends State<WarAssetListPage> with AfterLayoutMix
     if (mounted) setState(() {});
   }
 
+  static final commaReg = RegExp(r'[,，]');
+
   void _parseCmd(String cmd, List<String> args, bool fullscreen) {
+    if (args.isEmpty) return;
     switch (cmd) {
-      case "bgm":
-        audios[assetUrl.audio(args[0], args[0])] ??= args[0];
-        break;
-      case "se":
-      case "seLoop":
-        audios[assetUrl.audio('SE', args[0])] ??= args[0];
-        break;
-      case "cueSe":
-        audios[assetUrl.audio(args[0], args[1])] ??= args[1];
-        break;
-      case "tVoice":
-      case "tVoiceUser":
-        for (int i = 0; i < args.length ~/ 2; i++) {
-          audios[assetUrl.audio(args[i * 2], args[i * 2 + 1])] ??= '${args[i * 2]}_${args[i * 2 + 1]}';
-        }
-        break;
-      case "voice":
-        final segs = args[0].split('_');
-        audios[assetUrl.audio('ChrVoice_${segs[0]}', segs.skip(1).join('_'))] ??= 'ChrVoice_${args[0]}';
-        break;
-      case "criMovie":
-      case "movie":
-        movies.add(assetUrl.movie(args[0]));
-        break;
+      // CharaFigure
       case "charaChange":
       case "charaCrossFade":
       case "charaSet":
         figures.add(assetUrl.charaFigureId(args[1]));
-        break;
-      case "communicationChara":
-      case "communicationCharaLoop":
-        figures.add(assetUrl.charaFigureId(args[0]));
-        break;
-      case "equipSet":
-        figures.add(assetUrl.charaGraphDefault(args[1]));
-        break;
-      case "horizontalImageSet":
-      case "verticalImageSet":
-      case "imageChange":
-      case "imageSet":
-        figures.add(assetUrl.image(args[1]));
-        break;
-      case "pictureFrame":
-      case "pictureFrameTop":
-        figures.add(assetUrl.image(args[0]));
-        break;
-      case "scene":
-        bgImages.add(assetUrl.back(args[0], fullscreen));
-        break;
-      case "sceneSet":
-        bgImages.add(assetUrl.back(args[1], fullscreen));
-        break;
-      case "i":
-      case "image":
-        figures.add(assetUrl.marks(args[0]));
-        break;
       case "masterSet":
         for (final id in args.skip(1).take(2)) {
           figures.add(assetUrl.charaFigureId(id));
         }
-        break;
+      case "communicationChara":
+      case "communicationCharaLoop": //0
+        figures.add(assetUrl.charaFigureId(args[0]));
+      case "useSimpleMeshFigure":
+        for (final id in args[0].split(commaReg)) {
+          figures.add(assetUrl.charaFigureId(id.trim()));
+        }
+      case "equipSet":
+        figures.add(assetUrl.charaGraphDefault(args[1]));
+      // Marks
+      case "i":
+      case "image":
+      case "talkNameBack":
+        figures.add(assetUrl.marks(args[0].split(':').first));
+      // Image
+      case "horizontalImageSet":
+      case "imageChange":
+      case "imageSet":
+      case "verticalImageSet":
+        figures.add(assetUrl.image(args[1]));
       case "masterImageSet":
         for (final id in args.skip(1).take(2)) {
           figures.add(assetUrl.image(id));
         }
-        break;
-      case "masterScene":
-        for (final id in args.take(2)) {
-          bgImages.add(assetUrl.back(id, fullscreen));
+      case "pictureFrame":
+      case "pictureFrameTop":
+        figures.add(assetUrl.image(args[0]));
+      // case "subCameraFilter": args[2] may be 0
+
+      // Background
+      case "bScene":
+        for (final id in args[0].split(commaReg)) {
+          bgImages.add(assetUrl.back(id.split(RegExp(r'[：:]'))[0], fullscreen));
         }
-        break;
+      case "masterScene":
+        for (final x in args.take(2)) {
+          bgImages.add(assetUrl.back(x, fullscreen));
+        }
+      case "scene":
+        bgImages.add(assetUrl.back(args[0], fullscreen));
+      case "sceneSet":
+        bgImages.add(assetUrl.back(args[1], fullscreen));
+
+      // Audio
+      // case "advSoundSet": // voice fragments
+      case "cueSe":
+      case "cueSeContinue":
+        audios[assetUrl.audio(args[0], args[1])] ??= args[1];
+      // case "cueSeContinueStop": // unknown subfolder
+      // case "cueSeContinueVolume":
+      // case "cueSeStop":
+      // case "cueSeVolume":
+      case "se":
+      case "seContinue":
+      case "seContinueStop":
+      case "seContinueVolume":
+      case "seLoop":
+      case "seStop":
+      case "seVolume":
+        final name = args[0];
+        String folder = "SE";
+        if (name.startsWith('ba')) {
+          folder = 'Battle';
+        } else if (name.startsWith('ad')) {
+          folder = 'SE';
+        } else if (name.startsWith('ar')) {
+          folder = 'ResidentSE';
+        } else if (name.startsWith(RegExp(r'2\d_'))) {
+          folder = 'SE_${name.substring(0, 2)}';
+        }
+        audios[assetUrl.audio(folder, args[0])] ??= args[0];
+      case "tVoice":
+      case "tVoiceUser":
+        for (int i = 0; i < args.length ~/ 2; i++) {
+          final a1 = args[i * 2], a2 = args[i * 2 + 1];
+          audios[assetUrl.audio(a1, a2)] ??= '${a1}_$a2';
+        }
+      case "voice":
+      case "voiceStop":
+        final result = _getCharaVoiceAssetUrl(args[0]);
+        if (result != null) {
+          audios[result.$1] = result.$2;
+        }
+      // BGM
+      case "bgm":
+      case "bgmStop":
+      case "bgmStopEnd":
+      case "jingle":
+      case "jingleStop":
+        audios[assetUrl.audio(args[0], args[0])] ??= args[0];
+      // MOV
+      case "criMovie":
+      case "movie":
+        movies.add(assetUrl.movie(args[0]));
+      // Effect: skip
       default:
     }
+  }
+
+  (String url, String name)? _getCharaVoiceAssetUrl(String name) {
+    final segs = name.split('_');
+    segs.removeWhere((e) => e.isEmpty);
+    if (name.startsWith('NP_')) {
+      return (assetUrl.audio('NoblePhantasm_${segs[1]}', name), name);
+    } else if (segs.length >= 3) {
+      final svtId = segs[0], fn = segs[2];
+      if (fn.startsWith('B')) {
+        if (fn.length == 4 && const ["B05", "B06", "B07", "B80", "B81", "B82"].contains(fn.substring(0, 3))) {
+          return (assetUrl.audio('NoblePhantasm_$svtId', name.substring(svtId.length + 1)), 'NoblePhantasm/$name}');
+        }
+        return (assetUrl.audio('Servants_$svtId', name.substring(svtId.length + 1)), 'Servants/$name}');
+      }
+      return (assetUrl.audio('ChrVoice_$svtId', name.substring(svtId.length + 1)), 'ChrVoice/$name');
+    }
+    return null;
   }
 
   @override
