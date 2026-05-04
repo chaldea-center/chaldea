@@ -194,10 +194,10 @@ class BuffData {
       final paramAddMaxCount = vals.ParamAddMaxCount ?? vals.SnapShotParamAddMaxCount;
       final paramAddMaxValue = vals.ParamAddMaxValue ?? vals.SnapShotParamAddMaxValue;
 
-      final selfAndCheck = vals.ParamAddSelfIndividualityAndCheck ?? vals.SnapShotParamAddSelfIndividualityAndCheck;
+      var selfAndCheck = vals.ParamAddSelfIndividualityAndCheck ?? vals.SnapShotParamAddSelfIndividualityAndCheck;
       final oppAndCheck = vals.ParamAddOpIndividualityAndCheck ?? vals.SnapShotParamAddOpIndividualityAndCheck;
       final fieldAndCheck = vals.ParamAddFieldIndividualityAndCheck ?? vals.SnapShotParamAddFieldIndividualityAndCheck;
-      final selfCheck = vals.ParamAddSelfIndividuality ?? vals.SnapShotParamAddSelfIndv;
+      var selfCheck = vals.ParamAddSelfIndividuality ?? vals.SnapShotParamAddSelfIndv;
       final oppCheck = vals.ParamAddOpIndividuality ?? vals.SnapShotParamAddOpIndv;
       final fieldCheck = vals.ParamAddFieldIndividuality ?? vals.SnapShotParamAddFieldIndv;
 
@@ -210,6 +210,11 @@ class BuffData {
               targetedEnemy: battleData.getTargetedEnemy(self),
             )
           : [self, ?opponent];
+      if (targetType != null) {
+        // not sure
+        selfCheck ??= oppCheck;
+        selfAndCheck ??= oppAndCheck;
+      }
       for (final target in allTargets) {
         final traits = target.getTraits(
           addTraits: target.getBuffTraits(

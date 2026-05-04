@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -21,7 +22,7 @@ class _HiddenToolsPageState extends State<HiddenToolsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Y(^o^)Y')),
-      body: ListView(children: [spaceTile]),
+      body: ListView(children: [spaceTile, idlePage]),
     );
   }
 
@@ -74,6 +75,33 @@ class _HiddenToolsPageState extends State<HiddenToolsPage> {
           EasyLoading.showError(e.toString());
         }
       },
+    );
+  }
+
+  Widget get idlePage {
+    return ListTile(title: Text('Idle...'), onTap: () => router.pushPage(const _IdlePage()));
+  }
+}
+
+class _IdlePage extends StatelessWidget {
+  const _IdlePage();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      // appBar: AppBar(title: Text('About')),
+      body: InkWell(
+        onTap: () {
+          //
+        },
+        onLongPress: () {
+          // Navigator.pop(context);
+        },
+        onDoubleTap: () {
+          Navigator.pop(context);
+        },
+        child: SizedBox.expand(),
+      ),
     );
   }
 }

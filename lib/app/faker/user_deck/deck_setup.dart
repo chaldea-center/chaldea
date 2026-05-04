@@ -197,6 +197,15 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
                     ),
                     TextButton(
                       onPressed: () {
+                        for (final (index, svt) in deckInfo.svts.indexed) {
+                          svt.initPos = index + 1;
+                        }
+                        if (mounted) setState(() {});
+                      },
+                      child: Text('Reset initPos'),
+                    ),
+                    TextButton(
+                      onPressed: () {
                         router.pushPage(
                           UserDeckListPage(
                             runtime: runtime,
@@ -503,9 +512,10 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
         : widget.eventDeckParam?.questPhase?.supportServants.firstWhereOrNull(
             (support) => support.npcSvtFollowerId == deckSvt.npcFollowerSvtId,
           );
-    final fixedSupport = widget.eventDeckParam?.questPhase?.supportServants.firstWhereOrNull(
+    SupportServant? fixedSupport = widget.eventDeckParam?.questPhase?.supportServants.firstWhereOrNull(
       (e) => deckSvt.initPos != null && e.script?.eventDeckIndex == deckSvt.initPos,
     );
+    fixedSupport = null;
 
     Widget baseSvtEquipWidget = GameCardMixin.cardIconBuilder(
       context: context,

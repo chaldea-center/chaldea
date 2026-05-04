@@ -181,6 +181,26 @@ class _AdminToolsPageState extends State<AdminToolsPage> {
                           },
                         ).showDialog(context);
                       },
+                      child: Text('raw.info'),
+                    ),
+                    FilledButton(
+                      onPressed: () {
+                        _RegionSelectDialog(
+                          onSelected: (regions) async {
+                            for (final region in regions) {
+                              await callRequest(
+                                'GET',
+                                'https://api.atlasacademy.io/export/${region.upper}/info.json',
+                                getText: (response) {
+                                  final info = _addTimeStr(Map.from(response.data!).deepCopy());
+                                  return JsonEncoder.withIndent('  ').convert(info);
+                                },
+                              );
+                              await Future.delayed(Duration(seconds: 1));
+                            }
+                          },
+                        ).showDialog(context);
+                      },
                       child: Text('export.info'),
                     ),
                   ],
