@@ -215,10 +215,7 @@ class SvtTdTab extends StatelessWidget {
           if (ascensions.isNotEmpty) Text('${S.current.ascension_short} ${ascensions.join('&')}'),
           if (costumes.isNotEmpty)
             Text(
-              [
-                '${S.current.costume}:',
-                for (final c in costumes) svt.profile.costume[c]?.lName.l ?? c.toString(),
-              ].join(' '),
+              ['${S.current.costume}:', for (final c in costumes) svt.costume[c]?.lName.l ?? c.toString()].join(' '),
             ),
           if (jpTime != null) Text('JP: ${jpTime.sec2date().toDateString()}'),
           if (db.curUser.region != Region.jp && localTime != null)

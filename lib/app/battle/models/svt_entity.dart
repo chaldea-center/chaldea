@@ -883,7 +883,7 @@ class BattleServantData {
         if (add.eventId == 0 || add.eventId == eventId) {
           if (add.limitCount < 0 ||
               add.limitCount == limitCount ||
-              add.limitCount == niceSvt?.profile.costume[limitCount]?.id) {
+              add.limitCount == niceSvt?.costume[limitCount]?.id) {
             // check startedAt/endedAt too?
             traits.addAll(add.trait);
           }

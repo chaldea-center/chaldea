@@ -21,7 +21,7 @@ class CostumeDetailPage extends StatelessWidget {
       return NotFoundPage(url: Routes.costumeI(id ?? 0), title: S.current.costume);
     }
     final svt = costume.owner;
-    final unlockMats = svt?.costumeMaterials[costume.battleCharaId];
+    final unlockMats = svt?.costumeMaterialsForPlan[costume.battleCharaId];
     final table = CustomTable(
       selectable: true,
       children: <Widget>[

@@ -18,9 +18,7 @@ class _CostumeListPageState extends State<CostumeListPage> with SearchableListSt
   bool reversed = false;
 
   @override
-  Iterable<NiceCostume> get wholeData => [
-    for (final svt in db.gameData.servantsById.values) ...svt.profile.costume.values,
-  ];
+  Iterable<NiceCostume> get wholeData => [for (final svt in db.gameData.servantsById.values) ...svt.costume.values];
 
   bool useGrid = false;
 

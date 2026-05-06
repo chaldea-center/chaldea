@@ -596,7 +596,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
               for (final charaId in costumeCharaIds) {
                 _addOne(
                   charaId,
-                  dispSvt.profile.costume[charaId]?.lName.l ?? '${S.current.costume} $charaId',
+                  dispSvt.costume[charaId]?.lName.l ?? '${S.current.costume} $charaId',
                   dispSvt.ascendIcon(charaId),
                 );
               }

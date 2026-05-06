@@ -210,7 +210,7 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
         );
         enemy.limit.limitCount = costume?.battleCharaId ?? dftValue;
       }
-      final costume = niceSvt?.profile.costume.values.firstWhereOrNull(
+      final costume = niceSvt?.costume.values.firstWhereOrNull(
         (e) => e.id == enemy.limit.limitCount || e.battleCharaId == enemy.limit.limitCount,
       );
       children.add(
@@ -429,7 +429,7 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
   void updateLimitCount(Servant svt) {
     int limitCount = enemy.limit.limitCount;
     if (svt.extraAssets.faces.ascension?[limitCount] == null && svt.extraAssets.faces.costume?[limitCount] == null) {
-      final costume = svt.profile.costume.values.firstWhereOrNull((e) => e.id > 10 && e.id < 100 && e.id == limitCount);
+      final costume = svt.costume.values.firstWhereOrNull((e) => e.id > 10 && e.id < 100 && e.id == limitCount);
       limitCount = costume?.battleCharaId ?? 0;
     }
     enemy.limit.limitCount = limitCount;

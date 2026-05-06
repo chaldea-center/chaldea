@@ -31,7 +31,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
 
   Servant get svt => widget.svt;
 
-  SvtPlan get plan => db.curUser.svtPlanOf(svt.collectionNo);
+  SvtPlan get plan => svt.curPlan;
 
   SvtStatus get status => svt.status;
 
@@ -174,13 +174,15 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
     // costume part
     if (showDetail(SvtPlanDetail.costume)) {
       List<Widget> dressWidgets = [];
-      for (final costume in svt.profile.costume.values) {
+      for (final costume in svt.costumesForPlan.values) {
         dressWidgets.add(
           buildPlanRow(
             useSlider: false,
             leading: InkWell(
               child: db.getIconImage(
-                svt.extraAssets.faces.costume?[costume.battleCharaId] ?? Atlas.assetItem(Items.costumeIconId),
+                svt.extraAssets.faces.costume?[costume.battleCharaId] ??
+                    db.gameData.costumesByCharaId[costume.battleCharaId]?.icon ??
+                    Atlas.assetItem(Items.costumeIconId),
                 aspectRatio: 132 / 144,
                 width: 33,
                 placeholder: (ctx) => db.getIconImage(Atlas.assetItem(Items.costumeIconId)),
@@ -202,14 +204,13 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
               updateState();
             },
             detailPageBuilder: (context) => LevelingCostPage(
-              costList: svt.costumeMaterials[costume.battleCharaId] == null
-                  ? {}
-                  : {0: svt.costumeMaterials[costume.battleCharaId]!},
+              costList: {0: ?svt.costumeMaterialsForPlan[costume.battleCharaId]},
               title: '${S.current.costume_unlock} - ${costume.lName.l}',
             ),
           ),
         );
       }
+
       if (dressWidgets.isNotEmpty) {
         children.add(TileGroup(header: S.current.costume_unlock, children: dressWidgets));
       }

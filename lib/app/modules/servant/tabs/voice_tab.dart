@@ -184,7 +184,7 @@ class VoiceGroupAccordion extends StatelessWidget {
             suffixes.add(TextSpan(text: '${S.current.ascension_short} ${ascensions.join("&")}'));
           }
           for (final costumeId in costumes) {
-            final costume = svt?.profile.costume.values.firstWhereOrNull((e) => e.battleCharaId == costumeId);
+            final costume = svt?.costume.values.firstWhereOrNull((e) => e.battleCharaId == costumeId);
             suffixes.add(
               SharedBuilder.textButtonSpan(
                 context: context,

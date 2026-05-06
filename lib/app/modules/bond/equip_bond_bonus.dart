@@ -408,7 +408,7 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
                   // width: 32,
                   text: [
                     if (conditional) '${limitCounts.length}/${allLimitCounts.length}',
-                    svt.status.favorite ? 'Lv${svt.status.bond}${svt.status.isReachBondLImit ? "*" : ""}' : '',
+                    svt.status.favorite ? 'Lv${svt.status.bond}${svt.status.isReachBondLimit ? "*" : ""}' : '',
                   ].join('\n'),
                   option: ImageWithTextOption(fontSize: 12),
                   width: 48,

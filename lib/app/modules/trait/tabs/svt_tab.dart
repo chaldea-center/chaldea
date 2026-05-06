@@ -113,7 +113,7 @@ class _TraitServantTabState extends State<TraitServantTab> {
         );
       }
       for (final costumeId in svt.ascensionAdd.individuality2.costume.keys) {
-        final costumeName = svt.profile.costume[costumeId]?.lName.l ?? costumeId.toString();
+        final costumeName = svt.costume[costumeId]?.lName.l ?? costumeId.toString();
         details.addAll(_addComment(svt.ascensionAdd.individuality2.costume[costumeId]!, _id, costumeName));
       }
       for (final traitAdd in svt.traitAdd) {

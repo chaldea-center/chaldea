@@ -423,11 +423,14 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
           viewBuilder: (ctx) => SvtSummonTab(svt: svt),
         );
       case SvtTab.voice:
-        if (svt.collectionNo == 0 && svt.profile.voices.isEmpty) return null;
+        if (!svt.isUserSvt && svt.profile.voices.isEmpty) return null;
         return _SubTabInfo(
           tab: tab,
           tabBuilder: () => S.current.voice,
-          viewBuilder: (ctx) => SvtVoiceTab(svt: svt),
+          viewBuilder: (ctx) => TransformSvtProfileTabber(
+            svt: svt,
+            builder: (context, svt, _) => SvtVoiceTab(svt: svt),
+          ),
         );
       case SvtTab.quest:
         if (svt.relateQuestIds.isEmpty && svt.trialQuestIds.isEmpty) {
@@ -521,7 +524,7 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
                       }
                       if (faces.costume != null) {
                         faces.costume!.forEach((key, value) {
-                          _addOne(_svt.profile.costume[key]?.lName.l ?? '${S.current.costume} $key', value);
+                          _addOne(_svt.costume[key]?.lName.l ?? '${S.current.costume} $key', value);
                         });
                       }
                       if (faces.transformGroup != null) {

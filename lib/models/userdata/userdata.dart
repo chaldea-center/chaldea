@@ -353,7 +353,7 @@ class SvtStatus {
 
   Map<String, dynamic> toJson() => _$SvtStatusToJson(this);
 
-  bool get isReachBondLImit => bond >= cur.bondLimit;
+  bool get isReachBondLimit => bond >= cur.bondLimit;
 
   void validate([Servant? svt]) {
     bond = bond.clamp2(0, 15);
@@ -497,7 +497,7 @@ class SvtPlan {
       ascension = 4,
       skills = List.filled(kActiveSkillNums.length, 10),
       appendSkills = List.filled(kAppendSkillNums.length, 10),
-      costumes = svt.costumeMaterials.map((key, value) => MapEntry(key, 1)),
+      costumes = svt.costumeMaterialsForPlan.map((key, value) => MapEntry(key, 1)),
       grail = _grailCostByRarity[svt.rarity] + 10,
       fouHp = 50,
       fouAtk = 50,
@@ -527,7 +527,7 @@ class SvtPlan {
       appendSkills[i] = appendSkills[i].clamp2(lower?.appendSkills[i] ?? 0, 10);
     }
     if (svt != null) {
-      costumes.removeWhere((key, value) => !svt.profile.costume.keys.contains(key));
+      costumes.removeWhere((key, value) => !svt.costumesForPlan.keys.contains(key));
     }
     for (final id in costumes.keys.toList()) {
       costumes[id] = costumes[id] == 1 ? 1 : 0;

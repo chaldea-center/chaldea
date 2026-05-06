@@ -468,7 +468,7 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
           kr: null,
         );
       case CondType.equipWithTargetCostume:
-        final costume = db.gameData.servantsById[target]?.profile.costume.values.firstWhereOrNull((e) => e.id == value);
+        final costume = db.gameData.servantsById[target]?.costume.values.firstWhereOrNull((e) => e.id == value);
         if (costume == null) {
           return localized(
             jp: null,

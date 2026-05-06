@@ -372,7 +372,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
                 ? ''
                 : '${S.current.append_skill_short} ${svt.appendLvs!.map((e) => e == 0 ? '-' : e).join('/')}',
           ]),
-          if (db.gameData.servantsById[svt.svtId]!.profile.costume.isNotEmpty)
+          if (db.gameData.servantsById[svt.svtId]!.costumesForPlan.isNotEmpty)
             _wrapCellStyle(['${S.current.costume} ${cardCollections[svt.svtId]!.costumeIdsTo01()}']),
           if (group.length > 1 || svt.isWithdraw())
             CustomTableRow.fromChildren(
@@ -917,6 +917,10 @@ class ImportHttpPageState extends State<ImportHttpPage> {
           status.cur.appendSkills = List.generate(kAppendSkillNums.length, (i) => svt.appendLvs!.getOrNull(i) ?? 0);
         }
         status.cur.costumes = collection.costumeIdsTo01();
+        final transformCollection = cardCollections[dbSvt.script?.transformInfo?.saveTransform];
+        if (transformCollection != null && transformCollection.svtId != collection.svtId) {
+          status.cur.costumes = {...transformCollection.costumeIdsTo01(), ...status.cur.costumes};
+        }
       }
     }
     for (final equip in mstData!.userEquip) {

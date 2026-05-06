@@ -55,12 +55,12 @@ class ServantFilterPage extends FilterPage<SvtFilterData> {
         ].any((e) => e))
           SvtPlanScope.append,
         if ([
-          for (var costume in svt.profile.costume.values)
+          for (var costume in svt.costumesForPlan.values)
             (svtPlan.costumes[costume.battleCharaId] ?? 0) > (svtStat.cur.costumes[costume.battleCharaId] ?? 0),
         ].any((e) => e))
           SvtPlanScope.costume,
         // don't use cur.bondLimit < plan.bondLimit
-        if (!svtStat.isReachBondLImit) SvtPlanScope.bond,
+        if (!svtStat.isReachBondLimit) SvtPlanScope.bond,
         if ([
           svtPlan.grail > svtStat.cur.grail,
           svtPlan.fouHp > svtStat.cur.fouHp,

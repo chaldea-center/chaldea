@@ -758,9 +758,7 @@ class UserServantCollectionEntity with DataEntityBase<_IntStr> {
   Map<int, int> costumeIdsTo01() {
     Map<int, int> result = {};
     for (final costumeId in costumeIds) {
-      final costume = db.gameData.servantsById[svtId]?.profile.costume.values.firstWhereOrNull(
-        (e) => e.id == costumeId,
-      );
+      final costume = db.gameData.servantsById[svtId]?.costume.values.firstWhereOrNull((e) => e.id == costumeId);
       if (costume != null) {
         result[costume.battleCharaId] = 1;
       }

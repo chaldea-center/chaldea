@@ -186,7 +186,7 @@ class ItemCenter {
       ], inPlace: true);
     }
 
-    detail.costume = _sumMat(svt.costumeMaterials, [
+    detail.costume = _sumMat(svt.costumeMaterialsForPlan, [
       if (!svt.isDupSvt)
         for (final charaId in target.costumes.keys)
           if (target.costumes[charaId]! > 0 && (cur.costumes[charaId] ?? 0) == 0) charaId,

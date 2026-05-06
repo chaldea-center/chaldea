@@ -273,7 +273,7 @@ class SvtInfoTab extends StatelessWidget {
             for (final entry in svt.ascensionAdd.individuality2.costume.entries)
               ..._addTraits(
                 context,
-                TextSpan(text: '${svt.profile.costume[entry.key]?.lName.l ?? entry.key}: '),
+                TextSpan(text: '${svt.costume[entry.key]?.lName.l ?? entry.key}: '),
                 entry.value,
                 baseTraits,
               ),

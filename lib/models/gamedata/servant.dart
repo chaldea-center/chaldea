@@ -197,6 +197,12 @@ class Servant extends BasicServant {
   Map<int, LvlUpMaterial> skillMaterials;
   Map<int, LvlUpMaterial> appendSkillMaterials;
   Map<int, LvlUpMaterial> costumeMaterials;
+  Map<int, LvlUpMaterial> get costumeMaterialsForPlan {
+    final transformSvt = script?.transformInfo?.saveTransformSvt;
+    if (transformSvt == null || transformSvt.profile.costume.isEmpty) return costumeMaterials;
+    return {...transformSvt.costumeMaterials, ...costumeMaterials};
+  }
+
   ServantCoin? coin;
   ServantScript? script;
   List<SvtScript> charaScripts;
@@ -214,6 +220,11 @@ class Servant extends BasicServant {
   String get face => icon!;
   @override
   Map<int, NiceCostume> get costume => profile.costume;
+  Map<int, NiceCostume> get costumesForPlan {
+    final transformSvt = script?.transformInfo?.saveTransformSvt;
+    if (transformSvt == null || transformSvt.profile.costume.isEmpty) return profile.costume;
+    return {...costume, ...transformSvt.costume};
+  }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   final int originalCollectionNo;
@@ -1765,6 +1776,7 @@ class NiceLore {
   String cv;
   String illustrator;
   LoreStatus? stats;
+  @protected
   Map<int, NiceCostume> costume;
   List<LoreComment> comments;
   List<VoiceGroup> voices;

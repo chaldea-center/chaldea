@@ -182,7 +182,7 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
       case CondType.costumeGet: // cond target value
       case CondType.notCostumeGet: // cond target value
         final svt = db.gameData.servantsById[targetIds.getOrNull(0)];
-        final costume = svt?.profile.costume.values.firstWhereOrNull((e) => e.id == targetNum);
+        final costume = svt?.costume.values.firstWhereOrNull((e) => e.id == targetNum);
         if (svt == null || costume == null) break;
         final costumeWidget = TextSpan(
           children: [
