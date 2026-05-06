@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:chaldea/app/modules/effect_search/util.dart';
 import 'package:chaldea/models/gamedata/effect.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -612,6 +613,41 @@ class MysticCodeFilterData with FilterDataMixin {
   factory MysticCodeFilterData.fromJson(Map<String, dynamic> data) => _$MysticCodeFilterDataFromJson(data);
 
   Map<String, dynamic> toJson() => _$MysticCodeFilterDataToJson(this);
+
+  bool filter(MysticCode mc) {
+    final filterData = this;
+    final region = filterData.region.radioValue;
+    if (region != null && region != Region.jp) {
+      final released = db.gameData.mappingData.mcRelease.ofRegion(region);
+      if (released?.contains(mc.id) == false) {
+        return false;
+      }
+    }
+
+    if (filterData.effectType.isNotEmpty || filterData.effectTarget.isNotEmpty || filterData.targetTrait.isNotEmpty) {
+      List<BaseFunction> funcs = [for (final skill in mc.skills) ...skill.filteredFunction(includeTrigger: true)];
+      if (filterData.effectTarget.isNotEmpty) {
+        funcs.retainWhere((func) {
+          return filterData.effectTarget.matchOne(EffectTarget.fromFunc(func.funcTargetType));
+        });
+      }
+      if (filterData.targetTrait.isNotEmpty) {
+        funcs.retainWhere((func) => EffectFilterUtil.checkFuncTraits(func, filterData.targetTrait));
+      }
+      if (funcs.isEmpty) return false;
+      if (filterData.effectType.isEmpty) return true;
+      if (filterData.effectType.matchAll) {
+        if (!filterData.effectType.options.every((effect) => funcs.any((func) => effect.match(func)))) {
+          return false;
+        }
+      } else {
+        if (!filterData.effectType.options.any((effect) => funcs.any((func) => effect.match(func)))) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
 }
 
 enum FavoriteState {

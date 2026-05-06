@@ -15,8 +15,9 @@ import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../modules/battle/formation/formation_card.dart';
-import '../_shared/svt_equip_select.dart';
-import '../_shared/svt_select.dart';
+import '../_shared/select_svt.dart';
+import '../_shared/select_svt_equip.dart';
+import '../_shared/select_user_equip.dart';
 import '../combine/svt_combine.dart';
 import '../runtime.dart';
 import 'deck_list.dart';
@@ -644,7 +645,7 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
     if ((widget.eventDeckParam?.questPhase?.extraDetail?.isInfinityCost ?? 0) != 0) {
       maxCost = 9999;
     }
-    return Column(
+    Widget child = Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -660,6 +661,22 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
         ),
       ],
     );
+    child = InkWell(
+      onTap: () {
+        router.pushBuilder(
+          builder: (context) => SelectUserEquipPage(
+            runtime: runtime,
+            inUseUserEquipId: deckInfo.userEquipId,
+            onSelected: (selectedUserEquip) {
+              deckInfo.userEquipId = selectedUserEquip.id;
+              if (mounted) setState(() {});
+            },
+          ),
+        );
+      },
+      child: child,
+    );
+    return child;
   }
 
   UserDeckEntity makeUserDeckCopy(UserDeckEntity entity) {

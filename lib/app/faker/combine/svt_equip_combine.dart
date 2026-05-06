@@ -6,7 +6,7 @@ import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../modules/battle/formation/formation_card.dart';
-import '../_shared/svt_equip_select.dart';
+import '../_shared/select_svt_equip.dart';
 import '../runtime.dart';
 
 class _SvtEquipCombineData {

@@ -75,9 +75,9 @@ extension NumX on num {
     return s;
   }
 
-  String formatSep({String? groupSeparator, num? minVal = 10000}) {
+  String formatSep({String? groupSeparator = ',', num? minVal = 10000}) {
     if (isInfinite || isNaN) return toString();
-    return format(compact: false, groupSeparator: ',');
+    return format(compact: false, groupSeparator: groupSeparator);
   }
 }
 

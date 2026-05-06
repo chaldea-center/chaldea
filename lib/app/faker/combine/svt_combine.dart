@@ -9,7 +9,7 @@ import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../modules/battle/formation/formation_card.dart';
-import '../_shared/svt_select.dart';
+import '../_shared/select_svt.dart';
 import '../runtime.dart';
 
 class SvtCombinePage extends StatefulWidget {
