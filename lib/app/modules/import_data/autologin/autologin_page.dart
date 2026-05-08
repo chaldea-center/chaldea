@@ -30,7 +30,6 @@ class AutoLoginPage extends StatefulWidget {
 }
 
 class _AutoLoginPageState extends State<AutoLoginPage> {
-  GameTop? gameTop;
   final allData = db.settings.fakerSettings.jpAutoLogins;
   AutoLoginDataJP args = AutoLoginDataJP();
   FakerAgentJP? agent;
@@ -43,15 +42,10 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
       allData.add(AutoLoginDataJP());
     }
     args = allData.first;
-    AtlasApi.gametop(region: args.region).then((value) {
-      if (value != null) gameTop = value;
-      if (mounted) setState(() {});
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final top = gameTop;
     return Scaffold(
       appBar: AppBar(
         title: Text(S.current.import_auth_file),
@@ -139,28 +133,6 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
               ),
             ),
           const DividerWithTitle(title: 'Extra', indent: 16),
-          ListTile(
-            title: const Text('Game Info'),
-            dense: true,
-            selected: top == null,
-            selectedColor: Theme.of(context).colorScheme.error,
-            subtitle: Text(top == null ? 'Not loaded' : 'appVer=${top.appVer},dataVer=${top.dataVer}'),
-            trailing: IconButton(
-              onPressed: () async {
-                EasyLoading.show();
-                final value = await AtlasApi.gametop(region: args.region, expireAfter: Duration.zero);
-                EasyLoading.dismiss();
-                if (value != null) {
-                  gameTop = value;
-                } else {
-                  EasyLoading.showError(S.current.failed);
-                }
-                if (mounted) setState(() {});
-              },
-              icon: const Icon(Icons.refresh),
-              tooltip: S.current.refresh,
-            ),
-          ),
           if (args.region == Region.na)
             ListTile(
               dense: true,
@@ -414,9 +386,9 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
                 "Android OS ${info.version.release} / API-${info.version.sdkInt} (${info.id}/${info.version.incremental})";
         args.deviceInfo = "$deviceModel / $operatingSystem";
       } else if (PlatformU.isIOS) {
-        final gameTop = this.gameTop;
+        final gameTop = await AtlasApi.gametop(region: args.region);
         if (gameTop == null) {
-          EasyLoading.showError('Load Game Info first!');
+          EasyLoading.showError('Load game version failed');
           return;
         }
         final info = await DeviceInfoPlugin().iosInfo;
@@ -520,7 +492,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
   Future doLogin() async {
     final args = this.args;
     _error = null;
-    final gameTop = this.gameTop ??= await showEasyLoading(() => AtlasApi.gametop(region: args.region));
+    final gameTop = await showEasyLoading(() => AtlasApi.gametop(region: args.region));
     if (gameTop == null) {
       EasyLoading.showError('Failed to load Game Info');
       return;

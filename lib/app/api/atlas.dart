@@ -39,7 +39,7 @@ class AtlasApi {
   }
 
   static Future<RegionInfo?> regionInfoExported({Region region = Region.jp, Duration? expireAfter = Duration.zero}) {
-    return exportedData('info', (data) => RegionInfo.fromJson(data), expireAfter: expireAfter);
+    return exportedData('info', (data) => RegionInfo.fromJson(data), region: region, expireAfter: expireAfter);
   }
 
   static Future<Quest?> quest(int questId, {Region region = Region.jp, Duration? expireAfter}) {
@@ -452,7 +452,7 @@ class AtlasApi {
     final top = tops.of(region);
 
     final tasks = <Future>[
-      AtlasApi.regionInfoExported(region: region, expireAfter: expireAfter).then((info) {
+      AtlasApi.regionInfo(region: region, expireAfter: expireAfter).then((info) {
         if (info != null) top.updateFromRegionInfo(info);
       }),
       verCode(region, expireAfter: expireAfter).then((v) {
