@@ -23,7 +23,7 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
   Future<FResponse> gamedataTop({bool checkAppUpdate = true}) async {
     final tops = await AtlasApi.gametopsRaw(expireAfter: Duration.zero);
     if (tops != null) {
-      network.gameTop.updateFrom(tops.jp);
+      network.gameTop = tops.of(user.region).copy();
     }
     final regionInfo = await AtlasApi.regionInfo(region: user.region);
     if (regionInfo != null) {
