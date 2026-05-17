@@ -5,23 +5,24 @@ import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/app/modules/mc/converter.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../summon/summon_detail_page.dart';
+import '../summon_detail_page.dart';
 import 'gacha_parser.dart';
 
-class MCSummonCreatePage extends StatefulWidget {
+class GachaGroupPage extends StatefulWidget {
   final List<NiceGacha> gachas;
   final String? nameJp;
   final String? nameZh;
-  const MCSummonCreatePage({super.key, required this.gachas, this.nameZh, this.nameJp});
+  const GachaGroupPage({super.key, required this.gachas, this.nameZh, this.nameJp});
 
   @override
-  State<MCSummonCreatePage> createState() => _MCSummonCreatePageState();
+  State<GachaGroupPage> createState() => _GachaGroupPageState();
 }
 
-class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
+class _GachaGroupPageState extends State<GachaGroupPage> {
   late List<GachaProbData> gachas = widget.gachas.map((e) => GachaProbData(e, '', [])).toList();
   List<JpGachaNotice> notices = [];
   JpGachaNotice? _selectedNotice;
@@ -47,7 +48,7 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
   Widget build(BuildContext context) {
     return InheritSelectionArea(
       child: Scaffold(
-        appBar: AppBar(title: Text(S.current.create_mooncell_summon)),
+        appBar: AppBar(title: Text(S.current.raw_gacha_group)),
         body: buildBody(),
       ),
     );
@@ -55,14 +56,12 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
 
   Widget buildBody() {
     return ListView(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
       children: [
         for (final (index, gacha) in gachas.indexed)
           ListTile(
             dense: true,
             minLeadingWidth: 24,
             horizontalTitleGap: 8,
-            contentPadding: EdgeInsets.zero,
             leading: gacha.isInvalid
                 ? const Icon(Icons.error, color: Colors.red, size: 18)
                 : const Icon(Icons.check_circle, color: Colors.green, size: 18),
@@ -72,165 +71,189 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
             },
             trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
           ),
-        Center(
-          child: ElevatedButton(onPressed: parseProbs, child: const Text('解析所有卡池')),
+        const SizedBox(height: 8),
+        Wrap(
+          alignment: .center,
+          spacing: 8,
+          children: [
+            FilledButton(onPressed: () => parseProbs(refresh: true), child: Text(S.current.refresh)),
+            FilledButton.tonal(
+              onPressed: () {
+                if (gachas.isEmpty) return;
+                final summon = toLimitedSummon();
+                router.pushPage(SummonDetailPage(summon: summon));
+              },
+              child: Text(S.current.simulator),
+            ),
+          ],
         ),
         const Divider(height: 16),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Text('公告: '),
-            Expanded(
-              child: DropdownButton<JpGachaNotice>(
-                value: _selectedNotice,
-                hint: const Text('官方公告'),
-                isExpanded: true,
-                items: [
-                  DropdownMenuItem(
-                    value: null,
-                    child: Text(notices.isEmpty ? "解析中..." : "<选择一个公告(若在列表中)>", style: const TextStyle(fontSize: 14)),
-                  ),
-                  for (final notice in notices)
-                    DropdownMenuItem(
-                      value: notice,
-                      child: Text.rich(
-                        TextSpan(
-                          style: const TextStyle(fontSize: 12),
-                          children: [
-                            TextSpan(text: '[${notice.lastUpdate}更新]', style: Theme.of(context).textTheme.bodySmall),
-                            TextSpan(text: notice.title ?? notice.fullTitle),
-                          ],
-                        ),
-                      ),
-                    ),
-                ],
-                onChanged: (v) {
-                  setState(() {
-                    _selectedNotice = v;
-                    if (v != null && v.title != null) {
-                      _jpNameController.text = v.title!;
-                    }
-                  });
-                },
-              ),
-            ),
-          ],
+        ListTile(
+          dense: true,
+          title: Text(S.current.region_notice(Region.jp.localName)),
+          trailing: TextButton.icon(
+            onPressed: _selectedNotice?.link == null
+                ? null
+                : () {
+                    launch(_selectedNotice!.link!);
+                  },
+            icon: const Icon(Icons.open_in_new),
+            label: Text(S.current.open_in_browser),
+          ),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextButton(
-              onPressed: _selectedNotice?.link == null
-                  ? null
-                  : () {
-                      launch(_selectedNotice!.link!);
-                    },
-              child: const Text('打开公告'),
-            ),
-            TextButton(
-              onPressed: _selectedNotice?.topBanner == null
-                  ? null
-                  : () {
-                      launch(_selectedNotice!.topBanner!, external: true);
-                    },
-              child: const Text('下载标题图'),
-            ),
-            TextButton(
-              onPressed: () {
-                final cnName = bannerFnBase;
-                if (cnName.isEmpty) {
-                  EasyLoading.showInfo('请先填写中文卡池名');
-                  return;
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: DropdownButton<JpGachaNotice>(
+            value: _selectedNotice,
+            isExpanded: true,
+            items: [
+              DropdownMenuItem(
+                value: null,
+                child: Text(
+                  notices.isEmpty
+                      ? "${S.current.region_notice(Region.jp.localName)} ${S.current.downloading}..."
+                      : (Language.isZH ? "<选择一个公告(若在列表中)>" : "Choose a notice if in list"),
+                  style: const TextStyle(fontSize: 14),
+                ),
+              ),
+              for (final notice in notices)
+                DropdownMenuItem(
+                  value: notice,
+                  child: Text.rich(
+                    TextSpan(
+                      style: const TextStyle(fontSize: 12),
+                      children: [
+                        TextSpan(
+                          text: '[${notice.lastUpdate} ${S.current.update}]',
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                        TextSpan(text: notice.title ?? notice.fullTitle),
+                      ],
+                    ),
+                  ),
+                ),
+            ],
+            onChanged: (v) {
+              setState(() {
+                _selectedNotice = v;
+                if (v != null && v.title != null) {
+                  _jpNameController.text = v.title!;
                 }
-                final fn = '${cnName}_jp.png';
-                launch("https://fgo.wiki/index.php?title=特殊:上传文件&wpDestFile=$fn");
-              },
-              child: const Text('上传标题图'),
-            ),
-          ],
+              });
+            },
+          ),
         ),
         if (_selectedNotice?.topBanner != null)
           Container(
-            constraints: const BoxConstraints(maxHeight: 80),
+            constraints: const BoxConstraints(maxHeight: 150),
             child: CachedImage(
               imageUrl: _selectedNotice!.topBanner,
               aspectRatio: 8 / 3,
+              showSaveOnLongPress: true,
               onTap: () {
                 launch(_selectedNotice!.topBanner!, external: true);
               },
             ),
           ),
-        const SizedBox(height: 8),
-        Center(
-          child: FilledButton(
-            onPressed: () {
-              if (gachas.isEmpty) return;
-              final summon = toLimitedSummon();
-              router.pushPage(SummonDetailPage(summon: summon));
+        const Divider(height: 32),
+        Card(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          child: SimpleAccordion(
+            headerBuilder: (context, _) => ListTile(title: Text(S.current.create_mooncell_summon)),
+            contentBuilder: (context) {
+              final children = [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextButton(
+                      onPressed: _selectedNotice?.topBanner == null
+                          ? null
+                          : () {
+                              launch(_selectedNotice!.topBanner!, external: true);
+                            },
+                      child: const Text('下载标题图'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        final cnName = bannerFnBase;
+                        if (cnName.isEmpty) {
+                          EasyLoading.showInfo('请先填写中文卡池名');
+                          return;
+                        }
+                        final fn = '${cnName}_jp.png';
+                        launch("https://fgo.wiki/index.php?title=特殊:上传文件&wpDestFile=$fn");
+                      },
+                      child: const Text('上传标题图'),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                TextFormField(
+                  controller: _jpNameController,
+                  decoration: const InputDecoration(
+                    isDense: true,
+                    labelText: '日文卡池名',
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                    border: OutlineInputBorder(),
+                  ),
+                  onChanged: (_) {
+                    setState(() {});
+                  },
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: _cnNameController,
+                  decoration: const InputDecoration(
+                    isDense: true,
+                    labelText: '中文卡池名',
+                    floatingLabelBehavior: FloatingLabelBehavior.always,
+                    border: OutlineInputBorder(),
+                  ),
+                  onChanged: (_) {
+                    setState(() {});
+                  },
+                ),
+                if (gachas.any((e) => e.gacha.isLuckyBag))
+                  SwitchListTile(
+                    dense: true,
+                    title: const Text("福袋是否必定保底一四星从者"),
+                    contentPadding: EdgeInsets.zero,
+                    value: _isLuckyBagWithSR,
+                    onChanged: (v) {
+                      setState(() {
+                        _isLuckyBagWithSR = v;
+                      });
+                    },
+                  ),
+                const SizedBox(height: 16),
+                Center(
+                  child: FilterGroup<int>(
+                    combined: true,
+                    options: [-2, -1, ...List.generate(gachas.length, (index) => index)],
+                    values: curTab,
+                    optionBuilder: (v) {
+                      if (v == -2) return const Text('卡池');
+                      if (v == -1) return const Text('模拟器');
+                      return Text('data${v + 1}');
+                    },
+                    onFilterChanged: (_, _) {
+                      setState(() {});
+                    },
+                  ),
+                ),
+                curTab.radioValue == -2
+                    ? summonTab
+                    : curTab.radioValue == -1
+                    ? simulatorTab
+                    : dataTab(curTab.radioValue!),
+              ];
+              return Padding(
+                padding: .symmetric(horizontal: 8),
+                child: Column(mainAxisSize: .min, children: children),
+              );
             },
-            child: Text(S.current.simulator),
           ),
         ),
-        const Divider(height: 16),
-        const SizedBox(height: 8),
-        TextFormField(
-          controller: _jpNameController,
-          decoration: const InputDecoration(
-            isDense: true,
-            labelText: '日文卡池名',
-            floatingLabelBehavior: FloatingLabelBehavior.always,
-            border: OutlineInputBorder(),
-          ),
-          onChanged: (_) {
-            setState(() {});
-          },
-        ),
-        const SizedBox(height: 16),
-        TextFormField(
-          controller: _cnNameController,
-          decoration: const InputDecoration(
-            isDense: true,
-            labelText: '中文卡池名',
-            floatingLabelBehavior: FloatingLabelBehavior.always,
-            border: OutlineInputBorder(),
-          ),
-          onChanged: (_) {
-            setState(() {});
-          },
-        ),
-        if (gachas.any((e) => e.gacha.isLuckyBag))
-          SwitchListTile(
-            dense: true,
-            title: const Text("福袋是否必定保底一四星从者"),
-            contentPadding: EdgeInsets.zero,
-            value: _isLuckyBagWithSR,
-            onChanged: (v) {
-              setState(() {
-                _isLuckyBagWithSR = v;
-              });
-            },
-          ),
-        const SizedBox(height: 16),
-        Center(
-          child: FilterGroup<int>(
-            combined: true,
-            options: [-2, -1, ...List.generate(gachas.length, (index) => index)],
-            values: curTab,
-            optionBuilder: (v) {
-              if (v == -2) return const Text('卡池');
-              if (v == -1) return const Text('模拟器');
-              return Text('data${v + 1}');
-            },
-            onFilterChanged: (_, _) {
-              setState(() {});
-            },
-          ),
-        ),
-        curTab.radioValue == -2
-            ? summonTab
-            : curTab.radioValue == -1
-            ? simulatorTab
-            : dataTab(curTab.radioValue!),
       ],
     );
   }
@@ -557,9 +580,9 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
     return _buildWikitext(table, page, warning: warning, warningColor: warningColor);
   }
 
-  Future<void> parseProbs() async {
+  Future<void> parseProbs({bool refresh = false}) async {
     try {
-      gachas = await showEasyLoading(() => JpGachaParser().parseMultiple(widget.gachas));
+      gachas = await showEasyLoading(() => JpGachaParser().parseMultiple(widget.gachas, refresh: refresh));
       final errorCount = gachas.where((e) => e.isInvalid).length;
       if (errorCount > 0) {
         EasyLoading.showSuccess('$errorCount个卡池解析失败');
@@ -584,6 +607,7 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
   LimitedSummon toLimitedSummon() {
     final name = _findCleanCommonPrefix(gachas.map((e) => e.gacha.name).toList());
     return LimitedSummon(
+      isFromWiki: false,
       id: '',
       name: name,
       type: gachas.firstOrNull?.gacha.isLuckyBag == true ? .gssr : .limited,
@@ -593,6 +617,10 @@ class _MCSummonCreatePageState extends State<MCSummonCreatePage> {
       subSummons: gachas.map((gacha) {
         String title = gacha.gacha.name.substring(name.length).trim();
         if (title.isEmpty) title = gacha.gacha.name;
+        const puText = 'ピックアップ召喚';
+        if (title.endsWith(puText)) {
+          title = title.substring(0, title.length - puText.length);
+        }
         return gacha.toSubSummon()..title = title;
       }).toList(),
     );

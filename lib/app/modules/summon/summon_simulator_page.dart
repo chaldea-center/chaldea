@@ -12,6 +12,7 @@ import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/carousel_util.dart';
 import 'package:chaldea/widgets/widgets.dart';
+import 'gacha/gacha_banner.dart';
 import 'summon_util.dart';
 
 class SummonSimulatorPage extends StatefulWidget {
@@ -72,7 +73,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
     return Scaffold(
       appBar: AppBar(
         leading: const BackButton(),
-        title: AutoSizeText(summon.lName.l, maxLines: 1, overflow: TextOverflow.fade),
+        title: AutoSizeText(summon.lName.l.setMaxLines(1), maxLines: 1, overflow: TextOverflow.fade),
         titleSpacing: 0,
         actions: [
           IconButton(icon: const Icon(Icons.replay), tooltip: S.current.reset, onPressed: reset),
@@ -86,11 +87,22 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
   }
 
   Widget get customScrollView {
+    final banners = data.banner != null
+        ? [data.banner!]
+        : {...summon.resolvedBanner.valuesNotNull, for (final v in summon.subSummons) ?v.banner}.toList();
     return CustomScrollView(
       slivers: [
         SliverList(
           delegate: SliverChildListDelegate([
-            CarouselUtil.limitHeightWidget(context: context, imageUrls: summon.resolvedBanner.values.toList()),
+            if (banners.isNotEmpty)
+              banners.every((e) => e.contains('/SummonBanners/'))
+                  ? CarouselUtil.limitHeightWidget(
+                      context: context,
+                      imageUrls: [],
+                      imageWidgets: banners.map((e) => GachaBanner.url(url: e)).toList(),
+                      aspectRatio: 1344 / 576,
+                    )
+                  : CarouselUtil.limitHeightWidget(context: context, imageUrls: banners),
             if (summon.subSummons.length > 1) dropdownButton,
             data.probs.isEmpty
                 ? const Padding(

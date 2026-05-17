@@ -7,7 +7,7 @@ import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
-import 'converter.dart';
+import '../../mc/converter.dart';
 
 const int _kJpNoticePages = 4;
 
@@ -38,6 +38,7 @@ class GachaProbData {
   SubSummon toSubSummon() {
     return SubSummon(
       title: gacha.name.setMaxLines(1),
+      banner: AssetURL.i.summonBanner(gacha.imageId),
       probs: [
         for (final group in groups)
           ProbGroup(
@@ -53,6 +54,7 @@ class GachaProbData {
 
   LimitedSummon toSummon() {
     return LimitedSummon(
+      isFromWiki: false,
       id: gacha.id.toString(),
       name: gacha.lName.setMaxLines(1),
       officialBanner: MappingBase(jp: AssetURL.i.summonBanner(gacha.imageId)),
@@ -142,10 +144,10 @@ class JpGachaNotice {
 class JpGachaParser {
   static const String kStar = '★';
 
-  Future<List<GachaProbData>> parseMultiple(List<NiceGacha> gachas) async {
+  Future<List<GachaProbData>> parseMultiple(List<NiceGacha> gachas, {bool refresh = false}) async {
     final futures = gachas.map((gacha) async {
       try {
-        return await parseProb(gacha);
+        return await parseProb(gacha, refresh: refresh);
       } catch (e, s) {
         logger.e('parse gacha prob failed', e, s);
         return GachaProbData(gacha, '', []);
@@ -156,11 +158,11 @@ class JpGachaParser {
     return allData;
   }
 
-  Future<GachaProbData> parseProb(NiceGacha gacha) async {
+  Future<GachaProbData> parseProb(NiceGacha gacha, {bool refresh = false}) async {
     final data = GachaProbData(gacha, '', []);
     final url = gacha.getHtmlUrl(Region.jp);
     if (url == null) return data;
-    final text = await CachedApi.cacheManager.getText(url);
+    final text = await CachedApi.cacheManager.getText(url, expireAfter: refresh ? Duration.zero : null);
     if (text == null) return data;
 
     final doc = htmlparser.parse(text);

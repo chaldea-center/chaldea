@@ -745,6 +745,7 @@
   "rate_app_store": "App Store評分",
   "rate_play_store": "Google Play評分",
   "raw_gacha_data": "原始卡池資料",
+  "raw_gacha_group": null,
   "read_device_info": "讀取本設備參數",
   "recognizer_result_count": "{unknown}不明, {dup}重複, {valid}/{total}有效, {selected}已選",
   "recorder_screenshot_current_view": "當前視窗",

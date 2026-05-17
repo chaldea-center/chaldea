@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:chaldea/app/app.dart';
-import 'package:chaldea/app/modules/mc/mc_prob_edit.dart';
 import 'package:chaldea/app/modules/shop/shop.dart';
+import 'package:chaldea/app/modules/summon/gacha/gacha_detail.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/event.dart';
 import 'package:chaldea/utils/extension.dart';
@@ -163,7 +163,7 @@ class MstGacha with RouteInfo {
   @override
   void routeTo({Widget? child, bool popDetails = false, Region? region}) {
     return super.routeTo(
-      child: child ?? MCGachaProbEditPage(gacha: NiceGacha.fromJson(toJson()), region: region ?? Region.jp),
+      child: child ?? GachaDetailPage(gacha: NiceGacha.fromJson(toJson()), region: region ?? Region.jp),
       popDetails: popDetails,
     );
   }
@@ -331,18 +331,13 @@ enum GachaType {
   final int value;
 
   String get shownName {
-    switch (this) {
-      case unknown:
-        return S.current.unknown;
-      case freeGacha:
-        return Items.friendPoint?.lName.l ?? 'FriendPoint';
-      case chargeStone:
-        return S.current.lucky_bag;
-      case payGacha:
-        return S.current.normal;
-      case ticketGacha:
-        return name;
-    }
+    return switch (this) {
+      unknown => S.current.unknown,
+      freeGacha => Items.friendPoint?.lName.l ?? 'FriendPoint',
+      chargeStone => S.current.lucky_bag,
+      payGacha => S.current.normal,
+      ticketGacha => name,
+    };
   }
 }
 

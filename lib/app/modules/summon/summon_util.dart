@@ -157,6 +157,8 @@ class SummonUtil {
   }
 
   static String summonNameLocalize(String origin) {
+    final nameTransl = Transl.svtNames(origin).l;
+    if (nameTransl != origin) return nameTransl;
     List<String> names = castBracket(origin.replaceAll('・', '·'))?.split('+') ?? [];
     return names
         .map((e) {

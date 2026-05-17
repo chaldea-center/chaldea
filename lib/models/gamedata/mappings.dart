@@ -481,6 +481,8 @@ class MappingBase<T> {
 
   List<T?> get values => [jp, cn, tw, na, kr];
 
+  List<T> get valuesNotNull => values.whereType<T>().toList();
+
   Iterable<(Region, T?)> get indexed sync* {
     yield (Region.jp, jp);
     yield (Region.cn, cn);

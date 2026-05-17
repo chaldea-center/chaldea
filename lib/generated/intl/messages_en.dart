@@ -951,6 +951,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "rate_app_store": MessageLookupByLibrary.simpleMessage("Rate on App Store"),
     "rate_play_store": MessageLookupByLibrary.simpleMessage("Rate on Google Play"),
     "raw_gacha_data": MessageLookupByLibrary.simpleMessage("Raw Gachas"),
+    "raw_gacha_group": MessageLookupByLibrary.simpleMessage("Raw Gacha Group"),
     "read_device_info": MessageLookupByLibrary.simpleMessage("Read this Device\'s info"),
     "recognizer_result_count": m34,
     "recorder_screenshot_current_view": MessageLookupByLibrary.simpleMessage("Current View"),

@@ -9,20 +9,20 @@ import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../summon/gacha/gacha_banner.dart';
-import '../summon/summon_simulator_page.dart';
+import '../summon_simulator_page.dart';
+import 'gacha_banner.dart';
 import 'gacha_parser.dart';
 
-class MCGachaProbEditPage extends StatefulWidget {
+class GachaDetailPage extends StatefulWidget {
   final NiceGacha gacha;
   final Region region;
-  const MCGachaProbEditPage({super.key, required this.gacha, required this.region});
+  const GachaDetailPage({super.key, required this.gacha, required this.region});
 
   @override
-  State<MCGachaProbEditPage> createState() => _MCGachaProbEditPageState();
+  State<GachaDetailPage> createState() => _GachaDetailPageState();
 }
 
-class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
+class _GachaDetailPageState extends State<GachaDetailPage> {
   late final gacha = widget.gacha;
   late final url = gacha.getHtmlUrl(widget.region);
   late GachaProbData result = GachaProbData(widget.gacha, '', []);
@@ -38,10 +38,10 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
     parseHtml();
   }
 
-  Future<void> parseHtml() async {
+  Future<void> parseHtml({bool refresh = false}) async {
     try {
       if (!allowParse || gacha.openedAt > DateTime.now().timestamp) return;
-      result = await showEasyLoading(() => converter.parseProb(gacha));
+      result = await showEasyLoading(() => converter.parseProb(gacha, refresh: refresh));
       if (result.isInvalid) {
         EasyLoading.showError(S.current.failed);
         return;
@@ -65,9 +65,31 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
     return Scaffold(
       appBar: AppBar(
         title: AutoSizeText(gacha.lName.setMaxLines(1), maxLines: 1, minFontSize: 14),
-        // actions: [
-        //   IconButton(onPressed: parseHtml, icon: const Icon(Icons.search)),
-        // ],
+        actions: [
+          PopupMenuButton(
+            itemBuilder: (context) => [
+              PopupMenuItem(child: Text(S.current.refresh), value: () => parseHtml(refresh: true)),
+              PopupMenuItem(
+                child: Text('${S.current.copy} Mooncell wikitext'),
+                value: () {
+                  SimpleConfirmDialog(
+                    title: Text(S.current.confirm),
+                    content: Text(
+                      '[For Mooncell wiki Editor]\n'
+                      '检查后再写入到“某某卡池/模拟器/data{X}”中:\n'
+                      '- 是否显示(1显示 0不显示)\n'
+                      '- 各行总概率是否正确',
+                    ),
+                    onTapOk: () {
+                      copyToClipboard(result.toOutput(), toast: true);
+                    },
+                    confirmText: S.current.copy,
+                  ).showDialog(context);
+                },
+              ),
+            ],
+          ),
+        ],
       ),
       body: ListView(
         padding: const EdgeInsets.symmetric(vertical: 8),
@@ -167,7 +189,8 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
               textAlign: TextAlign.center,
             ),
           if (allowParse) ...[
-            const Divider(height: 16),
+            const SizedBox(height: 32),
+            DividerWithTitle(title: S.current.probability),
             SwitchListTile(
               dense: true,
               value: showIcon,
@@ -181,26 +204,6 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
                     },
             ),
             buildTable(),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              child: Text(
-                '[For Mooncell wiki Editor]\n'
-                '检查后再写入到“某某卡池/模拟器/data{X}”中:\n'
-                '- 是否显示(1显示 0不显示)\n'
-                '- 各行总概率是否正确',
-                style: TextStyle(fontSize: 14),
-              ),
-            ),
-            Center(
-              child: FilledButton(
-                onPressed: result.isInvalid
-                    ? null
-                    : () {
-                        copyToClipboard(result.toOutput(), toast: true);
-                      },
-                child: Text('${S.current.copy} Mooncell wikitext'),
-              ),
-            ),
           ],
           const SizedBox(height: 32),
           if (!result.isInvalid && AppInfo.isDebugOn) Card(child: Text(result.getShownHtml(), style: kMonoStyle)),
@@ -222,7 +225,12 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
     } else {
       final totalProb = result.getTotalProb();
       final guessTotalProb = result.guessTotalProb();
-      children.add(Text('${S.current.total}: $guessTotalProb% ($totalProb%)'));
+      children.add(
+        Padding(
+          padding: .symmetric(horizontal: 4, vertical: 8),
+          child: Text('${S.current.probability} ${S.current.total}: $guessTotalProb% ($totalProb%)'),
+        ),
+      );
       children.add(
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
@@ -231,8 +239,17 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
             defaultColumnWidth: const IntrinsicColumnWidth(),
             border: TableBorder.all(color: Theme.of(context).dividerColor),
             children: [
-              TableRow(children: ['type', 'star', 'weight', 'display', 'ids'].map(cell).toList()),
-              for (final group in result.groups) buildRow(group),
+              TableRow(
+                children: [
+                  S.current.general_type,
+                  S.current.rarity,
+                  S.current.probability,
+                  S.current.servant,
+                ].map(cell).toList(),
+              ),
+              for (final group
+                  in result.groups.toList()..sortByList((a) => [a.pickup ? 0 : 1, a.isSvt ? 0 : 1, -a.rarity]))
+                buildRow(group),
             ],
           ),
         ),
@@ -256,26 +273,29 @@ class _MCGachaProbEditPageState extends State<MCGachaProbEditPage> {
   }
 
   TableRow buildRow(GachaProbRow group) {
-    List<String> texts = group.toRow();
-    texts.removeLast();
-    List<Widget> children = texts.map(cell).toList();
-    children[2] = Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 2),
-      child: Text.rich(
-        TextSpan(
-          text: texts[2],
-          children: [
-            TextSpan(
-              text: ' (${group.indivProb}×${group.cards.length}=${group.getTotalProb().toStringAsFixed(2)}%)',
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-          ],
+    List<Widget> children = [
+      cell(group.isSvt ? S.current.servant : S.current.craft_essence_short),
+      cell(group.rarity.toString()),
+    ];
+    children.add(
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 2),
+        child: Text.rich(
+          TextSpan(
+            text: group.formatProb(group.getTotalProb()),
+            children: [
+              TextSpan(
+                text: ' (${group.indivProb}×${group.cards.length}=${group.getTotalProb().toStringAsFixed(2)}%)',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ],
+          ),
         ),
       ),
     );
 
     Widget svtCell;
-    if (!showIcon) {
+    if (!showIcon && !group.pickup) {
       svtCell = cell(group.ids.join(", "));
     } else {
       svtCell = Padding(

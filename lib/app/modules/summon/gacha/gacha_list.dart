@@ -11,9 +11,9 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/region_based.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../common/filter_page_base.dart';
-import '../../mc/mc_multi_gacha.dart';
 import '../filter_page.dart';
 import 'gacha_banner.dart';
+import 'gacha_group_page.dart';
 
 class GachaListPage extends StatefulWidget {
   final Region region;
@@ -266,9 +266,9 @@ class _GachaListPageState extends State<GachaListPage>
             onPressed: _selectedGachas.isEmpty
                 ? null
                 : () {
-                    router.pushPage(MCSummonCreatePage(gachas: _selectedGachas.toList()));
+                    router.pushPage(GachaGroupPage(gachas: _selectedGachas.toList()));
                   },
-            child: Text("${S.current.create_mooncell_summon}(${_selectedGachas.length})"),
+            child: Text("${S.current.raw_gacha_group}(${_selectedGachas.length})"),
           ),
           IconButton(
             onPressed: () {

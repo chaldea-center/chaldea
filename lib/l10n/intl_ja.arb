@@ -745,6 +745,7 @@
   "rate_app_store": "App Storeで評価",
   "rate_play_store": "Google Playで評価",
   "raw_gacha_data": null,
+  "raw_gacha_group": null,
   "read_device_info": null,
   "recognizer_result_count": null,
   "recorder_screenshot_current_view": null,

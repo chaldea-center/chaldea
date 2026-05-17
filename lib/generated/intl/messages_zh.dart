@@ -873,6 +873,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "rate_app_store": MessageLookupByLibrary.simpleMessage("App Store评分"),
     "rate_play_store": MessageLookupByLibrary.simpleMessage("Google Play评分"),
     "raw_gacha_data": MessageLookupByLibrary.simpleMessage("原始卡池数据"),
+    "raw_gacha_group": MessageLookupByLibrary.simpleMessage("原始卡池组"),
     "read_device_info": MessageLookupByLibrary.simpleMessage("读取本设备参数"),
     "recognizer_result_count": m34,
     "recorder_screenshot_current_view": MessageLookupByLibrary.simpleMessage("当前视图"),

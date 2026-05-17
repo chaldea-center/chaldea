@@ -373,6 +373,8 @@ class FixedDrop {
 
 @JsonSerializable()
 class LimitedSummon with RouteInfo {
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  final bool isFromWiki;
   String id;
   String name;
   String? mcLink;
@@ -390,6 +392,7 @@ class LimitedSummon with RouteInfo {
   List<String> relatedEvents;
 
   LimitedSummon({
+    this.isFromWiki = true,
     required this.id,
     String? name,
     this.mcLink,
@@ -497,9 +500,11 @@ class LimitedSummon with RouteInfo {
 @JsonSerializable()
 class SubSummon {
   String title;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  String? banner; // from raw gacha
   List<ProbGroup> probs;
 
-  SubSummon({required this.title, this.probs = const []});
+  SubSummon({required this.title, this.banner, this.probs = const []});
 
   factory SubSummon.fromJson(Map<String, dynamic> json) => _$SubSummonFromJson(json);
 

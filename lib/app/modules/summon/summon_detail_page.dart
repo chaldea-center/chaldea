@@ -5,15 +5,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:chaldea/app/modules/common/not_found.dart';
 import 'package:chaldea/app/modules/mc/converter.dart';
 import 'package:chaldea/generated/l10n.dart';
-import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/carousel_util.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../../models/models.dart';
 import '../../app.dart';
 import '../common/builders.dart';
-import '../mc/mc_multi_gacha.dart';
 import 'gacha/gacha_banner.dart';
+import 'gacha/gacha_group_page.dart';
 import 'lucky_bag_expectation.dart';
 import 'summon_simulator_page.dart';
 import 'summon_util.dart';
@@ -66,7 +65,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
     return Scaffold(
       appBar: AppBar(
         leading: const BackButton(),
-        title: AutoSizeText(summon.lName.l, maxLines: 1, overflow: TextOverflow.fade),
+        title: AutoSizeText(summon.lName.l.setMaxLines(1), maxLines: 1, overflow: TextOverflow.fade),
         titleSpacing: 0,
         actions: [
           db.onUserData((context, _) {
@@ -112,8 +111,17 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
           )
           .toList();
     }
+    final banners = {...summon.resolvedBanner.valuesNotNull, for (final v in summon.subSummons) ?v.banner}.toList();
     List<Widget> children = [
-      CarouselUtil.limitHeightWidget(context: context, imageUrls: summon.resolvedBanner.values.toList()),
+      if (banners.isNotEmpty)
+        banners.every((e) => e.contains('/SummonBanners/'))
+            ? CarouselUtil.limitHeightWidget(
+                context: context,
+                imageUrls: [],
+                imageWidgets: banners.map((e) => GachaBanner.url(url: e)).toList(),
+                aspectRatio: 1344 / 576,
+              )
+            : CarouselUtil.limitHeightWidget(context: context, imageUrls: banners),
       CustomTable(
         selectable: true,
         children: [
@@ -204,7 +212,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
           header: S.current.war,
           children: [for (final war in relatedWars) associateEvent(war.lLongName.l, war.route)],
         ),
-      SFooter(S.current.summon_info_hint),
+      if (summon.isFromWiki) SFooter(S.current.summon_info_hint),
     ];
 
     // final startJp = summon.startTime.jp, endJp = summon.endTime.jp;
@@ -238,24 +246,22 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
           ),
         );
 
-        if (Language.isZH) {
-          children.add(
-            Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  router.pushPage(
-                    MCSummonCreatePage(
-                      gachas: group.toList(),
-                      nameJp: summon.name,
-                      nameZh: summon.mcLink?.replaceAll('_', ' '),
-                    ),
-                  );
-                },
-                child: Text("${S.current.create_mooncell_summon}(${group.length})"),
-              ),
+        children.add(
+          Center(
+            child: ElevatedButton(
+              onPressed: () {
+                router.pushPage(
+                  GachaGroupPage(
+                    gachas: group.toList(),
+                    nameJp: summon.name,
+                    nameZh: summon.mcLink?.replaceAll('_', ' '),
+                  ),
+                );
+              },
+              child: Text("${S.current.raw_gacha_group}(${group.length})"),
             ),
-          );
-        }
+          ),
+        );
       }
     }
 

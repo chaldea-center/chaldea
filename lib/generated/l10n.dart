@@ -4669,6 +4669,11 @@ class S {
     return Intl.message('Raw Gachas', name: 'raw_gacha_data', desc: '', locale: localeName, args: []);
   }
 
+  /// `Raw Gacha Group`
+  String get raw_gacha_group {
+    return Intl.message('Raw Gacha Group', name: 'raw_gacha_group', desc: '', locale: localeName, args: []);
+  }
+
   /// `Read this Device's info`
   String get read_device_info {
     return Intl.message('Read this Device\'s info', name: 'read_device_info', desc: '', locale: localeName, args: []);

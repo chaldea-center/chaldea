@@ -97,24 +97,25 @@ class CarouselUtil {
   static Widget limitHeightWidget({
     required BuildContext context,
     required List<String?> imageUrls,
+    List<Widget>? imageWidgets,
     double maxHeight = _kMaxHeight,
     double maxViewport = _kMaxViewport,
     double aspectRatio = _kAspectRatio,
     CarouselOptions? baseOption,
   }) {
-    final items = imageUrls
-        .whereType<String>()
-        .map(
-          (e) => CachedImage(
-            imageUrl: e,
+    List<Widget> items = [
+      ...?imageWidgets,
+      for (final url in imageUrls)
+        if (url != null)
+          CachedImage(
+            imageUrl: url,
             cachedOption: CachedImageOption(
               imageBuilder: (context, image) => FittedBox(child: Image(image: image)),
               errorWidget: (context, url, error) => const SizedBox(),
             ),
             placeholder: (_, _) => const SizedBox(),
           ),
-        )
-        .toList();
+    ];
     if (items.isEmpty) return const SizedBox();
     baseOption ??= CarouselOptions(autoPlay: items.length > 1, autoPlayInterval: const Duration(seconds: 6));
     return LayoutTryBuilder(
