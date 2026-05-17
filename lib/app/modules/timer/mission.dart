@@ -68,6 +68,8 @@ class TimerMissionItem with TimerItem {
                 ),
             ],
           ),
+          maxLines: 3,
+          overflow: .ellipsis,
         ),
         trailing: CountDown(
           endedAt: mm.endedAt.sec2date(),

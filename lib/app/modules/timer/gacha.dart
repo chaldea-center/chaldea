@@ -21,6 +21,7 @@ class TimerGachaItem with TimerItem {
 
   @override
   Widget buildItem(BuildContext context, {bool expanded = false}) {
+    final svtIds = gacha.featuredSvtIds.toList()..sort(SvtFilterData.compareId);
     return SimpleAccordion(
       expanded: expanded,
       headerBuilder: (context, _) => ListTile(
@@ -31,12 +32,18 @@ class TimerGachaItem with TimerItem {
         subtitle: Text.rich(
           TextSpan(
             text: '${fmtDate(gacha.openedAt)} ~ ${fmtDate(gacha.closedAt)} ',
-            children: [
-              for (final svtId in gacha.featuredSvtIds..sort(SvtFilterData.compareId))
-                CenterWidgetSpan(
-                  child: db.gameData.servantsById[svtId]?.iconBuilder(context: context, width: 28) ?? Text('$svtId'),
-                ),
-            ],
+            children: svtIds.map((svtId) {
+              final svt = db.gameData.servantsById[svtId], status = svt?.status;
+              return CenterWidgetSpan(
+                child:
+                    svt?.iconBuilder(
+                      context: context,
+                      width: 28,
+                      text: status != null && status.favorite ? ' NP${status.cur.npLv}  ' : null,
+                    ) ??
+                    Text('$svtId'),
+              );
+            }).toList(),
           ),
         ),
         trailing: CountDown(

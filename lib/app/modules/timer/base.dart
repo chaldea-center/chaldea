@@ -75,21 +75,41 @@ class TimerTabBase<T extends TimerItem> extends StatelessWidget {
   final List<T> groups;
   final TimerFilterData filterData;
   final Region region;
-  const TimerTabBase({super.key, required this.groups, required this.filterData, required this.region});
+  final bool? expanded;
+  final List<Widget> Function(BuildContext context)? topWidgetsBuilder;
+  const TimerTabBase({
+    super.key,
+    required this.groups,
+    required this.filterData,
+    required this.region,
+    this.expanded,
+    this.topWidgetsBuilder,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final topWidgets = topWidgetsBuilder?.call(context) ?? [];
     final shownGroups = filterData.getSorted(groups);
-    if (shownGroups.isEmpty) {
-      return Center(child: Text(S.current.empty_hint));
+
+    final listView = shownGroups.isEmpty
+        ? Center(child: Text(S.current.empty_hint))
+        : ListView.separated(
+            itemBuilder: (context, index) {
+              final group = shownGroups[index];
+              return group.buildItem(context, expanded: group.defaultExpanded);
+            },
+            separatorBuilder: (_, _) => const Divider(indent: 16, endIndent: 16),
+            itemCount: shownGroups.length,
+          );
+
+    if (topWidgets.isEmpty) {
+      return listView;
     }
-    return ListView.separated(
-      itemBuilder: (context, index) {
-        final group = shownGroups[index];
-        return group.buildItem(context, expanded: group.defaultExpanded);
-      },
-      separatorBuilder: (_, _) => const Divider(indent: 16, endIndent: 16),
-      itemCount: shownGroups.length,
+    return Column(
+      children: [
+        ...topWidgets,
+        Expanded(child: listView),
+      ],
     );
   }
 }

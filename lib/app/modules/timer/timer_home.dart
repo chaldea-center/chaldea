@@ -116,16 +116,70 @@ class _TimerHomePageState extends State<TimerHomePage>
   @override
   Widget buildContent(BuildContext context, GameTimerData timerData) {
     final region = this.region!;
-    Widget _toTab(List<TimerItem> groups) {
-      return TimerTabBase(groups: groups, filterData: filterData, region: region);
+    Widget _toTab(
+      List<TimerItem> groups, {
+      bool? expanded,
+      List<Widget> Function(BuildContext context)? topWidgetsBuilder,
+    }) {
+      return TimerTabBase(
+        groups: groups,
+        filterData: filterData,
+        region: region,
+        expanded: expanded,
+        topWidgetsBuilder: topWidgetsBuilder,
+      );
     }
+
+    final now = DateTime.now().timestamp;
+    List<int> pickupSvtIds = [
+      for (final gacha in timerData.gachas.values)
+        if (gacha.openedAt <= now &&
+            gacha.closedAt > now &&
+            gacha.type == GachaType.payGacha.value &&
+            gacha.closedAt - gacha.openedAt < 360 * kSecsPerDay)
+          ...gacha.featuredSvtIds,
+    ];
+    pickupSvtIds = pickupSvtIds.toSet().toList();
+    pickupSvtIds.sort((a, b) => SvtFilterData.compareId(a, b));
 
     final view = TabBarView(
       controller: _tabController,
       children: [
-        _AllItemTab(region: region, timerData: timerData, filterData: filterData),
+        _toTab(
+          [
+            ...TimerEventItem.group(timerData.events.values, region),
+            ...TimerGachaItem.group(timerData.gachas.values, region),
+            ...TimerMissionItem.group(timerData.masterMissions.values, region),
+            ...TimerShopItem.group(timerData.shops.values, region),
+            ...TimerQuestItem.group(timerData.quests.values, region),
+          ],
+          expanded: false,
+          topWidgetsBuilder: (context) => [
+            ListTile(
+              dense: true,
+              title: Text.rich(
+                TextSpan(
+                  text: '${S.current.update_time}: ',
+                  children: [
+                    TextSpan(
+                      text: [
+                        timerData.timestamp,
+                        if (timerData.updatedAt - timerData.timestamp > 30 * 60) timerData.updatedAt,
+                      ].map((e) => e.sec2date().toCustomString(second: false)).join(' / '),
+                    ),
+                  ],
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            _pickupListBuilder(context, pickupSvtIds),
+          ],
+        ),
         _toTab(TimerEventItem.group(timerData.events.values, region)),
-        _toTab(TimerGachaItem.group(timerData.gachas.values, region)),
+        _toTab(
+          TimerGachaItem.group(timerData.gachas.values, region),
+          topWidgetsBuilder: pickupSvtIds.isEmpty ? null : (context) => [_pickupListBuilder(context, pickupSvtIds)],
+        ),
         _toTab(TimerMissionItem.group(timerData.masterMissions.values, region)),
         _toTab(TimerShopItem.group(timerData.shops.values, region)),
         _toTab(TimerQuestItem.group(timerData.quests.values, region)),
@@ -185,38 +239,30 @@ class _TimerHomePageState extends State<TimerHomePage>
       ],
     );
   }
-}
 
-class _AllItemTab extends StatelessWidget {
-  final GameTimerData timerData;
-  final Region region;
-  final TimerFilterData filterData;
-  const _AllItemTab({required this.timerData, required this.region, required this.filterData});
-
-  @override
-  Widget build(BuildContext context) {
-    List<TimerItem> items = [
-      ...TimerEventItem.group(timerData.events.values, region),
-      ...TimerGachaItem.group(timerData.gachas.values, region),
-      ...TimerMissionItem.group(timerData.masterMissions.values, region),
-      ...TimerShopItem.group(timerData.shops.values, region),
-      ...TimerQuestItem.group(timerData.quests.values, region),
-    ];
-    items = filterData.getSorted(items);
-    return ListView.separated(
-      itemBuilder: (context, index) {
-        if (index == 0) {
-          String header = '${S.current.update_time}: ';
-          header += [
-            timerData.timestamp,
-            if (timerData.updatedAt - timerData.timestamp > 30 * 60) timerData.updatedAt,
-          ].map((e) => e.sec2date().toCustomString(second: false)).join(' / ');
-          return ListTile(dense: true, title: Text(header, textAlign: TextAlign.center));
-        }
-        return items[index - 1].buildItem(context, expanded: false);
-      },
-      separatorBuilder: (context, _) => const Divider(indent: 16, endIndent: 16),
-      itemCount: items.length + 1,
+  Widget _pickupListBuilder(BuildContext context, List<int> pickupSvtIds) {
+    if (pickupSvtIds.isEmpty) {
+      return const SizedBox.shrink();
+    }
+    return SizedBox(
+      height: 48,
+      child: ListView.builder(
+        padding: .symmetric(horizontal: 8, vertical: 4),
+        scrollDirection: .horizontal,
+        itemCount: pickupSvtIds.length,
+        itemBuilder: (context, index) {
+          final svtId = pickupSvtIds[index];
+          final svt = db.gameData.servantsById[svtId];
+          final status = svt?.status;
+          return svt?.iconBuilder(
+                context: context,
+                text: status != null && status.favorite ? ' NP${status.cur.npLv} ' : null,
+                height: 48 - 4 * 2,
+                option: ImageWithTextOption(alignment: .bottomLeft, textAlign: .left, fontSize: 8),
+              ) ??
+              Text('No.$svtId');
+        },
+      ),
     );
   }
 }
