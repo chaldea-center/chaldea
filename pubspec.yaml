@@ -27,7 +27,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  alarm: ^5.1.5
+  alarm: ^5.3.0
   android_id: ^0.5.0
   archive: ^4.0.1
   args: ^2.6.0
@@ -51,7 +51,7 @@ dependencies:
   dots_indicator: ^4.0.0
   encrypter_plus: ^5.1.0
   equatable: ^2.0.5
-  file_picker: ^12.0.0-beta.1
+  file_picker: ^12.0.0-beta.3
   fl_chart: ^1.0.0
   flutter_cache_manager: ^3.3.1
   flutter_easyloading: ^3.0.5
@@ -60,7 +60,7 @@ dependencies:
   flutter_markdown_plus: ^1.0.7
   # flutter_qjs: ^0.3.7
   flutter_js: ^0.8.5
-  flutter_svg: ^2.0.7
+  flutter_svg: ^2.3.0
   flutter_timezone: ^5.0.0
   font_awesome_flutter: ^11.0.0
   github: ^9.16.0
@@ -72,7 +72,7 @@ dependencies:
   image_gallery_saver: # ^1.7.1
     git: https://github.com/chaldea-center/image_gallery_saver.git
   intl: ">=0.19.0 <0.21.0"
-  json_annotation: ^4.11.0
+  json_annotation: ^4.12.0
   just_audio: ^0.10.2
   just_audio_windows: ^0.2.0
   # just_audio_mpv: ^0.1.4  # manually install mpv on linux
@@ -106,7 +106,7 @@ dependencies:
   uuid: ^4.3.3
   video_player: ^2.8.1
   video_player_win: ^3.1.0
-  wakelock_plus: ^1.6.0
+  wakelock_plus: ^1.6.1
   web: ^1.1.0
   # webview_flutter: ^4.1.0
   # webview_flutter_web: ^0.2.2+1
@@ -121,7 +121,7 @@ dev_dependencies:
     sdk: flutter
   build_runner: ^2.15.0
   flutter_lints: ^6.0.0
-  json_serializable: ^6.13.2
+  json_serializable: ^6.14.0
   import_sorter: # ^4.6.0
     git: https://github.com/chaldea-center/import_sorter.git
   intl_utils: # ^2.6.1
