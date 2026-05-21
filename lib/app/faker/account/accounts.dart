@@ -104,10 +104,7 @@ class _FakerAccountsPageState extends State<FakerAccountsPage> {
       ),
       body: sorting
           ? ReorderableListView(
-              onReorder: (oldIndex, newIndex) {
-                if (oldIndex < newIndex) {
-                  newIndex -= 1;
-                }
+              onReorderItem: (oldIndex, newIndex) {
                 final item = users.removeAt(oldIndex);
                 users.insert(newIndex, item);
                 for (final (index, user) in users.indexed) {

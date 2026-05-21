@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart' show ScrollCacheExtent;
 
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image/image.dart' as img_lib;
@@ -115,7 +116,7 @@ class _MultiScreenshotsState extends State<MultiScreenshots> {
         child: GridView.count(
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
-          cacheExtent: 2000,
+          scrollCacheExtent: const ScrollCacheExtent.pixels(2000),
           crossAxisCount: crossCount,
           childAspectRatio: curSpec.width / curSpec.height,
           padding: const EdgeInsetsDirectional.fromSTEB(8, 8, 8, 72),

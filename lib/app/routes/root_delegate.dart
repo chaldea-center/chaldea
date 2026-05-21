@@ -64,11 +64,7 @@ class AppState extends ChangeNotifier {
     return _activeIndex;
   }
 
-  void onReorder(int oldIndex, int newIndex) {
-    if (oldIndex == newIndex) return;
-    if (oldIndex < newIndex) {
-      newIndex -= 1;
-    }
+  void onReorderItem(int oldIndex, int newIndex) {
     final _activeChild = activeRouter;
     final child = _children.removeAt(oldIndex);
     _children.insert(newIndex, child);

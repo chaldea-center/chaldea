@@ -105,11 +105,8 @@ class _CombineImagePageState extends State<CombineImagePage> {
       scrollDirection: Axis.horizontal,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      onReorder: (int oldIndex, int newIndex) {
+      onReorderItem: (int oldIndex, int newIndex) {
         setState(() {
-          if (oldIndex < newIndex) {
-            newIndex -= 1;
-          }
           final item = urls.removeAt(oldIndex);
           urls.insert(newIndex, item);
           if (_selected == oldIndex) _selected = newIndex;

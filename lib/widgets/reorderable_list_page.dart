@@ -8,7 +8,7 @@ class ReorderableListPage<T> extends StatefulWidget {
   final Widget title;
   final List<T> items;
   final T Function()? onCreate;
-  final void Function(int, int)? onReorder;
+  final void Function(int, int)? onReorderItem;
   final Widget Function(BuildContext context, T item, bool sorting) itemBuilder;
   final List<Widget>? actions;
   final bool showDeleteButton;
@@ -18,7 +18,7 @@ class ReorderableListPage<T> extends StatefulWidget {
     required this.title,
     required this.items,
     required this.onCreate,
-    this.onReorder,
+    this.onReorderItem,
     required this.itemBuilder,
     this.actions,
     this.showDeleteButton = true,
@@ -60,12 +60,9 @@ class _ReorderableListPageState<T> extends State<ReorderableListPage<T>> {
       ),
       body: sorting
           ? ReorderableListView(
-              onReorder:
-                  widget.onReorder ??
+              onReorderItem:
+                  widget.onReorderItem ??
                   (oldIndex, newIndex) {
-                    if (oldIndex < newIndex) {
-                      newIndex -= 1;
-                    }
                     final item = widget.items.removeAt(oldIndex);
                     widget.items.insert(newIndex, item);
                     setState(() {});

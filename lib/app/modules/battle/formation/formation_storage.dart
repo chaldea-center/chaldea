@@ -112,11 +112,8 @@ class _FormationEditorState extends State<FormationEditor>
           for (final (index, team) in wholeData)
             AbsorbPointer(key: Key('sort_$index'), child: listItemBuilder((index, team))),
         ],
-        onReorder: (int oldIndex, int newIndex) {
+        onReorderItem: (int oldIndex, int newIndex) {
           setState(() {
-            if (oldIndex < newIndex) {
-              newIndex -= 1;
-            }
             final item = userData.teams.removeAt(oldIndex);
             userData.teams.insert(newIndex, item);
             userData.validate();

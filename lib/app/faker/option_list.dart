@@ -68,12 +68,9 @@ class _BattleOptionListPageState extends State<BattleOptionListPage> {
         child: sorting && canEdit
             ? ReorderableListView(
                 children: [for (final (index, option) in data.battleOptions.indexed) buildOne(index, option)],
-                onReorder: (int oldIndex, int newIndex) {
+                onReorderItem: (int oldIndex, int newIndex) {
                   setState(() {
                     final selectedItem = data.curBattleOption;
-                    if (oldIndex < newIndex) {
-                      newIndex -= 1;
-                    }
                     final item = data.battleOptions.removeAt(oldIndex);
                     data.battleOptions.insert(newIndex, item);
                     data.curBattleOptionIndex = data.battleOptions.indexOf(selectedItem);

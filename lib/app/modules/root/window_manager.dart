@@ -372,10 +372,7 @@ class _MultipleWindowState extends State<MultipleWindow> {
           );
         },
         itemCount: bookmarks.length,
-        onReorder: (int oldIndex, int newIndex) {
-          if (oldIndex < newIndex) {
-            newIndex -= 1;
-          }
+        onReorderItem: (int oldIndex, int newIndex) {
           final item = bookmarks.removeAt(oldIndex);
           bookmarks.insert(newIndex, item);
           db.notifyUserdata();
@@ -480,7 +477,7 @@ class WindowThumb extends StatelessWidget {
                     title: Text('Move Up'),
                     onTap: () {
                       Navigator.pop(context);
-                      root.appState.onReorder(index, index - 1);
+                      root.appState.onReorderItem(index, index - 1);
                     },
                   ),
                   ListTile(
@@ -488,7 +485,7 @@ class WindowThumb extends StatelessWidget {
                     title: Text('Move Down'),
                     onTap: () {
                       Navigator.pop(context);
-                      root.appState.onReorder(index, index + 2);
+                      root.appState.onReorderItem(index, index + 1);
                     },
                   ),
                   kIndentDivider,
@@ -497,7 +494,7 @@ class WindowThumb extends StatelessWidget {
                     title: Text('Move Top'),
                     onTap: () {
                       Navigator.pop(context);
-                      root.appState.onReorder(index, 0);
+                      root.appState.onReorderItem(index, 0);
                     },
                   ),
                   ListTile(
@@ -505,7 +502,7 @@ class WindowThumb extends StatelessWidget {
                     title: Text('Move Bottom'),
                     onTap: () {
                       Navigator.pop(context);
-                      root.appState.onReorder(index, root.appState.children.length);
+                      root.appState.onReorderItem(index, root.appState.children.length - 1);
                     },
                   ),
                 ],

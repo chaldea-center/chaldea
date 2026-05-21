@@ -64,11 +64,8 @@ class _SvtTabsSortingSettingState extends State<SvtTabsSortingSetting> {
             child: ListTile(leading: Text((tabs.indexOf(tab) + 1).toString()), title: Text(tabName(tab))),
           ),
       ],
-      onReorder: (int oldIndex, int newIndex) {
+      onReorderItem: (int oldIndex, int newIndex) {
         setState(() {
-          if (oldIndex < newIndex) {
-            newIndex -= 1;
-          }
           final item = tabs.removeAt(oldIndex);
           tabs.insert(newIndex, item);
         });

@@ -71,11 +71,8 @@ class _TranslationSettingState extends State<TranslationSetting> {
           ),
         );
       }),
-      onReorder: (int oldIndex, int newIndex) {
+      onReorderItem: (int oldIndex, int newIndex) {
         setState(() {
-          if (oldIndex < newIndex) {
-            newIndex -= 1;
-          }
           final item = regions.removeAt(oldIndex);
           regions.insert(newIndex, item);
           db.settings.preferredRegions = regions;
