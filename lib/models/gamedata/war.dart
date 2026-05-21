@@ -674,6 +674,9 @@ enum WarOverwriteType {
   bgObject,
   recommendSupportParentWar,
   folderHeaderId,
+  materialFolderName,
+  materialHeaderImgId,
+  materialGalleryHeaderImgId,
 }
 
 enum WarStartType { none, script, quest }

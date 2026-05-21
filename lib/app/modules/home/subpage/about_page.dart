@@ -207,23 +207,19 @@ class _AboutPageState extends State<AboutPage> {
                   subtitle: AutoSizeText(ref.value, maxLines: 1),
                   onTap: () => launch(ref.value),
                 ),
-              const ListTile(
-                title: Text('icyalala@NGA'),
-                subtitle: AutoSizeText('Fate/Freedom Order data', maxLines: 1),
-              ),
             ],
           ),
-          TileGroup(
-            header: 'Inspired by',
-            children: <Widget>[
-              for (var ref in inspiredBy.entries)
-                ListTile(
-                  title: Text(ref.key),
-                  subtitle: AutoSizeText(ref.value, maxLines: 1),
-                  onTap: () => launch(ref.value),
-                ),
-            ],
-          ),
+          // TileGroup(
+          //   header: 'Inspired by',
+          //   children: <Widget>[
+          //     for (var ref in inspiredBy.entries)
+          //       ListTile(
+          //         title: Text(ref.key),
+          //         subtitle: AutoSizeText(ref.value, maxLines: 1),
+          //         onTap: () => launch(ref.value),
+          //       ),
+          //   ],
+          // ),
           TileGroup(
             header: 'Policy',
             children: [

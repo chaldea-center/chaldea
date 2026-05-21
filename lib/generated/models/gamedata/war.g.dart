@@ -368,6 +368,9 @@ const _$WarOverwriteTypeEnumMap = {
   WarOverwriteType.bgObject: 'bgObject',
   WarOverwriteType.recommendSupportParentWar: 'recommendSupportParentWar',
   WarOverwriteType.folderHeaderId: 'folderHeaderId',
+  WarOverwriteType.materialFolderName: 'materialFolderName',
+  WarOverwriteType.materialHeaderImgId: 'materialHeaderImgId',
+  WarOverwriteType.materialGalleryHeaderImgId: 'materialGalleryHeaderImgId',
 };
 
 WarGroup _$WarGroupFromJson(Map json) => WarGroup(

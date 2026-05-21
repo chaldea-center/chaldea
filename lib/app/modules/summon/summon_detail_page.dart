@@ -51,8 +51,8 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
     if (startJp != null && endJp != null) {
       gachaGroups = db.gameData.others.gachaGroups.values.where((group) {
         if (group.isEmpty) return false;
-        return (Maths.min(group.map((e) => e.openedAt)) - startJp).abs() < 3601 &&
-            (Maths.max(group.map((e) => e.closedAt)) - endJp).abs() < 3601;
+        return (Maths.min(group.map((e) => e.openedAt)) - startJp).abs() < 3601 * 3 &&
+            (Maths.max(group.map((e) => e.closedAt)) - endJp).abs() < 3601 * 2;
       }).toList();
     }
   }

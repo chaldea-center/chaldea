@@ -239,6 +239,7 @@ class FakerReminders extends StatelessWidget {
         if (quest.flags.contains(QuestFlag.branch) || quest.flags.contains(QuestFlag.branchScenario)) {
           return false;
         }
+        if (quest.flags.contains(QuestFlag.raid)) return false;
       }
       final svt = svtQuests[questId];
       if (checkSvt && svt != null) {

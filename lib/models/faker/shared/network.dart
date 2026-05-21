@@ -143,7 +143,11 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
 
   Future<void> updateGameTop() async {
     final top = (await AtlasApi.gametopsRaw(expireAfter: Duration.zero))?.of(gameTop.region);
-    if (top != null) gameTop = top;
+    if (top != null) gameTop = top.copy();
+    final regionInfo = await AtlasApi.regionInfo(region: gameTop.region);
+    if (regionInfo != null) {
+      gameTop.updateFromRegionInfo(regionInfo);
+    }
   }
 
   int lastTaskStartedAt = 0;

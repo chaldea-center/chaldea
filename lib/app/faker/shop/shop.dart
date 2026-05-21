@@ -184,7 +184,12 @@ class _UserShopsPageState extends State<UserShopsPage>
             fit: BoxFit.scaleDown,
             child: Text.rich(
               TextSpan(
-                text: [userShop?.num ?? 0, shop.limitNum == 0 ? '∞' : shop.limitNum].join('/'),
+                text: [
+                  if (userShop != null && userShop.resetNum > 0) '[${userShop.resetNum}]',
+                  userShop?.num ?? 0,
+                  '/',
+                  shop.limitNum == 0 ? '∞' : shop.limitNum,
+                ].join(''),
                 children: [
                   if (shop.purchaseType == PurchaseType.item && shop.targetIds.length == 1)
                     TextSpan(

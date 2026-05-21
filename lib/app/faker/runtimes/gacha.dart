@@ -126,7 +126,7 @@ class FakerRuntimeGacha extends FakerRuntimeBase {
           final confirm = await runtime.showLocalDialog(
             SimpleConfirmDialog(
               title: Text('Use Custom Sub Id?'),
-              content: Text('Supposed: $targetSubId\nSelected: $gachaSubId}'),
+              content: Text('Supposed: $targetSubId\nSelected: $gachaSubId'),
             ),
           );
           if (confirm != true) {
