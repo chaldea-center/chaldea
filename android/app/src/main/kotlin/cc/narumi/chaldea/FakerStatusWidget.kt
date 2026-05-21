@@ -1,7 +1,12 @@
 package cc.narumi.chaldea
 
+import android.app.AlarmManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
+import android.os.Build
 import android.os.SystemClock
+import android.util.Log
 import android.widget.RemoteViews
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
@@ -49,7 +54,22 @@ class FakerStatusWidget : GlanceAppWidget() {
     override val stateDefinition = HomeWidgetGlanceStateDefinition()
     override val sizeMode: SizeMode = SizeMode.Single
 
+    companion object {
+        const val TAG = "FakerStatusWidget"
+        const val ACTION_AUTO_UPDATE = "cc.narumi.chaldea.WIDGET_AUTO_UPDATE"
+        const val PREF_LAST_UPDATE = "widget_last_update_time"
+        const val PREF_UPDATE_COUNT = "widget_update_count"
+        
+        // 更新间隔：15分钟（900000毫秒）
+        // Android推荐的最小间隔，平衡电量消耗和更新频率
+        const val UPDATE_INTERVAL_MS = 15 * 60 * 1000L
+        
+        // WorkManager任务名称
+        const val WORK_NAME = "faker_widget_update_work"
+    }
+
     override suspend fun provideGlance(context: Context, id: GlanceId) {
+        Log.d(TAG, "provideGlance called for widget: $id")
         provideContent {
             GlanceContent(context, currentState<HomeWidgetGlanceState>())
         }
@@ -80,7 +100,6 @@ class FakerStatusWidget : GlanceAppWidget() {
             if (json == null) {
                 return emptyList()
             }
-            // Minimal JSON parsing using org.json for robustness without kotlinx (keep file self-contained)
             val arr = JSONArray(json)
             (0 until arr.length()).mapNotNull { i ->
                 val o = arr.optJSONObject(i) ?: return@mapNotNull null
@@ -111,7 +130,6 @@ class FakerStatusWidget : GlanceAppWidget() {
 
     private fun parseSelectedIds(raw: String?): Set<String> {
         if (raw.isNullOrBlank()) return emptySet()
-        // Try JSON array; fallback to comma-separated string
         return try {
             val arr = JSONArray(raw)
             (0 until arr.length()).mapNotNull { arr.optString(it, null) }.toSet()
@@ -134,7 +152,6 @@ class FakerStatusWidget : GlanceAppWidget() {
         }
     }
 
-    // --- Updated UI content ---
     @Composable
     private fun GlanceContent(context: Context, currentState: HomeWidgetGlanceState) {
         val prefs = currentState.preferences
@@ -177,7 +194,6 @@ class FakerStatusWidget : GlanceAppWidget() {
                 horizontalAlignment = Alignment.Horizontal.CenterHorizontally,
                 verticalAlignment = Alignment.Vertical.CenterVertically
             ) {
-                // Accounts list
                 displayAccounts.forEach { account ->
                     Row(
                         modifier = GlanceModifier.fillMaxWidth().padding(bottom = 12.dp)
@@ -217,7 +233,6 @@ class FakerStatusWidget : GlanceAppWidget() {
                             )
                         }
                     }
-//                    Spacer(GlanceModifier.height(4.dp))
                 }
 
                 if (displayAccounts.isEmpty()) {
@@ -248,18 +263,24 @@ class FakerStatusWidget : GlanceAppWidget() {
     }
 }
 
-// --- New: Action to refresh the widget (reload timelines equivalent) ---
 class RefreshAction : ActionCallback {
     override suspend fun onAction(
         context: Context, glanceId: GlanceId, parameters: ActionParameters
     ) {
+        Log.d(FakerStatusWidget.TAG, "Manual refresh triggered by user")
+        
         val def = HomeWidgetGlanceStateDefinition()
         updateAppWidgetState(context, def, glanceId) { state ->
-            state.preferences.edit {
-                putLong("lastRefresh", System.currentTimeMillis())
+            val prefs = state.preferences
+            prefs.edit {
+                putLong(FakerStatusWidget.PREF_LAST_UPDATE, System.currentTimeMillis())
+                val count = prefs.getLong(FakerStatusWidget.PREF_UPDATE_COUNT, 0L)
+                putLong(FakerStatusWidget.PREF_UPDATE_COUNT, count + 1L)
             }
             state
         }
         FakerStatusWidget().update(context, glanceId)
+        
+        Log.d(FakerStatusWidget.TAG, "Widget updated successfully")
     }
 }
