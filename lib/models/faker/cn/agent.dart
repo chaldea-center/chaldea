@@ -682,7 +682,7 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
   @override
   Future<FResponse> servantFriendshipExceed({required int64_t baseUserSvtId}) {
     return _acPhp(
-      key: 'cardfriendshipexceed',
+      key: 'cardfriendshipexeceed', // typo: execeed not exceed
       nid: 'card_friendship_exceed',
       params2: {"baseUserSvtId": baseUserSvtId},
     );

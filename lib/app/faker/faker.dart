@@ -2367,6 +2367,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
               questPhase: questPhase,
             ),
             userSvtCollections: mstData.userSvtCollection.lookup,
+            questPhase: questPhase,
           ),
         ),
       );

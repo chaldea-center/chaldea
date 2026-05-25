@@ -13,6 +13,7 @@ class FormationCard extends StatelessWidget {
   final Map<int, UserServantCollectionEntity>? userSvtCollections;
   final bool showBond;
   final int? maxSvtCount;
+  final QuestPhase? questPhase;
 
   const FormationCard({
     super.key,
@@ -22,6 +23,7 @@ class FormationCard extends StatelessWidget {
     this.userSvtCollections,
     this.showBond = false,
     this.maxSvtCount,
+    this.questPhase,
   });
 
   @override
@@ -79,7 +81,7 @@ class FormationCard extends StatelessWidget {
         router.pushPage(
           ServantOptionEditPage(
             playerSvtData: data,
-            questPhase: null,
+            questPhase: questPhase,
             playerRegion: null,
             onChange: null,
             svtFilterData: null,

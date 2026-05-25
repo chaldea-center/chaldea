@@ -8,6 +8,7 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/faker/faker.dart';
 import 'package:chaldea/models/faker/quiz/cat_mouse.dart';
+import 'package:chaldea/models/gamedata/common.dart';
 import 'package:chaldea/models/gamedata/mst_data.dart';
 import 'package:chaldea/packages/json_viewer/json_viewer.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -568,8 +569,29 @@ class FormDataViewer extends StatelessWidget {
   final List<MapEntry<String, String>> data;
   const FormDataViewer({super.key, required this.data});
 
+  static const kBaseFields = <Region, Set<String>>{
+    Region.jp: {
+      //
+      'userId', 'authKey', 'appVer', 'dataVer', 'dateVer', 'lastAccessTime', 'verCode', 'idempotencyKey',
+      'authCode',
+    },
+    Region.cn: {
+      //
+      "ac", "deviceid", "os", "ptype", "usk", "umk", "rgsid", "rkchannel", "cPlat", "uPlat", "userId",
+      "appVer", "dateVer", "lastAccessTime", "developmentAuthCode", "idempotencyKey", "userAgent", "dataVer",
+    },
+  };
+
   @override
   Widget build(BuildContext context) {
+    final keys = data.map((e) => e.key).toList();
+    List<String> baseKeys = [];
+    for (final _baseKeys in kBaseFields.values) {
+      if (keys.length >= _baseKeys.length && _baseKeys.every(keys.contains)) {
+        baseKeys.addAll(_baseKeys);
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(title: const Text('Form Data')),
       body: SingleChildScrollView(
@@ -582,17 +604,29 @@ class FormDataViewer extends StatelessWidget {
             ),
             columnWidths: const {0: FlexColumnWidth(1), 1: FlexColumnWidth(2)},
             defaultVerticalAlignment: TableCellVerticalAlignment.top,
-            children: [
-              for (final entry in data)
-                TableRow(children: [buildCell(context, entry.key, false), buildCell(context, entry.value, true)]),
-            ],
+            children: data.map((entry) {
+              final isBaseField = baseKeys.contains(entry.key);
+              return TableRow(
+                children: [
+                  buildCell(context, entry.key, isValue: false, isBaseField: isBaseField),
+                  buildCell(context, entry.value, isValue: true, isBaseField: isBaseField),
+                ],
+              );
+            }).toList(),
           ),
         ),
       ),
     );
   }
 
-  Widget buildCell(BuildContext context, String text, bool isValue) {
+  Widget buildCell(BuildContext context, String text, {required bool isValue, required bool isBaseField}) {
+    TextStyle textStyle = isBaseField
+        ? TextStyle(
+            fontFamily: kMonoFont,
+            fontStyle: .italic,
+            color: Theme.of(context).textTheme.bodySmall?.color?.withAlpha(150),
+          )
+        : const TextStyle(fontFamily: kMonoFont);
     return InkWell(
       onTap: () {
         bool isBase64 = false;
@@ -612,7 +646,7 @@ class FormDataViewer extends StatelessWidget {
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-        child: Text(text, style: const TextStyle(fontFamily: kMonoFont)),
+        child: Text(text, style: textStyle),
       ),
     );
   }

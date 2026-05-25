@@ -360,8 +360,12 @@ class FakerReminders extends StatelessWidget {
         if (event.id == 71619) {
           uncleared.removeWhere((e) => const [94002702, 94002701, 94005501, 94008401, 913300101, 93040451].contains(e));
         }
+        if (event.name.contains('期間限定 ストーム・ポッド消費なし！') || event.name.contains('限时 不消耗风暴罐！')) {
+          if (campaign.target == .questAp && campaign.value == 1000) {
+            uncleared.retainWhere((e) => db.gameData.quests.containsKey(e));
+          }
+        }
 
-        // final uncleared = questIds.take(10).toList();
         if (uncleared.isEmpty) continue;
         _shownQuestIds.addAll(uncleared);
 
