@@ -55,22 +55,48 @@ class _GachaGroupPageState extends State<GachaGroupPage> {
   }
 
   Widget buildBody() {
+    String guessGachaName = '';
+    if (gachas.length > 1) {
+      guessGachaName = _findCleanCommonPrefix(gachas.map((e) => e.gacha.name).toList());
+      guessGachaName = Transl.summonNames(guessGachaName).l;
+    }
+    if (guessGachaName.isEmpty && gachas.isNotEmpty) {
+      guessGachaName = gachas.first.gacha.lName;
+    }
+
     return ListView(
       children: [
-        for (final (index, gacha) in gachas.indexed)
-          ListTile(
-            dense: true,
-            minLeadingWidth: 24,
-            horizontalTitleGap: 8,
-            leading: gacha.isInvalid
-                ? const Icon(Icons.error, color: Colors.red, size: 18)
-                : const Icon(Icons.check_circle, color: Colors.green, size: 18),
-            title: Text('${index + 1} - ${gacha.gacha.name.setMaxLines(1)}'),
-            onTap: () {
-              gacha.gacha.routeTo(region: Region.jp);
-            },
-            trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-          ),
+        SimpleAccordion(
+          headerBuilder: (context, _) {
+            final invalidCount = gachas.where((e) => e.isInvalid).length, validCount = gachas.length - invalidCount;
+            return ListTile(
+              dense: true,
+              title: Text('${gachas.length} ${S.current.summon}: $guessGachaName'),
+              subtitle: Text('$invalidCount ${S.current.failed}  $validCount ${S.current.success}'),
+            );
+          },
+          contentBuilder: (context) {
+            return Column(
+              mainAxisSize: .min,
+              children: [
+                for (final (index, gacha) in gachas.indexed)
+                  ListTile(
+                    dense: true,
+                    minLeadingWidth: 24,
+                    horizontalTitleGap: 8,
+                    leading: gacha.isInvalid
+                        ? const Icon(Icons.error, color: Colors.red, size: 18)
+                        : const Icon(Icons.check_circle, color: Colors.green, size: 18),
+                    title: Text('${index + 1} - ${gacha.gacha.name.setMaxLines(1)}'),
+                    onTap: () {
+                      gacha.gacha.routeTo(region: Region.jp);
+                    },
+                    trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+                  ),
+              ],
+            );
+          },
+        ),
         const SizedBox(height: 8),
         Wrap(
           alignment: .center,
