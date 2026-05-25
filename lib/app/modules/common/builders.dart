@@ -219,6 +219,7 @@ class SharedBuilder {
   }
 
   static Future showSwitchPlanDialog({required BuildContext context, ValueChanged<int>? onChange}) {
+    if (!context.mounted) return Future.value();
     return showDialog(
       context: context,
       useRootNavigator: false,

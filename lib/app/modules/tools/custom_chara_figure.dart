@@ -352,7 +352,7 @@ class CharaFigurePainter extends CustomPainter {
     // if (face > colCount * rowCount) {
     //   face = (face - 1) % (colCount * rowCount) + 1;
     // }
-    if (face == null || colCount <= 0 || rowCount <= 0 || face <= 0 || face >= colCount * rowCount) {
+    if (face == null || colCount <= 0 || rowCount <= 0 || face <= 0 || face > colCount * rowCount) {
       canvas.restore();
       return;
     }

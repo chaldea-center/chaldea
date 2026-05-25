@@ -420,21 +420,23 @@ class BattleServantData {
 
     if (niceEnemy != null) {
       int shiftLength = niceEnemy!.enemyScript.shift?.length ?? 0;
-      int shiftPosition = niceEnemy!.enemyScript.shiftPosition ?? -1;
-      if (shiftPosition >= 0) {
-        shiftDeckIndex = shiftPosition;
-        shiftLowLimit = (shiftPosition + 1).clamp(0, shiftLength - 1);
-      }
-      int dispBreakShift = niceEnemy!.enemyScript.dispBreakShift ?? 0;
-      if (dispBreakShift > 0) {
-        shiftDeckIndex += dispBreakShift;
-      }
+      if (shiftLength > 0) {
+        int shiftPosition = niceEnemy!.enemyScript.shiftPosition ?? -1;
+        if (shiftPosition >= 0) {
+          shiftDeckIndex = shiftPosition;
+          shiftLowLimit = (shiftPosition + 1).clamp(0, shiftLength - 1);
+        }
+        int dispBreakShift = niceEnemy!.enemyScript.dispBreakShift ?? 0;
+        if (dispBreakShift > 0) {
+          shiftDeckIndex += dispBreakShift;
+        }
 
-      shiftDeckIndex = shiftDeckIndex.clamp(-1, shiftLength - 1);
-      final shouldShift = dispBreakShift > 0 || shiftPosition >= 0;
-      if (shouldShift) {
-        shiftDeckIndex -= 1; // go to previous shift to shift to desired shift
-        await shift(battleData);
+        shiftDeckIndex = shiftDeckIndex.clamp(-1, shiftLength - 1);
+        final shouldShift = dispBreakShift > 0 || shiftPosition >= 0;
+        if (shouldShift) {
+          shiftDeckIndex -= 1; // go to previous shift to shift to desired shift
+          await shift(battleData);
+        }
       }
     }
 

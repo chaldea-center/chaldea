@@ -193,6 +193,10 @@ class ServerFeedbackHandler extends ReportHandler {
         // "TypeError: Cannot read property 'toString' of null",
         // "TypeError: Cannot read properties of undefined",
         // "TypeError: Cannot read properties of null",
+        "NoSuchMethodError",
+        "Cannot set properties of",
+        "is not a constructor",
+        "Instance of 'minified",
       ].any(errorAndStackTrace.contains)) {
         return true;
       }
