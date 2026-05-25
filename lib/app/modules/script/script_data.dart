@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -49,10 +50,10 @@ class ScriptParsedData {
     if (fp != null) {
       fulltext = await FilePlus(fp).readAsString();
     }
-    _parseScript(fulltext ?? "");
+    parseScript(fulltext ?? "");
   }
 
-  void _parseScript(String fulltext) {
+  void parseScript(String fulltext) {
     reset();
     state.fulltext = fulltext;
     final lines = const LineSplitter().convert(fulltext.trim());
@@ -237,7 +238,7 @@ class ScriptDialog extends ScriptTexts {
   }
 
   @override
-  List<InlineSpan> build(BuildContext context, ScriptState state, {bool hideSpeaker = false}) {
+  List<InlineSpan> buildContent(BuildContext context, ScriptState state, {bool hideSpeaker = false}) {
     state.clear();
     List<InlineSpan> spans = [];
     if (!hideSpeaker) {
@@ -267,7 +268,7 @@ class ScriptText extends ScriptComponent {
   }
 
   @override
-  List<InlineSpan> build(BuildContext context, ScriptState state) {
+  List<InlineSpan> buildContent(BuildContext context, ScriptState state) {
     return [state.textSpan(text: src)];
   }
 }
@@ -283,7 +284,7 @@ class ScriptTexts extends ScriptComponent {
   }
 
   @override
-  List<InlineSpan> build(BuildContext context, ScriptState state) {
+  List<InlineSpan> buildContent(BuildContext context, ScriptState state) {
     return [for (final c in contents) ...c.build(context, state)];
   }
 }
@@ -298,7 +299,7 @@ class ScriptSelect extends ScriptTexts {
   static RegExp get regexp => RegExp(r'^[？?]\s*(\d+|[\?？])?\s*(?:[,，]\s*(\d+)\s*)?[：:](.*)$');
 
   @override
-  List<InlineSpan> build(BuildContext context, ScriptState state) {
+  List<InlineSpan> buildContent(BuildContext context, ScriptState state) {
     if (index == null) {
       return [
         state.textSpan(text: S.current.script_choice_end, style: _choiceStyle),
@@ -327,7 +328,7 @@ class UnknownScript extends ScriptComponent {
   }
 
   @override
-  List<InlineSpan> build(BuildContext context, ScriptState state) {
+  List<InlineSpan> buildContent(BuildContext context, ScriptState state) {
     return [state.textSpan(text: '${kHeaderLeading}Unknown Script\n', style: headerStyle), state.textSpan(text: src)];
   }
 }
@@ -357,7 +358,7 @@ class ScriptCommand extends ScriptComponent {
   String? get arg2n => args.getOrNull(1);
   ScriptReaderFilterData get filterData => db.settings.filters.scriptReaderFilterData;
   @override
-  List<InlineSpan> build(BuildContext context, ScriptState state, {bool showMore = false}) {
+  List<InlineSpan> buildContent(BuildContext context, ScriptState state) {
     // [#text:ruby], :ruby may not exist
     if (src.startsWith('#')) {
       final aa = src.substring(1).split(':');
@@ -539,8 +540,9 @@ class ScriptCommand extends ScriptComponent {
       case 'tVoice': // valentine voice
       case 'tVoiceUser': // female/male voices
         if (!filterData.voice) return [];
+        int count = min(command == 'tVoice' ? 1 : 2, (args.length / 2).floor());
         return [
-          for (int index = 0; index < args.length / 2; index++)
+          for (int index = 0; index < count; index++)
             WidgetSpan(
               child: SoundPlayButton(
                 name: null,
@@ -634,7 +636,6 @@ class ScriptCommand extends ScriptComponent {
         ];
       // case 'tVoiceUser': // valentine voice
       case 'align': // valentine voice
-        if (showMore) break;
         return [];
       // ALWAYS ignore
       case 'backEffect':
@@ -828,7 +829,28 @@ abstract class ScriptComponent {
   final bodyStyle = const TextStyle(fontSize: 15);
   String src;
   ScriptComponent(this.src);
-  List<InlineSpan> build(BuildContext context, ScriptState state);
+
+  List<InlineSpan> catchError(List<InlineSpan> Function() builder) {
+    try {
+      return builder();
+    } catch (e) {
+      if (kDebugMode) rethrow;
+      return [
+        const TextSpan(
+          text: ' [Render Error!] ',
+          style: TextStyle(color: Colors.red, fontWeight: .bold),
+        ),
+      ];
+    }
+  }
+
+  @nonVirtual
+  List<InlineSpan> build(BuildContext context, ScriptState state) {
+    return catchError(() => buildContent(context, state));
+  }
+
+  // must catch error if directly called
+  List<InlineSpan> buildContent(BuildContext context, ScriptState state);
 }
 
 List<String> _kSkipCommands000 = [

@@ -364,14 +364,16 @@ class _ScriptReaderPageState extends State<ScriptReaderPage> {
       List<InlineSpan> spans = [];
       if (part is ScriptCommand) {
         // show some
-        spans.addAll(part.build(context, data.state, showMore: true));
+        spans.addAll(part.build(context, data.state));
       } else if (part is ScriptDialog) {
         final prevPart = index == 0 ? null : data.components[index - 1];
         spans.addAll(
-          part.build(
-            context,
-            data.state,
-            hideSpeaker: prevPart is ScriptDialog && prevPart.speakerSrc == part.speakerSrc,
+          part.catchError(
+            () => part.buildContent(
+              context,
+              data.state,
+              hideSpeaker: prevPart is ScriptDialog && prevPart.speakerSrc == part.speakerSrc,
+            ),
           ),
         );
       } else {
