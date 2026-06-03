@@ -19,6 +19,7 @@ class NiceWar with RouteInfo {
   String? banner;
   String? headerImage;
   int priority;
+  int materialPriority;
   int parentWarId;
   int materialParentWarId;
   int parentBlankEarthSpotId;
@@ -51,6 +52,7 @@ class NiceWar with RouteInfo {
     this.banner,
     this.headerImage,
     this.priority = 0,
+    this.materialPriority = 0,
     this.parentWarId = 0,
     this.materialParentWarId = 0,
     this.parentBlankEarthSpotId = 0,
@@ -81,6 +83,16 @@ class NiceWar with RouteInfo {
       //   banner = banner!.replaceAll(RegExp(r'/questboard.*.png'), '/questboard_cap_closed_406.png');
       // }
     }
+  }
+
+  static final Map<int, num> _fixedWarPriorities = {WarId.mainInterlude: 980, WarId.grandBoardWar: 405.5};
+
+  num get resolvedPriority {
+    if (_fixedWarPriorities.containsKey(id)) return _fixedWarPriorities[id]!;
+    if (parentWars.contains(16000) && priority > 10000) {
+      return priority - 10000;
+    }
+    return priority;
   }
 
   Set<int> get parentWars => {
@@ -193,12 +205,18 @@ class NiceWar with RouteInfo {
   }
 
   Transl<String, String> get lLongName {
-    final warName = (flags.contains(WarFlag.subFolder) ? _name : _longName) ?? _defaultName;
+    String warName = (flags.contains(WarFlag.subFolder) ? _name : _longName) ?? _defaultName;
+    if (id == 501 && warName == "？？？編 郷愁永巡刻盤 パスト・カルデア") {
+      warName = "運命の三女神編 郷愁永巡刻盤 パスト・カルデア";
+    }
     return Transl.warNames(warName);
   }
 
   Transl<String, String> get lName {
     String warName = _name ?? _longName ?? _defaultName;
+    if (id == 501 && warName == "？？？編") {
+      warName = "運命の三女神編";
+    }
     if (Transl.md.warNames.containsKey(warName)) {
       return Transl.warNames(warName);
     } else {
@@ -674,6 +692,7 @@ enum WarOverwriteType {
   bgObject,
   recommendSupportParentWar,
   folderHeaderId,
+  materialPriority,
   materialFolderName,
   materialHeaderImgId,
   materialGalleryHeaderImgId,

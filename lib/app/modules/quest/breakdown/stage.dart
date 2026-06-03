@@ -260,8 +260,10 @@ class WaveInfoPage extends StatelessWidget {
             ...?stage.enemyMasterBattleIdByPlayerGender,
           ])
             buildEnemyMaster(masterId),
-          if (stage.waveStartMovies.isNotEmpty) ListTile(title: Text(S.current.stage_opening_movie)),
-          for (final movie in stage.waveStartMovies) MyVideoPlayer.url(url: movie.waveStartMovie, autoPlay: false),
+          for (final movie in stage.waveStartMovies)
+            ..._buildMovie(S.current.stage_opening_movie, movie.waveStartMovie),
+          if (questPhase.extraDetail?.battleFinishMovie != null)
+            ..._buildMovie('Battle End Movie', questPhase.extraDetail!.battleFinishMovie!),
           if (originalScript.isNotEmpty) ...[
             kDefaultDivider,
             Card(
@@ -275,6 +277,22 @@ class WaveInfoPage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  List<Widget> _buildMovie(String title, String? url) {
+    if (url == null) return [];
+    return [
+      ListTile(
+        title: Text(title),
+        trailing: TextButton(
+          onPressed: () {
+            launch(url, external: true);
+          },
+          child: Text(RegExp(r'/([^\/]+)\.[^\.]+$').firstMatch(url)?.group(1) ?? S.current.open),
+        ),
+      ),
+      MyVideoPlayer.url(url: url, autoPlay: false),
+    ];
   }
 
   Widget buildMasterImage({int? battleMasterImageId, int? masterImageId}) {

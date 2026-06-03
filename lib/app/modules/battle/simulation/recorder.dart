@@ -666,6 +666,7 @@ class BattleRecorderPanelBase extends StatelessWidget {
         // one ally
         case FuncTargetType.ptOne:
         case FuncTargetType.ptOneOther:
+        case FuncTargetType.playerAttackPreselectTargetPtOne:
           return ally;
         // one enemy
         case FuncTargetType.enemy:
@@ -706,6 +707,8 @@ class BattleRecorderPanelBase extends StatelessWidget {
         case FuncTargetType.handCommandcardRandomOne:
         case FuncTargetType.noTarget:
         case FuncTargetType.fieldRandom:
+          continue;
+        case FuncTargetType.unknown:
           continue;
       }
     }

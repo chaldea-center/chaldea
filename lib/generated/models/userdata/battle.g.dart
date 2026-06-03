@@ -486,6 +486,7 @@ Map<String, dynamic> _$CustomFuncDataToJson(CustomFuncData instance) => <String,
 };
 
 const _$FuncTargetTypeEnumMap = {
+  FuncTargetType.unknown: 'unknown',
   FuncTargetType.self: 'self',
   FuncTargetType.ptOne: 'ptOne',
   FuncTargetType.ptAnother: 'ptAnother',
@@ -521,6 +522,7 @@ const _$FuncTargetTypeEnumMap = {
   FuncTargetType.fieldAll: 'fieldAll',
   FuncTargetType.noTarget: 'noTarget',
   FuncTargetType.fieldRandom: 'fieldRandom',
+  FuncTargetType.playerAttackPreselectTargetPtOne: 'playerAttackPreselectTargetPtOne',
 };
 
 TdDamageOptions _$TdDamageOptionsFromJson(Map json) => $checkedCreate('TdDamageOptions', json, ($checkedConvert) {

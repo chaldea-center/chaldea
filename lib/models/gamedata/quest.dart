@@ -1825,6 +1825,7 @@ class QuestPhaseExtraDetail with DataScriptBase {
   String? get masterSkillDelayInfo => getScript('masterSkillDelayInfo');
   int? get isUseGrandBoard => getScript('isUseGrandBoard');
   int? get isInfinityCost => getScript('isInfinityCost');
+  String? get battleFinishMovie => getScript("battleFinishMovie");
 
   QuestPhaseExtraDetail({
     this.questSelect,

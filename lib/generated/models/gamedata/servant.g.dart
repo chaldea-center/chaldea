@@ -1154,6 +1154,9 @@ ServantScript _$ServantScriptFromJson(Map json) => ServantScript(
   transformInfo: json['transformInfo'] == null
       ? null
       : ServantTransformInfo.fromJson(Map<String, dynamic>.from(json['transformInfo'] as Map)),
+  overwriteClassImageId: (json['overwriteClassImageId'] as List<dynamic>?)
+      ?.map((e) => OverwriteSvtClassImageId.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
 );
 
 Map<String, dynamic> _$ServantScriptToJson(ServantScript instance) => <String, dynamic>{
@@ -1161,6 +1164,7 @@ Map<String, dynamic> _$ServantScriptToJson(ServantScript instance) => <String, d
   'svtBuffTurnExtend': instance.svtBuffTurnExtend,
   'maleImage': instance.maleImage?.toJson(),
   'transformInfo': instance.transformInfo?.toJson(),
+  'overwriteClassImageId': instance.overwriteClassImageId?.map((e) => e.toJson()).toList(),
 };
 
 ServantTransformInfo _$ServantTransformInfoFromJson(Map json) => ServantTransformInfo(
@@ -1171,6 +1175,20 @@ ServantTransformInfo _$ServantTransformInfoFromJson(Map json) => ServantTransfor
 Map<String, dynamic> _$ServantTransformInfoToJson(ServantTransformInfo instance) => <String, dynamic>{
   'saveTransform': instance.saveTransform,
   'saveTransformDefault': instance.saveTransformDefault,
+};
+
+OverwriteSvtClassImageId _$OverwriteSvtClassImageIdFromJson(Map json) => OverwriteSvtClassImageId(
+  imageId: (json['imageId'] as num?)?.toInt() ?? 0,
+  releaseConditions:
+      (json['releaseConditions'] as List<dynamic>?)
+          ?.map((e) => CommonRelease.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList() ??
+      const [],
+);
+
+Map<String, dynamic> _$OverwriteSvtClassImageIdToJson(OverwriteSvtClassImageId instance) => <String, dynamic>{
+  'imageId': instance.imageId,
+  'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
 };
 
 SvtScript _$SvtScriptFromJson(Map json) => SvtScript(

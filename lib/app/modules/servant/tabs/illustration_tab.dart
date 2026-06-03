@@ -55,6 +55,7 @@ class _SvtIllustrationTabState extends State<SvtIllustrationTab> {
             fandomSprites: svt.extra.fandomSprites,
             anni8photos: get8AnniPhotos(),
             getUrls: filter.options.isEmpty ? null : getUrls,
+            extraCharaGraph: filter.options.isEmpty ? svt.classCards.toList() : null,
             charaGraphPlaceholder: (_, _) => db.getIconImage(svt.classCard),
           ),
         ),

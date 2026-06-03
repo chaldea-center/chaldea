@@ -119,8 +119,16 @@ class _WarDetailPageState extends State<WarDetailPage> with RegionBasedState<Nic
                 ),
               ],
             ),
-          if (lShortName != lLongName) CustomTableRow.fromTexts(texts: [lShortName]),
-          if (shortNameJp != longNameJp && !Transl.isJP) CustomTableRow.fromTexts(texts: [shortNameJp]),
+          if (lShortName != lLongName)
+            CustomTableRow.fromTexts(
+              texts: [lShortName],
+              defaults: TableCellData(textAlign: TextAlign.center),
+            ),
+          if (shortNameJp != longNameJp && !Transl.isJP)
+            CustomTableRow.fromTexts(
+              texts: [shortNameJp],
+              defaults: TableCellData(textAlign: TextAlign.center),
+            ),
           CustomTableRow(
             children: [
               TableCellData(text: S.current.war_age, isHeader: true),

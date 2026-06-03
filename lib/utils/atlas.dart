@@ -129,9 +129,11 @@ class Atlas {
 
   static String classCard(int svtRarity, int imageId) {
     int subId = 1;
+    if (imageId == 9999) imageId = 13;
     if (imageId == 10010) {
       // Grand Extra II
       imageId -= 1;
+      subId = 1;
     } else if (imageId.isEven) {
       imageId -= 1;
       subId += 1;

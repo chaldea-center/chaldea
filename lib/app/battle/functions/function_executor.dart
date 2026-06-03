@@ -752,6 +752,11 @@ class FunctionExecutor {
           targets.add(targetedAlly);
         }
         break;
+      case FuncTargetType.playerAttackPreselectTargetPtOne:
+        if (targetedAlly != null) {
+          targets.add(targetedAlly);
+        }
+        break;
       case FuncTargetType.enemy:
         if (targetedEnemy != null) {
           targets.add(targetedEnemy);
@@ -895,6 +900,11 @@ class FunctionExecutor {
           'Function ID: $funcId, '
           'Activator: ${activator?.lBattleName}',
         );
+        break;
+      case .unknown:
+        assert(() {
+          throw Exception('Unknown FuncTargetType');
+        }());
         break;
     }
 

@@ -11,7 +11,7 @@ NiceFunction _$NiceFunctionFromJson(Map json) => NiceFunction(
   funcType: json['funcType'] == null
       ? FuncType.unknown
       : const FuncTypeConverter().fromJson(json['funcType'] as String),
-  funcTargetType: $enumDecode(_$FuncTargetTypeEnumMap, json['funcTargetType']),
+  funcTargetType: $enumDecode(_$FuncTargetTypeEnumMap, json['funcTargetType'], unknownValue: FuncTargetType.unknown),
   funcTargetTeam: json['funcTargetTeam'] == null
       ? FuncApplyTarget.all
       : const FuncApplyTargetConverter().fromJson(json['funcTargetTeam'] as String),
@@ -75,6 +75,7 @@ Map<String, dynamic> _$NiceFunctionToJson(NiceFunction instance) => <String, dyn
 };
 
 const _$FuncTargetTypeEnumMap = {
+  FuncTargetType.unknown: 'unknown',
   FuncTargetType.self: 'self',
   FuncTargetType.ptOne: 'ptOne',
   FuncTargetType.ptAnother: 'ptAnother',
@@ -110,6 +111,7 @@ const _$FuncTargetTypeEnumMap = {
   FuncTargetType.fieldAll: 'fieldAll',
   FuncTargetType.noTarget: 'noTarget',
   FuncTargetType.fieldRandom: 'fieldRandom',
+  FuncTargetType.playerAttackPreselectTargetPtOne: 'playerAttackPreselectTargetPtOne',
 };
 
 BaseFunction _$BaseFunctionFromJson(Map json) => BaseFunction(
@@ -117,7 +119,7 @@ BaseFunction _$BaseFunctionFromJson(Map json) => BaseFunction(
   funcType: json['funcType'] == null
       ? FuncType.unknown
       : const FuncTypeConverter().fromJson(json['funcType'] as String),
-  funcTargetType: $enumDecode(_$FuncTargetTypeEnumMap, json['funcTargetType']),
+  funcTargetType: $enumDecode(_$FuncTargetTypeEnumMap, json['funcTargetType'], unknownValue: FuncTargetType.unknown),
   funcTargetTeam: const FuncApplyTargetConverter().fromJson(json['funcTargetTeam'] as String),
   funcPopupText: json['funcPopupText'] as String? ?? '',
   funcPopupIcon: json['funcPopupIcon'] as String?,

@@ -240,13 +240,15 @@ class ValDsc extends StatelessWidget {
             final base = kFuncValPercentType[func.funcType];
             if (base != null) {
               if (k != null) {
-                parts.add("${_toPercent(vals.Value, base)}%+${_toPercent(k, base)}%×${isPercentK ? 'p' : 'N'}");
+                parts.add(
+                  "${_toPercent(originVals?.Value ?? vals.Value, base)}%+${_toPercent(k, base)}%×${isPercentK ? 'p' : 'N'}",
+                );
               } else {
                 _addPercent(parts, vals.Value, base);
               }
             } else {
               if (k != null) {
-                parts.add("${vals.Value}+$k×${isPercentK ? 'p' : 'N'}");
+                parts.add("${originVals?.Value ?? vals.Value}+$k×${isPercentK ? 'p' : 'N'}");
               } else {
                 parts.add(vals.Value.toString());
               }
@@ -271,7 +273,9 @@ class ValDsc extends StatelessWidget {
           case FuncType.damageNpIndividualSum:
             if (vals.Value2 != null) {
               if (vals.Correction != null && vals.Correction != 0) {
-                parts.add('${_toPercent(vals.Value2, 10)}%+N×${_toPercent(vals.Correction, 10)}%');
+                parts.add(
+                  '${_toPercent(originVals?.Value2 ?? vals.Value2, 10)}%+N×${_toPercent(vals.Correction, 10)}%',
+                );
               } else {
                 parts.add('${_toPercent(vals.Value2, 10)}%');
               }
@@ -280,7 +284,7 @@ class ValDsc extends StatelessWidget {
             }
             break;
           case FuncType.damageNpBattlePointPhase:
-            int value2 = vals.Value2 ?? 0, correction = vals.Correction ?? 0;
+            int value2 = originVals?.Value2 ?? vals.Value2 ?? 0, correction = vals.Correction ?? 0;
             parts.add('${_toPercent(value2, 10)}%+N×${_toPercent(correction, 10)}%');
             break;
           default:
@@ -379,7 +383,7 @@ class ValDsc extends StatelessWidget {
           "${_toPercent(originalVals?.Value ?? vals.Value, base)}%+${_toPercent(k, base)}%×${isPercentK ? 'p' : 'N'}",
         );
       } else {
-        _addPercent(parts, originalVals?.Value ?? vals.Value, base);
+        _addPercent(parts, vals.Value, base);
       }
       // return;
     } else if (triggers != null) {
@@ -432,7 +436,7 @@ class ValDsc extends StatelessWidget {
       return;
     } else {
       if (k != null) {
-        parts.add("${vals.Value}+$k×${isPercentK ? 'p' : 'N'}");
+        parts.add("${originalVals?.Value ?? vals.Value}+$k×${isPercentK ? 'p' : 'N'}");
       } else {
         _addInt(parts, vals.Value);
       }

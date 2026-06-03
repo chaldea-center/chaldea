@@ -23,6 +23,7 @@ class NiceFunction with RouteInfo implements BaseFunction {
   int get funcId => _baseFunc.funcId;
   @override
   FuncType get funcType => _baseFunc.funcType;
+  @JsonKey(unknownEnumValue: FuncTargetType.unknown)
   @override
   FuncTargetType get funcTargetType => _baseFunc.funcTargetType;
   @override
@@ -207,7 +208,11 @@ class NiceFunction with RouteInfo implements BaseFunction {
     return NiceFunction(
       funcId: json['funcId'] as int,
       funcType: $enumDecodeNullable(_$FuncTypeEnumMap, json['funcType']) ?? FuncType.unknown,
-      funcTargetType: $enumDecode(_$FuncTargetTypeEnumMap, json['funcTargetType']),
+      funcTargetType: $enumDecode(
+        _$FuncTargetTypeEnumMap,
+        json['funcTargetType'],
+        unknownValue: FuncTargetType.unknown,
+      ),
       funcTargetTeam: const FuncApplyTargetConverter().fromJson(json['funcTargetTeam'] ?? FuncApplyTarget.all.name),
       funcPopupText: json['funcPopupText'] as String? ?? '',
       funcPopupIcon: json['funcPopupIcon'] as String?,
@@ -322,6 +327,7 @@ class NiceFunction with RouteInfo implements BaseFunction {
 class BaseFunction with RouteInfo {
   final int funcId;
   final FuncType funcType;
+  @JsonKey(unknownEnumValue: FuncTargetType.unknown)
   final FuncTargetType funcTargetType;
   final FuncApplyTarget funcTargetTeam;
   final String funcPopupText;
@@ -671,6 +677,7 @@ enum FuncType {
 }
 
 enum FuncTargetType {
+  unknown(-1),
   self(0),
   ptOne(1),
   ptAnother(2),
@@ -705,7 +712,8 @@ enum FuncTargetType {
   handCommandcardRandomOne(31),
   fieldAll(32),
   noTarget(33),
-  fieldRandom(34);
+  fieldRandom(34),
+  playerAttackPreselectTargetPtOne(35); // target ally may change after preselect?
 
   const FuncTargetType(this.value);
   final int value;

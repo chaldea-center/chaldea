@@ -224,6 +224,7 @@ class DataVals {
   int? get CallSvtEffectId => _get('CallSvtEffectId');
   int? get ForceAddState => _get('ForceAddState');
   int? get UnSubState => _get('UnSubState');
+  int? get IsStun2WaitMode => _get('IsStun2WaitMode');
   int? get ForceSubState => _get('ForceSubState');
   int? get IgnoreIndivUnreleaseable => _get('IgnoreIndivUnreleaseable');
   int? get OnParty => _get('OnParty');

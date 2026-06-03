@@ -596,19 +596,26 @@ class Servant extends BasicServant {
         db.gameData.constData.svtClassCardImageIdRemap[collectionNo] ??
         db.gameData.constData.classInfo[classId]?.imageId ??
         13;
-    int subId = 1;
-    if (imageId == 9999) imageId = 13;
-    if (imageId.isEven) {
-      imageId -= 1;
-      subId = 2;
+    final overwriteImageIds = script?.overwriteClassImageId;
+    if (overwriteImageIds != null) {
+      if (id == 205500) {
+        // Urðr
+        imageId = 40;
+      } else {
+        imageId = overwriteImageIds.firstOrNull?.imageId ?? imageId;
+      }
     }
-    final color = Atlas.classColor(rarity);
-    return Atlas.asset('ClassCard/class_${color}_$imageId@$subId.png');
+    return Atlas.classCard(rarity, imageId);
   }
 
-  String get cardBack {
-    final color = Atlas.classColor(rarity);
-    return Atlas.asset('ClassCard/class_${color}_101@2.png');
+  Set<String> get classCards {
+    final defaultImageId = db.gameData.constData.classInfo[classId]?.imageId;
+    return {
+      classCard,
+      if (script?.overwriteClassImageId != null)
+        for (final overwrite in script!.overwriteClassImageId!) Atlas.classCard(rarity, overwrite.imageId),
+      if (defaultImageId != null) Atlas.classCard(rarity, defaultImageId),
+    };
   }
 
   @override
@@ -1808,8 +1815,15 @@ class ServantScript with DataScriptBase {
   ExtraAssets? maleImage;
   ServantTransformInfo? transformInfo;
   // List<ImagePartsGroup>? imagePartsGroup;
+  List<OverwriteSvtClassImageId>? overwriteClassImageId;
 
-  ServantScript({this.skillRankUp, this.svtBuffTurnExtend, this.maleImage, this.transformInfo});
+  ServantScript({
+    this.skillRankUp,
+    this.svtBuffTurnExtend,
+    this.maleImage,
+    this.transformInfo,
+    this.overwriteClassImageId,
+  });
 
   factory ServantScript.fromJson(Map<String, dynamic> json) => _$ServantScriptFromJson(json)..setSource(json);
 
@@ -1836,6 +1850,18 @@ class ServantTransformInfo {
   factory ServantTransformInfo.fromJson(Map<String, dynamic> json) => _$ServantTransformInfoFromJson(json);
 
   Map<String, dynamic> toJson() => _$ServantTransformInfoToJson(this);
+}
+
+@JsonSerializable()
+class OverwriteSvtClassImageId {
+  int imageId;
+  List<CommonRelease> releaseConditions;
+
+  OverwriteSvtClassImageId({this.imageId = 0, this.releaseConditions = const []});
+
+  factory OverwriteSvtClassImageId.fromJson(Map<String, dynamic> json) => _$OverwriteSvtClassImageIdFromJson(json);
+
+  Map<String, dynamic> toJson() => _$OverwriteSvtClassImageIdToJson(this);
 }
 
 @JsonSerializable()

@@ -27,6 +27,7 @@ class ExtraAssetsPage extends StatelessWidget {
   final List<String> anni8photos;
   final bool scrollable;
   final Iterable<String> Function(ExtraAssetsUrl urls)? getUrls;
+  final List<String>? extraCharaGraph;
   final PlaceholderWidgetBuilder? charaGraphPlaceholder;
   final Function(String url)? onTapImage;
 
@@ -39,6 +40,7 @@ class ExtraAssetsPage extends StatelessWidget {
     this.anni8photos = const [],
     this.scrollable = true,
     this.getUrls,
+    this.extraCharaGraph,
     this.charaGraphPlaceholder,
     this.onTapImage,
   });
@@ -69,6 +71,7 @@ class ExtraAssetsPage extends StatelessWidget {
         S.current.illustration,
         [
           ..._getUrls(assets.charaGraph),
+          ...?extraCharaGraph,
           ..._getUrls(extraAssets?.charaGraphEx),
           ..._getUrls(extraAssets?.charaGraphChange),
         ],
