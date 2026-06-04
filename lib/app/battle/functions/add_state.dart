@@ -21,16 +21,21 @@ class AddState {
     final SkillType? skillType,
     final SkillInfoType? skillInfoType,
   }) async {
-    final isClassPassive = skillInfoType == SkillInfoType.svtClassPassive;
+    final isPassiveSkillInfo = {
+      SkillInfoType.svtEquip,
+      SkillInfoType.classBoardSkill,
+      SkillInfoType.svtClassPassive,
+      SkillInfoType.svtOtherPassive,
+    }.contains(skillInfoType);
     final isCommandCode = skillInfoType == SkillInfoType.commandCode;
 
     // skillInfoType != null means it's from a proper skill. Otherwise the concept of passive doesn't apply
     // e.g. from trigger buffs
-    bool isPassive = skillType == SkillType.passive && skillInfoType != null;
+    bool isPassiveSkill = skillType == SkillType.passive && skillInfoType != null;
     if (dataVals.ProcActive == 1) {
-      isPassive = false;
+      isPassiveSkill = false;
     } else if (dataVals.ProcPassive == 1) {
-      isPassive = true;
+      isPassiveSkill = true;
     }
 
     // based on video
@@ -48,7 +53,7 @@ class AddState {
         activatorUniqueId: activator?.uniqueId,
         activatorName: activator?.lBattleName,
         ownerUniqueId: target.uniqueId,
-        passive: isPassive,
+        passive: isPassiveSkill,
         skillInfoType: skillInfoType,
       );
 
@@ -132,8 +137,8 @@ class AddState {
 
       final isStackable = target.isBuffStackable(buffData.buff.buffGroup) && checkSameBuffLimitNum(target, dataVals);
       if (isStackable &&
-          await shouldAddState(battleData, dataVals, activator, target, buffData, isCommandCode, isClassPassive)) {
-        target.addBuff(buffData, isPassive: isPassive, isCommandCode: isCommandCode);
+          await shouldAddState(battleData, dataVals, activator, target, buffData, isCommandCode, isPassiveSkillInfo)) {
+        target.addBuff(buffData, isPassive: isPassiveSkill, isCommandCode: isCommandCode);
         buffData.updateActState(battleData, target);
         battleData.setFuncResult(target.uniqueId, true);
 
@@ -154,7 +159,7 @@ class AddState {
     final BattleServantData target,
     final BuffData buffData,
     final bool isCommandCode,
-    final bool isSvtClassPassive,
+    final bool isPassiveSkillInfo,
   ) async {
     if (dataVals.ForceAddState == 1 || isCommandCode) {
       return true;
@@ -173,7 +178,7 @@ class AddState {
 
     // based on https://discord.com/channels/839788731108032532/1098222580755861545/1278033086981865646
     // svtClassPassive should ignore all avoidState buffs
-    if (!isSvtClassPassive) {
+    if (!isPassiveSkillInfo) {
       final hasAvoidState = await target.hasBuff(
         battleData,
         BuffAction.avoidState,
@@ -188,20 +193,25 @@ class AddState {
       }
     }
 
-    final buffReceiveChance = await target.getBuffValue(
-      battleData,
-      BuffAction.resistanceState,
-      opponent: activator,
-      addTraits: buffData.getTraits(),
-    );
-    final buffChance =
-        await activator?.getBuffValue(
-          battleData,
-          BuffAction.grantState,
-          opponent: target,
-          addTraits: buffData.getTraits(),
-        ) ??
-        0;
+    // TODO: isPassiveSkillInfo likely means always succeed, maybe generalize with isCommandCode
+    // (or make isCommandCode par of isPassiveSkillInfo to actually check functionRate for command code based buffs)
+    final buffReceiveChance = isPassiveSkillInfo
+        ? 0
+        : await target.getBuffValue(
+            battleData,
+            BuffAction.resistanceState,
+            opponent: activator,
+            addTraits: buffData.getTraits(),
+          );
+    final buffChance = isPassiveSkillInfo
+        ? 0
+        : await activator?.getBuffValue(
+                battleData,
+                BuffAction.grantState,
+                opponent: target,
+                addTraits: buffData.getTraits(),
+              ) ??
+              0;
 
     final activationRate = functionRate + buffChance;
     final resistRate = buffReceiveChance;

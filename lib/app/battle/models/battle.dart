@@ -327,11 +327,6 @@ class BattleData {
       ];
     }
 
-    for (final actor in backupAllyServants) {
-      await actor?.initScript(this);
-    }
-    await initActorSkills(backupAllyServants);
-
     onFieldAllyServants = List.filled(playerOnFieldCount, null);
     while (backupAllyServants.isNotEmpty && onFieldAllyServants.contains(null)) {
       final svt = backupAllyServants.removeAt(0);
@@ -339,6 +334,12 @@ class BattleData {
       svt?.deckIndex = nextIndex + 1;
       onFieldAllyServants[nextIndex] = svt;
     }
+
+    final allies = [...onFieldAllyServants, ...backupAllyServants];
+    for (final actor in allies) {
+      await actor?.initScript(this);
+    }
+    await initActorSkills(allies);
 
     onFieldEnemies = List.filled(enemyOnFieldCount, null, growable: true);
     for (int index = 0; index < backupEnemies.length; index += 1) {
