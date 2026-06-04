@@ -102,12 +102,6 @@ flutter {
     source = "../.."
 }
 
-configurations.all {
-    resolutionStrategy {
-        force("androidx.glance:glance-appwidget:1.1.1")
-    }
-}
-
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
     implementation("androidx.glance:glance-appwidget:1.1.1")
