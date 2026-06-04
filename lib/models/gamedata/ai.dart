@@ -81,6 +81,7 @@ class NiceAiAct {
   int? noblePhantasmLv;
   int? noblePhantasmOc; // 10000->100%
   NiceTd? noblePhantasm;
+  Map<String, dynamic> script;
 
   NiceAiAct({
     required this.id,
@@ -94,10 +95,13 @@ class NiceAiAct {
     this.noblePhantasmLv,
     this.noblePhantasmOc,
     this.noblePhantasm,
+    this.script = const {},
   });
   factory NiceAiAct.fromJson(Map<String, dynamic> json) => _$NiceAiActFromJson(json);
 
   Map<String, dynamic> toJson() => _$NiceAiActToJson(this);
+
+  int? get battleScriptId => script["battleScriptId"];
 }
 
 enum AiType {

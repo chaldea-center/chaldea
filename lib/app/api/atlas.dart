@@ -252,6 +252,14 @@ class AtlasApi {
     );
   }
 
+  static Future<NiceAiAct?> aiAct(int aiActId, {Region region = Region.jp, Duration? expireAfter}) {
+    return cacheManager.getModel(
+      '$atlasApiHost/nice/${region.upper}/ai-act/$aiActId',
+      (data) => NiceAiAct.fromJson(data),
+      expireAfter: expireAfter,
+    );
+  }
+
   static Future<List<BattleMasterImage>?> battleMasterImage(
     int imageId, {
     Region region = Region.jp,
@@ -280,6 +288,14 @@ class AtlasApi {
     return cacheManager.getModel(
       '$atlasApiHost/nice/${region.upper}/battle-message-group/$groupId',
       (data) => (data as List).map((e) => BattleMessageGroup.fromJson(e)).toList(),
+      expireAfter: expireAfter,
+    );
+  }
+
+  static Future<List<BattleScript>?> battleScript(int scriptId, {Region region = Region.jp, Duration? expireAfter}) {
+    return cacheManager.getModel(
+      '$atlasApiHost/nice/${region.upper}/battle-script/$scriptId',
+      (data) => (data as List).map((e) => BattleScript.fromJson(e)).toList(),
       expireAfter: expireAfter,
     );
   }

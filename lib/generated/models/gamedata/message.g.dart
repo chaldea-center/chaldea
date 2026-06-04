@@ -45,3 +45,35 @@ Map<String, dynamic> _$BattleMessageGroupToJson(BattleMessageGroup instance) => 
   'probability': instance.probability,
   'messages': instance.messages.map((e) => e.toJson()).toList(),
 };
+
+BattleScript _$BattleScriptFromJson(Map json) => BattleScript(
+  id: (json['id'] as num).toInt(),
+  playOrder: (json['playOrder'] as num?)?.toInt() ?? 0,
+  idx: (json['idx'] as num?)?.toInt() ?? 0,
+  battleScriptAction: $enumDecodeNullable(_$BattleScriptActionTypeEnumMap, json['battleScriptAction']) ?? .unknown,
+  script: json['script'] == null ? null : BattleScriptDetail.fromJson(Map<String, dynamic>.from(json['script'] as Map)),
+);
+
+Map<String, dynamic> _$BattleScriptToJson(BattleScript instance) => <String, dynamic>{
+  'id': instance.id,
+  'playOrder': instance.playOrder,
+  'idx': instance.idx,
+  'battleScriptAction': _$BattleScriptActionTypeEnumMap[instance.battleScriptAction]!,
+  'script': instance.script?.toJson(),
+};
+
+const _$BattleScriptActionTypeEnumMap = {
+  BattleScriptActionType.unknown: 'unknown',
+  BattleScriptActionType.aiAct: 'aiAct',
+  BattleScriptActionType.wait: 'wait',
+  BattleScriptActionType.cutIn: 'cutIn',
+  BattleScriptActionType.moveCamera: 'moveCamera',
+  BattleScriptActionType.message: 'message',
+  BattleScriptActionType.playVoice: 'playVoice',
+  BattleScriptActionType.normalSpeed: 'normalSpeed',
+  BattleScriptActionType.resumeSpeed: 'resumeSpeed',
+};
+
+BattleScriptDetail _$BattleScriptDetailFromJson(Map json) => BattleScriptDetail();
+
+Map<String, dynamic> _$BattleScriptDetailToJson(BattleScriptDetail instance) => <String, dynamic>{};

@@ -1,11 +1,15 @@
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/descriptors/cond_target_value.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/audio.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../app.dart';
 import '../common/builders.dart';
+import 'ai_page.dart';
 
 class AiTable extends StatelessWidget {
   final AiType type;
@@ -66,7 +70,7 @@ class AiTable extends StatelessWidget {
       toRow("Cond", child: (e) => _desCond(context, e.cond, e.condNegative, e.vals)),
       toRow("Priority", text: (e) => e.priority.toString()),
       toRow("Weight", text: (e) => e.probability.toString()),
-      toRow("ActId", text: (e) => e.id.toString()),
+      toRow("ActId", text: (e) => e.aiAct.id.toString()),
       toRow("ActType", text: (e) => _desActType(context, e.aiAct)),
       toRow("ActTarget", child: (e) => _desActTarget(context, e.aiAct.target, e.aiAct.targetIndividuality)),
       toRow("Act", child: (e) => _desActSkill(context, e)),
@@ -243,6 +247,20 @@ class AiTable extends StatelessWidget {
                     builder: (context) => _BattleMessageGroupDialog(groupId: groupId, region: region),
                   );
                 },
+        ),
+      );
+    }
+
+    // battle script
+    if (aiAct.type == .battleScript) {
+      final battleScriptId = aiAct.battleScriptId;
+      spans.add(
+        SharedBuilder.textButtonSpan(
+          context: context,
+          text: '${aiAct.type.name} $battleScriptId',
+          onTap: battleScriptId == null || battleScriptId == 0
+              ? null
+              : () => _BattleScriptDialog(battleScriptId: battleScriptId, region: region).showDialog(context),
         ),
       );
     }
@@ -666,5 +684,152 @@ class _BattleMessageGroupDialog extends StatelessWidget {
       DividerWithTitle(title: 'Message ${group.messages.firstOrNull?.id} (${group.probability}%)'),
       for (final msg in group.messages) BattleMessageDialog.buildMessage(context, msg),
     ];
+  }
+}
+
+class _BattleScriptDialog extends StatefulWidget {
+  final int battleScriptId;
+  final Region? region;
+  const _BattleScriptDialog({required this.battleScriptId, this.region});
+
+  @override
+  State<_BattleScriptDialog> createState() => _BattleScriptDialogState();
+}
+
+class _BattleScriptDialogState extends State<_BattleScriptDialog> {
+  MyAudioPlayer<String>? player;
+
+  @override
+  void dispose() {
+    super.dispose();
+    player?.stop();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SimpleConfirmDialog(
+      title: Text('Battle Script ${widget.battleScriptId}'),
+      scrollable: true,
+      showCancel: false,
+      contentPadding: const EdgeInsets.symmetric(vertical: 20, horizontal: 4),
+      content: FutureBuilder2(
+        id: widget.battleScriptId,
+        loader: () => AtlasApi.battleScript(widget.battleScriptId, region: widget.region ?? Region.jp),
+        builder: (context, scripts) {
+          if (scripts == null) return Text(S.current.error);
+          if (scripts.isEmpty) return Text(S.current.not_found);
+          scripts = scripts.toList()..sortByList((e) => [e.playOrder, e.idx]);
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [for (final script in scripts) buildGroup(context, script)],
+          );
+        },
+        onFailed: (context) => const Text("Load Failed"),
+        onLoading: (context) => const Text("Loading..."),
+      ),
+    );
+  }
+
+  Widget buildGroup(BuildContext context, BattleScript battleScript) {
+    final script = battleScript.script;
+    List<Widget> children = [];
+    if (script != null) {
+      children.addAll([
+        if (script.messageText != null)
+          ListTile(dense: true, title: Text('messageText'), subtitle: Text(script.messageText.toString())),
+        if (script.battleMessageId != null)
+          ListTile(
+            dense: true,
+            title: Text('battleMessage'),
+            trailing: TextButton(
+              onPressed: () {
+                BattleMessageDialog(msgId: script.battleMessageId!, region: widget.region).showDialog(context);
+              },
+              child: Text(script.battleMessageId.toString()),
+            ),
+          ),
+        if (script.battleMessageGroupId != null)
+          ListTile(
+            dense: true,
+            title: Text('battleMessageGroup'),
+            trailing: TextButton(
+              onPressed: () {
+                _BattleMessageGroupDialog(
+                  groupId: script.battleMessageGroupId!,
+                  region: widget.region,
+                ).showDialog(context);
+              },
+              child: Text(script.battleMessageGroupId.toString()),
+            ),
+          ),
+      ]);
+      if (script.aiActId != null) {
+        final aiActId = script.aiActId!;
+        final subtitles = [
+          if (script.aiActActorType != null) 'actorType: ${script.aiActActorType?.name}',
+          if (script.aiActIndividuality != null) '${S.current.trait}: ${Transl.trait(script.aiActIndividuality!).l}',
+        ];
+        children.add(
+          ListTile(
+            dense: true,
+            title: Text('AiAct'),
+            subtitle: subtitles.isEmpty ? null : Text(subtitles.join('\n')),
+            trailing: TextButton(
+              style: kTextButtonDenseStyle,
+              onPressed: () async {
+                final aiAct = await showEasyLoading(() => AtlasApi.aiAct(aiActId, region: widget.region ?? .jp));
+                if (aiAct == null) {
+                  EasyLoading.showError('AiAct $aiActId not found');
+                  return;
+                }
+                if (!context.mounted) return;
+                AiPage(
+                  aiType: .field,
+                  aiId: 0,
+                  aiCollection: NiceAiCollection(
+                    mainAis: [NiceAi(id: 0, idx: 0, actNumInt: 0, priority: 0, probability: 0, aiAct: aiAct)],
+                  ),
+                  region: widget.region,
+                ).showDialog(context);
+              },
+              child: Text(script.aiActId.toString()),
+            ),
+          ),
+        );
+      }
+      if (script.charaVoice != null) {
+        final charaVoice = script.charaVoice!.split(':');
+        if (charaVoice.length >= 2) {
+          final audioUrl = AssetURL(widget.region ?? .jp).audio(charaVoice[0].trim(), charaVoice[1].trim());
+          children.add(
+            ListTile(
+              dense: true,
+              title: Text('${S.current.voice} ${script.charaVoice}'),
+              trailing: SoundPlayButton(url: audioUrl, player: player ??= MyAudioPlayer<String>()),
+            ),
+          );
+        }
+      }
+      final source = Map.of(script.source);
+      source.removeWhere(
+        (k, _) => const {
+          //
+          'messageText', 'battleMessageId', 'battleMessageGroupId',
+          'aiActId', 'type', 'individuality',
+          'charaVoice',
+        }.contains(k),
+      );
+      if (source.isNotEmpty) {
+        children.add(ListTile(dense: true, title: Text('script'), subtitle: Text(source.toString())));
+      }
+    }
+
+    return TileGroup(
+      header:
+          'Order ${battleScript.playOrder} / idx ${battleScript.idx} / type ${battleScript.battleScriptAction.name}',
+      tileColor: Theme.of(context).scaffoldBackgroundColor,
+      children: divideList(children, kDefaultDivider),
+    );
   }
 }

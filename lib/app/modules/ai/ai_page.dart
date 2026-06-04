@@ -86,14 +86,16 @@ class _AiPageState extends State<AiPage> with RegionBasedState<NiceAiCollection,
     return PopupMenuButton(
       itemBuilder: (context) => [
         ...SharedBuilder.websitesPopupMenuItems(
-          atlas: Atlas.ai(
-            id,
-            widget.aiType == AiType.svt,
-            region: region ?? Region.jp,
-            skillId1: widget.skills?.skillId1 ?? 0,
-            skillId2: widget.skills?.skillId2 ?? 0,
-            skillId3: widget.skills?.skillId3 ?? 0,
-          ),
+          atlas: id > 0
+              ? Atlas.ai(
+                  id,
+                  widget.aiType == AiType.svt,
+                  region: region ?? Region.jp,
+                  skillId1: widget.skills?.skillId1 ?? 0,
+                  skillId2: widget.skills?.skillId2 ?? 0,
+                  skillId3: widget.skills?.skillId3 ?? 0,
+                )
+              : null,
         ),
         PopupMenuItem(
           child: const Text("How to read AI?"),
