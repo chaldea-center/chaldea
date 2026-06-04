@@ -183,10 +183,7 @@ mixin SearchableListState<T, St extends StatefulWidget> on State<St> {
       if (index >= 0 && index < shownList.length) {
         Widget child = listItemBuilder(shownList[index]);
         if (showOddBg) {
-          child = DecoratedBox(
-            decoration: BoxDecoration(color: index.isEven ? Theme.of(context).hoverColor : null),
-            child: child,
-          );
+          child = Material(color: index.isEven ? Theme.of(context).hoverColor : null, child: child);
         }
         return child;
       }

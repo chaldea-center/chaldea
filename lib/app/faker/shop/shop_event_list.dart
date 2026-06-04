@@ -143,15 +143,21 @@ class ShopEventListPage extends StatelessWidget {
           ListTile(
             dense: true,
             title: Text(event.lName.l),
-            subtitle: CountDown(endedAt: event.endedAt.sec2date()),
+            subtitle: Align(
+              alignment: .centerStart,
+              child: CountDown(endedAt: event.endedAt.sec2date()),
+            ),
             trailing: bannerWidget,
           ),
           for (final slot in groups.keys.toList()..sort())
             ListTile(
               dense: true,
               leading: const SizedBox.shrink(),
-              title: Text('Slot $slot'),
-              subtitle: CountDown(endedAt: _getShopClosedAt(groups[slot]!).sec2date()),
+              title: Text('Slot $slot - ${groups[slot]!.length} shops'),
+              subtitle: Align(
+                alignment: .centerStart,
+                child: CountDown(endedAt: _getShopClosedAt(groups[slot]!).sec2date()),
+              ),
               trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
               onTap: () {
                 router.pushPage(

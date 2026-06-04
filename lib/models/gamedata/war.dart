@@ -120,6 +120,13 @@ class NiceWar with RouteInfo {
         }
       }
     }
+    if (id == WarId.pastChaldea) {
+      final overwriteBanners = warAdds
+          .where((e) => e.type == .banner && e.overwriteBanner?.isNotEmpty == true)
+          .toList();
+      overwriteBanners.sort2((e) => e.priority);
+      banner = overwriteBanners.lastOrNull?.overwriteBanner ?? banner;
+    }
 
     if (banner == null) return null;
 
@@ -206,16 +213,17 @@ class NiceWar with RouteInfo {
 
   Transl<String, String> get lLongName {
     String warName = (flags.contains(WarFlag.subFolder) ? _name : _longName) ?? _defaultName;
-    if (id == 501 && warName == "？？？編 郷愁永巡刻盤 パスト・カルデア") {
-      warName = "運命の三女神編 郷愁永巡刻盤 パスト・カルデア";
+    if (id == WarId.pastChaldea) {
+      warName =
+          warAdds.firstWhereOrNull((e) => e.type == .longName && e.overwriteStr.isNotEmpty)?.overwriteStr ?? warName;
     }
     return Transl.warNames(warName);
   }
 
   Transl<String, String> get lName {
     String warName = _name ?? _longName ?? _defaultName;
-    if (id == 501 && warName == "？？？編") {
-      warName = "運命の三女神編";
+    if (id == WarId.pastChaldea) {
+      warName = warAdds.firstWhereOrNull((e) => e.type == .name && e.overwriteStr.isNotEmpty)?.overwriteStr ?? warName;
     }
     if (Transl.md.warNames.containsKey(warName)) {
       return Transl.warNames(warName);
@@ -713,6 +721,8 @@ abstract class WarId {
   static const advanced = 1006;
   static const ordealCall = 401;
   static const grandBoardWar = 8395;
+
+  static const pastChaldea = 501;
 }
 
 const Map<int, String> _warMCBanner = {

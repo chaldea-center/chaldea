@@ -190,6 +190,7 @@ const _$SvtClassEnumMap = {
   SvtClass.uOlgaMarieStellar: 'uOlgaMarieStellar',
   SvtClass.beastVIIUnknown: 'beastVIIUnknown',
   SvtClass.beastVII: 'beastVII',
+  SvtClass.demiBeastUrd: 'demiBeastUrd',
   SvtClass.aquaFragment: 'aquaFragment',
   SvtClass.unknown: 'unknown',
   SvtClass.agarthaPenth: 'agarthaPenth',

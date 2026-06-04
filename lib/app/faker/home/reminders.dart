@@ -116,6 +116,7 @@ class FakerReminders extends StatelessWidget {
         if (item != null) {
           if (item.type == ItemType.friendshipUpItem || item.type == ItemType.stormpod) return true;
           if (shop.shopType == ShopType.mana && item.type == ItemType.commandCardPrmUp) return true;
+          if (shop.shopType == ShopType.mana && const [5000, 5001, 5002, 5003].contains(item.id)) return true;
         }
         final entity = db.gameData.entities[targetId];
         if (entity != null) {

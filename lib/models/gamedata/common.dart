@@ -478,6 +478,7 @@ enum SvtClass {
   uOlgaMarieStellar(41),
   beastVIIUnknown(42),
   beastVII(43, '獸Ⅶ'),
+  demiBeastUrd(44, 'DEMIBEAST'),
   aquaFragment(96), // Aqua Marie Grand Duel
   unknown(97),
   // 98
@@ -661,6 +662,9 @@ extension SvtClassX on SvtClass {
     SvtClass.grandUnBeastUOlgaMarieAlienGod,
     SvtClass.beastVII,
     SvtClass.beastVIIUnknown,
+    SvtClass.demonGodPillar,
+    // Demi Beast
+    SvtClass.demiBeastUrd,
   ];
   static const grandClasses = <SvtClass>[
     SvtClass.grandSaber,

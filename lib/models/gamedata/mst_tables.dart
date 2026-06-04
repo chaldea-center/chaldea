@@ -3572,7 +3572,8 @@ enum UserStatusFlagKind {
   birthdaySetting(21),
   issuedDeletePassword(22),
   deleted(23),
-  executedLogin(25);
+  executedLogin(25), // removed
+  supportLimitCountToDispLimitCount(28);
 
   const UserStatusFlagKind(this.value);
   final int value;

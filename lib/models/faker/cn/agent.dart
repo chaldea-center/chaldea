@@ -621,7 +621,7 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
         "randomLimitCountSupport": randomSettingSupport,
         "limitCountSupport": limitCountSupport,
         "isPush": isPush.toInt(),
-        // TODO: CN 20270401 Francesca
+        // TODO_CN 20270401 Francesca
         // "imageLimitCount2": imageLimitCount2,
         // "dispLimitCount2": dispLimitCount2,
         // "commandCardLimitCount2": commandCardLimitCount2,
@@ -897,7 +897,7 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
         "followerRandomLimitCount": followerRandomLimitCount,
         "followerSpoilerProtectionLimitCount": followerSpoilerProtectionLimitCount,
         "followerSupportDeckId": followerSupportDeckId,
-        // TODO: CN 20270401 Francesca
+        // TODO_CN 20270401 Francesca
         // "choiceTransformRandomLimitCounts": choiceTransformRandomLimitCounts,
         // "followerTransformRandomLimitCount": followerTransformRandomLimitCount,
         // "followerTransformSpoilerProtectionLimitCount": followerTransformSpoilerProtectionLimitCount,
