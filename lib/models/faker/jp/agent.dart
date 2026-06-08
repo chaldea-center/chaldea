@@ -33,9 +33,10 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
     final fresp = await request.beginRequest();
     if (fresp.data.responses.any((e) => e.fail?['action'] == 'app_version_up')) {
       if (!checkAppUpdate) {
-        throw Exception('fgo version updated');
+        throw Exception('fgo version updated\n${fresp.data.responses}');
       }
       final newVer = await AtlasApi.gPlayVer(network.gameTop.region);
+      logger.d('[${network.gameTop.region}] play store version: $newVer');
       if (newVer == null) {
         throw Exception('fgo version updated but resolve new version failed');
       }

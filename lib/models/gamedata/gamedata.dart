@@ -588,8 +588,10 @@ class GameTop extends GameAppVerCode {
 
   void updateFrom(GameTop other) {
     if (other.region != region) return;
-    appVer = other.appVer;
-    verCode = other.verCode;
+    if (AppVersion.compare(appVer, other.appVer) < 0) {
+      appVer = other.appVer;
+      verCode = other.verCode;
+    }
     if (other.dateVer > dateVer) dateVer = other.dateVer;
     if (other.dataVer > dataVer) {
       dataVer = other.dataVer;

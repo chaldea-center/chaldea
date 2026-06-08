@@ -215,9 +215,10 @@ class _FormationEditorState extends State<FormationEditor>
 
   Widget buildActions(int index, BattleShareData team) {
     final formation = team.formation;
+    final canDelete = userData.teams.length > 1 || widget.teamToSave == null;
     List<Widget> children = [
       TextButton(
-        onPressed: userData.teams.length > 1
+        onPressed: canDelete
             ? () {
                 SimpleConfirmDialog(
                   title: Text(S.current.delete),
@@ -225,16 +226,14 @@ class _FormationEditorState extends State<FormationEditor>
                   onTapOk: () {
                     if (mounted) {
                       setState(() {
-                        if (userData.teams.length > 1) {
-                          userData.teams.remove(team);
-                        }
+                        userData.teams.remove(team);
                       });
                     }
                   },
                 ).showDialog(context);
               }
             : null,
-        child: Text(S.current.delete, style: TextStyle(color: Theme.of(context).colorScheme.error)),
+        child: Text(S.current.delete, style: canDelete ? TextStyle(color: Theme.of(context).colorScheme.error) : null),
       ),
       if (widget.teamToSave != null)
         TextButton(
