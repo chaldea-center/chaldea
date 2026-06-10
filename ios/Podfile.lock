@@ -4,26 +4,20 @@ PODS:
   - countly_flutter_np (26.1.0):
     - Flutter
   - Flutter (1.0.0)
-  - flutter_fgbg (0.0.1):
-    - Flutter
   - flutter_js (0.1.0):
     - Flutter
   - flutter_mailer (0.0.1):
     - Flutter
   - image_gallery_saver (2.0.2):
     - Flutter
-  - permission_handler_apple (9.3.0):
-    - Flutter
 
 DEPENDENCIES:
   - alarm (from `.symlinks/plugins/alarm/ios`)
   - countly_flutter_np (from `.symlinks/plugins/countly_flutter_np/ios`)
   - Flutter (from `Flutter`)
-  - flutter_fgbg (from `.symlinks/plugins/flutter_fgbg/ios`)
   - flutter_js (from `.symlinks/plugins/flutter_js/ios`)
   - flutter_mailer (from `.symlinks/plugins/flutter_mailer/ios`)
   - image_gallery_saver (from `.symlinks/plugins/image_gallery_saver/ios`)
-  - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
 
 EXTERNAL SOURCES:
   alarm:
@@ -32,26 +26,20 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/countly_flutter_np/ios"
   Flutter:
     :path: Flutter
-  flutter_fgbg:
-    :path: ".symlinks/plugins/flutter_fgbg/ios"
   flutter_js:
     :path: ".symlinks/plugins/flutter_js/ios"
   flutter_mailer:
     :path: ".symlinks/plugins/flutter_mailer/ios"
   image_gallery_saver:
     :path: ".symlinks/plugins/image_gallery_saver/ios"
-  permission_handler_apple:
-    :path: ".symlinks/plugins/permission_handler_apple/ios"
 
 SPEC CHECKSUMS:
   alarm: 8a8ed4893eb9bd09e7c5a96bf8ab8104f380f65f
   countly_flutter_np: c69ae85c9054a23aaab49d277549945be5031ec9
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
-  flutter_fgbg: d3da78df78454b1808f0829a5da9cd17dfe16444
   flutter_js: 867813c1830e1d9b2c5d547cdb6f61801e2f2145
   flutter_mailer: 3a8cd4f36c960fb04528d5471097270c19fec1c4
   image_gallery_saver: 14711d79da40581063e8842a11acf1969d781ed7
-  permission_handler_apple: 4ed2196e43d0651e8ff7ca3483a069d469701f2d
 
 PODFILE CHECKSUM: 1c5df13f80f19bcb283951c2887f9c9f29ab24d6
 
