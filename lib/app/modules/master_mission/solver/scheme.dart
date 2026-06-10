@@ -10,7 +10,7 @@ class CustomMissionCond {
   set useAnd(bool v) => _useAnd = v;
   bool get useAnd => fixedLogicType ?? _useAnd;
 
-  CustomMissionCond({required this.type, required this.targetIds, required bool useAnd}) : _useAnd = useAnd;
+  CustomMissionCond({required this.type, required this.targetIds, required this._useAnd});
 
   bool? get fixedLogicType {
     switch (type) {

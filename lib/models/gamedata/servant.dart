@@ -953,7 +953,7 @@ class CraftEssence extends BasicCraftEssence {
     super.hpMax = 0,
     this.growthCurve = 0,
     this.expFeed = const [],
-    int? bondEquipOwner,
+    this._bondEquipOwner,
     this.valentineEquipOwner,
     this.valentineScript = const [],
     AscensionAdd? ascensionAdd,
@@ -962,7 +962,6 @@ class CraftEssence extends BasicCraftEssence {
     NiceLore? profile,
     super.face = "",
   }) : extraAssets = extraAssets ?? ExtraAssets(),
-       _bondEquipOwner = bondEquipOwner,
        ascensionAdd = ascensionAdd ?? AscensionAdd(),
        profile = profile ?? NiceLore();
 

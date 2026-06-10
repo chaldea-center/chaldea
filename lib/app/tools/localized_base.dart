@@ -16,11 +16,7 @@ class LocalizedText {
 
   String get kor => _kor?.isNotEmpty == true ? _kor! : eng;
 
-  const LocalizedText({required String? chs, required String? jpn, required String? eng, String? kor})
-    : _chs = chs,
-      _jpn = jpn,
-      _eng = eng,
-      _kor = kor;
+  const LocalizedText({required this._chs, required this._jpn, required this._eng, this._kor});
 
   String get localized {
     return _values.first;

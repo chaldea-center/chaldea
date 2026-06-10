@@ -62,7 +62,7 @@ class NiceWar with RouteInfo {
     this.script,
     this.startType = WarStartType.none,
     this.targetId = 0,
-    int eventId = 0,
+    this._eventId = 0,
     this.eventName = "",
     this.lastQuestId = 0,
     this.releaseConditions = const [],
@@ -73,8 +73,7 @@ class NiceWar with RouteInfo {
     this.spotRoads = const [],
     this.questSelections = const [],
   }) : _name = _fixName(name, id, eventName),
-       _longName = _fixName(longName, id, eventName),
-       _eventId = eventId {
+       _longName = _fixName(longName, id, eventName) {
     if (banner != null) {
       // fixed when released
       // if (id == 404) {

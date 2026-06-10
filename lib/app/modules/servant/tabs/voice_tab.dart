@@ -157,8 +157,7 @@ class VoiceGroupAccordion extends StatelessWidget {
   final Servant? _svt;
   final Event? event;
 
-  const VoiceGroupAccordion({super.key, required this.group, required this.player, Servant? svt, this.event})
-    : _svt = svt;
+  const VoiceGroupAccordion({super.key, required this.group, required this.player, this._svt, this.event});
 
   @override
   Widget build(BuildContext context) {

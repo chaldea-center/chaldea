@@ -89,7 +89,7 @@ class Event with RouteInfo {
     required this.endedAt,
     int? finishedAt,
     // required this.materialOpenedAt,
-    List<int> warIds = const [],
+    this._warIds = const [],
     this.eventAdds = const [],
     this.eventDetail,
     this.svts = const [],
@@ -121,7 +121,6 @@ class Event with RouteInfo {
     this.voicePlays = const [],
     this.voices = const [],
   }) : _shortName = ['', '-'].contains(shortName) ? null : shortName,
-       _warIds = warIds,
        noticeAt = noticeAt ?? startedAt,
        finishedAt = finishedAt ?? endedAt;
 

@@ -28,11 +28,11 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
     this.style,
     this.textScaleFactor,
     this.leading,
-    bool? useAnd,
+    this._useAnd,
     this.eventId,
     this.unknownMsg,
     this.padding,
-  }) : _useAnd = useAnd;
+  });
 
   @override
   bool? get useAnd {

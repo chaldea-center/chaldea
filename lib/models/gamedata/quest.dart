@@ -113,7 +113,7 @@ class Quest with RouteInfo {
     this.spotId = 0,
     String? spotName,
     this.warId = 0,
-    String? warLongName,
+    this._warLongName,
     this.chapterId = 0,
     this.chapterSubId = 0,
     this.chapterSubStr = "",
@@ -131,7 +131,6 @@ class Quest with RouteInfo {
     this.openedAt = 0,
     this.closedAt = 0,
   }) : _spotName = spotName == '0' ? null : spotName,
-       _warLongName = warLongName,
        giftIcon = _isSQGiftIcon(giftIcon, gifts) ? null : giftIcon,
        consume = consumeType.useApOrBp ? consume : 0;
 

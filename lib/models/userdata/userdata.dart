@@ -478,15 +478,14 @@ class SvtPlan {
     this.fouHp3 = 20,
     this.fouAtk3 = 20,
     this.bondLimit = 10,
-    int? npLv,
+    this._npLv,
   }) : skills = List.generate(kActiveSkillNums.length, (index) => skills?.getOrNull(index) ?? 1, growable: false),
        costumes = costumes ?? {},
        appendSkills = List.generate(
          kAppendSkillNums.length,
          (index) => appendSkills?.getOrNull(index) ?? 0,
          growable: false,
-       ),
-       _npLv = npLv {
+       ) {
     validate();
   }
 

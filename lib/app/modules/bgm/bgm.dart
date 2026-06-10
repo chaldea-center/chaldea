@@ -13,7 +13,7 @@ class BgmDetailPage extends StatefulWidget {
   final int? id;
   final Bgm? _bgm;
 
-  const BgmDetailPage({super.key, this.id, Bgm? bgm}) : _bgm = bgm;
+  const BgmDetailPage({super.key, this.id, this._bgm});
 
   @override
   State<BgmDetailPage> createState() => _BgmDetailPageState();

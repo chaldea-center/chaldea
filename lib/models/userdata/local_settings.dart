@@ -107,7 +107,7 @@ class LocalSettings {
     this.colorSeed,
     this.enableMouseDrag = true,
     this.globalSelection = false,
-    String? language,
+    this._language,
     List<Region>? preferredRegions,
     this.autoUpdateData = true,
     this.updateDataBeforeStart = false,
@@ -144,8 +144,7 @@ class LocalSettings {
     BookmarkHistory? bookmarks,
     _MiscSettings? misc,
     _SecretsData? secrets,
-  }) : _language = language,
-       _preferredFavorite = preferredFavorite ?? (launchTimes == 0 ? FavoriteState.all : null),
+  }) : _preferredFavorite = preferredFavorite ?? (launchTimes == 0 ? FavoriteState.all : null),
        preferredRegions = preferredRegions == null
            ? null
            : (List.of(Region.values)..sort2((e) => preferredRegions.indexOf(e) % Region.values.length)),

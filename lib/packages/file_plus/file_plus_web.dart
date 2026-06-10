@@ -19,7 +19,7 @@ class FilePlusWeb implements FilePlus {
 
   LazyBox<Uint8List> get effectiveBox => _box ?? _defaultBox;
 
-  FilePlusWeb(String fp, {LazyBox<Uint8List>? box}) : _path = normalizePath(fp), _box = box;
+  FilePlusWeb(String fp, {this._box}) : _path = normalizePath(fp);
 
   static Future<void> initWebFileSystem() async {
     assert(kIsWeb, 'DO NOT init for non-web');

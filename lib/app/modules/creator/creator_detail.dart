@@ -12,8 +12,8 @@ class CreatorDetail extends StatelessWidget {
   final String _name;
   final bool _isCV;
 
-  const CreatorDetail.cv({super.key, required String name}) : _isCV = true, _name = name;
-  const CreatorDetail.illust({super.key, required String name}) : _isCV = false, _name = name;
+  const CreatorDetail.cv({super.key, required this._name}) : _isCV = true;
+  const CreatorDetail.illust({super.key, required this._name}) : _isCV = false;
 
   List<String> _split(String name) {
     return name.split(RegExp(r'[&＆]')).map((e) => e.trim()).where((e) => e.isNotEmpty).toList();

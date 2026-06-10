@@ -79,10 +79,9 @@ class UrlProxy {
       kCN = "",
       _post = null;
 
-  UrlProxy({required UrlProxy? src, required this.kGlobal, required this.kCN, String Function(String url)? post})
+  UrlProxy({required UrlProxy? src, required this.kGlobal, required this.kCN, this._post})
     : _global = _check(src?.global),
-      _cn = _check(src?.cn),
-      _post = post;
+      _cn = _check(src?.cn);
 
   String of(bool proxy) {
     String url = proxy ? (_cn ?? kCN) : (_global ?? kGlobal);

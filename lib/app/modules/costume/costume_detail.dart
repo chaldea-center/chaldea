@@ -12,7 +12,7 @@ class CostumeDetailPage extends StatelessWidget {
   final int? id;
   final NiceCostume? _costume;
 
-  const CostumeDetailPage({super.key, this.id, NiceCostume? costume}) : _costume = costume;
+  const CostumeDetailPage({super.key, this.id, this._costume});
 
   @override
   Widget build(BuildContext context) {
