@@ -1,0 +1,8 @@
+/* Privacy and permission descriptions for ad features */
+
+/* App Tracking Transparency description */
+"NSUserTrackingUsageDescription" = "We need your advertising identifier to show you personalized ads.";
+
+/* Photo library access */
+"NSPhotoLibraryAddUsageDescription" = "Export images to photos";
+"NSPhotoLibraryUsageDescription" = "Chaldea needs to import data and export backup";

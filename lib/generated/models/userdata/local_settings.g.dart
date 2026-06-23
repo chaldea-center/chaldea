@@ -359,19 +359,36 @@ const _$SvtPlanDetailEnumMap = {
 
 AdSetting _$AdSettingFromJson(Map json) => $checkedCreate('AdSetting', json, ($checkedConvert) {
   final val = AdSetting(
-    enabled: $checkedConvert('enabled', (v) => v as bool?),
-    banner: $checkedConvert('banner', (v) => v as bool?),
-    appOpen: $checkedConvert('appOpen', (v) => v as bool?),
+    enabled: $checkedConvert('enabled', (v) => $enumDecodeNullable(_$AdFeatureStateEnumMap, v) ?? .defaults),
+    banner: $checkedConvert('banner', (v) => $enumDecodeNullable(_$AdFeatureStateEnumMap, v) ?? .defaults),
+    appOpen: $checkedConvert('appOpen', (v) => $enumDecodeNullable(_$AdFeatureStateEnumMap, v) ?? .defaults),
+    interstitial: $checkedConvert('interstitial', (v) => $enumDecodeNullable(_$AdFeatureStateEnumMap, v) ?? .defaults),
+    personalizedAds: $checkedConvert('personalizedAds', (v) => v as bool?),
     lastAppOpen: $checkedConvert('lastAppOpen', (v) => (v as num?)?.toInt() ?? 0),
+    lastAttRequestTime: $checkedConvert('lastAttRequestTime', (v) => (v as num?)?.toInt() ?? 0),
+    attAuthorized: $checkedConvert('attAuthorized', (v) => v as bool?),
+    privacyPolicyAccepted: $checkedConvert('privacyPolicyAccepted', (v) => v as bool? ?? false),
   );
   return val;
 });
 
 Map<String, dynamic> _$AdSettingToJson(AdSetting instance) => <String, dynamic>{
-  'enabled': instance.enabled,
-  'banner': instance.banner,
-  'appOpen': instance.appOpen,
+  'enabled': _$AdFeatureStateEnumMap[instance.enabled]!,
+  'banner': _$AdFeatureStateEnumMap[instance.banner]!,
+  'appOpen': _$AdFeatureStateEnumMap[instance.appOpen]!,
+  'interstitial': _$AdFeatureStateEnumMap[instance.interstitial]!,
+  'personalizedAds': instance.personalizedAds,
   'lastAppOpen': instance.lastAppOpen,
+  'lastAttRequestTime': instance.lastAttRequestTime,
+  'attAuthorized': instance.attAuthorized,
+  'privacyPolicyAccepted': instance.privacyPolicyAccepted,
+};
+
+const _$AdFeatureStateEnumMap = {
+  AdFeatureState.defaults: 'defaults',
+  AdFeatureState.on: 'on',
+  AdFeatureState.off: 'off',
+  AdFeatureState.forcedOn: 'forcedOn',
 };
 
 CarouselSetting _$CarouselSettingFromJson(Map json) => $checkedCreate('CarouselSetting', json, ($checkedConvert) {

@@ -39,8 +39,6 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>FlutterDeepLinkingEnabled</key>
 	<true/>
-	<key>GADApplicationIdentifier</key>
-	<string>ca-app-pub-1170355046794925~2750337093</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>https</string>
@@ -87,9 +85,19 @@
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Chaldea needs to import data and export backup</string>
 	<key>NSUserTrackingUsageDescription</key>
-	<string>This identifier will be used to deliver personalized ads to you.</string>
-	<key>SKAdNetworkItems</key>
+	<string>We need your advertising identifier to show you personalized ads.</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	<key>LSApplicationQueriesSchemes</key>
 	<array>
+		<dict>
+			<key>SKAdNetworkIdentifier</key>
+			<string>238da6jt44.skadnetwork</string>
+		</dict>
+		<dict>
+			<key>SKAdNetworkIdentifier</key>
+			<string>x2jnk7ly8j.skadnetwork</string>
+		</dict>
 		<dict>
 			<key>SKAdNetworkIdentifier</key>
 			<string>cstr6suwn9.skadnetwork</string>

@@ -62,7 +62,7 @@ void patchFDroid() {
   file.writeAsStringSync(file.readAsStringSync().replaceAll('ad_mobile.dart', 'ad_stub.dart'));
 
   file = File('pubspec.yaml');
-  file.writeAsStringSync(file.readAsLinesSync().where((e) => !e.trim().startsWith('google_mobile_ads:')).join('\n'));
+  file.writeAsStringSync(file.readAsLinesSync().where((e) => !e.trim().startsWith('flutter_gromore_ads:')).join('\n'));
 
   // ignore: unused_element
   void _removeLines(String fp, Pattern trailing) {

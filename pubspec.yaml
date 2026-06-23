@@ -113,7 +113,7 @@ dependencies:
   worker_manager: ^7.2.2
   window_manager: ^0.5.0
   countly_flutter_np: ^26.1.0
-  google_mobile_ads: ^8.0.0
+  flutter_gromore_ads: ^3.2.1
   # admanager_web: ^0.0.4
 
 dev_dependencies:

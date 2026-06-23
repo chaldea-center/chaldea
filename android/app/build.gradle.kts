@@ -105,4 +105,5 @@ flutter {
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
     implementation("androidx.glance:glance-appwidget:1.1.1")
+    implementation("com.pangle.cn:ads-sdk-pro:7.6.1.2")
 }

@@ -513,9 +513,12 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
       return false;
     });
     if (AppAds.shouldShowBannerAd(context)) {
+      // Use remotely configured bannerFrequency to control Banner display frequency
+      // When bannerFrequency=0, display 1 Banner per 4 carousel items by default
+      final frequency = AppAds.bannerFrequency > 0 ? AppAds.bannerFrequency : 4;
       items.addAll(
         List.generate(
-          items.length ~/ 4 + 1,
+          items.length ~/ frequency + 1,
           (index) => CarouselItem(
             child: FittedBox(
               fit: BoxFit.contain,

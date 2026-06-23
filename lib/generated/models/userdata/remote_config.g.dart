@@ -80,8 +80,42 @@ Map<String, dynamic> _$UrlProxyToJson(UrlProxy instance) => <String, dynamic>{
 };
 
 AdConfig _$AdConfigFromJson(Map json) => $checkedCreate('AdConfig', json, ($checkedConvert) {
-  final val = AdConfig(enabled: $checkedConvert('enabled', (v) => v as bool? ?? false));
+  final val = AdConfig(
+    enabled: $checkedConvert('enabled', (v) => $enumDecodeNullable(_$AdFeatureStateEnumMap, v) ?? .defaults),
+    bannerEnabled: $checkedConvert(
+      'bannerEnabled',
+      (v) => $enumDecodeNullable(_$AdFeatureStateEnumMap, v) ?? .defaults,
+    ),
+    appOpenEnabled: $checkedConvert(
+      'appOpenEnabled',
+      (v) => $enumDecodeNullable(_$AdFeatureStateEnumMap, v) ?? .defaults,
+    ),
+    interstitialEnabled: $checkedConvert(
+      'interstitialEnabled',
+      (v) => $enumDecodeNullable(_$AdFeatureStateEnumMap, v) ?? .defaults,
+    ),
+    appOpenMinInterval: $checkedConvert('appOpenMinInterval', (v) => (v as num?)?.toInt() ?? 7200),
+    bannerFrequency: $checkedConvert('bannerFrequency', (v) => (v as num?)?.toInt() ?? 0),
+    interstitialMinInterval: $checkedConvert('interstitialMinInterval', (v) => (v as num?)?.toInt() ?? 0),
+    forceNonPersonalized: $checkedConvert('forceNonPersonalized', (v) => v as bool? ?? false),
+  );
   return val;
 });
 
-Map<String, dynamic> _$AdConfigToJson(AdConfig instance) => <String, dynamic>{'enabled': instance.enabled};
+Map<String, dynamic> _$AdConfigToJson(AdConfig instance) => <String, dynamic>{
+  'enabled': _$AdFeatureStateEnumMap[instance.enabled]!,
+  'bannerEnabled': _$AdFeatureStateEnumMap[instance.bannerEnabled]!,
+  'appOpenEnabled': _$AdFeatureStateEnumMap[instance.appOpenEnabled]!,
+  'interstitialEnabled': _$AdFeatureStateEnumMap[instance.interstitialEnabled]!,
+  'appOpenMinInterval': instance.appOpenMinInterval,
+  'bannerFrequency': instance.bannerFrequency,
+  'interstitialMinInterval': instance.interstitialMinInterval,
+  'forceNonPersonalized': instance.forceNonPersonalized,
+};
+
+const _$AdFeatureStateEnumMap = {
+  AdFeatureState.defaults: 'defaults',
+  AdFeatureState.on: 'on',
+  AdFeatureState.off: 'off',
+  AdFeatureState.forcedOn: 'forcedOn',
+};

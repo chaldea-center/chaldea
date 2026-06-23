@@ -1,9 +1,15 @@
 PODS:
+  - Ads-Fusion-CN-Beta (5.9.1.5):
+    - Ads-Fusion-CN-Beta/BUAdSDK (= 5.9.1.5)
+  - Ads-Fusion-CN-Beta/BUAdSDK (5.9.1.5)
   - alarm (0.0.1):
     - Flutter
   - countly_flutter_np (26.1.0):
     - Flutter
   - Flutter (1.0.0)
+  - flutter_gromore_ads (3.2.0):
+    - Ads-Fusion-CN-Beta (= 5.9.1.5)
+    - Flutter
   - flutter_js (0.1.0):
     - Flutter
   - flutter_mailer (0.0.1):
@@ -15,9 +21,14 @@ DEPENDENCIES:
   - alarm (from `.symlinks/plugins/alarm/ios`)
   - countly_flutter_np (from `.symlinks/plugins/countly_flutter_np/ios`)
   - Flutter (from `Flutter`)
+  - flutter_gromore_ads (from `.symlinks/plugins/flutter_gromore_ads/ios`)
   - flutter_js (from `.symlinks/plugins/flutter_js/ios`)
   - flutter_mailer (from `.symlinks/plugins/flutter_mailer/ios`)
   - image_gallery_saver (from `.symlinks/plugins/image_gallery_saver/ios`)
+
+SPEC REPOS:
+  trunk:
+    - Ads-Fusion-CN-Beta
 
 EXTERNAL SOURCES:
   alarm:
@@ -26,6 +37,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/countly_flutter_np/ios"
   Flutter:
     :path: Flutter
+  flutter_gromore_ads:
+    :path: ".symlinks/plugins/flutter_gromore_ads/ios"
   flutter_js:
     :path: ".symlinks/plugins/flutter_js/ios"
   flutter_mailer:
@@ -34,9 +47,11 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/image_gallery_saver/ios"
 
 SPEC CHECKSUMS:
+  Ads-Fusion-CN-Beta: f9d37fdb96242a4b0185e068185832d87582531c
   alarm: 8a8ed4893eb9bd09e7c5a96bf8ab8104f380f65f
   countly_flutter_np: c69ae85c9054a23aaab49d277549945be5031ec9
   Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
+  flutter_gromore_ads: 016c2b62a05d42dc656dcd3574b9d9df18700f6e
   flutter_js: 867813c1830e1d9b2c5d547cdb6f61801e2f2145
   flutter_mailer: 3a8cd4f36c960fb04528d5471097270c19fec1c4
   image_gallery_saver: 14711d79da40581063e8842a11acf1969d781ed7
