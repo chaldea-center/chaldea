@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 
+import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/userdata/remote_config.dart';
@@ -206,7 +207,17 @@ class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
             ),
             if (Language.isCHS) serverHint,
             for (final group in testGroups) _buildGroup(group),
-            SafeArea(child: Language.isCHS ? serverHint : const SizedBox()),
+            if (Language.isCHS) serverHint,
+            Center(
+              child: TextButton(
+                onPressed: () async {
+                  await showEasyLoading(() => CachedApi.remoteConfig(expireAfter: .zero));
+                  if (mounted) setState(() {});
+                },
+                child: Text('Refresh config'),
+              ),
+            ),
+            SafeArea(child: const SizedBox()),
           ],
         ),
       ),

@@ -287,6 +287,20 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
               rootRouter.appState.windowState = WindowStateEnum.screenshot;
             },
           ),
+        SwitchListTile.adaptive(
+          value: db.settings.display.showWindowFab,
+          title: Text(S.current.display_show_window_fab),
+          onChanged: (v) {
+            db.settings.display.showWindowFab = v;
+            db.saveSettings();
+            if (v) {
+              WindowManagerFab.createOverlay(context);
+            } else {
+              WindowManagerFab.removeOverlay();
+            }
+            setState(() {});
+          },
+        ),
         ListTile(
           title: const Text('Pop one page'),
           onTap: () {
