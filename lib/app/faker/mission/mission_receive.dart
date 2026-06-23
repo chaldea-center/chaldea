@@ -121,37 +121,7 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
   }
 
   MissionProgressType getMissionProgress(int eventMissionId) {
-    final mission = eventMissions[eventMissionId];
-    // TODO: check daily updatedAt
-    if (mission != null && mission.type == .daily) {
-      for (final cond in mission.conds) {
-        if (cond.missionProgressType != .clear || cond.targetIds.isEmpty) {
-          continue;
-        }
-        if (cond.condType == .missionConditionDetail) {
-          final userCondDetail = mstData.userEventMissionCondDetail[cond.targetIds.first];
-          if (userCondDetail == null) continue;
-          if (runtime.region.getDateTimeByOffset(userCondDetail.updatedAt).day !=
-              runtime.region.getDateTimeByOffset(DateTime.now().timestamp).day) {
-            // not same day
-            return MissionProgressType.none;
-          }
-
-          int? progressNum = mstData.userEventMissionCondDetail[cond.targetIds.first]?.progressNum;
-          return progressNum != null && progressNum >= cond.targetNum
-              ? MissionProgressType.achieve
-              : MissionProgressType.none;
-        } else if (cond.condType == .eventMissionClear) {
-          return cond.targetIds.where((targetId) => getMissionProgress(targetId).isClearOrAchieve).length >=
-                  cond.targetNum
-              ? MissionProgressType.achieve
-              : MissionProgressType.none;
-        }
-      }
-    }
-    final progress = mstData.userEventMission[eventMissionId]?.missionProgressType;
-    if (progress == null) return MissionProgressType.none;
-    return MissionProgressType.fromValue(progress);
+    return runtime.condCheck.getEventMissionProgress(eventMissionId);
   }
 
   bool isMissionClear(int eventMissionId) => getMissionProgress(eventMissionId) == MissionProgressType.clear;
@@ -339,7 +309,11 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
       }
       for (final cond in mission.conds) {
         if (cond.missionProgressType != MissionProgressType.clear) continue;
-        final _progressNum = runtime.condCheck.getProgressNum(cond.condType, cond.targetIds, cond.targetNum);
+        final _progressNum = runtime.condCheck.getEventMissionProgressNum(
+          cond.condType,
+          cond.targetIds,
+          cond.targetNum,
+        );
         progressNum ??= _progressNum;
         if (_progressNum == null) continue; // don't set targetNum
         targetNum = cond.targetNum;

@@ -112,7 +112,7 @@ class _QuestListPageState extends State<QuestListPage> {
       List<String> userQuestInfo = [];
       final userQuest = mstData?.userQuest[questId];
       if (mstData != null) {
-        bool hasSvt = mstData!.userSvtCollection[owner?.id]?.isOwned == true;
+        bool hasSvt = mstData!.userSvtCollection[owner?.id]?.isGet == true;
         if (userQuest != null) {
           userQuestInfo.add(userQuest.getText());
         } else if (hasSvt) {

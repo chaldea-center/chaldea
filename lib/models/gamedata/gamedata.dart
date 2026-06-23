@@ -841,6 +841,8 @@ class GameTimerData {
   late final Map<int, EventMission> eventMissions = {
     for (final mm in masterMissions.values)
       for (final m in mm.missions) m.id: m,
+    for (final event in events.values)
+      for (final m in event.missions) m.id: m,
   };
 
   GameTimerData({

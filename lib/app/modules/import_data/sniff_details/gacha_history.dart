@@ -435,7 +435,7 @@ class _SniffGachaHistoryState extends State<SniffGachaHistory> {
     Map<int, int> counts = {};
     for (final userSvt in servants) {
       final svt = db.gameData.servantsById[userSvt.svtId];
-      if (!userSvt.isOwned) continue;
+      if (!userSvt.isGet) continue;
       if (svt == null || !svt.isUserSvt || svt.rarity != rarity) continue;
       if (rarity == 4) {
         if (svt.type == SvtType.heroine ||

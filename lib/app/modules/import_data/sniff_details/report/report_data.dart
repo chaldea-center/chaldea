@@ -147,7 +147,7 @@ class FgoAnnualReportData {
     }
     report.ownedSvtCollections = {
       for (final collection in mstData.userSvtCollection)
-        if (collection.isOwned && report.regionReleasedPlayableSvtIds.contains(collection.svtId))
+        if (collection.isGet && report.regionReleasedPlayableSvtIds.contains(collection.svtId))
           collection.svtId: collection,
     };
     for (final collection in report.ownedSvtCollections.values) {
@@ -183,7 +183,7 @@ class FgoAnnualReportData {
     // bond
     for (final collection in report.ownedSvtCollections.values) {
       final svt = db.gameData.servantsById[collection.svtId];
-      if (!collection.isOwned) continue;
+      if (!collection.isGet) continue;
       if (svt == null || svt.collectionNo == 0 || !svt.isUserSvt) continue;
       if (collection.usedLanternCount > 0) report.usedLanternSvt.add(collection);
       if (collection.friendshipRank >= 10) report.bond10SvtCollections[collection.svtId] = collection;
@@ -263,7 +263,7 @@ class FgoAnnualReportData {
     for (final collection in report.ownedSvtCollections.values) {
       final svt = db.gameData.servantsById[collection.svtId];
       if (svt == null || svt.rarity != 5) continue;
-      if (!collection.isOwned) continue;
+      if (!collection.isGet) continue;
       if (const [800100, 2801200].contains(collection.svtId)) continue; // Mash, Solomon
       if (const [
         SvtObtain.eventReward,
