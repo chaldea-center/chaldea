@@ -34,46 +34,6 @@ class _ThemeColorPageState extends State<ThemeColorPage> {
               ],
             ),
           ),
-          RadioGroup<bool>(
-            groupValue: db.settings.useMaterial3,
-            onChanged: (v) {
-              if (v != null && v != db.settings.useMaterial3) {
-                db.settings.useMaterial3 = v;
-                db.notifySettings();
-                db.notifyAppUpdate();
-              }
-              setState(() {});
-            },
-            child: TileGroup(
-              header: "Material Design",
-              children: [
-                for (final useM3 in [false, true])
-                  RadioListTile<bool>(value: useM3, title: Text(useM3 ? 'Material 3' : 'Material 2')),
-              ],
-            ),
-          ),
-          RadioGroup<ColorSeed?>(
-            groupValue: db.settings.colorSeed,
-            onChanged: (v) {
-              if (v != db.settings.colorSeed) {
-                db.settings.colorSeed = v;
-                db.notifySettings();
-                db.notifyAppUpdate();
-              }
-              setState(() {});
-            },
-            child: TileGroup(
-              header: 'Theme Color',
-              children: [
-                for (final seed in [null, ...ColorSeed.values])
-                  RadioListTile<ColorSeed?>(
-                    value: seed,
-                    title: Text(seed?.label ?? S.current.general_default),
-                    secondary: seed == null ? null : Container(width: 24, height: 24, color: seed.color),
-                  ),
-              ],
-            ),
-          ),
         ],
       ),
     );

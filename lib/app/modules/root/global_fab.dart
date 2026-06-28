@@ -225,14 +225,6 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
           },
         ),
         ListTile(
-          leading: const Icon(Icons.color_lens_outlined),
-          title: const Text('Switch M2/M3'),
-          onTap: () {
-            db.settings.useMaterial3 = !db.settings.useMaterial3;
-            db.notifyAppUpdate();
-          },
-        ),
-        ListTile(
           title: Text(S.current.show_frame_rate),
           onTap: () {
             setState(() {
