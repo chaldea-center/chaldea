@@ -207,7 +207,6 @@ class TileGroup extends StatelessWidget {
       ?headerWidget,
       Card(
         color: tileColor,
-        shape: const RoundedRectangleBorder(),
         margin: const EdgeInsets.all(0),
         child: Column(crossAxisAlignment: crossAxisAlignment, mainAxisSize: MainAxisSize.min, children: group),
       ),

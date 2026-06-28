@@ -192,7 +192,6 @@ class _GalleryPageState extends State<GalleryPage> {
   /// TEST
   Widget buildTestInfoPad() {
     return Card(
-      elevation: 2,
       margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
