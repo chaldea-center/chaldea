@@ -15,6 +15,7 @@ class InfoRow extends StatelessWidget {
   final String? subtitle;
   final String? value;
   final bool valueMono;
+  final Widget? valueWidget;
   final bool showChevron;
   final InfoRowProminence prominence;
   final VoidCallback? onTap;
@@ -26,6 +27,7 @@ class InfoRow extends StatelessWidget {
     this.subtitle,
     this.value,
     this.valueMono = false,
+    this.valueWidget,
     this.showChevron = false,
     this.prominence = InfoRowProminence.title,
     this.onTap,
@@ -65,7 +67,10 @@ class InfoRow extends StatelessWidget {
             ],
           ),
         ),
-        if (value != null) ...[
+        if (valueWidget != null) ...[
+          const SizedBox(width: 12),
+          valueWidget!,
+        ] else if (value != null) ...[
           const SizedBox(width: 12),
           Text(
             value!,

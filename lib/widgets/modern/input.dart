@@ -17,6 +17,8 @@ class FormInput extends StatelessWidget {
   final String? Function(String?)? validator;
   final TextInputType? keyboardType;
   final bool enabled;
+  final bool autocorrect;
+  final FocusNode? focusNode;
   final ValueChanged<String>? onChanged;
   final InputDecoration? decoration;
 
@@ -33,6 +35,8 @@ class FormInput extends StatelessWidget {
     this.validator,
     this.keyboardType,
     this.enabled = true,
+    this.autocorrect = true,
+    this.focusNode,
     this.onChanged,
     this.decoration,
   });
@@ -69,6 +73,8 @@ class FormInput extends StatelessWidget {
           keyboardType: keyboardType,
           enabled: enabled,
           obscureText: obscure,
+          autocorrect: autocorrect,
+          focusNode: focusNode,
           onChanged: onChanged,
           decoration: baseDecoration,
         ),
