@@ -102,10 +102,7 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
               onPressed: _isAvailable ? _delete : null,
             ),
             const SizedBox(height: 8),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text(S.current.auth_cancel_back),
-            ),
+            TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(S.current.auth_cancel_back)),
           ],
         ),
       ),

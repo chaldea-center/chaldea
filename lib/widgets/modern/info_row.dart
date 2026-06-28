@@ -39,20 +39,18 @@ class InfoRow extends StatelessWidget {
     final cs = theme.colorScheme;
 
     final bool titleProminent = prominence == InfoRowProminence.title;
-    final TextStyle prominentStyle = theme.textTheme.titleMedium!
-        .copyWith(fontWeight: FontWeight.w600, color: cs.onSurface);
-    final TextStyle mutedStyle = theme.textTheme.bodySmall!
-        .copyWith(color: cs.onSurfaceVariant);
+    final TextStyle prominentStyle = theme.textTheme.titleMedium!.copyWith(
+      fontWeight: FontWeight.w600,
+      color: cs.onSurface,
+    );
+    final TextStyle mutedStyle = theme.textTheme.bodySmall!.copyWith(color: cs.onSurfaceVariant);
 
     final TextStyle titleStyle = titleProminent ? prominentStyle : mutedStyle;
     final TextStyle subtitleStyle = titleProminent ? mutedStyle : prominentStyle;
 
     final content = Row(
       children: [
-        if (leading != null) ...[
-          leading!,
-          const SizedBox(width: 12),
-        ],
+        if (leading != null) ...[leading!, const SizedBox(width: 12)],
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,22 +78,16 @@ class InfoRow extends StatelessWidget {
             ),
           ),
         ],
-        if (showChevron) ...[
-          const SizedBox(width: 4),
-          Icon(Icons.chevron_right, color: cs.onSurfaceVariant, size: 20),
-        ],
+        if (showChevron) ...[const SizedBox(width: 4), Icon(Icons.chevron_right, color: cs.onSurfaceVariant, size: 20)],
       ],
     );
 
     if (onTap == null) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-        child: content,
-      );
+      return Padding(padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16), child: content);
     }
-    return InkWell(onTap: onTap, child: Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-      child: content,
-    ));
+    return InkWell(
+      onTap: onTap,
+      child: Padding(padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16), child: content),
+    );
   }
 }

@@ -159,10 +159,9 @@ class _AdminUsersPageState extends State<AdminUsersPage> {
             child: Center(
               child: Text(
                 '${_users.length} / $_total',
-                style: Theme.of(context)
-                    .textTheme
-                    .bodySmall
-                    ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
               ),
             ),
           ),
@@ -202,10 +201,9 @@ class _AdminUsersPageState extends State<AdminUsersPage> {
                       Flexible(
                         child: Text(
                           user.name,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(fontWeight: FontWeight.w600, color: cs.onSurface),
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600, color: cs.onSurface),
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
@@ -230,10 +228,9 @@ class _AdminUsersPageState extends State<AdminUsersPage> {
                   ),
                   Text(
                     '${S.current.auth_admin_created_at}: ${created.toDateString()}',
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodySmall
-                        ?.copyWith(color: cs.onSurfaceVariant.withAlpha(180), fontSize: 11),
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodySmall?.copyWith(color: cs.onSurfaceVariant.withAlpha(180), fontSize: 11),
                   ),
                 ],
               ),

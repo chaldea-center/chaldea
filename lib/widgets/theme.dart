@@ -120,10 +120,7 @@ class AppTheme {
 
   static ThemeData _build(Brightness brightness) {
     final isDark = brightness == Brightness.dark;
-    final base = ColorScheme.fromSeed(
-      seedColor: const Color(0xFF1976D2),
-      brightness: brightness,
-    );
+    final base = ColorScheme.fromSeed(seedColor: const Color(0xFF1976D2), brightness: brightness);
 
     // Targeted overrides for design-token fidelity. We override at ColorScheme
     // level only where fromSeed's tonal palette diverges meaningfully from the
@@ -181,12 +178,8 @@ class AppTheme {
         enabledBorder: border,
         focusedBorder: focusedBorder,
         errorBorder: errorBorder,
-        focusedErrorBorder: errorBorder.copyWith(
-          borderSide: BorderSide(color: cs.error, width: 2),
-        ),
-        disabledBorder: border.copyWith(
-          borderSide: BorderSide(color: cs.outlineVariant.withAlpha(80), width: 1),
-        ),
+        focusedErrorBorder: errorBorder.copyWith(borderSide: BorderSide(color: cs.error, width: 2)),
+        disabledBorder: border.copyWith(borderSide: BorderSide(color: cs.outlineVariant.withAlpha(80), width: 1)),
         labelStyle: TextStyle(color: cs.onSurfaceVariant),
         hintStyle: TextStyle(color: cs.onSurfaceVariant),
       ),
@@ -203,13 +196,8 @@ class AppTheme {
           side: BorderSide(color: cs.outline, width: 1),
         ),
       ),
-      dividerTheme: DividerThemeData(
-        thickness: 0.5,
-        color: isDark ? const Color(0xFF2C2C2C) : const Color(0xFFEEEEEE),
-      ),
-      listTileTheme: const ListTileThemeData(
-        minLeadingWidth: 24,
-      ),
+      dividerTheme: DividerThemeData(thickness: 0.5, color: isDark ? const Color(0xFF2C2C2C) : const Color(0xFFEEEEEE)),
+      listTileTheme: const ListTileThemeData(minLeadingWidth: 24),
       tooltipTheme: const TooltipThemeData(waitDuration: Duration(milliseconds: 500)),
       extensions: {ModernTokens.forBrightness(brightness)},
     );

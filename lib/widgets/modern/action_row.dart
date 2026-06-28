@@ -37,15 +37,11 @@ class ActionRow extends StatelessWidget {
       fontWeight: FontWeight.w600,
       color: danger ? cs.error : cs.onSurface,
     );
-    final subtitleStyle = theme.textTheme.bodySmall!
-        .copyWith(color: cs.onSurfaceVariant);
+    final subtitleStyle = theme.textTheme.bodySmall!.copyWith(color: cs.onSurfaceVariant);
 
     final content = Row(
       children: [
-        if (leading != null) ...[
-          leading!,
-          const SizedBox(width: 12),
-        ],
+        if (leading != null) ...[leading!, const SizedBox(width: 12)],
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,17 +56,13 @@ class ActionRow extends StatelessWidget {
             ],
           ),
         ),
-        if (showChevron)
-          Icon(Icons.chevron_right, color: cs.onSurfaceVariant, size: 20),
+        if (showChevron) Icon(Icons.chevron_right, color: cs.onSurfaceVariant, size: 20),
       ],
     );
 
     return InkWell(
       onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-        child: content,
-      ),
+      child: Padding(padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16), child: content),
     );
   }
 }

@@ -115,8 +115,7 @@ class _CodeInputState extends State<CodeInput> {
                   textAlign: TextAlign.center,
                   maxLength: 1,
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  style: themeData.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600, color: cs.onSurface),
+                  style: themeData.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: cs.onSurface),
                   decoration: InputDecoration(
                     counterText: '',
                     contentPadding: EdgeInsets.zero,

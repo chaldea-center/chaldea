@@ -110,7 +110,7 @@ class _ProfilePageState extends State<ProfilePage> {
         child: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           children: [
-            ProfileCard(title: name, subtitle: '${S.current.auth_user_id}: $uid'),
+            // ProfileCard(title: name, subtitle: '${S.current.auth_user_id}: $uid'),
             _buildPersonalInfoSection(name, uid, email, isAdmin),
             _buildAccountActionsSection(),
             if (accessToken.isEmpty) _buildMigrationSection(),

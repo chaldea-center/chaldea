@@ -44,14 +44,13 @@ class FormInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final baseDecoration = (decoration ?? const InputDecoration())
-        .copyWith(
-          hintText: hint,
-          helperText: helperText,
-          errorText: errorText,
-          prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
-          suffixIcon: suffixIcon,
-        );
+    final baseDecoration = (decoration ?? const InputDecoration()).copyWith(
+      hintText: hint,
+      helperText: helperText,
+      errorText: errorText,
+      prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
+      suffixIcon: suffixIcon,
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,12 +59,7 @@ class FormInput extends StatelessWidget {
         if (label != null)
           Padding(
             padding: const EdgeInsets.only(bottom: 6),
-            child: Text(
-              label!,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ),
+            child: Text(label!, style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
           ),
         TextFormField(
           controller: controller,

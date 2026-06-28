@@ -178,19 +178,13 @@ class _RegisterPageState extends State<RegisterPage> {
 
   List<Widget> _buildStep2() {
     return [
-      InfoBanner(
-        variant: InfoBannerVariant.info,
-        text: S.current.auth_verification_code_sent(_emailController.text),
-      ),
+      InfoBanner(variant: InfoBannerVariant.info, text: S.current.auth_verification_code_sent(_emailController.text)),
       const SizedBox(height: 16),
       CodeInput(length: 6, onChanged: (v) => setState(() => _code = v)),
       const SizedBox(height: 24),
       PrimaryButton(label: S.current.confirm, onPressed: _isStep2Available ? _verify : null),
       const SizedBox(height: 8),
-      TextButton(
-        onPressed: _isStep1Available ? _sendCode : null,
-        child: Text(S.current.auth_resend_code),
-      ),
+      TextButton(onPressed: _isStep1Available ? _sendCode : null, child: Text(S.current.auth_resend_code)),
     ];
   }
 }

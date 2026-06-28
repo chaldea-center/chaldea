@@ -38,10 +38,7 @@ class PrimaryButton extends StatelessWidget {
           ? SizedBox(
               height: 20,
               width: 20,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                color: danger ? cs.onError : cs.onPrimary,
-              ),
+              child: CircularProgressIndicator(strokeWidth: 2, color: danger ? cs.onError : cs.onPrimary),
             )
           : Text(label),
     );
@@ -81,10 +78,7 @@ class SecondaryButton extends StatelessWidget {
           ? SizedBox(
               height: 20,
               width: 20,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                color: danger ? cs.error : cs.primary,
-              ),
+              child: CircularProgressIndicator(strokeWidth: 2, color: danger ? cs.error : cs.primary),
             )
           : Text(label),
     );

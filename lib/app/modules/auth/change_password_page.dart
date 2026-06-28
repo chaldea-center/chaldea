@@ -99,10 +99,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
         child: ListView(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           children: [
-            InfoBanner(
-              variant: InfoBannerVariant.warning,
-              text: S.current.auth_change_password_warning,
-            ),
+            InfoBanner(variant: InfoBannerVariant.warning, text: S.current.auth_change_password_warning),
             const SizedBox(height: 16),
             FormInput(
               label: S.current.auth_current_password,

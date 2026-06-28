@@ -206,8 +206,16 @@ class _AdminUserDetailPageState extends State<AdminUserDetailPage> {
     return SectionCard(
       title: S.current.auth_admin_actions,
       children: [
-        ActionRow(leading: Icon(Icons.lock_reset_outlined), title: S.current.auth_admin_reset_password, onTap: _resetPassword),
-        ActionRow(leading: Icon(Icons.email_outlined), title: S.current.auth_admin_send_recovery, onTap: _sendRecoveryEmail),
+        ActionRow(
+          leading: Icon(Icons.lock_reset_outlined),
+          title: S.current.auth_admin_reset_password,
+          onTap: _resetPassword,
+        ),
+        ActionRow(
+          leading: Icon(Icons.email_outlined),
+          title: S.current.auth_admin_send_recovery,
+          onTap: _sendRecoveryEmail,
+        ),
       ],
     );
   }

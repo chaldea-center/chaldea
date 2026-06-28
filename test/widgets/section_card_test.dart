@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_test/flutter_test.dart';
+
 import 'package:chaldea/widgets/modern/section_card.dart';
 import 'package:chaldea/widgets/theme.dart';
 
@@ -14,10 +16,7 @@ void main() {
   }
 
   testWidgets('renders title when provided', (tester) async {
-    await pumpCard(
-      tester,
-      const SectionCard(title: 'Account Info', children: [Text('row1')]),
-    );
+    await pumpCard(tester, const SectionCard(title: 'Account Info', children: [Text('row1')]));
     expect(find.text('Account Info'), findsOneWidget);
     expect(find.text('row1'), findsOneWidget);
   });
@@ -29,24 +28,12 @@ void main() {
   });
 
   testWidgets('divided=true inserts Divider between children', (tester) async {
-    await pumpCard(
-      tester,
-      const SectionCard(
-        divided: true,
-        children: [Text('a'), Text('b'), Text('c')],
-      ),
-    );
+    await pumpCard(tester, const SectionCard(divided: true, children: [Text('a'), Text('b'), Text('c')]));
     expect(find.byType(Divider), findsNWidgets(2));
   });
 
   testWidgets('divided=false inserts no dividers', (tester) async {
-    await pumpCard(
-      tester,
-      const SectionCard(
-        divided: false,
-        children: [Text('a'), Text('b')],
-      ),
-    );
+    await pumpCard(tester, const SectionCard(divided: false, children: [Text('a'), Text('b')]));
     expect(find.byType(Divider), findsNothing);
   });
 
