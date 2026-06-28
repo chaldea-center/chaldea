@@ -1,9 +1,11 @@
 // InfoBanner: card-style banner for info / success / warning / danger
 // messages. Uses StateColors for semantic colors and ColorScheme.error
-// for danger.
+// for danger. Each variant gets a 4px left accent strip in its semantic
+// color via AccentContainer, making the variant instantly recognizable.
 
 import 'package:flutter/material.dart';
 
+import 'accent_container.dart';
 import 'state_colors.dart';
 
 enum InfoBannerVariant { info, success, warning, danger }
@@ -24,10 +26,13 @@ class InfoBanner extends StatelessWidget {
       InfoBannerVariant.warning => (sc.warningFg, sc.warningBg, Icons.warning_amber_rounded),
       InfoBannerVariant.danger => (sc.dangerFg, sc.dangerBg, Icons.error_outline_rounded),
     };
-    return Container(
-      width: double.infinity,
+    return AccentContainer(
+      primary: true,
+      accentColor: fg,
+      borderColor: fg.withAlpha(40),
+      backgroundColor: bg,
+      borderRadius: 8,
       padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(8)),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

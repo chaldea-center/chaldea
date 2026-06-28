@@ -389,7 +389,7 @@ class _SettingsPageState extends State<SettingsPage> {
         return Text.rich(
           TextSpan(
             text: user.name,
-            children: [TextSpan(text: '\n${user.id}', style: Theme.of(context).textTheme.bodySmall)],
+            // children: [TextSpan(text: '\n${user.id}', style: Theme.of(context).textTheme.bodySmall)],
           ),
           textAlign: TextAlign.end,
         );

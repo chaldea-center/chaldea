@@ -302,6 +302,7 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
   }
 
   PreferredSizeWidget get tabBar {
+    final isDark = Theme.of(context).isDarkMode;
     return FixedHeight.tabBar(
       TabBar(
         tabAlignment: TabAlignment.center,
@@ -311,7 +312,8 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
         // unselectedLabelColor: Colors.grey,
         isScrollable: true,
         tabs: builders.map((e) => Tab(text: e.tabBuilder())).toList(),
-        indicatorColor: Theme.of(context).isDarkMode ? null : Colors.white.withAlpha(210),
+        indicatorColor: isDark ? null : Colors.white.withAlpha(210),
+        unselectedLabelColor: isDark ? Colors.grey.shade200 : Colors.grey.shade800,
       ),
     );
   }

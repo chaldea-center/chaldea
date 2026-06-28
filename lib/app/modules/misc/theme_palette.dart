@@ -47,24 +47,23 @@ class _DarkLightThemePaletteState extends State<DarkLightThemePalette> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            for (final useM3 in [false, true])
-              for (final dark in [false, true])
-                Expanded(
-                  child: Theme(
-                    data: _getThemeData(dark: dark, useM3: useM3),
-                    child: Builder(builder: (context) => const _PaletteForTheme()),
-                  ),
+            for (final dark in [false, true])
+              Expanded(
+                child: Theme(
+                  data: _getThemeData(dark: dark),
+                  child: Builder(builder: (context) => const _PaletteForTheme()),
                 ),
+              ),
           ],
         ),
       ),
     );
   }
 
-  ThemeData _getThemeData({required bool dark, required bool useM3}) {
+  ThemeData _getThemeData({required bool dark}) {
     final themeData = ThemeData(
       brightness: dark ? Brightness.dark : Brightness.light,
-      useMaterial3: useM3,
+      useMaterial3: true,
       colorSchemeSeed: db.settings.colorSeed?.color,
     );
     return themeData;

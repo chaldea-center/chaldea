@@ -6,22 +6,24 @@ import 'package:flutter/material.dart';
 
 class SectionCard extends StatelessWidget {
   final String? title;
+  final EdgeInsetsGeometry? titlePadding;
   final List<Widget> children;
   final bool divided;
-  final EdgeInsets padding;
+  final EdgeInsetsGeometry? padding;
 
   const SectionCard({
     super.key,
     this.title,
+    this.titlePadding,
     required this.children,
     this.divided = true,
-    this.padding = const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+    this.padding,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final List<Widget> content;
+    List<Widget> content;
     if (divided && children.length > 1) {
       content = [children.first];
       for (var i = 1; i < children.length; i++) {
@@ -32,25 +34,22 @@ class SectionCard extends StatelessWidget {
       content = children;
     }
 
-    return Card(
-      child: Padding(
-        padding: padding,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (title != null)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Text(
-                  title!,
-                  style: theme.textTheme.titleSmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
-                ),
-              ),
-            ...content,
-          ],
-        ),
-      ),
+    Widget child = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (title != null)
+          Padding(
+            padding: titlePadding ?? const EdgeInsets.fromLTRB(16, 12, 16, 8),
+            child: Text(title!, style: theme.textTheme.titleSmall?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+          ),
+        ...content,
+      ],
     );
+    if (padding != null) {
+      child = Padding(padding: padding!, child: child);
+    }
+
+    return Card(child: child);
   }
 }

@@ -1,7 +1,7 @@
 // ProfilePage: hub for the logged-in user.
-// Layout: ProfileCard + 个人信息 SectionCard + 账号操作 SectionCard
-// + (if accessToken empty) 迁移账号 ActionRow
-// + (if isAdmin) 管理工具 SectionCard with 用户管理.
+// Layout: ProfileCard + Personal Info SectionCard + Account Actions SectionCard
+// + (if accessToken empty) Migrate Account ActionRow
+// + (if isAdmin) Admin Tools SectionCard with User Management.
 // Logout pops back to settings; sub-pages push and refresh on pop.
 
 import 'package:flutter/material.dart';
@@ -125,6 +125,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return SectionCard(
       title: S.current.auth_personal_info,
       children: [
+        InfoRow(leading: Icon(Icons.tag), title: S.current.auth_user_id, value: uid, valueMono: true),
         InfoRow(
           leading: Icon(Icons.person_outline),
           title: S.current.login_username,
@@ -132,11 +133,14 @@ class _ProfilePageState extends State<ProfilePage> {
           onTap: () => _pushAndRefresh(const ChangeUsernamePage()),
           showChevron: true,
         ),
-        InfoRow(leading: Icon(Icons.tag), title: S.current.auth_user_id, value: uid, valueMono: true),
         InfoRow(
           leading: Icon(Icons.email_outlined),
           title: S.current.auth_email_field,
           value: email.isEmpty ? S.current.auth_admin_no_email : _maskEmail(email),
+          valueWidget: Text(
+            email.isEmpty ? S.current.auth_admin_no_email : _maskEmail(email),
+            style: email.isEmpty ? TextStyle(color: Colors.red) : null,
+          ),
           onTap: () => _pushAndRefresh(const ChangeEmailPage()),
           showChevron: true,
         ),

@@ -1,11 +1,10 @@
-// ActionRow: a tappable action row with leading icon, title, optional
-// subtitle, and a trailing chevron (shown by default because action rows
-// usually navigate). The `danger` variant colors the title with error — used
-// for destructive actions like "Delete account". Kept as a custom widget
-// (not ListTile) to share the InfoRow layout vocabulary and to support the
-// danger variant cleanly.
+// ActionRow: a thin wrapper around InfoRow that defaults showChevron to
+// true (action rows usually navigate) and maps ActionRowVariant.danger to
+// InfoRow's danger flag for destructive actions like "Delete account".
 
 import 'package:flutter/material.dart';
+
+import 'info_row.dart';
 
 enum ActionRowVariant { normal, danger }
 
@@ -29,40 +28,13 @@ class ActionRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final cs = theme.colorScheme;
-    final bool danger = variant == ActionRowVariant.danger;
-
-    final titleStyle = theme.textTheme.titleMedium!.copyWith(
-      fontWeight: FontWeight.w600,
-      color: danger ? cs.error : cs.onSurface,
-    );
-    final subtitleStyle = theme.textTheme.bodySmall!.copyWith(color: cs.onSurfaceVariant);
-
-    final content = Row(
-      children: [
-        if (leading != null) ...[leading!, const SizedBox(width: 12)],
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(title, style: titleStyle),
-              if (subtitle != null)
-                Padding(
-                  padding: const EdgeInsets.only(top: 2),
-                  child: Text(subtitle!, style: subtitleStyle),
-                ),
-            ],
-          ),
-        ),
-        if (showChevron) Icon(Icons.chevron_right, color: cs.onSurfaceVariant, size: 20),
-      ],
-    );
-
-    return InkWell(
+    return InfoRow(
+      leading: leading,
+      title: title,
+      subtitle: subtitle,
+      showChevron: showChevron,
+      danger: variant == ActionRowVariant.danger,
       onTap: onTap,
-      child: Padding(padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16), child: content),
     );
   }
 }

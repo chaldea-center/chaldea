@@ -25,10 +25,10 @@ class _CodeInputState extends State<CodeInput> {
   void initState() {
     super.initState();
     _controllers = List.generate(widget.length, (_) => TextEditingController());
-    _focusNodes = List.generate(widget.length, (_) => FocusNode());
+    _focusNodes = List.generate(widget.length, (_) => FocusNode(onKeyEvent: _onKey));
     _values = List.generate(widget.length, (_) => '');
     if (widget.autofocus) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => _focusNodes.first.requestFocus());
+      WidgetsBinding.instance.addPostFrameCallback((_) => mounted ? _focusNodes.first.requestFocus() : null);
     }
   }
 
@@ -99,43 +99,38 @@ class _CodeInputState extends State<CodeInput> {
     final themeData = Theme.of(context);
     final cs = themeData.colorScheme;
     return Row(
+      spacing: 8,
       children: [
-        for (var i = 0; i < widget.length; i++) ...[
-          if (i > 0) const SizedBox(width: 8),
+        for (var i = 0; i < widget.length; i++)
           Expanded(
-            child: Focus(
-              focusNode: _focusNodes[i],
-              onKeyEvent: _onKey,
-              child: SizedBox(
-                height: 48,
-                child: TextField(
-                  controller: _controllers[i],
-                  focusNode: _focusNodes[i],
-                  keyboardType: TextInputType.number,
-                  textAlign: TextAlign.center,
-                  maxLength: 1,
-                  inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                  style: themeData.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: cs.onSurface),
-                  decoration: InputDecoration(
-                    counterText: '',
-                    contentPadding: EdgeInsets.zero,
-                    filled: true,
-                    fillColor: themeData.inputDecorationTheme.fillColor ?? cs.surfaceContainerHighest,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: cs.outlineVariant),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: cs.primary, width: 1.5),
-                    ),
+            child: SizedBox(
+              height: 48,
+              child: TextField(
+                controller: _controllers[i],
+                focusNode: _focusNodes[i],
+                keyboardType: TextInputType.number,
+                textAlign: TextAlign.center,
+                maxLength: 1,
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                style: themeData.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600, color: cs.onSurface),
+                decoration: InputDecoration(
+                  counterText: '',
+                  contentPadding: EdgeInsets.zero,
+                  filled: true,
+                  fillColor: themeData.inputDecorationTheme.fillColor ?? cs.surfaceContainerHighest,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: cs.outlineVariant),
                   ),
-                  onChanged: (v) => _onChanged(i, v),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: cs.primary, width: 1.5),
+                  ),
                 ),
+                onChanged: (v) => _onChanged(i, v),
               ),
             ),
           ),
-        ],
       ],
     );
   }

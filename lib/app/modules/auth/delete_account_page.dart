@@ -142,30 +142,25 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
     ];
     return SectionCard(
       divided: false,
+      padding: .symmetric(vertical: 8),
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: items
-              .map(
-                (text) => Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 6),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Icon(Icons.close, size: 18, color: cs.error),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          text,
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: cs.onSurface, height: 1.45),
-                        ),
-                      ),
-                    ],
+        for (final text in items)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(Icons.close, size: 18, color: cs.error),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    text,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: cs.onSurface, height: 1.45),
                   ),
                 ),
-              )
-              .toList(),
-        ),
+              ],
+            ),
+          ),
       ],
     );
   }

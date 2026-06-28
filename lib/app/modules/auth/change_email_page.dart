@@ -123,7 +123,10 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
 
   List<Widget> _buildStep2() {
     return [
-      InfoBanner(variant: InfoBannerVariant.info, text: S.current.auth_verification_code_sent(_emailController.text)),
+      InfoBanner(
+        variant: InfoBannerVariant.info,
+        text: '${S.current.auth_verification_code_sent} ${_emailController.text}',
+      ),
       const SizedBox(height: 16),
       CodeInput(length: 6, onChanged: (v) => setState(() => _code = v)),
       const SizedBox(height: 24),

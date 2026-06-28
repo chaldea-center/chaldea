@@ -216,7 +216,7 @@ class _MethodCard extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     return AccentContainer(
       primary: primary,
-      boxShadow: [BoxShadow(color: cs.shadow.withAlpha(10), offset: const Offset(0, 1), blurRadius: 2)],
+      // boxShadow: [BoxShadow(color: cs.shadow.withAlpha(10), offset: const Offset(0, 1), blurRadius: 2)],
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [

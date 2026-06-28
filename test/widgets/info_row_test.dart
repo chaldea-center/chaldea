@@ -50,7 +50,7 @@ void main() {
     final titleWidget = tester.widget<Text>(find.text('TitleText'));
     final subWidget = tester.widget<Text>(find.text('SubText'));
     expect(titleWidget.style?.fontSize, greaterThan(subWidget.style!.fontSize!));
-    expect(titleWidget.style?.fontWeight, FontWeight.w600);
+    expect(titleWidget.style?.fontWeight, FontWeight.w400);
   });
 
   testWidgets('prominence.subtitle inverts title/subtitle sizing', (tester) async {
@@ -58,6 +58,6 @@ void main() {
     final titleWidget = tester.widget<Text>(find.text('Label'));
     final subWidget = tester.widget<Text>(find.text('ValueBig'));
     expect(subWidget.style?.fontSize, greaterThan(titleWidget.style!.fontSize!));
-    expect(subWidget.style?.fontWeight, FontWeight.w600);
+    expect(subWidget.style?.fontWeight, FontWeight.w400);
   });
 }

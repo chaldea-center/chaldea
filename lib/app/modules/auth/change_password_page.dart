@@ -1,7 +1,7 @@
 // ChangePasswordPage: change the user's password.
 // Per design.md D-change-password: the API returns a fresh accessToken, so
 // the session stays valid (NO auto-logout). The design's footer hint
-// "密码修改成功后将自动退出登录" is intentionally omitted.
+// "After password change, you will be automatically logged out" is intentionally omitted.
 
 import 'package:flutter/material.dart';
 
@@ -69,8 +69,9 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
     final confirm = _confirmController.text;
     return cur.isNotEmpty &&
         validatePassword(cur) == null &&
-        validateNewPassword(newPwd, oldPwd: cur) == null &&
-        confirm == newPwd;
+        newPwd.isNotEmpty &&
+        confirm == newPwd &&
+        validateNewPassword(newPwd, oldPwd: cur) == null;
   }
 
   Future<void> _submit() async {

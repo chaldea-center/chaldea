@@ -21,46 +21,44 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
-  static String m13(email) => "A verification code has been sent to ${email}.";
-
-  static String m14(count, total) =>
+  static String m13(count, total) =>
       "${count} of total ${total} command cards didn\'t attack, please remove unnecessary cards";
 
-  static String m15(kstar) => "5${kstar} Summons";
+  static String m14(kstar) => "5${kstar} Summons";
 
-  static String m16(kstar) => "5${kstar} Summon Probability";
+  static String m15(kstar) => "5${kstar} Summon Probability";
 
-  static String m17(kstar) => "5${kstar} Count / NP Lvs";
+  static String m16(kstar) => "5${kstar} Count / NP Lvs";
 
-  static String m18(year) => "Year ${year}";
+  static String m17(year) => "Year ${year}";
 
-  static String m19(curYear) => "${curYear} Pulls";
+  static String m18(curYear) => "${curYear} Pulls";
 
-  static String m20(curYear) => "${curYear}";
+  static String m19(curYear) => "${curYear}";
 
-  static String m21(curYear, count) => "${curYear} Top ${count} Pulls";
+  static String m20(curYear, count) => "${curYear} Top ${count} Pulls";
 
-  static String m22(year, month, day) => "for ${year}yr ${month}mo ${day}d";
+  static String m21(year, month, day) => "for ${year}yr ${month}mo ${day}d";
 
   static String m0(url) =>
       "Chaldea - A cross-platform utility for Fate/GO. Supporting game data review, servant/event/item planning, master mission planning, summon simulator and so on.\n\nFor details: \n${url}\n";
 
-  static String m23(count) => "Charge NP to ${count}";
+  static String m22(count) => "Charge NP to ${count}";
 
-  static String m24(version, curVer) => "Required app version: ≥ ${version} (Current: ${curVer})";
+  static String m23(version, curVer) => "Required app version: ≥ ${version} (Current: ${curVer})";
 
   static String m1(n) => "Max ${n} lottery";
 
   static String m2(n, total) => "Grail to crystal: ${n}/${total}";
 
-  static String m25(filename, hash, localHash) =>
+  static String m24(filename, hash, localHash) =>
       "File ${filename} not found or mismatched hash: ${hash} - ${localHash}";
 
-  static String m26(rarity) => "${rarity}☆ CE Pick Up";
+  static String m25(rarity) => "${rarity}☆ CE Pick Up";
 
-  static String m27(rarity) => "${rarity}☆ SVT Pick Up";
+  static String m26(rarity) => "${rarity}☆ SVT Pick Up";
 
-  static String m28(item) => "Possible related ${item} \"GUESSED\" based on time";
+  static String m27(item) => "Possible related ${item} \"GUESSED\" based on time";
 
   static String m3(error) => "Import failed. Error:\n${error}";
 
@@ -68,24 +66,24 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m5(site) => "Jump to ${site}";
 
-  static String m29(shown, total) => "${shown} shown (total ${total})";
+  static String m28(shown, total) => "${shown} shown (total ${total})";
 
-  static String m30(shown, ignore, total) => "${shown} shown, ${ignore} ignored (total ${total})";
+  static String m29(shown, ignore, total) => "${shown} shown, ${ignore} ignored (total ${total})";
 
   static String m6(first) =>
       "${Intl.select(first, {'true': 'Already the first one', 'false': 'Already the last one', 'other': 'No more'})}";
 
-  static String m31(layer) => "Layer ${layer}";
+  static String m30(layer) => "Layer ${layer}";
 
   static String m7(n) => "Section ${n}";
 
-  static String m32(region) => "Something went wrong or ${region} doesn\'t have this quest\'s data";
+  static String m31(region) => "Something went wrong or ${region} doesn\'t have this quest\'s data";
 
-  static String m33(runs) => "${runs} Runs";
+  static String m32(runs) => "${runs} Runs";
 
-  static String m34(index, total, enemy) => "Version ${index}/${total} (${enemy} enemies)";
+  static String m33(index, total, enemy) => "Version ${index}/${total} (${enemy} enemies)";
 
-  static String m35(unknown, dup, valid, total, selected) =>
+  static String m34(unknown, dup, valid, total, selected) =>
       "${unknown} unknown, ${dup} dup, ${valid}/${total} valid, ${selected} selected";
 
   static String m8(region) => "${region} Notice";
@@ -94,19 +92,19 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m10(n) => "Reset Plan ${n}(Shown)";
 
-  static String m36(battles, ap) => "Total ${battles} battles, ${ap} AP";
+  static String m35(battles, ap) => "Total ${battles} battles, ${ap} AP";
 
   static String m11(n) => "Profile ${n}";
 
-  static String m37(color, trait) =>
+  static String m36(color, trait) =>
       "This Noble Phantasm is displayed as ${color} card, but doesn\'t have [${trait}] trait.";
 
-  static String m38(trait) => "This is a Noble Phantasm, but doesn\'t have [${trait}] trait.";
+  static String m37(trait) => "This is a Noble Phantasm, but doesn\'t have [${trait}] trait.";
 
-  static String m39(count) =>
+  static String m38(count) =>
       "${count} NP5 ★5 servants, please descrease svt requirements as much as possible for sharing";
 
-  static String m40(remain) => "Uploading too frequently, please wait ${remain} seconds";
+  static String m39(remain) => "Uploading too frequently, please wait ${remain} seconds";
 
   static String m12(a, b) => "${a} ${b}";
 
@@ -241,7 +239,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "auth_user_management": MessageLookupByLibrary.simpleMessage("User Management"),
     "auth_username_helper": MessageLookupByLibrary.simpleMessage("4-18 chars, letters/digits/underscore only"),
     "auth_username_or_email": MessageLookupByLibrary.simpleMessage("Username or Email"),
-    "auth_verification_code_sent": m13,
+    "auth_verification_code_sent": MessageLookupByLibrary.simpleMessage("A verification code has been sent to"),
     "authfile_login_warning": MessageLookupByLibrary.simpleMessage("Read usage and RISK first! "),
     "auto_reset": MessageLookupByLibrary.simpleMessage("Auto reset"),
     "auto_update": MessageLookupByLibrary.simpleMessage("Auto Update"),
@@ -333,7 +331,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "card_description": MessageLookupByLibrary.simpleMessage("Description"),
     "card_info": MessageLookupByLibrary.simpleMessage("Info"),
     "card_name": MessageLookupByLibrary.simpleMessage("Card Name"),
-    "card_not_attack_warning": m14,
+    "card_not_attack_warning": m13,
     "card_status_met": MessageLookupByLibrary.simpleMessage("Met"),
     "card_status_not_met": MessageLookupByLibrary.simpleMessage("Not Met"),
     "card_status_owned": MessageLookupByLibrary.simpleMessage("Owned"),
@@ -349,16 +347,16 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "chaldea_backup": MessageLookupByLibrary.simpleMessage("Chaldea App Backup"),
     "chaldea_gate": MessageLookupByLibrary.simpleMessage("Chaldea Gate"),
-    "chaldea_report_5star_pull": m15,
-    "chaldea_report_5star_pull_prob": m16,
+    "chaldea_report_5star_pull": m14,
+    "chaldea_report_5star_pull_prob": m15,
     "chaldea_report_5star_stat_dis_detail": MessageLookupByLibrary.simpleMessage(
       "- Based on historical data, Lucky Bag pulls removed",
     ),
     "chaldea_report_5star_stat_dis_ent": MessageLookupByLibrary.simpleMessage("- For entertainment purpose only"),
-    "chaldea_report_5star_svts_count": m17,
+    "chaldea_report_5star_svts_count": m16,
     "chaldea_report_account_created": MessageLookupByLibrary.simpleMessage("Master for"),
     "chaldea_report_compendium": MessageLookupByLibrary.simpleMessage("Servant Collections"),
-    "chaldea_report_cur_year": m18,
+    "chaldea_report_cur_year": m17,
     "chaldea_report_favorite": MessageLookupByLibrary.simpleMessage("Favorite"),
     "chaldea_report_likely": MessageLookupByLibrary.simpleMessage("Conclusion"),
     "chaldea_report_luck_grand_lucky": MessageLookupByLibrary.simpleMessage("Grand Gacha God"),
@@ -377,13 +375,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "chaldea_report_most_fail": MessageLookupByLibrary.simpleMessage("Most Failures"),
     "chaldea_report_most_free": MessageLookupByLibrary.simpleMessage("Most Free"),
     "chaldea_report_most_raid": MessageLookupByLibrary.simpleMessage("Most Raid"),
-    "chaldea_report_pull_cur_year": m19,
+    "chaldea_report_pull_cur_year": m18,
     "chaldea_report_pull_stat_all": MessageLookupByLibrary.simpleMessage("All Time"),
-    "chaldea_report_pull_stat_cur_year": m20,
-    "chaldea_report_pull_stat_top_title": m21,
+    "chaldea_report_pull_stat_cur_year": m19,
+    "chaldea_report_pull_stat_top_title": m20,
     "chaldea_report_push": MessageLookupByLibrary.simpleMessage("Push"),
     "chaldea_report_quests_stat": MessageLookupByLibrary.simpleMessage("Quest Stat"),
-    "chaldea_report_since_account_created_date": m22,
+    "chaldea_report_since_account_created_date": m21,
     "chaldea_report_times": MessageLookupByLibrary.simpleMessage(" Times"),
     "chaldea_report_title": MessageLookupByLibrary.simpleMessage("Chaldea Report"),
     "chaldea_report_total_days": MessageLookupByLibrary.simpleMessage(" Days"),
@@ -396,7 +394,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "chaldea_share_msg": m0,
     "change_log": MessageLookupByLibrary.simpleMessage("Change Log"),
     "characters_in_card": MessageLookupByLibrary.simpleMessage("Characters"),
-    "charge_np_to": m23,
+    "charge_np_to": m22,
     "check_file_hash": MessageLookupByLibrary.simpleMessage("Verify file integrity"),
     "check_update": MessageLookupByLibrary.simpleMessage("Check update"),
     "class_advantage": MessageLookupByLibrary.simpleMessage("Class Advantage"),
@@ -560,7 +558,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "error": MessageLookupByLibrary.simpleMessage("Error"),
     "error_no_data_found": MessageLookupByLibrary.simpleMessage("No data found"),
     "error_no_internet": MessageLookupByLibrary.simpleMessage("No internet"),
-    "error_required_app_version": m24,
+    "error_required_app_version": m23,
     "error_widget_hint": MessageLookupByLibrary.simpleMessage("Error! Click to go back >_<"),
     "event": MessageLookupByLibrary.simpleMessage("Event"),
     "event_ap_cost_half": MessageLookupByLibrary.simpleMessage("AP Cost 1/2"),
@@ -630,7 +628,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "ffo_same_svt": MessageLookupByLibrary.simpleMessage("Same Servant"),
     "fgo_domus_aurea": MessageLookupByLibrary.simpleMessage("Domus Aurea"),
     "field_ai": MessageLookupByLibrary.simpleMessage("Field AI"),
-    "file_not_found_or_mismatched_hash": m25,
+    "file_not_found_or_mismatched_hash": m24,
     "filename": MessageLookupByLibrary.simpleMessage("filename"),
     "filter": MessageLookupByLibrary.simpleMessage("Filter"),
     "filter_atk_hp_type": MessageLookupByLibrary.simpleMessage("Type"),
@@ -663,12 +661,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "gacha_draw_rate": MessageLookupByLibrary.simpleMessage("Prob."),
     "gacha_image_overridden_hint": MessageLookupByLibrary.simpleMessage("Banner image may be overridden by"),
     "gacha_prob_calc": MessageLookupByLibrary.simpleMessage("Gacha Prob Calc"),
-    "gacha_prob_ce_pickup": m26,
+    "gacha_prob_ce_pickup": m25,
     "gacha_prob_custom_rate": MessageLookupByLibrary.simpleMessage("Custom Rate"),
     "gacha_prob_precision_hint": MessageLookupByLibrary.simpleMessage(
       "If the value is too large or too small, the calculation result is inaccurate due to the double precision problem.",
     ),
-    "gacha_prob_svt_pickup": m27,
+    "gacha_prob_svt_pickup": m26,
     "gacha_svt_count_hint": MessageLookupByLibrary.simpleMessage(
       "Both excluded event SR and FP SR.\nOwned: Sum of NP level of servants in Inventory & Second Archive, don\'t include burned.\nObtain: all historical Gachas and \'PART\' of 5/4-Star Servant Present.\nSee link ↓ for details.",
     ),
@@ -704,7 +702,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "growth_curve": MessageLookupByLibrary.simpleMessage("Growth Curve"),
     "guda_female": MessageLookupByLibrary.simpleMessage("Gudako"),
     "guda_male": MessageLookupByLibrary.simpleMessage("Gudao"),
-    "guessed_on_time_hint": m28,
+    "guessed_on_time_hint": m27,
     "help": MessageLookupByLibrary.simpleMessage("Help"),
     "hide": MessageLookupByLibrary.simpleMessage("Hide"),
     "hide_svt_plan_details": MessageLookupByLibrary.simpleMessage("Hide Plan Detail"),
@@ -827,8 +825,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "limited_event": MessageLookupByLibrary.simpleMessage("Limited Event"),
     "limited_time": MessageLookupByLibrary.simpleMessage("Limited Time"),
     "link": MessageLookupByLibrary.simpleMessage("link"),
-    "list_count_shown_all": m29,
-    "list_count_shown_hidden_all": m30,
+    "list_count_shown_all": m28,
+    "list_count_shown_hidden_all": m29,
     "list_end_hint": m6,
     "load_ffo_data": MessageLookupByLibrary.simpleMessage("Load FFO Data"),
     "local_team_save_no_replay_warning": MessageLookupByLibrary.simpleMessage(
@@ -872,7 +870,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "main_story": MessageLookupByLibrary.simpleMessage("Main Record"),
     "main_story_chapter": MessageLookupByLibrary.simpleMessage("Chapter"),
     "map_gimmicks": MessageLookupByLibrary.simpleMessage("Gimmicks"),
-    "map_layer_n": m31,
+    "map_layer_n": m30,
     "map_show_fq_spots_only": MessageLookupByLibrary.simpleMessage("FQ spots only"),
     "map_show_header_image": MessageLookupByLibrary.simpleMessage("Show Header Image"),
     "map_show_roads": MessageLookupByLibrary.simpleMessage("Show Roads"),
@@ -1008,7 +1006,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "quest_fields": MessageLookupByLibrary.simpleMessage("Fields"),
     "quest_fixed_drop": MessageLookupByLibrary.simpleMessage("Drops"),
     "quest_fixed_drop_short": MessageLookupByLibrary.simpleMessage("Drops"),
-    "quest_not_found_error": m32,
+    "quest_not_found_error": m31,
     "quest_prefer_region": MessageLookupByLibrary.simpleMessage("Preferred Region"),
     "quest_prefer_region_hint": MessageLookupByLibrary.simpleMessage(
       "If the related event of the quest has not started at chosen region, it will fallback to JP",
@@ -1019,10 +1017,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "quest_restriction": MessageLookupByLibrary.simpleMessage("Restrictions"),
     "quest_reward": MessageLookupByLibrary.simpleMessage("Quest Rewards"),
     "quest_reward_short": MessageLookupByLibrary.simpleMessage("Rewards"),
-    "quest_runs": m33,
+    "quest_runs": m32,
     "quest_timeline_sort_campaign_open": MessageLookupByLibrary.simpleMessage("AP Cost Event Time"),
     "quest_timeline_sort_quest_open": MessageLookupByLibrary.simpleMessage("Quest Open Time"),
-    "quest_version": m34,
+    "quest_version": m33,
     "quest_wave": MessageLookupByLibrary.simpleMessage("Wave"),
     "quit": MessageLookupByLibrary.simpleMessage("Quit"),
     "raid_quest": MessageLookupByLibrary.simpleMessage("Raid Quest"),
@@ -1039,7 +1037,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "raw_gacha_data": MessageLookupByLibrary.simpleMessage("Raw Gachas"),
     "raw_gacha_group": MessageLookupByLibrary.simpleMessage("Raw Gacha Group"),
     "read_device_info": MessageLookupByLibrary.simpleMessage("Read this Device\'s info"),
-    "recognizer_result_count": m35,
+    "recognizer_result_count": m34,
     "recorder_screenshot_current_view": MessageLookupByLibrary.simpleMessage("Current View"),
     "recorder_screenshot_full_view": MessageLookupByLibrary.simpleMessage("Full View"),
     "refresh": MessageLookupByLibrary.simpleMessage("Refresh"),
@@ -1150,7 +1148,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "skip_current_turn": MessageLookupByLibrary.simpleMessage("Skip Current Turn"),
     "solution_battle_count": MessageLookupByLibrary.simpleMessage("Battle Count"),
     "solution_target_count": MessageLookupByLibrary.simpleMessage("Target Count"),
-    "solution_total_battles_ap": m36,
+    "solution_total_battles_ap": m35,
     "sort_order": MessageLookupByLibrary.simpleMessage("Sort"),
     "sound_effect": MessageLookupByLibrary.simpleMessage("Sound Effect"),
     "special_reward_hide": MessageLookupByLibrary.simpleMessage("Hide Special Rewards"),
@@ -1227,8 +1225,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "td_base_hits_hint": MessageLookupByLibrary.simpleMessage(
       "For the same NP id, different owners may have different card type and hit distributions.",
     ),
-    "td_cardcolor_hint": m37,
-    "td_cardnp_hint": m38,
+    "td_cardcolor_hint": m36,
+    "td_cardnp_hint": m37,
     "td_rankup": MessageLookupByLibrary.simpleMessage("NP Upgrade"),
     "td_solver_simple_mode": MessageLookupByLibrary.simpleMessage("Simple Mode"),
     "td_solver_simple_mode_desc": MessageLookupByLibrary.simpleMessage("Only calculates final ascension"),
@@ -1263,7 +1261,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "time_start": MessageLookupByLibrary.simpleMessage("Start"),
     "tips": MessageLookupByLibrary.simpleMessage("Tips"),
     "toggle_dark_mode": MessageLookupByLibrary.simpleMessage("Toggle Dark Mode"),
-    "too_many_td5_svts_warning": m39,
+    "too_many_td5_svts_warning": m38,
     "tooltip_refresh_sliders": MessageLookupByLibrary.simpleMessage("Refresh slides"),
     "total": MessageLookupByLibrary.simpleMessage("Total"),
     "total_ap": MessageLookupByLibrary.simpleMessage("Total AP"),
@@ -1304,7 +1302,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "upload_and_close_app_alert": MessageLookupByLibrary.simpleMessage("Upload data before closing the app?"),
     "upload_before_close_app": MessageLookupByLibrary.simpleMessage("Upload before closing"),
     "upload_not_eligible_hint": MessageLookupByLibrary.simpleMessage("Current team is not eligible for upload:"),
-    "upload_paused": m40,
+    "upload_paused": m39,
     "upload_team_confirmation": MessageLookupByLibrary.simpleMessage(
       "Upload current team?\n\nAttention: to service more players.\n- don\'t upload team which contains unreleased servants!\n- Please try to keep your team configuration as low as possible (unnecessary class score, grailed lv, append skill, NP Lv, unused backup servant).\n- Uploaded data may be deleted due to future updates, data incompatibility etc.",
     ),

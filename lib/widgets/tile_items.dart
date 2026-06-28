@@ -14,13 +14,13 @@ class SHeader extends StatelessWidget {
     String this.label, {
     super.key,
     this.style,
-    this.padding = const EdgeInsetsDirectional.only(start: 16.0, top: 8.0, bottom: 4.0, end: 8.0),
+    this.padding = const EdgeInsetsDirectional.only(start: 16.0, top: 4.0, bottom: 4.0, end: 8.0),
   }) : richSpan = null;
   const SHeader.rich(
     InlineSpan this.richSpan, {
     super.key,
     this.style,
-    this.padding = const EdgeInsetsDirectional.only(start: 16.0, top: 8.0, bottom: 4.0, end: 8.0),
+    this.padding = const EdgeInsetsDirectional.only(start: 16.0, top: 4.0, bottom: 4.0, end: 8.0),
   }) : label = null;
 
   @override
@@ -207,7 +207,7 @@ class TileGroup extends StatelessWidget {
       ?headerWidget,
       Card(
         color: tileColor,
-        margin: const EdgeInsets.all(0),
+        margin: const EdgeInsets.symmetric(horizontal: 8),
         child: Column(crossAxisAlignment: crossAxisAlignment, mainAxisSize: MainAxisSize.min, children: group),
       ),
       ?footerWidget,
@@ -220,7 +220,7 @@ class TileGroup extends StatelessWidget {
       );
     } else {
       return Padding(
-        padding: padding ?? const EdgeInsets.only(bottom: 8),
+        padding: padding ?? const EdgeInsets.only(top: 4, bottom: 4),
         child: Column(crossAxisAlignment: crossAxisAlignment, mainAxisSize: MainAxisSize.min, children: _children),
       );
     }

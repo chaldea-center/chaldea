@@ -1,9 +1,9 @@
 // AdminUserDetailPage: read-only user detail + 2 admin actions.
-// Sections: ProfileCard (admin sees full email, no masking) + 基本信息
-// (info-rows: name/id/email/role+badge/createdAt/isOnline) + 统计
+// Sections: ProfileCard (admin sees full email, no masking) + Basic Info
+// (info-rows: name/id/email/role+badge/createdAt/isOnline) + Statistics
 // (info-rows: backupsCount/teamsCount/sessions list/logins list — last two
-// read-only lists) + 管理操作 with exactly 2 ActionRows: 重置密码
-// (confirm dialog → adminRecoverUser(password:)) and 发送恢复邮件
+// read-only lists) + Admin Actions with exactly 2 ActionRows: Reset Password
+// (confirm dialog → adminRecoverUser(password:)) and Send Recovery Email
 // (confirm → adminRecoverUser(email:)). No other action-rows per design D6.
 
 import 'package:flutter/material.dart';

@@ -9,6 +9,7 @@ export 'divider_with_text.dart';
 export 'info_banner.dart';
 export 'info_row.dart';
 export 'input.dart';
+export 'mini_badge.dart';
 export 'profile_card.dart';
 export 'section_card.dart';
 export 'state_colors.dart';

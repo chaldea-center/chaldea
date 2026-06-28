@@ -86,34 +86,29 @@ class _AdminUsersPageState extends State<AdminUsersPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(S.current.auth_admin_users_title)),
-      body: SafeArea(
-        top: false, // AppBar already handles top safe area
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(
-                    child: FormInput(
-                      hint: S.current.auth_search_users,
-                      prefixIcon: Icons.search,
-                      controller: _searchController,
-                      autocorrect: false,
-                      onChanged: (_) => setState(() {}),
-                    ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Padding(
+            padding: .symmetric(horizontal: 16, vertical: 8),
+            child: Row(
+              children: [
+                Expanded(
+                  child: FormInput(
+                    hint: S.current.auth_search_users,
+                    prefixIcon: Icons.search,
+                    controller: _searchController,
+                    autocorrect: false,
+                    onChanged: (_) => setState(() {}),
                   ),
-                  const SizedBox(width: 8),
-                  PrimaryButton(label: S.current.auth_search_users, onPressed: _loading ? null : _onSearch),
-                ],
-              ),
-              const SizedBox(height: 16),
-              Expanded(child: _buildList()),
-            ],
+                ),
+                const SizedBox(width: 8),
+                PrimaryButton(label: S.current.search, onPressed: _loading ? null : _onSearch),
+              ],
+            ),
           ),
-        ),
+          Expanded(child: _buildList()),
+        ],
       ),
     );
   }
@@ -140,7 +135,8 @@ class _AdminUsersPageState extends State<AdminUsersPage> {
     return ListView(
       controller: _scrollController,
       children: [
-        SectionCard(divided: true, children: _users.map(_buildTile).toList()),
+        for (final user in _users) _buildTile(user),
+        // SectionCard(divided: true, children: _users.map(_buildTile).toList()),
         if (_hasMore)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12),
@@ -175,70 +171,24 @@ class _AdminUsersPageState extends State<AdminUsersPage> {
         ? S.current.auth_admin_no_email
         : _maskEmail(user.email!);
     final created = DateTime.fromMillisecondsSinceEpoch(user.createdAt * 1000);
-    return InkWell(
-      onTap: () => router.push(child: AdminUserDetailPage(userId: user.id)),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        child: Row(
-          children: [
-            Container(
-              width: 40,
-              height: 40,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(shape: BoxShape.circle, color: cs.primary.withAlpha(30)),
-              child: Text(
-                user.name.isEmpty ? '?' : user.name[0].toUpperCase(),
-                style: TextStyle(color: cs.primary, fontWeight: FontWeight.w700),
-              ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Flexible(
-                        child: Text(
-                          user.name,
-                          style: Theme.of(
-                            context,
-                          ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600, color: cs.onSurface),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      Container(
-                        width: 8,
-                        height: 8,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: user.isOnline ? Colors.green : cs.outline,
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      if (user.role == ChaldeaUserRole.admin) Chip(label: Text(S.current.auth_role_admin)),
-                    ],
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    'ID: ${user.id} · $emailText',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: cs.onSurfaceVariant),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  Text(
-                    '${S.current.auth_admin_created_at}: ${created.toDateString()}',
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodySmall?.copyWith(color: cs.onSurfaceVariant.withAlpha(180), fontSize: 11),
-                  ),
-                ],
-              ),
-            ),
-            Icon(Icons.chevron_right, size: 18, color: cs.onSurfaceVariant),
-          ],
+    return InfoRow(
+      leading: Container(
+        width: 40,
+        height: 40,
+        alignment: Alignment.center,
+        decoration: BoxDecoration(shape: BoxShape.circle, color: cs.primary.withAlpha(30)),
+        child: Text(
+          user.name.isEmpty ? '?' : user.name[0].toUpperCase(),
+          style: TextStyle(color: cs.primary, fontWeight: FontWeight.w700),
         ),
       ),
+      title: user.name,
+      subtitle: 'ID: ${user.id} · $emailText\n${S.current.auth_admin_created_at}: ${created.toDateString()}',
+      valueWidget: user.role == ChaldeaUserRole.admin
+          ? MiniBadge(label: S.current.auth_role_admin, color: cs.primary)
+          : null,
+      showChevron: true,
+      onTap: () => router.push(child: AdminUserDetailPage(userId: user.id)),
     );
   }
 

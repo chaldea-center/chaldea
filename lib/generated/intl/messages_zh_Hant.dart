@@ -21,23 +21,41 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'zh_Hant';
 
-  static String m14(count, total) => "${total}張指令卡中有${count}張未攻擊，請減少不必要的指令卡";
+  static String m13(count, total) => "${total}張指令卡中有${count}張未攻擊，請減少不必要的指令卡";
+
+  static String m14(kstar) => "5${kstar}英灵召唤";
+
+  static String m15(kstar) => "5${kstar}英灵召唤概率";
+
+  static String m16(kstar) => "5${kstar}契约/宝具数";
+
+  static String m17(year) => "${year}年";
+
+  static String m18(curYear) => "${curYear}抽卡";
+
+  static String m19(curYear) => "${curYear}年度";
+
+  static String m20(curYear, count) => "${curYear}抽卡次数前${count}";
+
+  static String m21(year, month, day) => "入职${year}年${month}月${day}天";
 
   static String m0(url) => "Chaldea——一款跨平台的Fate/GO素材規劃用戶端，支持遊戲資訊瀏覽、從者練度/活動/素材規劃、周常規劃、抽卡模擬器等功能。\n\n詳情請見: \n${url}\n";
 
-  static String m23(count) => "充能至${count}";
+  static String m22(count) => "充能至${count}";
 
-  static String m24(version, curVer) => "App版本需不低於${version} (目前: ${curVer})";
+  static String m23(version, curVer) => "App版本需不低於${version} (目前: ${curVer})";
 
   static String m1(n) => "最多${n}池";
 
   static String m2(n, total) => "聖杯替換為傳承結晶 ${n}/${total} 個";
 
-  static String m25(filename, hash, localHash) => "文件${filename}未找到或錯誤: ${hash} - ${localHash}";
+  static String m24(filename, hash, localHash) => "文件${filename}未找到或錯誤: ${hash} - ${localHash}";
 
-  static String m26(rarity) => "${rarity}星禮裝PickUp";
+  static String m25(rarity) => "${rarity}星禮裝PickUp";
 
-  static String m27(rarity) => "${rarity}星從者PickUp";
+  static String m26(rarity) => "${rarity}星從者PickUp";
+
+  static String m27(item) => "根据时间“推测”的可能关联的${item}";
 
   static String m3(error) => "導入失敗，Error:\n${error}";
 
@@ -45,23 +63,23 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m5(site) => "跳轉到${site}";
 
-  static String m29(shown, total) => "顯示${shown}/總計${total}";
+  static String m28(shown, total) => "顯示${shown}/總計${total}";
 
-  static String m30(shown, ignore, total) => "顯示${shown}/忽略${ignore}/總計${total}";
+  static String m29(shown, ignore, total) => "顯示${shown}/忽略${ignore}/總計${total}";
 
   static String m6(first) => "${Intl.select(first, {'true': '已經是第一張', 'false': '已經是最後一張', 'other': '已經到頭了'})}";
 
-  static String m31(layer) => "第${layer}層";
+  static String m30(layer) => "第${layer}層";
 
   static String m7(n) => "第${n}節";
 
-  static String m32(region) => "出現錯誤或${region}無此關卡資料";
+  static String m31(region) => "出現錯誤或${region}無此關卡資料";
 
-  static String m33(runs) => "樣本數${runs}";
+  static String m32(runs) => "樣本數${runs}";
 
-  static String m34(index, total, enemy) => "版本${index}/${total} (${enemy}敵人)";
+  static String m33(index, total, enemy) => "版本${index}/${total} (${enemy}敵人)";
 
-  static String m35(unknown, dup, valid, total, selected) =>
+  static String m34(unknown, dup, valid, total, selected) =>
       "${unknown}不明, ${dup}重複, ${valid}/${total}有效, ${selected}已選";
 
   static String m8(region) => "${region}公告";
@@ -70,17 +88,17 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m10(n) => "重置規劃${n}(已顯示)";
 
-  static String m36(battles, ap) => "總計${battles}次戰鬥, ${ap} AP";
+  static String m35(battles, ap) => "總計${battles}次戰鬥, ${ap} AP";
 
   static String m11(n) => "個人資料${n}";
 
-  static String m37(color, trait) => "此寶具顯示為${color}卡，但不持有[${trait}]特性";
+  static String m36(color, trait) => "此寶具顯示為${color}卡，但不持有[${trait}]特性";
 
-  static String m38(trait) => "這是一個寶具，但不持有[${trait}]特性";
+  static String m37(trait) => "這是一個寶具，但不持有[${trait}]特性";
 
-  static String m39(count) => "存在${count}張滿寶五星，分享隊伍應盡可能低配減配";
+  static String m38(count) => "存在${count}張滿寶五星，分享隊伍應盡可能低配減配";
 
-  static String m40(remain) => "上傳過於頻繁，請等待${remain}秒";
+  static String m39(remain) => "上傳過於頻繁，請等待${remain}秒";
 
   static String m12(a, b) => "${a}${b}";
 
@@ -107,6 +125,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "ap": MessageLookupByLibrary.simpleMessage("AP"),
     "ap_campaign_time_mismatch_hint": MessageLookupByLibrary.simpleMessage("關卡AP等相關活動顯示的時間(日服除外)可能不準確"),
     "ap_efficiency": MessageLookupByLibrary.simpleMessage("AP效率"),
+    "ap_fully_recovered": MessageLookupByLibrary.simpleMessage("AP已全部回复"),
     "app_data_folder": MessageLookupByLibrary.simpleMessage("數據目錄"),
     "app_data_use_external_storage": MessageLookupByLibrary.simpleMessage("使用外部儲存(SD卡)"),
     "appearance": MessageLookupByLibrary.simpleMessage("外觀"),
@@ -124,9 +143,87 @@ class MessageLookup extends MessageLookupByLibrary {
     "attach_help": MessageLookupByLibrary.simpleMessage("如果圖片模式存在問題，請使用文件模式"),
     "attachment": MessageLookupByLibrary.simpleMessage("附件"),
     "attack_np_rate": MessageLookupByLibrary.simpleMessage("攻擊NP率"),
+    "auth_account_actions": MessageLookupByLibrary.simpleMessage("账号操作"),
+    "auth_admin_actions": MessageLookupByLibrary.simpleMessage("管理操作"),
+    "auth_admin_backups_count": MessageLookupByLibrary.simpleMessage("备份数"),
+    "auth_admin_basic_info": MessageLookupByLibrary.simpleMessage("基本信息"),
+    "auth_admin_created_at": MessageLookupByLibrary.simpleMessage("注册时间"),
+    "auth_admin_load_more": MessageLookupByLibrary.simpleMessage("加载更多"),
+    "auth_admin_no_email": MessageLookupByLibrary.simpleMessage("未绑定"),
+    "auth_admin_offline": MessageLookupByLibrary.simpleMessage("离线"),
+    "auth_admin_online": MessageLookupByLibrary.simpleMessage("在线"),
+    "auth_admin_online_status": MessageLookupByLibrary.simpleMessage("在线状态"),
+    "auth_admin_recent_logins": MessageLookupByLibrary.simpleMessage("最近登录"),
+    "auth_admin_reset_password": MessageLookupByLibrary.simpleMessage("重置密码"),
+    "auth_admin_reset_password_confirm": MessageLookupByLibrary.simpleMessage("确认重置该用户密码？"),
+    "auth_admin_reset_password_prompt": MessageLookupByLibrary.simpleMessage("输入新密码"),
+    "auth_admin_send_recovery": MessageLookupByLibrary.simpleMessage("发送恢复邮件"),
+    "auth_admin_send_recovery_confirm": MessageLookupByLibrary.simpleMessage("确认向该用户发送恢复邮件？"),
+    "auth_admin_sessions": MessageLookupByLibrary.simpleMessage("活跃会话"),
+    "auth_admin_statistics": MessageLookupByLibrary.simpleMessage("统计"),
+    "auth_admin_teams_count": MessageLookupByLibrary.simpleMessage("队伍数"),
+    "auth_admin_tools": MessageLookupByLibrary.simpleMessage("管理工具"),
+    "auth_admin_user_detail_title": MessageLookupByLibrary.simpleMessage("用户详情"),
+    "auth_admin_users_title": MessageLookupByLibrary.simpleMessage("用户管理"),
+    "auth_cancel_back": MessageLookupByLibrary.simpleMessage("取消，返回"),
+    "auth_change_email_title": MessageLookupByLibrary.simpleMessage("更换邮箱"),
+    "auth_change_password": MessageLookupByLibrary.simpleMessage("更换密码"),
+    "auth_change_password_title": MessageLookupByLibrary.simpleMessage("修改密码"),
+    "auth_change_password_warning": MessageLookupByLibrary.simpleMessage("修改密码后需要重新登录所有设备。"),
+    "auth_change_username_title": MessageLookupByLibrary.simpleMessage("修改用户名"),
+    "auth_confirm_change": MessageLookupByLibrary.simpleMessage("确认修改"),
+    "auth_confirm_password_prompt": MessageLookupByLibrary.simpleMessage("请输入密码以确认"),
+    "auth_contact_developer_btn": MessageLookupByLibrary.simpleMessage("发送邮件给开发者"),
+    "auth_current_email": MessageLookupByLibrary.simpleMessage("当前邮箱"),
+    "auth_current_password": MessageLookupByLibrary.simpleMessage("当前密码"),
+    "auth_current_username": MessageLookupByLibrary.simpleMessage("当前用户名"),
     "auth_data_hints": MessageLookupByLibrary.simpleMessage(
       "提醒:\n- 此處userId並非登入/好友頁看到的用戶ID(py碼)\n- 請勿分享上述金鑰(keys)或截圖給其他任何人!!!\n- 以下3種方法選擇其一導入",
     ),
+    "auth_delete_account": MessageLookupByLibrary.simpleMessage("删除账号"),
+    "auth_delete_account_confirm": MessageLookupByLibrary.simpleMessage("删除我的账号"),
+    "auth_delete_account_consequence_1": MessageLookupByLibrary.simpleMessage("所有备份将丢失。"),
+    "auth_delete_account_consequence_2": MessageLookupByLibrary.simpleMessage("所有分享的队伍将删除。"),
+    "auth_delete_account_consequence_3": MessageLookupByLibrary.simpleMessage("账号无法恢复。"),
+    "auth_delete_account_consequence_4": MessageLookupByLibrary.simpleMessage("登录信息将清除。"),
+    "auth_delete_account_title": MessageLookupByLibrary.simpleMessage("删除账号"),
+    "auth_delete_account_warning": MessageLookupByLibrary.simpleMessage("此操作不可撤销，所有数据将被永久删除。"),
+    "auth_device_id": MessageLookupByLibrary.simpleMessage("设备ID"),
+    "auth_email_field": MessageLookupByLibrary.simpleMessage("邮箱"),
+    "auth_email_not_bound_hint": MessageLookupByLibrary.simpleMessage("邮箱未绑定"),
+    "auth_forgot_password_hint": MessageLookupByLibrary.simpleMessage("如果忘记密码，可通过邮箱或设备验证重置。"),
+    "auth_forgot_password_link": MessageLookupByLibrary.simpleMessage("忘记密码？"),
+    "auth_forgot_password_title": MessageLookupByLibrary.simpleMessage("忘记密码"),
+    "auth_login_title": MessageLookupByLibrary.simpleMessage("登录"),
+    "auth_logout": MessageLookupByLibrary.simpleMessage("退出登录"),
+    "auth_method_contact_developer_desc": MessageLookupByLibrary.simpleMessage("联系开发者获取帮助。"),
+    "auth_method_contact_developer_title": MessageLookupByLibrary.simpleMessage("联系开发者"),
+    "auth_method_device_verify_desc": MessageLookupByLibrary.simpleMessage("通过用户名和设备ID验证。"),
+    "auth_method_device_verify_title": MessageLookupByLibrary.simpleMessage("设备验证"),
+    "auth_method_email_reset_desc": MessageLookupByLibrary.simpleMessage("向已绑定邮箱发送重置链接。"),
+    "auth_method_email_reset_title": MessageLookupByLibrary.simpleMessage("通过邮箱重置"),
+    "auth_migrate_account": MessageLookupByLibrary.simpleMessage("迁移账号"),
+    "auth_migration_failed": MessageLookupByLibrary.simpleMessage("迁移失败，请重试。"),
+    "auth_migration_success": MessageLookupByLibrary.simpleMessage("账号迁移成功。"),
+    "auth_new_email": MessageLookupByLibrary.simpleMessage("新邮箱"),
+    "auth_new_username": MessageLookupByLibrary.simpleMessage("新用户名"),
+    "auth_not_migrated_hint": MessageLookupByLibrary.simpleMessage("账号未迁移，点击迁移"),
+    "auth_personal_info": MessageLookupByLibrary.simpleMessage("个人信息"),
+    "auth_profile_title": MessageLookupByLibrary.simpleMessage("个人中心"),
+    "auth_register_account": MessageLookupByLibrary.simpleMessage("注册账号"),
+    "auth_register_title": MessageLookupByLibrary.simpleMessage("注册"),
+    "auth_resend_code": MessageLookupByLibrary.simpleMessage("重新发送"),
+    "auth_role": MessageLookupByLibrary.simpleMessage("角色"),
+    "auth_role_admin": MessageLookupByLibrary.simpleMessage("管理员"),
+    "auth_search_users": MessageLookupByLibrary.simpleMessage("搜索用户名或邮箱"),
+    "auth_send_code": MessageLookupByLibrary.simpleMessage("发送验证码"),
+    "auth_send_reset_email": MessageLookupByLibrary.simpleMessage("发送重置邮件"),
+    "auth_submit_verification": MessageLookupByLibrary.simpleMessage("提交验证"),
+    "auth_user_id": MessageLookupByLibrary.simpleMessage("用户ID"),
+    "auth_user_management": MessageLookupByLibrary.simpleMessage("用户管理"),
+    "auth_username_helper": MessageLookupByLibrary.simpleMessage("4-18个字符，仅限字母、数字、下划线"),
+    "auth_username_or_email": MessageLookupByLibrary.simpleMessage("用户名或邮箱"),
+    "auth_verification_code_sent": MessageLookupByLibrary.simpleMessage("验证码已发送至"),
     "authfile_login_warning": MessageLookupByLibrary.simpleMessage("使用前請先閱讀使用方法、注意事項及風險！ "),
     "auto_reset": MessageLookupByLibrary.simpleMessage("自動重設"),
     "auto_update": MessageLookupByLibrary.simpleMessage("自動更新"),
@@ -191,8 +288,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "bgm": MessageLookupByLibrary.simpleMessage("BGM"),
     "blacklist": MessageLookupByLibrary.simpleMessage("黑名單"),
     "bond": MessageLookupByLibrary.simpleMessage("羈絆"),
+    "bond_bonus": MessageLookupByLibrary.simpleMessage("羁绊加成"),
     "bond_craft": MessageLookupByLibrary.simpleMessage("羈絆禮裝"),
     "bond_eff": MessageLookupByLibrary.simpleMessage("羈絆效率"),
+    "bond_equip_change_skill": MessageLookupByLibrary.simpleMessage("切换羁绊礼装效果"),
     "bond_limit": MessageLookupByLibrary.simpleMessage("羈絆上限"),
     "bootstrap_page_title": MessageLookupByLibrary.simpleMessage("引導頁"),
     "branch_quest": MessageLookupByLibrary.simpleMessage("分支關卡"),
@@ -212,7 +311,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "card_description": MessageLookupByLibrary.simpleMessage("解說"),
     "card_info": MessageLookupByLibrary.simpleMessage("資料"),
     "card_name": MessageLookupByLibrary.simpleMessage("卡牌名稱"),
-    "card_not_attack_warning": m14,
+    "card_not_attack_warning": m13,
     "card_status_met": MessageLookupByLibrary.simpleMessage("已遭遇"),
     "card_status_not_met": MessageLookupByLibrary.simpleMessage("未遭遇"),
     "card_status_owned": MessageLookupByLibrary.simpleMessage("持有"),
@@ -226,13 +325,52 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "chaldea_backup": MessageLookupByLibrary.simpleMessage("Chaldea應用備份"),
     "chaldea_gate": MessageLookupByLibrary.simpleMessage("迦勒底之門"),
+    "chaldea_report_5star_pull": m14,
+    "chaldea_report_5star_pull_prob": m15,
+    "chaldea_report_5star_stat_dis_detail": MessageLookupByLibrary.simpleMessage("- 历年卡池的统计，已除去福袋五星出率"),
+    "chaldea_report_5star_stat_dis_ent": MessageLookupByLibrary.simpleMessage("- 欧非仅个人瞎分类，仅供娱乐"),
+    "chaldea_report_5star_svts_count": m16,
+    "chaldea_report_account_created": MessageLookupByLibrary.simpleMessage("成为御主"),
+    "chaldea_report_compendium": MessageLookupByLibrary.simpleMessage("英灵图鉴"),
+    "chaldea_report_cur_year": m17,
+    "chaldea_report_favorite": MessageLookupByLibrary.simpleMessage("中意"),
+    "chaldea_report_likely": MessageLookupByLibrary.simpleMessage("疑似"),
+    "chaldea_report_luck_grand_lucky": MessageLookupByLibrary.simpleMessage("Grand 欧皇"),
+    "chaldea_report_luck_grand_lucky_desc": MessageLookupByLibrary.simpleMessage("圣晶石在此，恭迎天选之人！"),
+    "chaldea_report_luck_lucky": MessageLookupByLibrary.simpleMessage("欧皇"),
+    "chaldea_report_luck_lucky_desc": MessageLookupByLibrary.simpleMessage("闪耀星之光芒，命运格外垂青。"),
+    "chaldea_report_luck_mid_lucky": MessageLookupByLibrary.simpleMessage("中庸"),
+    "chaldea_report_luck_mid_lucky_desc": MessageLookupByLibrary.simpleMessage("稳定即是福气，旅程方见真谛。"),
+    "chaldea_report_luck_not_lucky": MessageLookupByLibrary.simpleMessage("略非"),
+    "chaldea_report_luck_not_lucky_desc": MessageLookupByLibrary.simpleMessage("小遇波澜无碍，蓄力以待转机。"),
+    "chaldea_report_luck_unlucky": MessageLookupByLibrary.simpleMessage("非酋"),
+    "chaldea_report_luck_unlucky_desc": MessageLookupByLibrary.simpleMessage("心之所向，下次必达！运气守恒，未来可期。"),
+    "chaldea_report_luck_very_unlucky": MessageLookupByLibrary.simpleMessage("酋长"),
+    "chaldea_report_luck_very_unlucky_desc": MessageLookupByLibrary.simpleMessage("所有漫长等待，终得盛大回响。"),
+    "chaldea_report_most_event_free": MessageLookupByLibrary.simpleMessage("最多的活动Free"),
+    "chaldea_report_most_fail": MessageLookupByLibrary.simpleMessage("挑战失败次数最多"),
+    "chaldea_report_most_free": MessageLookupByLibrary.simpleMessage("最多的常驻Free"),
+    "chaldea_report_most_raid": MessageLookupByLibrary.simpleMessage("最多的柱子战"),
+    "chaldea_report_pull_cur_year": m18,
+    "chaldea_report_pull_stat_all": MessageLookupByLibrary.simpleMessage("历年"),
+    "chaldea_report_pull_stat_cur_year": m19,
+    "chaldea_report_pull_stat_top_title": m20,
+    "chaldea_report_push": MessageLookupByLibrary.simpleMessage("单推"),
+    "chaldea_report_quests_stat": MessageLookupByLibrary.simpleMessage("关卡之最"),
+    "chaldea_report_since_account_created_date": m21,
+    "chaldea_report_times": MessageLookupByLibrary.simpleMessage(" 次"),
+    "chaldea_report_title": MessageLookupByLibrary.simpleMessage("迦勒底报告"),
+    "chaldea_report_total_days": MessageLookupByLibrary.simpleMessage(" 天"),
+    "chaldea_report_total_login": MessageLookupByLibrary.simpleMessage("累计登录"),
+    "chaldea_report_total_svts": MessageLookupByLibrary.simpleMessage("契约从者"),
+    "chaldea_report_window_size_warn": MessageLookupByLibrary.simpleMessage("窗口长宽尺寸不合适"),
     "chaldea_server": MessageLookupByLibrary.simpleMessage("Chaldea伺服器"),
     "chaldea_server_cn": MessageLookupByLibrary.simpleMessage("中國"),
     "chaldea_server_global": MessageLookupByLibrary.simpleMessage("國際"),
     "chaldea_share_msg": m0,
     "change_log": MessageLookupByLibrary.simpleMessage("更新歷史"),
     "characters_in_card": MessageLookupByLibrary.simpleMessage("出場角色"),
-    "charge_np_to": m23,
+    "charge_np_to": m22,
     "check_file_hash": MessageLookupByLibrary.simpleMessage("驗證文件完整性"),
     "check_update": MessageLookupByLibrary.simpleMessage("檢查更新"),
     "class_advantage": MessageLookupByLibrary.simpleMessage("職階剋職"),
@@ -376,7 +514,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "error": MessageLookupByLibrary.simpleMessage("錯誤"),
     "error_no_data_found": MessageLookupByLibrary.simpleMessage("未找到數據文件"),
     "error_no_internet": MessageLookupByLibrary.simpleMessage("無網路連接"),
-    "error_required_app_version": m24,
+    "error_required_app_version": m23,
     "error_widget_hint": MessageLookupByLibrary.simpleMessage("錯誤! 請點擊返回 >_<"),
     "event": MessageLookupByLibrary.simpleMessage("活動"),
     "event_ap_cost_half": MessageLookupByLibrary.simpleMessage("AP消費減半"),
@@ -446,7 +584,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "ffo_same_svt": MessageLookupByLibrary.simpleMessage("同一從者"),
     "fgo_domus_aurea": MessageLookupByLibrary.simpleMessage("效率劇場"),
     "field_ai": MessageLookupByLibrary.simpleMessage("場地AI"),
-    "file_not_found_or_mismatched_hash": m25,
+    "file_not_found_or_mismatched_hash": m24,
     "filename": MessageLookupByLibrary.simpleMessage("檔案名"),
     "filter": MessageLookupByLibrary.simpleMessage("篩選"),
     "filter_atk_hp_type": MessageLookupByLibrary.simpleMessage("屬性"),
@@ -472,12 +610,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "free_quest_calculator": MessageLookupByLibrary.simpleMessage("FQ速查"),
     "free_quest_calculator_short": MessageLookupByLibrary.simpleMessage("FQ速查"),
     "gacha": MessageLookupByLibrary.simpleMessage("抽卡"),
+    "gacha_draw_rate": MessageLookupByLibrary.simpleMessage("概率"),
     "gacha_image_overridden_hint": MessageLookupByLibrary.simpleMessage("卡池圖片可能由於重名被以下卡池覆蓋"),
     "gacha_prob_calc": MessageLookupByLibrary.simpleMessage("卡池機率計算"),
-    "gacha_prob_ce_pickup": m26,
+    "gacha_prob_ce_pickup": m25,
     "gacha_prob_custom_rate": MessageLookupByLibrary.simpleMessage("自訂機率"),
     "gacha_prob_precision_hint": MessageLookupByLibrary.simpleMessage("數值過大或過小時由於double精度問題造成計算結果不準確"),
-    "gacha_prob_svt_pickup": m27,
+    "gacha_prob_svt_pickup": m26,
     "gacha_svt_count_hint": MessageLookupByLibrary.simpleMessage(
       "均不包含活動四星和友情池四星。 \n持有:所持欄位和保管室裡從者寶具數的簡單加和，不包含已變還(販賣)\n總獲取數:包括所有歷史抽卡、「部分」自選，不包含無記名 靈基，包含已變還(販賣)。 \n詳情戳下方連結↓",
     ),
@@ -508,9 +647,12 @@ class MessageLookup extends MessageLookupByLibrary {
     "gold": MessageLookupByLibrary.simpleMessage("金"),
     "grail": MessageLookupByLibrary.simpleMessage("聖杯"),
     "grail_up": MessageLookupByLibrary.simpleMessage("聖杯轉臨"),
+    "grand_board_war": MessageLookupByLibrary.simpleMessage("冠位戴冠战"),
+    "grand_servant": MessageLookupByLibrary.simpleMessage("冠位从者"),
     "growth_curve": MessageLookupByLibrary.simpleMessage("成長曲線"),
     "guda_female": MessageLookupByLibrary.simpleMessage("咕噠子"),
     "guda_male": MessageLookupByLibrary.simpleMessage("咕噠夫"),
+    "guessed_on_time_hint": m27,
     "help": MessageLookupByLibrary.simpleMessage("幫助"),
     "hide": MessageLookupByLibrary.simpleMessage("隱藏"),
     "hide_svt_plan_details": MessageLookupByLibrary.simpleMessage("隱藏規劃項目"),
@@ -519,6 +661,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "high_difficulty_quest": MessageLookupByLibrary.simpleMessage("高難度關卡"),
     "hint": MessageLookupByLibrary.simpleMessage("提示"),
     "history": MessageLookupByLibrary.simpleMessage("歷史紀錄"),
+    "home_page_icon_size": MessageLookupByLibrary.simpleMessage("首页图标大小"),
     "http_sniff_hint": MessageLookupByLibrary.simpleMessage("(簡中/繁中/日/美)帳號登入時的數據"),
     "https_sniff": MessageLookupByLibrary.simpleMessage("Https監聽"),
     "hunting_quest": MessageLookupByLibrary.simpleMessage("狩獵關卡"),
@@ -626,8 +769,8 @@ class MessageLookup extends MessageLookupByLibrary {
     "limited_event": MessageLookupByLibrary.simpleMessage("限時活動"),
     "limited_time": MessageLookupByLibrary.simpleMessage("限時"),
     "link": MessageLookupByLibrary.simpleMessage("連結"),
-    "list_count_shown_all": m29,
-    "list_count_shown_hidden_all": m30,
+    "list_count_shown_all": m28,
+    "list_count_shown_hidden_all": m29,
     "list_end_hint": m6,
     "load_ffo_data": MessageLookupByLibrary.simpleMessage("載入FFO資料"),
     "local_team_save_no_replay_warning": MessageLookupByLibrary.simpleMessage("僅保存關卡和隊伍資訊，無法保存操作資訊"),
@@ -667,7 +810,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "main_story": MessageLookupByLibrary.simpleMessage("主線記錄"),
     "main_story_chapter": MessageLookupByLibrary.simpleMessage("章節"),
     "map_gimmicks": MessageLookupByLibrary.simpleMessage("小部件"),
-    "map_layer_n": m31,
+    "map_layer_n": m30,
     "map_show_fq_spots_only": MessageLookupByLibrary.simpleMessage("僅有Free Quest地點"),
     "map_show_header_image": MessageLookupByLibrary.simpleMessage("顯示標題圖"),
     "map_show_roads": MessageLookupByLibrary.simpleMessage("顯示道路"),
@@ -731,6 +874,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "ok": MessageLookupByLibrary.simpleMessage("確定"),
     "one_off_quest": MessageLookupByLibrary.simpleMessage("一次性關卡"),
     "ongoing": MessageLookupByLibrary.simpleMessage("進行中"),
+    "only_grand_battle_hint": MessageLookupByLibrary.simpleMessage("仅限冠位战"),
     "only_show_main_story_enemy": MessageLookupByLibrary.simpleMessage("僅顯示主線FQ敵人"),
     "only_usuable_for_aoe_np": MessageLookupByLibrary.simpleMessage("僅全體寶具實際可用"),
     "open": MessageLookupByLibrary.simpleMessage("打開"),
@@ -738,6 +882,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "open_in_browser": MessageLookupByLibrary.simpleMessage("在瀏覽器中打開"),
     "open_in_file_manager": MessageLookupByLibrary.simpleMessage("請用檔案管理器打開"),
     "opening_time": MessageLookupByLibrary.simpleMessage("開放時間"),
+    "optional_event_passive": MessageLookupByLibrary.simpleMessage("可选活动技能"),
     "options": MessageLookupByLibrary.simpleMessage("選項"),
     "outdated": MessageLookupByLibrary.simpleMessage("已過期"),
     "override_": MessageLookupByLibrary.simpleMessage("覆蓋"),
@@ -774,6 +919,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "quest": MessageLookupByLibrary.simpleMessage("關卡"),
     "quest_chapter_n": m7,
     "quest_condition": MessageLookupByLibrary.simpleMessage("開放條件"),
+    "quest_content_same_warning": MessageLookupByLibrary.simpleMessage("本关卡存在几乎一致的关卡，请注意甄别"),
     "quest_disallow_laplace_share_hint": MessageLookupByLibrary.simpleMessage("無效關卡，僅支持主線/活動FQ及伐柱戰的隊伍分享"),
     "quest_edit_hint": MessageLookupByLibrary.simpleMessage(
       "若需使用活動效果，對應的關卡配置以及場地特性(94000xxx)均需正確設置。\n僅支持基礎關卡和敵人屬性編輯，不支持多血條等複雜情形。複雜情況請自訂JSON。",
@@ -784,17 +930,17 @@ class MessageLookup extends MessageLookupByLibrary {
     "quest_fields": MessageLookupByLibrary.simpleMessage("場地"),
     "quest_fixed_drop": MessageLookupByLibrary.simpleMessage("固定掉落"),
     "quest_fixed_drop_short": MessageLookupByLibrary.simpleMessage("掉落"),
-    "quest_not_found_error": m32,
+    "quest_not_found_error": m31,
     "quest_prefer_region": MessageLookupByLibrary.simpleMessage("首選區服"),
     "quest_prefer_region_hint": MessageLookupByLibrary.simpleMessage("若該關卡所屬活動在所選區服尚未開放，則預設顯示日服"),
     "quest_region_has_enemy_hint": MessageLookupByLibrary.simpleMessage("僅日服(2020/11之後)和美服(2020/12之後)可能含有敵方資料"),
     "quest_restriction": MessageLookupByLibrary.simpleMessage("編成限制"),
     "quest_reward": MessageLookupByLibrary.simpleMessage("通關獎勵"),
     "quest_reward_short": MessageLookupByLibrary.simpleMessage("獎勵"),
-    "quest_runs": m33,
+    "quest_runs": m32,
     "quest_timeline_sort_campaign_open": MessageLookupByLibrary.simpleMessage("AP消耗活動開放時間"),
     "quest_timeline_sort_quest_open": MessageLookupByLibrary.simpleMessage("關卡開放時間"),
-    "quest_version": m34,
+    "quest_version": m33,
     "quest_wave": MessageLookupByLibrary.simpleMessage("Wave"),
     "quit": MessageLookupByLibrary.simpleMessage("退出"),
     "raid_quest": MessageLookupByLibrary.simpleMessage("伐柱戰"),
@@ -807,8 +953,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "rate_app_store": MessageLookupByLibrary.simpleMessage("App Store評分"),
     "rate_play_store": MessageLookupByLibrary.simpleMessage("Google Play評分"),
     "raw_gacha_data": MessageLookupByLibrary.simpleMessage("原始卡池資料"),
+    "raw_gacha_group": MessageLookupByLibrary.simpleMessage("原始卡池组"),
     "read_device_info": MessageLookupByLibrary.simpleMessage("讀取本設備參數"),
-    "recognizer_result_count": m35,
+    "recognizer_result_count": m34,
     "recorder_screenshot_current_view": MessageLookupByLibrary.simpleMessage("當前視窗"),
     "recorder_screenshot_full_view": MessageLookupByLibrary.simpleMessage("完整視窗"),
     "refresh": MessageLookupByLibrary.simpleMessage("重新整理"),
@@ -917,7 +1064,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "skip_current_turn": MessageLookupByLibrary.simpleMessage("跳過當前回合"),
     "solution_battle_count": MessageLookupByLibrary.simpleMessage("次數"),
     "solution_target_count": MessageLookupByLibrary.simpleMessage("目標數"),
-    "solution_total_battles_ap": m36,
+    "solution_total_battles_ap": m35,
     "sort_order": MessageLookupByLibrary.simpleMessage("排序"),
     "sound_effect": MessageLookupByLibrary.simpleMessage("音效"),
     "special_reward_hide": MessageLookupByLibrary.simpleMessage("隱藏特殊報酬"),
@@ -986,15 +1133,18 @@ class MessageLookup extends MessageLookupByLibrary {
     "target": MessageLookupByLibrary.simpleMessage("目標"),
     "td_animation": MessageLookupByLibrary.simpleMessage("寶具演出"),
     "td_base_hits_hint": MessageLookupByLibrary.simpleMessage("同一寶具不同持有者可能擁有不同的色卡和Hit分布"),
-    "td_cardcolor_hint": m37,
-    "td_cardnp_hint": m38,
+    "td_cardcolor_hint": m36,
+    "td_cardnp_hint": m37,
     "td_rankup": MessageLookupByLibrary.simpleMessage("寶具強化"),
+    "td_solver_simple_mode": MessageLookupByLibrary.simpleMessage("快速计算"),
+    "td_solver_simple_mode_desc": MessageLookupByLibrary.simpleMessage("只计算最终再临"),
     "team": MessageLookupByLibrary.simpleMessage("隊伍"),
     "team_backup_member": MessageLookupByLibrary.simpleMessage("後排"),
     "team_block_ce": MessageLookupByLibrary.simpleMessage("禁用禮裝"),
     "team_block_servant": MessageLookupByLibrary.simpleMessage("禁用從者"),
     "team_local": MessageLookupByLibrary.simpleMessage("本地隊伍"),
     "team_no_append_skill": MessageLookupByLibrary.simpleMessage("禁止追加技能"),
+    "team_no_class_board": MessageLookupByLibrary.simpleMessage("禁止职阶星图"),
     "team_no_double_castoria": MessageLookupByLibrary.simpleMessage("禁止雙術傻"),
     "team_no_double_koyan": MessageLookupByLibrary.simpleMessage("禁止雙殺狐"),
     "team_no_double_oberon": MessageLookupByLibrary.simpleMessage("禁止雙奧伯隆"),
@@ -1019,7 +1169,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "time_start": MessageLookupByLibrary.simpleMessage("開始"),
     "tips": MessageLookupByLibrary.simpleMessage("小建議"),
     "toggle_dark_mode": MessageLookupByLibrary.simpleMessage("切換深色模式"),
-    "too_many_td5_svts_warning": m39,
+    "too_many_td5_svts_warning": m38,
     "tooltip_refresh_sliders": MessageLookupByLibrary.simpleMessage("刷新輪播圖"),
     "total": MessageLookupByLibrary.simpleMessage("總計"),
     "total_ap": MessageLookupByLibrary.simpleMessage("總AP"),
@@ -1042,6 +1192,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "unlock_quest": MessageLookupByLibrary.simpleMessage("解鎖關卡"),
     "update": MessageLookupByLibrary.simpleMessage("更新"),
     "update_already_latest": MessageLookupByLibrary.simpleMessage("已經是最新版本"),
+    "update_app_hint": MessageLookupByLibrary.simpleMessage("请更新应用"),
     "update_data_at_start": MessageLookupByLibrary.simpleMessage("啟動時更新"),
     "update_data_at_start_off_hint": MessageLookupByLibrary.simpleMessage("讀取本地資料並在背景更新,下次啟動時更新"),
     "update_data_at_start_on_hint": MessageLookupByLibrary.simpleMessage("啟動時間可能變長"),
@@ -1055,7 +1206,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "upload_and_close_app_alert": MessageLookupByLibrary.simpleMessage("是否上傳資料再關閉?"),
     "upload_before_close_app": MessageLookupByLibrary.simpleMessage("關閉前上傳"),
     "upload_not_eligible_hint": MessageLookupByLibrary.simpleMessage("目前隊伍不滿足上傳條件:"),
-    "upload_paused": m40,
+    "upload_paused": m39,
     "upload_team_confirmation": MessageLookupByLibrary.simpleMessage(
       "確認上傳當前的隊伍?\n\n注意事項：(為了方便其他玩家檢索)\n- 請勿上傳關卡開放時未實裝的從者!!!\n- 請盡量降低隊伍配置(不必要的職階星圖、聖杯、被動技能、 寶具等級、未使用的後排從者等)以供他人參考。\n- 上傳的隊伍可能因數據格式更新/不相容等原因被移除。",
     ),
