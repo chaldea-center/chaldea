@@ -69,33 +69,46 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    return ModernScaffold(
-      appBar: ModernAppBar(title: S.current.auth_delete_account_title),
-      children: [
-        _buildDangerHeader(cs),
-        const SizedBox(height: 16),
-        _buildConsequencesCard(cs),
-        const SizedBox(height: 16),
-        ModernInput(
-          label: S.current.auth_confirm_password_prompt,
-          icon: Icons.lock_outline,
-          placeholder: S.current.auth_confirm_password_prompt,
-          controller: _pwdController,
-          obscure: _obscurePwd,
-          autocorrect: false,
-          errorText: _touched ? validatePassword(_pwdController.text) : null,
-          onToggleVisibility: () => setState(() => _obscurePwd = !_obscurePwd),
-          onChanged: (_) => setState(() {}),
+    return Scaffold(
+      appBar: AppBar(title: Text(S.current.auth_delete_account_title)),
+      body: SafeArea(
+        top: false, // AppBar already handles top safe area
+        child: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          children: [
+            _buildDangerHeader(cs),
+            const SizedBox(height: 16),
+            _buildConsequencesCard(cs),
+            const SizedBox(height: 16),
+            FormInput(
+              label: S.current.auth_confirm_password_prompt,
+              prefixIcon: Icons.lock_outline,
+              hint: S.current.auth_confirm_password_prompt,
+              controller: _pwdController,
+              obscure: _obscurePwd,
+              autocorrect: false,
+              errorText: _touched ? validatePassword(_pwdController.text) : null,
+              suffixIcon: IconButton(
+                onPressed: () => setState(() => _obscurePwd = !_obscurePwd),
+                icon: Icon(_obscurePwd ? Icons.visibility_off : Icons.visibility),
+                tooltip: _obscurePwd ? 'Show' : 'Hide',
+              ),
+              onChanged: (_) => setState(() {}),
+            ),
+            const SizedBox(height: 24),
+            PrimaryButton(
+              label: S.current.auth_delete_account_confirm,
+              danger: true,
+              onPressed: _isAvailable ? _delete : null,
+            ),
+            const SizedBox(height: 8),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(S.current.auth_cancel_back),
+            ),
+          ],
         ),
-        const SizedBox(height: 24),
-        ModernPrimaryButton(
-          label: S.current.auth_delete_account_confirm,
-          danger: true,
-          onPressed: _isAvailable ? _delete : null,
-        ),
-        const SizedBox(height: 8),
-        ModernTextButton(label: S.current.auth_cancel_back, onPressed: () => Navigator.of(context).pop()),
-      ],
+      ),
     );
   }
 
@@ -130,7 +143,7 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
       S.current.auth_delete_account_consequence_3,
       S.current.auth_delete_account_consequence_4,
     ];
-    return ModernSectionCard(
+    return SectionCard(
       divided: false,
       children: [
         Column(

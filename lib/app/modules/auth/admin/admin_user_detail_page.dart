@@ -1,5 +1,5 @@
 // AdminUserDetailPage: read-only user detail + 2 admin actions.
-// Sections: ModernProfileCard (admin sees full email, no masking) + 基本信息
+// Sections: ProfileCard (admin sees full email, no masking) + 基本信息
 // (info-rows: name/id/email/role+badge/createdAt/isOnline) + 统计
 // (info-rows: backupsCount/teamsCount/sessions list/logins list — last two
 // read-only lists) + 管理操作 with exactly 2 ActionRows: 重置密码
@@ -90,36 +90,54 @@ class _AdminUserDetailPageState extends State<AdminUserDetailPage> {
   @override
   Widget build(BuildContext context) {
     if (_loading) {
-      return ModernScaffold(
-        appBar: ModernAppBar(title: S.current.auth_admin_user_detail_title),
-        body: const Center(child: CircularProgressIndicator()),
+      return Scaffold(
+        appBar: AppBar(title: Text(S.current.auth_admin_user_detail_title)),
+        body: SafeArea(
+          top: false, // AppBar already handles top safe area
+          child: const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: Center(child: CircularProgressIndicator()),
+          ),
+        ),
       );
     }
     if (_error != null || _detail == null) {
-      return ModernScaffold(
-        appBar: ModernAppBar(title: S.current.auth_admin_user_detail_title),
-        body: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(_error ?? 'error', style: TextStyle(color: Theme.of(context).colorScheme.error)),
-              const SizedBox(height: 12),
-              TextButton(onPressed: _load, child: Text(S.current.auth_admin_load_more)),
-            ],
+      return Scaffold(
+        appBar: AppBar(title: Text(S.current.auth_admin_user_detail_title)),
+        body: SafeArea(
+          top: false, // AppBar already handles top safe area
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(_error ?? 'error', style: TextStyle(color: Theme.of(context).colorScheme.error)),
+                  const SizedBox(height: 12),
+                  TextButton(onPressed: _load, child: Text(S.current.auth_admin_load_more)),
+                ],
+              ),
+            ),
           ),
         ),
       );
     }
     final d = _detail!;
     final user = d.user;
-    return ModernScaffold(
-      appBar: ModernAppBar(title: S.current.auth_admin_user_detail_title),
-      children: [
-        ModernProfileCard(title: user.name, subtitle: '${S.current.auth_user_id}: ${user.id}'),
-        _buildBasicInfo(d, user),
-        _buildStatistics(d),
-        _buildAdminActions(),
-      ],
+    return Scaffold(
+      appBar: AppBar(title: Text(S.current.auth_admin_user_detail_title)),
+      body: SafeArea(
+        top: false, // AppBar already handles top safe area
+        child: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          children: [
+            ProfileCard(title: user.name, subtitle: '${S.current.auth_user_id}: ${user.id}'),
+            _buildBasicInfo(d, user),
+            _buildStatistics(d),
+            _buildAdminActions(),
+          ],
+        ),
+      ),
     );
   }
 
@@ -127,25 +145,25 @@ class _AdminUserDetailPageState extends State<AdminUserDetailPage> {
     final created = user.createdAt != null
         ? DateTime.fromMillisecondsSinceEpoch(user.createdAt! * 1000).toDateString()
         : '-';
-    return ModernSectionCard(
+    return SectionCard(
       title: S.current.auth_admin_basic_info,
       children: [
-        ModernInfoRow(icon: Icons.person_outline, label: S.current.login_username, value: user.name),
-        ModernInfoRow(icon: Icons.tag, label: S.current.auth_user_id, value: user.id.toString(), valueMono: true),
-        ModernInfoRow(
-          icon: Icons.email_outlined,
-          label: S.current.auth_email_field,
+        InfoRow(leading: Icon(Icons.person_outline), title: S.current.login_username, value: user.name),
+        InfoRow(leading: Icon(Icons.tag), title: S.current.auth_user_id, value: user.id.toString(), valueMono: true),
+        InfoRow(
+          leading: Icon(Icons.email_outlined),
+          title: S.current.auth_email_field,
           value: (user.email == null || user.email!.isEmpty) ? S.current.auth_admin_no_email : user.email!,
         ),
-        ModernInfoRow(
-          icon: Icons.shield_outlined,
-          label: S.current.auth_role,
-          valueWidget: user.isAdmin ? ModernBadge(label: S.current.auth_role_admin) : null,
+        InfoRow(
+          leading: Icon(Icons.shield_outlined),
+          title: S.current.auth_role,
+          valueWidget: user.isAdmin ? Chip(label: Text(S.current.auth_role_admin)) : null,
         ),
-        ModernInfoRow(icon: Icons.calendar_today_outlined, label: S.current.auth_admin_created_at, value: created),
-        ModernInfoRow(
-          icon: Icons.circle,
-          label: S.current.auth_admin_online_status,
+        InfoRow(leading: Icon(Icons.calendar_today_outlined), title: S.current.auth_admin_created_at, value: created),
+        InfoRow(
+          leading: Icon(Icons.circle),
+          title: S.current.auth_admin_online_status,
           value: user.role == ChaldeaUserRole.admin ? S.current.auth_admin_online : S.current.auth_admin_offline,
         ),
       ],
@@ -153,30 +171,30 @@ class _AdminUserDetailPageState extends State<AdminUserDetailPage> {
   }
 
   Widget _buildStatistics(AdminUserDetail d) {
-    return ModernSectionCard(
+    return SectionCard(
       title: S.current.auth_admin_statistics,
       children: [
-        ModernInfoRow(
-          icon: Icons.cloud_upload_outlined,
-          label: S.current.auth_admin_backups_count,
+        InfoRow(
+          leading: Icon(Icons.cloud_upload_outlined),
+          title: S.current.auth_admin_backups_count,
           value: d.backupsCount.toString(),
           valueMono: true,
         ),
-        ModernInfoRow(
-          icon: Icons.groups_outlined,
-          label: S.current.auth_admin_teams_count,
+        InfoRow(
+          leading: Icon(Icons.groups_outlined),
+          title: S.current.auth_admin_teams_count,
           value: d.teamsCount.toString(),
           valueMono: true,
         ),
-        ModernInfoRow(
-          icon: Icons.devices_outlined,
-          label: S.current.auth_admin_sessions,
+        InfoRow(
+          leading: Icon(Icons.devices_outlined),
+          title: S.current.auth_admin_sessions,
           value: '${d.sessions.length}',
           valueMono: true,
         ),
-        ModernInfoRow(
-          icon: Icons.history_outlined,
-          label: S.current.auth_admin_recent_logins,
+        InfoRow(
+          leading: Icon(Icons.history_outlined),
+          title: S.current.auth_admin_recent_logins,
           value: '${d.logins.length}',
           valueMono: true,
         ),
@@ -185,11 +203,11 @@ class _AdminUserDetailPageState extends State<AdminUserDetailPage> {
   }
 
   Widget _buildAdminActions() {
-    return ModernSectionCard(
+    return SectionCard(
       title: S.current.auth_admin_actions,
       children: [
-        ModernActionRow(icon: Icons.lock_reset_outlined, label: S.current.auth_admin_reset_password, onTap: _resetPassword),
-        ModernActionRow(icon: Icons.email_outlined, label: S.current.auth_admin_send_recovery, onTap: _sendRecoveryEmail),
+        ActionRow(leading: Icon(Icons.lock_reset_outlined), title: S.current.auth_admin_reset_password, onTap: _resetPassword),
+        ActionRow(leading: Icon(Icons.email_outlined), title: S.current.auth_admin_send_recovery, onTap: _sendRecoveryEmail),
       ],
     );
   }

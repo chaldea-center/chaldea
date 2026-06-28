@@ -94,17 +94,23 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ModernScaffold(
-      appBar: ModernAppBar(title: S.current.auth_forgot_password_title),
-      children: [
-        ModernInfoBanner(variant: ModernInfoBannerVariant.info, text: S.current.auth_forgot_password_hint),
-        const SizedBox(height: 16),
-        _buildEmailResetCard(),
-        const SizedBox(height: 16),
-        _buildDeviceVerifyCard(),
-        const SizedBox(height: 16),
-        _buildContactDeveloperCard(),
-      ],
+    return Scaffold(
+      appBar: AppBar(title: Text(S.current.auth_forgot_password_title)),
+      body: SafeArea(
+        top: false,
+        child: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          children: [
+            InfoBanner(variant: InfoBannerVariant.info, text: S.current.auth_forgot_password_hint),
+            const SizedBox(height: 16),
+            _buildEmailResetCard(),
+            const SizedBox(height: 16),
+            _buildDeviceVerifyCard(),
+            const SizedBox(height: 16),
+            _buildContactDeveloperCard(),
+          ],
+        ),
+      ),
     );
   }
 
@@ -115,8 +121,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       title: S.current.auth_method_email_reset_title,
       desc: S.current.auth_method_email_reset_desc,
       children: [
-        ModernInput(
-          placeholder: S.current.email,
+        FormInput(
+          hint: S.current.email,
           controller: _emailController,
           autocorrect: false,
           keyboardType: TextInputType.emailAddress,
@@ -124,7 +130,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           onChanged: (_) => setState(() {}),
         ),
         const SizedBox(height: 8),
-        ModernPrimaryButton(
+        PrimaryButton(
           label: S.current.auth_send_reset_email,
           onPressed: _isEmailResetAvailable ? _sendResetEmail : null,
         ),
@@ -138,25 +144,25 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       title: S.current.auth_method_device_verify_title,
       desc: S.current.auth_method_device_verify_desc,
       children: [
-        ModernInput(
-          placeholder: S.current.login_username,
-          icon: Icons.person_outline,
+        FormInput(
+          hint: S.current.login_username,
+          prefixIcon: Icons.person_outline,
           controller: _usernameController,
           autocorrect: false,
           onChanged: (_) => setState(() {}),
         ),
         const SizedBox(height: 8),
-        ModernInput(
-          placeholder: S.current.auth_device_id,
-          icon: Icons.devices_outlined,
+        FormInput(
+          hint: S.current.auth_device_id,
+          prefixIcon: Icons.devices_outlined,
           controller: _deviceIdController,
           autocorrect: false,
           onChanged: (_) => setState(() {}),
         ),
         const SizedBox(height: 8),
-        ModernInput(
-          placeholder: S.current.auth_new_email,
-          icon: Icons.email_outlined,
+        FormInput(
+          hint: S.current.auth_new_email,
+          prefixIcon: Icons.email_outlined,
           controller: _newEmailController,
           autocorrect: false,
           keyboardType: TextInputType.emailAddress,
@@ -166,7 +172,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           onChanged: (_) => setState(() {}),
         ),
         const SizedBox(height: 8),
-        ModernPrimaryButton(
+        PrimaryButton(
           label: S.current.auth_submit_verification,
           onPressed: _isDeviceVerifyAvailable ? _submitDeviceVerify : null,
         ),
@@ -180,7 +186,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       title: S.current.auth_method_contact_developer_title,
       desc: S.current.auth_method_contact_developer_desc,
       children: [
-        ModernSecondaryButton(
+        SecondaryButton(
           label: S.current.auth_contact_developer_btn,
           onPressed: () => router.push(child: FeedbackPage()),
         ),

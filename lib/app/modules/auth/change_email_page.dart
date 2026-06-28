@@ -3,7 +3,7 @@
 // Step 2: enter code → call `verifyEmail` to confirm. On success, manually
 // patch `secrets.user.email` (verifyEmail returns bool, not a fresh user)
 // then pop; ProfilePage refreshes via its _pushAndRefresh await.
-// The top uses ModernValueHeader (large icon + label + current email).
+// The top uses ValueHeader (large icon + label + current email).
 
 import 'package:flutter/material.dart';
 
@@ -81,29 +81,35 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ModernScaffold(
-      appBar: ModernAppBar(title: S.current.auth_change_email_title),
-      children: [
-        ModernValueHeader(
-          icon: Icons.email_outlined,
-          label: S.current.auth_current_email,
-          value: _currentEmail.isEmpty ? '-' : _currentEmail,
+    return Scaffold(
+      appBar: AppBar(title: Text(S.current.auth_change_email_title)),
+      body: SafeArea(
+        top: false,
+        child: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          children: [
+            ValueHeader(
+              icon: Icons.email_outlined,
+              label: S.current.auth_current_email,
+              value: _currentEmail.isEmpty ? '-' : _currentEmail,
+            ),
+            const SizedBox(height: 16),
+            StepIndicator(current: _step, total: 2),
+            const SizedBox(height: 24),
+            if (_step == 1) ..._buildStep1(),
+            if (_step == 2) ..._buildStep2(),
+          ],
         ),
-        const SizedBox(height: 16),
-        ModernStepIndicator(current: _step, total: 2),
-        const SizedBox(height: 24),
-        if (_step == 1) ..._buildStep1(),
-        if (_step == 2) ..._buildStep2(),
-      ],
+      ),
     );
   }
 
   List<Widget> _buildStep1() {
     return [
-      ModernInput(
+      FormInput(
         label: S.current.auth_new_email,
-        icon: Icons.email_outlined,
-        placeholder: 'example@email.com',
+        prefixIcon: Icons.email_outlined,
+        hint: 'example@email.com',
         controller: _emailController,
         autocorrect: false,
         keyboardType: TextInputType.emailAddress,
@@ -111,22 +117,25 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
         onChanged: (_) => setState(() {}),
       ),
       const SizedBox(height: 24),
-      ModernPrimaryButton(label: S.current.auth_send_code, onPressed: _isStep1Available ? _sendCode : null),
+      PrimaryButton(label: S.current.auth_send_code, onPressed: _isStep1Available ? _sendCode : null),
     ];
   }
 
   List<Widget> _buildStep2() {
     return [
-      ModernInfoBanner(
-        variant: ModernInfoBannerVariant.info,
+      InfoBanner(
+        variant: InfoBannerVariant.info,
         text: S.current.auth_verification_code_sent(_emailController.text),
       ),
       const SizedBox(height: 16),
-      ModernCodeInput(length: 6, onChanged: (v) => setState(() => _code = v)),
+      CodeInput(length: 6, onChanged: (v) => setState(() => _code = v)),
       const SizedBox(height: 24),
-      ModernPrimaryButton(label: S.current.auth_confirm_change, onPressed: _isStep2Available ? _verify : null),
+      PrimaryButton(label: S.current.auth_confirm_change, onPressed: _isStep2Available ? _verify : null),
       const SizedBox(height: 8),
-      ModernTextButton(label: S.current.auth_resend_code, onPressed: _isStep1Available ? _sendCode : null),
+      TextButton(
+        onPressed: _isStep1Available ? _sendCode : null,
+        child: Text(S.current.auth_resend_code),
+      ),
     ];
   }
 }

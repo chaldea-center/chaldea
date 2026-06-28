@@ -1,7 +1,8 @@
 // LoginPage: entry auth page reusing the shared modern widget library.
-// Design deviation: keeps a back button (ModernAppBar.showBack defaults to true)
-// because in Chaldea auth pages are pushed from settings rather than being
-// app entry points. Drops the design's "或" divider per design.md D2.
+// Design deviation: keeps a back button (native AppBar auto-shows it when
+// the route can pop) because in Chaldea auth pages are pushed from settings
+// rather than being app entry points. Drops the design's "或" divider per
+// design.md D2.
 
 import 'package:flutter/material.dart';
 
@@ -74,50 +75,60 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ModernScaffold(
-      appBar: ModernAppBar(title: S.current.auth_login_title),
-      children: [
-        const SizedBox(height: 8),
-        const BrandArea(),
-        const SizedBox(height: 32),
-        ModernInput(
-          label: S.current.auth_username_or_email,
-          icon: Icons.person_outline,
-          placeholder: S.current.auth_username_or_email,
-          controller: _nameController,
-          autocorrect: false,
-          errorText: _nameTouched ? validateUsername(_nameController.text) : null,
-          onChanged: (_) => setState(() {}),
-        ),
-        const SizedBox(height: 16),
-        ModernInput(
-          label: S.current.login_password,
-          icon: Icons.lock_outline,
-          placeholder: S.current.login_password,
-          controller: _pwdController,
-          obscure: _obscurePwd,
-          autocorrect: false,
-          errorText: _pwdTouched ? validatePassword(_pwdController.text) : null,
-          onToggleVisibility: () => setState(() => _obscurePwd = !_obscurePwd),
-          onChanged: (_) => setState(() {}),
-        ),
-        const SizedBox(height: 24),
-        ModernPrimaryButton(label: S.current.auth_login_title, onPressed: _isLoginAvailable ? _doLogin : null),
-        const SizedBox(height: 16),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Scaffold(
+      appBar: AppBar(title: Text(S.current.auth_login_title)),
+      body: SafeArea(
+        top: false,
+        child: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           children: [
-            ModernTextButton(
-              label: S.current.auth_forgot_password_link,
-              onPressed: () => router.push(child: const ForgotPasswordPage()),
+            const SizedBox(height: 8),
+            const BrandArea(),
+            const SizedBox(height: 32),
+            FormInput(
+              label: S.current.auth_username_or_email,
+              prefixIcon: Icons.person_outline,
+              hint: S.current.auth_username_or_email,
+              controller: _nameController,
+              autocorrect: false,
+              errorText: _nameTouched ? validateUsername(_nameController.text) : null,
+              onChanged: (_) => setState(() {}),
             ),
-            ModernTextButton(
-              label: S.current.auth_register_account,
-              onPressed: () => router.push(child: const RegisterPage()),
+            const SizedBox(height: 16),
+            FormInput(
+              label: S.current.login_password,
+              prefixIcon: Icons.lock_outline,
+              hint: S.current.login_password,
+              controller: _pwdController,
+              obscure: _obscurePwd,
+              autocorrect: false,
+              errorText: _pwdTouched ? validatePassword(_pwdController.text) : null,
+              suffixIcon: IconButton(
+                onPressed: () => setState(() => _obscurePwd = !_obscurePwd),
+                icon: Icon(_obscurePwd ? Icons.visibility_off : Icons.visibility),
+                tooltip: _obscurePwd ? 'Show' : 'Hide',
+              ),
+              onChanged: (_) => setState(() {}),
+            ),
+            const SizedBox(height: 24),
+            PrimaryButton(label: S.current.auth_login_title, onPressed: _isLoginAvailable ? _doLogin : null),
+            const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                TextButton(
+                  onPressed: () => router.push(child: const ForgotPasswordPage()),
+                  child: Text(S.current.auth_forgot_password_link),
+                ),
+                TextButton(
+                  onPressed: () => router.push(child: const RegisterPage()),
+                  child: Text(S.current.auth_register_account),
+                ),
+              ],
             ),
           ],
         ),
-      ],
+      ),
     );
   }
 }

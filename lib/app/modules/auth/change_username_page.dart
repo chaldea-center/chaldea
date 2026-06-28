@@ -1,7 +1,7 @@
 // ChangeUsernamePage: form to update the user's display name.
 // On success: secrets.user is updated (preserving accessToken) and the
 // page pops; ProfilePage refreshes via its _pushAndRefresh await.
-// The top of the page uses ModernValueHeader (large icon + label + current
+// The top of the page uses ValueHeader (large icon + label + current
 // value) instead of the old InfoBanner to fill the empty space meaningfully.
 
 import 'package:flutter/material.dart';
@@ -74,28 +74,34 @@ class _ChangeUsernamePageState extends State<ChangeUsernamePage> {
 
   @override
   Widget build(BuildContext context) {
-    return ModernScaffold(
-      appBar: ModernAppBar(title: S.current.auth_change_username_title),
-      children: [
-        ModernValueHeader(
-          icon: Icons.person_outline,
-          label: S.current.auth_current_username,
-          value: _currentName.isEmpty ? '-' : _currentName,
+    return Scaffold(
+      appBar: AppBar(title: Text(S.current.auth_change_username_title)),
+      body: SafeArea(
+        top: false,
+        child: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          children: [
+            ValueHeader(
+              icon: Icons.person_outline,
+              label: S.current.auth_current_username,
+              value: _currentName.isEmpty ? '-' : _currentName,
+            ),
+            const SizedBox(height: 24),
+            FormInput(
+              label: S.current.auth_new_username,
+              prefixIcon: Icons.person_outline,
+              hint: S.current.auth_new_username,
+              controller: _nameController,
+              autocorrect: false,
+              helperText: S.current.auth_username_helper,
+              errorText: _errorText,
+              onChanged: (_) => setState(() {}),
+            ),
+            const SizedBox(height: 24),
+            PrimaryButton(label: S.current.auth_confirm_change, onPressed: _isAvailable ? _submit : null),
+          ],
         ),
-        const SizedBox(height: 24),
-        ModernInput(
-          label: S.current.auth_new_username,
-          icon: Icons.person_outline,
-          placeholder: S.current.auth_new_username,
-          controller: _nameController,
-          autocorrect: false,
-          helperText: S.current.auth_username_helper,
-          errorText: _errorText,
-          onChanged: (_) => setState(() {}),
-        ),
-        const SizedBox(height: 24),
-        ModernPrimaryButton(label: S.current.auth_confirm_change, onPressed: _isAvailable ? _submit : null),
-      ],
+      ),
     );
   }
 }

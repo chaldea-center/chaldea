@@ -92,52 +92,70 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ModernScaffold(
-      appBar: ModernAppBar(title: S.current.auth_change_password_title),
-      children: [
-        ModernInfoBanner(
-          variant: ModernInfoBannerVariant.warning,
-          text: S.current.auth_change_password_warning,
+    return Scaffold(
+      appBar: AppBar(title: Text(S.current.auth_change_password_title)),
+      body: SafeArea(
+        top: false, // AppBar already handles top safe area
+        child: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          children: [
+            InfoBanner(
+              variant: InfoBannerVariant.warning,
+              text: S.current.auth_change_password_warning,
+            ),
+            const SizedBox(height: 16),
+            FormInput(
+              label: S.current.auth_current_password,
+              prefixIcon: Icons.lock_outline,
+              hint: S.current.auth_current_password,
+              controller: _currentController,
+              obscure: _obscureCurrent,
+              autocorrect: false,
+              errorText: _currentError,
+              suffixIcon: IconButton(
+                onPressed: () => setState(() => _obscureCurrent = !_obscureCurrent),
+                icon: Icon(_obscureCurrent ? Icons.visibility_off : Icons.visibility),
+                tooltip: _obscureCurrent ? 'Show' : 'Hide',
+              ),
+              onChanged: (_) => setState(() {}),
+            ),
+            const SizedBox(height: 16),
+            FormInput(
+              label: S.current.login_password,
+              prefixIcon: Icons.lock_outline,
+              hint: S.current.login_password,
+              controller: _newController,
+              obscure: _obscureNew,
+              autocorrect: false,
+              errorText: _newError,
+              suffixIcon: IconButton(
+                onPressed: () => setState(() => _obscureNew = !_obscureNew),
+                icon: Icon(_obscureNew ? Icons.visibility_off : Icons.visibility),
+                tooltip: _obscureNew ? 'Show' : 'Hide',
+              ),
+              onChanged: (_) => setState(() {}),
+            ),
+            const SizedBox(height: 16),
+            FormInput(
+              label: S.current.login_confirm_password,
+              prefixIcon: Icons.lock_outline,
+              hint: S.current.login_confirm_password,
+              controller: _confirmController,
+              obscure: _obscureConfirm,
+              autocorrect: false,
+              errorText: _confirmError,
+              suffixIcon: IconButton(
+                onPressed: () => setState(() => _obscureConfirm = !_obscureConfirm),
+                icon: Icon(_obscureConfirm ? Icons.visibility_off : Icons.visibility),
+                tooltip: _obscureConfirm ? 'Show' : 'Hide',
+              ),
+              onChanged: (_) => setState(() {}),
+            ),
+            const SizedBox(height: 24),
+            PrimaryButton(label: S.current.auth_confirm_change, onPressed: _isAvailable ? _submit : null),
+          ],
         ),
-        const SizedBox(height: 16),
-        ModernInput(
-          label: S.current.auth_current_password,
-          icon: Icons.lock_outline,
-          placeholder: S.current.auth_current_password,
-          controller: _currentController,
-          obscure: _obscureCurrent,
-          autocorrect: false,
-          errorText: _currentError,
-          onToggleVisibility: () => setState(() => _obscureCurrent = !_obscureCurrent),
-          onChanged: (_) => setState(() {}),
-        ),
-        const SizedBox(height: 16),
-        ModernInput(
-          label: S.current.login_password,
-          icon: Icons.lock_outline,
-          placeholder: S.current.login_password,
-          controller: _newController,
-          obscure: _obscureNew,
-          autocorrect: false,
-          errorText: _newError,
-          onToggleVisibility: () => setState(() => _obscureNew = !_obscureNew),
-          onChanged: (_) => setState(() {}),
-        ),
-        const SizedBox(height: 16),
-        ModernInput(
-          label: S.current.login_confirm_password,
-          icon: Icons.lock_outline,
-          placeholder: S.current.login_confirm_password,
-          controller: _confirmController,
-          obscure: _obscureConfirm,
-          autocorrect: false,
-          errorText: _confirmError,
-          onToggleVisibility: () => setState(() => _obscureConfirm = !_obscureConfirm),
-          onChanged: (_) => setState(() {}),
-        ),
-        const SizedBox(height: 24),
-        ModernPrimaryButton(label: S.current.auth_confirm_change, onPressed: _isAvailable ? _submit : null),
-      ],
+      ),
     );
   }
 }

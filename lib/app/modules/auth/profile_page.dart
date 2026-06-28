@@ -1,5 +1,5 @@
 // ProfilePage: hub for the logged-in user.
-// Layout: ModernProfileCard + 个人信息 SectionCard + 账号操作 SectionCard
+// Layout: ProfileCard + 个人信息 SectionCard + 账号操作 SectionCard
 // + (if accessToken empty) 迁移账号 ActionRow
 // + (if isAdmin) 管理工具 SectionCard with 用户管理.
 // Logout pops back to settings; sub-pages push and refresh on pop.
@@ -103,58 +103,66 @@ class _ProfilePageState extends State<ProfilePage> {
     final accessToken = user?.accessToken ?? '';
     final isAdmin = user?.isAdmin ?? false;
 
-    return ModernScaffold(
-      appBar: ModernAppBar(title: S.current.auth_profile_title),
-      children: [
-        ModernProfileCard(title: name, subtitle: '${S.current.auth_user_id}: $uid'),
-        _buildPersonalInfoSection(name, uid, email, isAdmin),
-        _buildAccountActionsSection(),
-        if (accessToken.isEmpty) _buildMigrationSection(),
-        if (isAdmin) _buildAdminSection(),
-      ],
+    return Scaffold(
+      appBar: AppBar(title: Text(S.current.auth_profile_title)),
+      body: SafeArea(
+        top: false, // AppBar already handles top safe area
+        child: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          children: [
+            ProfileCard(title: name, subtitle: '${S.current.auth_user_id}: $uid'),
+            _buildPersonalInfoSection(name, uid, email, isAdmin),
+            _buildAccountActionsSection(),
+            if (accessToken.isEmpty) _buildMigrationSection(),
+            if (isAdmin) _buildAdminSection(),
+          ],
+        ),
+      ),
     );
   }
 
   Widget _buildPersonalInfoSection(String name, String uid, String email, bool isAdmin) {
-    return ModernSectionCard(
+    return SectionCard(
       title: S.current.auth_personal_info,
       children: [
-        ModernInfoRow(
-          icon: Icons.person_outline,
-          label: S.current.login_username,
+        InfoRow(
+          leading: Icon(Icons.person_outline),
+          title: S.current.login_username,
           value: name,
           onTap: () => _pushAndRefresh(const ChangeUsernamePage()),
+          showChevron: true,
         ),
-        ModernInfoRow(icon: Icons.tag, label: S.current.auth_user_id, value: uid, valueMono: true),
-        ModernInfoRow(
-          icon: Icons.email_outlined,
-          label: S.current.auth_email_field,
+        InfoRow(leading: Icon(Icons.tag), title: S.current.auth_user_id, value: uid, valueMono: true),
+        InfoRow(
+          leading: Icon(Icons.email_outlined),
+          title: S.current.auth_email_field,
           value: email.isEmpty ? S.current.auth_admin_no_email : _maskEmail(email),
           onTap: () => _pushAndRefresh(const ChangeEmailPage()),
+          showChevron: true,
         ),
-        ModernInfoRow(
-          icon: Icons.shield_outlined,
-          label: S.current.auth_role,
-          valueWidget: isAdmin ? ModernBadge(label: S.current.auth_role_admin) : null,
+        InfoRow(
+          leading: Icon(Icons.shield_outlined),
+          title: S.current.auth_role,
+          valueWidget: isAdmin ? Chip(label: Text(S.current.auth_role_admin)) : null,
         ),
       ],
     );
   }
 
   Widget _buildAccountActionsSection() {
-    return ModernSectionCard(
+    return SectionCard(
       title: S.current.auth_account_actions,
       children: [
-        ModernActionRow(
-          icon: Icons.lock_outline,
-          label: S.current.auth_change_password,
+        ActionRow(
+          leading: Icon(Icons.lock_outline),
+          title: S.current.auth_change_password,
           onTap: () => _pushAndRefresh(const ChangePasswordPage()),
         ),
-        ModernActionRow(icon: Icons.logout, label: S.current.auth_logout, onTap: _logout),
-        ModernActionRow(
-          icon: Icons.delete_outline,
-          label: S.current.auth_delete_account,
-          variant: ModernActionRowVariant.error,
+        ActionRow(leading: Icon(Icons.logout), title: S.current.auth_logout, onTap: _logout),
+        ActionRow(
+          leading: Icon(Icons.delete_outline),
+          title: S.current.auth_delete_account,
+          variant: ActionRowVariant.danger,
           onTap: () async {
             await router.push(child: const DeleteAccountPage());
             if (secrets.user == null && mounted) {
@@ -167,22 +175,22 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _buildMigrationSection() {
-    return ModernSectionCard(
+    return SectionCard(
       title: S.current.auth_migrate_account,
       divided: false,
       children: [
-        ModernActionRow(icon: Icons.swap_horiz, label: S.current.auth_migrate_account, onTap: _migrateAccount),
+        ActionRow(leading: Icon(Icons.swap_horiz), title: S.current.auth_migrate_account, onTap: _migrateAccount),
       ],
     );
   }
 
   Widget _buildAdminSection() {
-    return ModernSectionCard(
+    return SectionCard(
       title: S.current.auth_admin_tools,
       children: [
-        ModernActionRow(
-          icon: Icons.admin_panel_settings_outlined,
-          label: S.current.auth_user_management,
+        ActionRow(
+          leading: Icon(Icons.admin_panel_settings_outlined),
+          title: S.current.auth_user_management,
           onTap: () => router.push(child: const AdminUsersPage()),
         ),
       ],

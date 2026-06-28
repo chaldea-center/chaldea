@@ -3,7 +3,7 @@
 // row as an AdminUserListTile (avatar + name + id + masked email + role
 // badge + online dot + createdAt). Tap → push AdminUserDetailPage(userId).
 // "Load more" affordance at list end when `hasNextPage` is true.
-// Uses ModernScaffold(body:) because the page has a sticky search bar + a
+// Uses Scaffold(body:) because the page has a sticky search bar + a
 // scrollable list (Expanded) — not a simple flat ListView.
 
 import 'package:flutter/material.dart';
@@ -84,30 +84,36 @@ class _AdminUsersPageState extends State<AdminUsersPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ModernScaffold(
-      appBar: ModernAppBar(title: S.current.auth_admin_users_title),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const SizedBox(height: 16),
-          Row(
+    return Scaffold(
+      appBar: AppBar(title: Text(S.current.auth_admin_users_title)),
+      body: SafeArea(
+        top: false, // AppBar already handles top safe area
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Expanded(
-                child: ModernInput(
-                  placeholder: S.current.auth_search_users,
-                  icon: Icons.search,
-                  controller: _searchController,
-                  autocorrect: false,
-                  onChanged: (_) => setState(() {}),
-                ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: FormInput(
+                      hint: S.current.auth_search_users,
+                      prefixIcon: Icons.search,
+                      controller: _searchController,
+                      autocorrect: false,
+                      onChanged: (_) => setState(() {}),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  PrimaryButton(label: S.current.auth_search_users, onPressed: _loading ? null : _onSearch),
+                ],
               ),
-              const SizedBox(width: 8),
-              ModernPrimaryButton(label: S.current.auth_search_users, onPressed: _loading ? null : _onSearch),
+              const SizedBox(height: 16),
+              Expanded(child: _buildList()),
             ],
           ),
-          const SizedBox(height: 16),
-          Expanded(child: _buildList()),
-        ],
+        ),
       ),
     );
   }
@@ -134,7 +140,7 @@ class _AdminUsersPageState extends State<AdminUsersPage> {
     return ListView(
       controller: _scrollController,
       children: [
-        ModernSectionCard(divided: true, children: _users.map(_buildTile).toList()),
+        SectionCard(divided: true, children: _users.map(_buildTile).toList()),
         if (_hasMore)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 12),
@@ -213,7 +219,7 @@ class _AdminUsersPageState extends State<AdminUsersPage> {
                         ),
                       ),
                       const SizedBox(width: 6),
-                      if (user.role == ChaldeaUserRole.admin) ModernBadge(label: S.current.auth_role_admin),
+                      if (user.role == ChaldeaUserRole.admin) Chip(label: Text(S.current.auth_role_admin)),
                     ],
                   ),
                   const SizedBox(height: 2),

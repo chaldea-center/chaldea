@@ -97,23 +97,29 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ModernScaffold(
-      appBar: ModernAppBar(title: S.current.auth_register_title),
-      children: [
-        ModernStepIndicator(current: _step, total: 2),
-        const SizedBox(height: 24),
-        if (_step == 1) ..._buildStep1(),
-        if (_step == 2) ..._buildStep2(),
-      ],
+    return Scaffold(
+      appBar: AppBar(title: Text(S.current.auth_register_title)),
+      body: SafeArea(
+        top: false,
+        child: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          children: [
+            StepIndicator(current: _step, total: 2),
+            const SizedBox(height: 24),
+            if (_step == 1) ..._buildStep1(),
+            if (_step == 2) ..._buildStep2(),
+          ],
+        ),
+      ),
     );
   }
 
   List<Widget> _buildStep1() {
     return [
-      ModernInput(
+      FormInput(
         label: S.current.login_username,
-        icon: Icons.person_outline,
-        placeholder: S.current.login_username,
+        prefixIcon: Icons.person_outline,
+        hint: S.current.login_username,
         controller: _nameController,
         autocorrect: false,
         helperText: S.current.auth_username_helper,
@@ -121,10 +127,10 @@ class _RegisterPageState extends State<RegisterPage> {
         onChanged: (_) => setState(() {}),
       ),
       const SizedBox(height: 16),
-      ModernInput(
+      FormInput(
         label: S.current.email,
-        icon: Icons.email_outlined,
-        placeholder: 'example@email.com',
+        prefixIcon: Icons.email_outlined,
+        hint: 'example@email.com',
         controller: _emailController,
         autocorrect: false,
         keyboardType: TextInputType.emailAddress,
@@ -132,48 +138,59 @@ class _RegisterPageState extends State<RegisterPage> {
         onChanged: (_) => setState(() {}),
       ),
       const SizedBox(height: 16),
-      ModernInput(
+      FormInput(
         label: S.current.login_password,
-        icon: Icons.lock_outline,
-        placeholder: S.current.login_password,
+        prefixIcon: Icons.lock_outline,
+        hint: S.current.login_password,
         controller: _pwdController,
         obscure: _obscurePwd,
         autocorrect: false,
         errorText: validatePassword(_pwdController.text),
-        onToggleVisibility: () => setState(() => _obscurePwd = !_obscurePwd),
+        suffixIcon: IconButton(
+          onPressed: () => setState(() => _obscurePwd = !_obscurePwd),
+          icon: Icon(_obscurePwd ? Icons.visibility_off : Icons.visibility),
+          tooltip: _obscurePwd ? 'Show' : 'Hide',
+        ),
         onChanged: (_) => setState(() {}),
       ),
       const SizedBox(height: 16),
-      ModernInput(
+      FormInput(
         label: S.current.login_confirm_password,
-        icon: Icons.lock_outline,
-        placeholder: S.current.login_confirm_password,
+        prefixIcon: Icons.lock_outline,
+        hint: S.current.login_confirm_password,
         controller: _confirmController,
         obscure: _obscurePwd,
         autocorrect: false,
         errorText: _confirmController.text.isEmpty || _confirmController.text == _pwdController.text
             ? null
             : S.current.login_password_error_same_as_old,
-        onToggleVisibility: () => setState(() => _obscurePwd = !_obscurePwd),
+        suffixIcon: IconButton(
+          onPressed: () => setState(() => _obscurePwd = !_obscurePwd),
+          icon: Icon(_obscurePwd ? Icons.visibility_off : Icons.visibility),
+          tooltip: _obscurePwd ? 'Show' : 'Hide',
+        ),
         onChanged: (_) => setState(() {}),
       ),
       const SizedBox(height: 24),
-      ModernPrimaryButton(label: S.current.auth_send_code, onPressed: _isStep1Available ? _sendCode : null),
+      PrimaryButton(label: S.current.auth_send_code, onPressed: _isStep1Available ? _sendCode : null),
     ];
   }
 
   List<Widget> _buildStep2() {
     return [
-      ModernInfoBanner(
-        variant: ModernInfoBannerVariant.info,
+      InfoBanner(
+        variant: InfoBannerVariant.info,
         text: S.current.auth_verification_code_sent(_emailController.text),
       ),
       const SizedBox(height: 16),
-      ModernCodeInput(length: 6, onChanged: (v) => setState(() => _code = v)),
+      CodeInput(length: 6, onChanged: (v) => setState(() => _code = v)),
       const SizedBox(height: 24),
-      ModernPrimaryButton(label: S.current.confirm, onPressed: _isStep2Available ? _verify : null),
+      PrimaryButton(label: S.current.confirm, onPressed: _isStep2Available ? _verify : null),
       const SizedBox(height: 8),
-      ModernTextButton(label: S.current.auth_resend_code, onPressed: _isStep1Available ? _sendCode : null),
+      TextButton(
+        onPressed: _isStep1Available ? _sendCode : null,
+        child: Text(S.current.auth_resend_code),
+      ),
     ];
   }
 }
