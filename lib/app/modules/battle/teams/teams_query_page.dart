@@ -4,10 +4,10 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/chaldea_server.dart';
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/modules/auth/login_page.dart';
 import 'package:chaldea/app/modules/battle/formation/formation_card.dart';
 import 'package:chaldea/app/modules/battle/simulation_preview.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
-import 'package:chaldea/app/modules/home/subpage/login_page.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/api/api.dart';
 import 'package:chaldea/models/models.dart';

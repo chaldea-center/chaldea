@@ -7,7 +7,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/app.dart';
-import 'package:chaldea/app/modules/home/subpage/login_page.dart';
+import 'package:chaldea/app/modules/auth/login_page.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/language.dart';
@@ -410,7 +410,7 @@ class ChaldeaServerApi {
     return cacheManager.postModel(
       '$apiV1/admin/users/$userId/recover',
       fromJson: (data) => AdminRecoverResponse.fromJson(Map.from(data)),
-      data: <String, dynamic>{if (email != null) 'email': email, if (password != null) 'password': password},
+      data: <String, dynamic>{'email': ?email, 'password': ?password},
       options: addAuthHeader(),
       expireAfter: Duration.zero,
     );

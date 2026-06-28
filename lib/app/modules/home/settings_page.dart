@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:chaldea/_test_page.dart';
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/modules/auth/login_page.dart';
+import 'package:chaldea/app/modules/auth/profile_page.dart';
 import 'package:chaldea/app/modules/common/frame_rate_layer.dart';
-import 'package:chaldea/app/routes/email_binding_page.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/app_info.dart';
@@ -19,7 +20,6 @@ import 'subpage/display_setting_page.dart';
 import 'subpage/feedback_page.dart';
 import 'subpage/game_data_page.dart';
 import 'subpage/game_server_page.dart';
-import 'subpage/login_page.dart';
 import 'subpage/network_settings.dart';
 import 'subpage/share_app_dialog.dart';
 import 'subpage/theme_color.dart';
@@ -64,14 +64,6 @@ class _SettingsPageState extends State<SettingsPage> {
             header: S.current.chaldea_account,
             children: [
               userTile,
-              ListTile(
-                leading: const Icon(Icons.email),
-                title: Text(Language.isZH ? '绑定邮箱' : 'Bind Email'),
-                trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-                onTap: () {
-                  router.push(child: const EmailBindingPage());
-                },
-              ),
               ListTile(
                 leading: const Icon(Icons.dns),
                 title: Text(S.current.network_settings),
@@ -370,6 +362,27 @@ class _SettingsPageState extends State<SettingsPage> {
     return ListTile(
       leading: const Icon(Icons.person),
       title: Text(S.current.login_username),
+      subtitle: db.onSettings((context, snapshot) {
+        // Per design D5: migration reminder > email-not-bound reminder > none.
+        // When not logged in, no subtitle.
+        final user = db.settings.secrets.user;
+        if (user == null) return const SizedBox.shrink();
+        final token = user.accessToken ?? '';
+        final email = user.email ?? '';
+        if (token.isEmpty) {
+          return Text(
+            S.current.auth_not_migrated_hint,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.error),
+          );
+        }
+        if (email.isEmpty) {
+          return Text(
+            S.current.auth_email_not_bound_hint,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.error),
+          );
+        }
+        return const SizedBox.shrink();
+      }),
       trailing: db.onSettings((context, snapshot) {
         final user = db.settings.secrets.user;
         if (user == null) return const SizedBox.shrink();
@@ -382,7 +395,13 @@ class _SettingsPageState extends State<SettingsPage> {
         );
       }),
       onTap: () {
-        router.popDetailAndPush(child: LoginPage());
+        // Smart navigation: profile if logged in, login if not.
+        final user = db.settings.secrets.user;
+        if (user != null) {
+          router.push(child: const ProfilePage());
+        } else {
+          router.push(child: const LoginPage());
+        }
       },
     );
   }

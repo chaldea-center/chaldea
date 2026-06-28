@@ -21,6 +21,7 @@ import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/home_widget.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/modern/modern_theme.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../generated/l10n.dart';
 import '../models/db.dart';
@@ -30,7 +31,7 @@ import '../packages/method_channel/method_channel_chaldea.dart';
 import '../packages/network.dart';
 import '../packages/platform/platform.dart';
 import 'app.dart';
-import 'routes/email_binding_page.dart';
+import 'modules/auth/change_email_page.dart';
 import 'routes/parser.dart';
 import 'tools/app_window.dart';
 
@@ -115,6 +116,10 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WindowListener
         toolbarHeight: 48, // kToolbarHeight=56,
       ),
       listTileTheme: themeData.listTileTheme.copyWith(minLeadingWidth: 24),
+      extensions: {
+        ...themeData.extensions.values,
+        ModernThemeData.fromColorScheme(themeData.colorScheme),
+      },
     );
   }
 
@@ -291,7 +296,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WindowListener
               onPressed: () {
                 Navigator.of(dialogContext).pop();
                 _emailBindingSkipped = true;
-                router.push(child: const EmailBindingPage());
+                router.push(child: const ChangeEmailPage());
               },
               child: Text(Language.isZH ? '去绑定' : 'Bind Now'),
             ),

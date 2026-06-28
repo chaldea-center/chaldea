@@ -10,7 +10,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../../modules/home/subpage/login_page.dart';
+import '../../modules/auth/login_page.dart';
 import 'backend.dart';
 
 class ChaldeaServerBackup extends BackupBackend<UserData> {
