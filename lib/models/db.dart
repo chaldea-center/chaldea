@@ -367,6 +367,7 @@ class _Database {
     ),
   );
 
+  @Deprecated('Use ChaldeaServerApi — see chaldea_server.dart')
   Dio get apiServerDio => DioE(
     BaseOptions(
       baseUrl: HostsX.apiHost,

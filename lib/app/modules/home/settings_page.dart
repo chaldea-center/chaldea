@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:chaldea/_test_page.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/frame_rate_layer.dart';
+import 'package:chaldea/app/routes/email_binding_page.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/app_info.dart';
@@ -63,6 +64,14 @@ class _SettingsPageState extends State<SettingsPage> {
             header: S.current.chaldea_account,
             children: [
               userTile,
+              ListTile(
+                leading: const Icon(Icons.email),
+                title: Text(Language.isZH ? '绑定邮箱' : 'Bind Email'),
+                trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+                onTap: () {
+                  router.push(child: const EmailBindingPage());
+                },
+              ),
               ListTile(
                 leading: const Icon(Icons.dns),
                 title: Text(S.current.network_settings),

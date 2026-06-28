@@ -522,6 +522,7 @@ class ApiCacheManager {
     Object? data,
     Map<String, dynamic>? queryParameters,
     Options? options,
+    DispatchErrorCallback? onError,
   }) {
     return fetchModel(
       createDio().createRequest(
@@ -534,6 +535,7 @@ class ApiCacheManager {
       fromJson,
       expireAfter: expireAfter,
       cacheOnly: cacheOnly,
+      onError: onError,
     );
   }
 

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
-import 'package:chaldea/app/api/chaldea.dart';
+import 'package:chaldea/app/api/chaldea_server.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/api/api.dart';
@@ -34,11 +34,12 @@ class ChaldeaServerBackup extends BackupBackend<UserData> {
     dynamic error;
     try {
       final content = UserBackupData.encode(db.userData);
-      final resp = await showEasyLoading(() => ChaldeaWorkerApi.uploadBackup(content: content));
+      final resp = await showEasyLoading(() => ChaldeaServerApi.uploadBackup(content: content));
       if (resp != null) {
-        resp.showToast();
+        EasyLoading.showSuccess(S.current.success);
+        return true;
       }
-      return resp != null && !resp.hasError;
+      return false;
     } catch (e, s) {
       error = escapeDioException(e);
       logger.e('upload server backup failed', e, s);
@@ -51,7 +52,7 @@ class ChaldeaServerBackup extends BackupBackend<UserData> {
   Future<UserData?> restore() async {
     if (!_check()) return null;
     try {
-      final backups = await showEasyLoading(() => ChaldeaWorkerApi.listBackup());
+      final backups = await showEasyLoading(() => ChaldeaServerApi.listBackups());
       if (backups == null) return null;
       if (backups.isEmpty) {
         EasyLoading.showError('No backup found');

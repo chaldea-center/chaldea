@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
-import 'package:chaldea/app/api/chaldea.dart';
+import 'package:chaldea/app/api/chaldea_server.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/utils/battle_logger.dart';
@@ -1065,10 +1065,10 @@ class _TeamUploadDialogState extends State<_TeamUploadDialog> {
     }
 
     final teamData = runtime.getShareData(isCritTeam: isCritTeam);
-    final insertedId = await showEasyLoading(() => ChaldeaWorkerApi.teamUpload(data: teamData));
+    final insertedId = await showEasyLoading(() => ChaldeaServerApi.teamUpload(data: teamData));
     if (insertedId == null) return;
     db.runtimeData.lastUpload = DateTime.now().timestamp;
-    ChaldeaWorkerApi.clearTeamCache();
+    ChaldeaServerApi.clearTeamCache();
     if (mounted) {
       Navigator.pop(context);
       SimpleConfirmDialog(

@@ -12,11 +12,14 @@ import 'package:tray_manager/tray_manager.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'package:chaldea/app/api/chaldea.dart';
+import 'package:chaldea/app/api/chaldea_server.dart';
+import 'package:chaldea/app/api/jwt_utils.dart';
 import 'package:chaldea/app/tools/app_update.dart';
 import 'package:chaldea/generated/intl/messages_all.dart';
 import 'package:chaldea/models/faker/shared/network.dart';
 import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/home_widget.dart';
+import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../generated/l10n.dart';
@@ -27,6 +30,7 @@ import '../packages/method_channel/method_channel_chaldea.dart';
 import '../packages/network.dart';
 import '../packages/platform/platform.dart';
 import 'app.dart';
+import 'routes/email_binding_page.dart';
 import 'routes/parser.dart';
 import 'tools/app_window.dart';
 
@@ -40,6 +44,10 @@ class Chaldea extends StatefulWidget {
 class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WindowListener, TrayListener {
   final routeInformationParser = AppRouteInformationParser();
   final backButtonDispatcher = RootBackButtonDispatcher();
+
+  // In-memory flag: suppresses the email binding prompt for the rest of this
+  // app session after the user dismisses it once. Resets on cold restart.
+  bool _emailBindingSkipped = false;
 
   @override
   void reassemble() {
@@ -162,6 +170,15 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WindowListener
     }
     AppAds.init();
 
+    // Silent migration of legacy Worker tokens runs in the background after the
+    // first frame. No overlay/mask — users can interact with the app while it
+    // runs. On success with an empty email, an email-binding prompt is shown.
+    unawaited(_trySilentMigration());
+
+    // Proactively rotate the JWT if it is within 7 days of expiry. Failures
+    // are silent — passive refresh on 401 covers the edge case.
+    unawaited(_tryProactiveRefresh());
+
     if (DateTime.now().timestamp - db.settings.lastBackup > 24 * 3600) {
       db.backupUserdata();
       db.backupSettings();
@@ -195,6 +212,93 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WindowListener
 
     FilePickerU.clearTemporaryFiles();
     if (mounted) setState(() {});
+  }
+
+  /// Best-effort silent migration of legacy Worker session secrets to JWT.
+  ///
+  /// Runs in the background after the first frame. On any failure (network,
+  /// 5xx, parse error) the app continues silently. On 401 the local legacy
+  /// secret is cleared (handled inside `maybeMigrateLegacyToken`). On success,
+  /// if the migrated user has no email bound, a skippable prompt is shown.
+  Future<void> _trySilentMigration() async {
+    try {
+      final user = await ChaldeaServerApi.maybeMigrateLegacyToken();
+      if (user == null) return;
+      if (user.email == null || user.email!.isEmpty) {
+        _showEmailBindingPrompt();
+      }
+    } catch (e, s) {
+      // Swallow — migration is best-effort and must never block the UI.
+      logger.d('Silent migration failed (silent): $e', e, s);
+    }
+  }
+
+  /// Proactively rotates the JWT on app startup if it is within 7 days of
+  /// expiry. Best-effort — failures are silent (passive refresh on 401
+  /// covers the edge case where a token expires mid-session).
+  Future<void> _tryProactiveRefresh() async {
+    try {
+      final token = db.settings.secrets.user?.accessToken;
+      if (token == null || token.isEmpty) return;
+      final remaining = JwtUtils.remainingTime(token);
+      // null/zero → unparseable or already expired; let passive refresh handle.
+      if (remaining == null || remaining <= Duration.zero) return;
+      if (remaining < const Duration(days: 7)) {
+        final user = await ChaldeaServerApi.refreshToken();
+        if (user != null && user.accessToken != null && user.accessToken!.isNotEmpty) {
+          db.settings.secrets.user?.accessToken = user.accessToken;
+          await db.saveAll();
+        }
+      }
+    } catch (e, s) {
+      logger.d('Proactive refresh failed (silent): $e', e, s);
+    }
+  }
+
+  /// Show a skippable dialog prompting the user to bind an email.
+  /// Suppressed for the rest of the session once dismissed.
+  void _showEmailBindingPrompt() {
+    if (_emailBindingSkipped) return;
+    final context = rootRouter.navigatorKey.currentContext;
+    if (context == null) return;
+
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: Text(Language.isZH ? '绑定邮箱' : 'Bind Email'),
+          content: Text(
+            Language.isZH
+                ? '您尚未绑定邮箱。未绑定邮箱时：\n\n'
+                      '• 忘记密码后无法通过邮箱找回，需联系管理员手动重置\n'
+                      '• 可能错过重要的服务器通知\n\n'
+                      '建议尽快绑定邮箱以保障账号安全。'
+                : 'You have not bound an email yet. Without an email:\n\n'
+                      '• Password recovery is impossible if forgotten — you must contact admin for manual reset\n'
+                      '• You may miss critical server notifications\n\n'
+                      'Binding an email is strongly recommended for account security.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+                _emailBindingSkipped = true;
+              },
+              child: Text(Language.isZH ? '稍后再说' : 'Later'),
+            ),
+            FilledButton(
+              onPressed: () {
+                Navigator.of(dialogContext).pop();
+                _emailBindingSkipped = true;
+                router.push(child: const EmailBindingPage());
+              },
+              child: Text(Language.isZH ? '去绑定' : 'Bind Now'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override

@@ -9,7 +9,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
-import 'package:chaldea/app/api/chaldea.dart';
+import 'package:chaldea/app/api/chaldea_server.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/modules/battle/battle_simulation.dart';
@@ -995,7 +995,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
       } else {
         final teamId = int.tryParse(uri.queryParameters['id'] ?? "");
         if (teamId != null && teamId > 0) {
-          final encoded = await showEasyLoading(() => ChaldeaWorkerApi.team(teamId));
+          final encoded = await showEasyLoading(() => ChaldeaServerApi.team(teamId));
           if (encoded != null) {
             data = encoded.parse();
             questInfo = encoded.questInfo;

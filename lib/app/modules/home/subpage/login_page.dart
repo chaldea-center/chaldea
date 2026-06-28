@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import 'package:chaldea/app/api/chaldea.dart';
+import 'package:chaldea/app/api/chaldea_server.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/home/subpage/feedback_page.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -23,11 +23,15 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   _PageMode mode = _PageMode.login;
+  // Signup sub-step: 1 = credentials (username/email/password), 2 = verification code
+  int _signupStep = 1;
   late TextEditingController _nameController;
+  late TextEditingController _emailController;
   late TextEditingController _pwdController;
   late TextEditingController _newPwdController;
   late TextEditingController _confirmPwdController;
   late TextEditingController _newNameController;
+  late TextEditingController _codeController;
   bool obscurePwd = true;
 
   final secrets = db.settings.secrets;
@@ -36,6 +40,10 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: secrets.user?.name)
+      ..addListener(() {
+        setState(() {});
+      });
+    _emailController = TextEditingController()
       ..addListener(() {
         setState(() {});
       });
@@ -55,20 +63,35 @@ class _LoginPageState extends State<LoginPage> {
       ..addListener(() {
         setState(() {});
       });
+    _codeController = TextEditingController()
+      ..addListener(() {
+        setState(() {});
+      });
   }
 
   @override
   void dispose() {
     super.dispose();
     _nameController.dispose();
+    _emailController.dispose();
     _pwdController.dispose();
     _newPwdController.dispose();
     _confirmPwdController.dispose();
     _newNameController.dispose();
+    _codeController.dispose();
+  }
+
+  void _switchMode(_PageMode newMode) {
+    setState(() {
+      mode = newMode;
+      _signupStep = 1;
+      _codeController.clear();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final isSignupVerify = mode == _PageMode.signup && _signupStep == 2;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -82,17 +105,35 @@ class _LoginPageState extends State<LoginPage> {
       body: ListView(
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
         children: [
-          nameInput,
-          const SizedBox(height: 12),
-          pwdInput,
-          const SizedBox(height: 12),
-          if (mode == _PageMode.changePwd) ...[changePwdInput, const SizedBox(height: 12)],
-          if (mode == _PageMode.changePwd || mode == _PageMode.signup) ...[confirmPwdInput, const SizedBox(height: 12)],
-          if (mode == _PageMode.changeName) ...[changeNameInput, const SizedBox(height: 12)],
+          if (!isSignupVerify) ...[
+            nameInput,
+            const SizedBox(height: 12),
+            if (mode == _PageMode.signup) ...[emailInput, const SizedBox(height: 12)],
+            pwdInput,
+            const SizedBox(height: 12),
+            if (mode == _PageMode.changePwd) ...[changePwdInput, const SizedBox(height: 12)],
+            if (mode == _PageMode.changePwd || mode == _PageMode.signup) ...[
+              confirmPwdInput,
+              const SizedBox(height: 12),
+            ],
+            if (mode == _PageMode.changeName) ...[changeNameInput, const SizedBox(height: 12)],
+          ],
+          if (isSignupVerify) ...[
+            Text(S.current.login_signup, style: Theme.of(context).textTheme.titleMedium),
+            const SizedBox(height: 8),
+            Text(
+              'A verification code has been sent to ${_emailController.text}.',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            const SizedBox(height: 12),
+            verificationCodeInput,
+            const SizedBox(height: 12),
+          ],
           Text(S.current.chaldea_account_system_hint, style: Theme.of(context).textTheme.bodySmall),
           const SizedBox(height: 8),
           mainAction(),
           OverflowBar(alignment: MainAxisAlignment.center, children: otherActions()),
+          if (isSignupVerify) OverflowBar(alignment: MainAxisAlignment.center, children: [resendCodeBtn]),
           if (mode == _PageMode.login)
             OverflowBar(alignment: MainAxisAlignment.center, children: [forgotPwdBtn, logoutBtn, deleteAccountBtn]),
           if (db.settings.secrets.user?.isAdmin == true)
@@ -113,6 +154,9 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget mainAction() {
+    if (mode == _PageMode.signup && _signupStep == 2) {
+      return verifyBtn;
+    }
     switch (mode) {
       case _PageMode.login:
         return loginBtn;
@@ -126,6 +170,9 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   List<Widget> otherActions() {
+    if (mode == _PageMode.signup && _signupStep == 2) {
+      return [_toLoginBtn];
+    }
     switch (mode) {
       case _PageMode.login:
         return [_toChangePwdBtn, _toChangeNameBtn, _toSignupBtn];
@@ -151,6 +198,11 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget get signupBtn =>
       ElevatedButton(onPressed: isSignUpAvailable() ? doSignUp : null, child: Text(S.current.login_signup));
+
+  Widget get verifyBtn =>
+      ElevatedButton(onPressed: isVerifyAvailable() ? doVerify : null, child: Text(S.current.confirm));
+
+  Widget get resendCodeBtn => TextButton(onPressed: isSignUpAvailable() ? doSignUp : null, child: Text('Resend Code'));
 
   Widget get changePwdBtn => ElevatedButton(
     onPressed: isChangePasswordAvailable() ? doChangePwd : null,
@@ -195,35 +247,27 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget get _toLoginBtn => TextButton(
     onPressed: () {
-      setState(() {
-        mode = _PageMode.login;
-      });
+      _switchMode(_PageMode.login);
     },
     child: Text(S.current.login_login),
   );
 
   Widget get _toSignupBtn => TextButton(
     onPressed: () {
-      setState(() {
-        mode = _PageMode.signup;
-      });
+      _switchMode(_PageMode.signup);
     },
     child: Text(S.current.login_signup),
   );
 
   Widget get _toChangePwdBtn => TextButton(
     onPressed: () {
-      setState(() {
-        mode = _PageMode.changePwd;
-      });
+      _switchMode(_PageMode.changePwd);
     },
     child: Text(S.current.login_change_password),
   );
   Widget get _toChangeNameBtn => TextButton(
     onPressed: () {
-      setState(() {
-        mode = _PageMode.changeName;
-      });
+      _switchMode(_PageMode.changeName);
     },
     child: Text(S.current.login_change_name),
   );
@@ -236,6 +280,20 @@ class _LoginPageState extends State<LoginPage> {
         labelText: S.current.login_username,
         border: const OutlineInputBorder(),
         errorText: _validateName(),
+        errorMaxLines: 3,
+      ),
+    );
+  }
+
+  Widget get emailInput {
+    return TextFormField(
+      controller: _emailController,
+      autocorrect: false,
+      keyboardType: TextInputType.emailAddress,
+      decoration: InputDecoration(
+        labelText: 'Email',
+        border: const OutlineInputBorder(),
+        errorText: _validateEmail(),
         errorMaxLines: 3,
       ),
     );
@@ -299,6 +357,15 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  Widget get verificationCodeInput {
+    return TextFormField(
+      controller: _codeController,
+      autocorrect: false,
+      keyboardType: TextInputType.number,
+      decoration: const InputDecoration(labelText: 'Verification Code', border: OutlineInputBorder()),
+    );
+  }
+
   Widget get _pwdVisibilityBtn => IconButton(
     onPressed: () {
       setState(() {
@@ -315,6 +382,15 @@ class _LoginPageState extends State<LoginPage> {
       return 'number only name is not allowed';
     } else if (!RegExp(r'^[a-zA-Z0-9_]{4,18}$').hasMatch(name)) {
       return S.current.login_username_error;
+    }
+    return null;
+  }
+
+  String? _validateEmail([String? email]) {
+    email ??= _emailController.text;
+    if (email.isEmpty) return null;
+    if (!RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(email)) {
+      return 'Invalid email address';
     }
     return null;
   }
@@ -367,11 +443,17 @@ class _LoginPageState extends State<LoginPage> {
     return name.isNotEmpty && _validateName(name) == null && pwd.isNotEmpty && _validatePwd(pwd) == null;
   }
 
-  bool isSignUpAvailable([String? name, String? pwd, String? confirmPwd]) {
+  bool isSignUpAvailable([String? name, String? pwd, String? confirmPwd, String? email]) {
     name ??= _nameController.text;
     pwd ??= _pwdController.text;
     confirmPwd ??= _confirmPwdController.text;
-    return isLoginAvailable(name, pwd) && confirmPwd == pwd;
+    email ??= _emailController.text;
+    return isLoginAvailable(name, pwd) && confirmPwd == pwd && email.isNotEmpty && _validateEmail(email) == null;
+  }
+
+  bool isVerifyAvailable([String? code]) {
+    code ??= _codeController.text;
+    return code.isNotEmpty;
   }
 
   bool isChangePasswordAvailable([String? name, String? pwd, String? newPwd]) {
@@ -397,7 +479,7 @@ class _LoginPageState extends State<LoginPage> {
     String name = _nameController.text;
     String pwd = _pwdController.text;
     if (!isLoginAvailable(name, pwd)) return;
-    final user = await showEasyLoading(() => ChaldeaWorkerApi.login(username: name, password: pwd));
+    final user = await showEasyLoading(() => ChaldeaServerApi.login(username: name, password: pwd));
     if (user != null) {
       secrets.user = user;
       EasyLoading.showSuccess(S.current.success);
@@ -406,15 +488,15 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void doLogout() async {
-    final resp = await showEasyLoading(() => ChaldeaWorkerApi.logout());
-    if (resp != null) {
+    final resp = await showEasyLoading(() => ChaldeaServerApi.logout());
+    if (resp == true) {
       secrets.user = null;
       if (mounted) {
         _nameController.text = '';
         _pwdController.text = '';
         _newPwdController.text = '';
       }
-      if (mounted) resp.showDialog();
+      EasyLoading.showSuccess(S.current.success);
     }
     _update();
   }
@@ -426,41 +508,64 @@ class _LoginPageState extends State<LoginPage> {
       EasyLoading.showInfo('Please fill name and password');
       return;
     }
-    final resp = await showEasyLoading(() => ChaldeaWorkerApi.deleteUser(username: name, password: pwd));
-    if (resp != null) {
+    final confirm = await SimpleConfirmDialog(title: Text(S.current.delete), content: Text(name)).showDialog(context);
+    if (confirm != true) return;
+    final resp = await showEasyLoading(() => ChaldeaServerApi.deleteMe(password: pwd));
+    if (resp == true) {
       secrets.user = null;
       if (mounted) {
         _nameController.clear();
         _pwdController.clear();
       }
-      if (mounted) resp.showDialog(context);
+      EasyLoading.showSuccess(S.current.success);
     }
     _update();
   }
 
+  // Signup step 1: submit credentials to trigger verification email.
   Future<void> doSignUp() async {
     String name = _nameController.text;
+    String email = _emailController.text;
     String pwd = _pwdController.text;
-    if (!isLoginAvailable(name, pwd)) {
+    if (!isSignUpAvailable(name, pwd, _confirmPwdController.text, email)) {
       return;
     }
-    final user = await showEasyLoading(() => ChaldeaWorkerApi.signup(username: name, password: pwd));
-    if (user != null) {
-      // secrets.user = user;
+    final ok = await showEasyLoading(() => ChaldeaServerApi.register(username: name, email: email, password: pwd));
+    if (ok == true) {
+      setState(() {
+        _signupStep = 2;
+      });
       EasyLoading.showSuccess('${S.current.login_signup}: ${S.current.success}');
     }
     _update();
   }
 
-  Future<void> doChangePwd() async {
+  // Signup step 2: verify the code and complete registration.
+  Future<void> doVerify() async {
     String name = _nameController.text;
+    String email = _emailController.text;
+    String pwd = _pwdController.text;
+    String code = _codeController.text;
+    if (!isVerifyAvailable(code)) return;
+    final user = await showEasyLoading(
+      () => ChaldeaServerApi.verifyRegister(username: name, email: email, password: pwd, code: code),
+    );
+    if (user != null) {
+      secrets.user = user;
+      EasyLoading.showSuccess(S.current.success);
+      if (mounted) Navigator.pop(context);
+    }
+    _update();
+  }
+
+  Future<void> doChangePwd() async {
     String pwd = _pwdController.text;
     String newPwd = _newPwdController.text;
-    if (!isChangePasswordAvailable(name, pwd, newPwd)) {
+    if (!isChangePasswordAvailable(_nameController.text, pwd, newPwd)) {
       return;
     }
     final user = await showEasyLoading(
-      () => ChaldeaWorkerApi.changePassword(username: name, password: pwd, newPassword: newPwd),
+      () => ChaldeaServerApi.changePassword(currentPassword: pwd, newPassword: newPwd),
     );
     if (user != null) {
       secrets.user = user;
@@ -480,20 +585,25 @@ class _LoginPageState extends State<LoginPage> {
       content: Text('user: $name\npassword: $pwd'),
     ).showDialog(context);
     if (confirm != true) return;
-    final resp = await showEasyLoading(() => ChaldeaWorkerApi.adminResetPassword(username: name, password: pwd));
-    if (resp != null) {
-      resp.showDialog();
+    // The new API resets by user id, so resolve the name to an id first.
+    final userId = await showEasyLoading(() => ChaldeaServerApi.adminGetUserIdByName(name));
+    if (userId == null) {
+      EasyLoading.showError('User not found');
+      return;
+    }
+    final resp = await showEasyLoading(() => ChaldeaServerApi.adminResetPassword(userId: userId, password: pwd));
+    if (resp == true) {
+      EasyLoading.showSuccess(S.current.success);
     }
     _update();
   }
 
   Future<void> doChangeName() async {
-    String name = _nameController.text;
-    String pwd = _pwdController.text;
     String newName = _newNameController.text;
-    final user = await showEasyLoading(
-      () => ChaldeaWorkerApi.renameUser(username: name, password: pwd, newUsername: newName),
-    );
+    if (!isChangeNameAvailable(_nameController.text, _pwdController.text, newName)) {
+      return;
+    }
+    final user = await showEasyLoading(() => ChaldeaServerApi.updateMe(name: newName));
     if (user != null) {
       secrets.user = user;
       EasyLoading.showSuccess(S.current.success);

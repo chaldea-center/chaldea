@@ -69,14 +69,27 @@ abstract class ChaldeaUserRole {
   static const int admin = 16;
 }
 
-@JsonSerializable()
+@JsonSerializable(fieldRename: FieldRename.snake)
 class ChaldeaUser {
   int id;
   String name;
   int role;
-  String? secret; // only present in signup/login/change-password
+  String? secret; // legacy Worker session_id, kept for migration detection only
+  String? email; // returned by the new FastAPI server
+  String? accessToken; // JWT bearer token for the new FastAPI server
+  // Null for LoginResponse-shaped payloads (login/register/refresh/migrate-token);
+  // populated by UserPublic-shaped responses (GET /users/me, admin endpoints).
+  int? createdAt;
 
-  ChaldeaUser({required this.id, required this.name, this.role = ChaldeaUserRole.member, this.secret});
+  ChaldeaUser({
+    required this.id,
+    required this.name,
+    this.role = ChaldeaUserRole.member,
+    this.secret,
+    this.email,
+    this.accessToken,
+    this.createdAt,
+  });
 
   factory ChaldeaUser.fromJson(Map<String, dynamic> json) => _$ChaldeaUserFromJson(json);
 
@@ -86,7 +99,7 @@ class ChaldeaUser {
   bool get isTeamMod => isAdmin || role == ChaldeaUserRole.teamMod;
 }
 
-@JsonSerializable()
+@JsonSerializable(fieldRename: FieldRename.snake)
 class UserBackupData {
   final int id;
   final int userId;
@@ -171,7 +184,7 @@ class TeamVoteData {
 }
 
 // teams
-@JsonSerializable()
+@JsonSerializable(fieldRename: FieldRename.snake)
 class UserBattleData {
   int id;
   int ver;
@@ -181,9 +194,11 @@ class UserBattleData {
   int phase;
   String enemyHash;
   int createdAt;
+  @JsonKey(name: 'data')
   String content;
   // stats
   String? username;
+  @JsonKey(readValue: _readVotes)
   TeamVoteData votes;
   @JsonKey(includeFromJson: false, includeToJson: false)
   TeamVoteData? tempVotes;
@@ -205,6 +220,16 @@ class UserBattleData {
   factory UserBattleData.fromJson(Map<String, dynamic> json) => _$UserBattleDataFromJson(json);
 
   Map<String, dynamic> toJson() => _$UserBattleDataToJson(this);
+
+  /// Read votes from either nested `votes: {...}` (legacy) or flat `up`/`down`/`mine`.
+  /// The new server returns flat fields; the nested format is kept as a safety net.
+  static Object? _readVotes(Map json, String key) {
+    final v = json['votes'];
+    if (v != null) {
+      return TeamVoteData.fromJson(Map<String, dynamic>.from(v as Map));
+    }
+    return <String, dynamic>{'up': json['up'], 'down': json['down'], 'mine': json['mine']};
+  }
 
   BattleShareData? parse() {
     if (decoded != null) return decoded;
@@ -307,4 +332,117 @@ class AAFileManifest {
   Map<String, dynamic> toJson() => _$AAFileManifestToJson(this);
 
   String resolveUrl(String base) => Uri.parse(base).resolve(fileName).toString();
+}
+
+// admin
+
+@JsonSerializable(fieldRename: FieldRename.snake)
+class AdminUserListItem {
+  final int id;
+  final String name;
+  final String? email;
+  final int role;
+  final int createdAt;
+  final bool isOnline;
+
+  AdminUserListItem({
+    required this.id,
+    required this.name,
+    this.email,
+    required this.role,
+    required this.createdAt,
+    required this.isOnline,
+  });
+
+  factory AdminUserListItem.fromJson(Map<String, dynamic> json) => _$AdminUserListItemFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AdminUserListItemToJson(this);
+}
+
+@JsonSerializable()
+class AdminUsersList extends PaginatedData<AdminUserListItem> {
+  AdminUsersList({super.offset = 0, super.limit = 0, super.total, required super.data});
+
+  factory AdminUsersList.fromJson(Map<String, dynamic> json) => _$AdminUsersListFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AdminUsersListToJson(this);
+}
+
+@JsonSerializable(fieldRename: FieldRename.snake)
+class AdminUserSession {
+  final String device;
+  final String sessionId;
+
+  AdminUserSession({required this.device, required this.sessionId});
+
+  factory AdminUserSession.fromJson(Map<String, dynamic> json) => _$AdminUserSessionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AdminUserSessionToJson(this);
+}
+
+@JsonSerializable(fieldRename: FieldRename.snake)
+class AdminUserLogin {
+  final String device;
+  final int createdAt;
+  final int updatedAt;
+
+  AdminUserLogin({required this.device, required this.createdAt, required this.updatedAt});
+
+  factory AdminUserLogin.fromJson(Map<String, dynamic> json) => _$AdminUserLoginFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AdminUserLoginToJson(this);
+}
+
+@JsonSerializable(fieldRename: FieldRename.snake)
+class AdminUserDetail {
+  final ChaldeaUser user;
+  final List<AdminUserSession> sessions;
+  final List<AdminUserLogin> logins;
+  final int backupsCount;
+  final int teamsCount;
+
+  AdminUserDetail({
+    required this.user,
+    this.sessions = const [],
+    this.logins = const [],
+    required this.backupsCount,
+    required this.teamsCount,
+  });
+
+  factory AdminUserDetail.fromJson(Map<String, dynamic> json) => _$AdminUserDetailFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AdminUserDetailToJson(this);
+}
+
+@JsonSerializable(fieldRename: FieldRename.snake)
+class AdminRecoverResponse {
+  final String message;
+  final String messageZh;
+  final String action; // "reset_email_sent" | "password_directly_reset"
+  final int userId;
+  final String username;
+  final bool emailProvided;
+  final bool emailBound;
+  final String details;
+  final String detailsZh;
+  final List<String> reminders;
+  final List<String> remindersZh;
+
+  AdminRecoverResponse({
+    required this.message,
+    required this.messageZh,
+    required this.action,
+    required this.userId,
+    required this.username,
+    required this.emailProvided,
+    required this.emailBound,
+    required this.details,
+    required this.detailsZh,
+    this.reminders = const [],
+    this.remindersZh = const [],
+  });
+
+  factory AdminRecoverResponse.fromJson(Map<String, dynamic> json) => _$AdminRecoverResponseFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AdminRecoverResponseToJson(this);
 }

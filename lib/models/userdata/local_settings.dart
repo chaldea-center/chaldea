@@ -677,7 +677,7 @@ class _SecretsData {
 
   _SecretsData({this.user, this.explorerAuth, this.atlasReloadKey = "", this.atlasExportKey = ""});
 
-  bool get isLoggedIn => user?.secret?.isNotEmpty == true;
+  bool get isLoggedIn => user?.accessToken?.isNotEmpty == true;
 
   factory _SecretsData.fromJson(Map<String, dynamic> json) => _$SecretsDataFromJson(json);
 

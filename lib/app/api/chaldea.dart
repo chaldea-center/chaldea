@@ -118,6 +118,7 @@ class ChaldeaWorkerApi {
     );
   }
 
+  @Deprecated('Use ChaldeaServerApi instead')
   static Future<ChaldeaUser?> login({required String username, required String password}) {
     return cacheManager.postModel(
       '$apiV4/user/login',
@@ -134,6 +135,7 @@ class ChaldeaWorkerApi {
     );
   }
 
+  @Deprecated('Use ChaldeaServerApi instead')
   static Future<ChaldeaUser?> changePassword({
     required String username,
     required String password,
@@ -146,6 +148,7 @@ class ChaldeaWorkerApi {
     );
   }
 
+  @Deprecated('Use ChaldeaServerApi instead')
   static Future<WorkerResponse?> adminResetPassword({required String username, required String password}) {
     return cacheManager.postModel(
       '$apiV4/user/reset-password',
@@ -155,6 +158,7 @@ class ChaldeaWorkerApi {
     );
   }
 
+  @Deprecated('Use ChaldeaServerApi instead')
   static Future<ChaldeaUser?> renameUser({
     required String username,
     required String password,
@@ -167,6 +171,7 @@ class ChaldeaWorkerApi {
     );
   }
 
+  @Deprecated('Use ChaldeaServerApi instead')
   static Future<WorkerResponse?> deleteUser({required String username, required String password}) {
     return cacheManager.postModel(
       '$apiV4/user/delete',
@@ -175,6 +180,7 @@ class ChaldeaWorkerApi {
     );
   }
 
+  @Deprecated('Use ChaldeaServerApi instead')
   static Future<WorkerResponse?> logout() {
     return cacheManager.postModel(
       '$apiV4/user/logout',
@@ -183,6 +189,7 @@ class ChaldeaWorkerApi {
     );
   }
 
+  @Deprecated('Use ChaldeaServerApi instead')
   static Future<List<UserBackupData>?> listBackup() {
     return cacheManager.getModel(
       '$apiV4/user/backup/list',
@@ -192,6 +199,7 @@ class ChaldeaWorkerApi {
     );
   }
 
+  @Deprecated('Use ChaldeaServerApi instead')
   static Future<WorkerResponse?> uploadBackup({required String content}) {
     AppInfo.deviceParams;
     return cacheManager.postModel(
@@ -212,6 +220,7 @@ class ChaldeaWorkerApi {
 
   // teams
 
+  @Deprecated('Use ChaldeaServerApi instead')
   static Future<UserBattleData?> team(int id, {Duration? expireAfter}) {
     return cacheManager.getModel(
       '$apiV4/team/$id',
@@ -221,6 +230,7 @@ class ChaldeaWorkerApi {
     );
   }
 
+  @Deprecated('Use ChaldeaServerApi instead')
   static Future<TeamQueryResult?> teams({
     int? questId,
     int? phase,
@@ -253,6 +263,7 @@ class ChaldeaWorkerApi {
     );
   }
 
+  @Deprecated('Use ChaldeaServerApi instead')
   static Future<TeamQueryResult?> teamsByUser({
     int? userId,
     String? username,
@@ -265,6 +276,7 @@ class ChaldeaWorkerApi {
     return teams(userId: userId, username: username, limit: limit, offset: offset, expireAfter: expireAfter);
   }
 
+  @Deprecated('Use ChaldeaServerApi instead')
   static Future<TeamQueryResult?> teamsByQuest({
     required int questId,
     required int phase,
@@ -283,6 +295,7 @@ class ChaldeaWorkerApi {
     );
   }
 
+  @Deprecated('Use ChaldeaServerApi instead')
   static Future<TeamQueryResult?> teamsByVote({
     required int userId,
     required bool isUpVote,
@@ -298,6 +311,7 @@ class ChaldeaWorkerApi {
     );
   }
 
+  @Deprecated('Use ChaldeaServerApi instead')
   static Future<WorkerResponse?> teamDelete({required int id}) {
     return cacheManager.deleteModel(
       '$apiV4/team/$id',
@@ -306,6 +320,7 @@ class ChaldeaWorkerApi {
     );
   }
 
+  @Deprecated('Use ChaldeaServerApi instead')
   static Future<int?> teamUpload({required BattleShareData data}) {
     return cacheManager.postModel(
       '$apiV4/team/new',
@@ -324,6 +339,7 @@ class ChaldeaWorkerApi {
     );
   }
 
+  @Deprecated('Use ChaldeaServerApi instead')
   static Future<TeamVoteData?> teamVote({required int teamId, required int voteValue}) {
     return cacheManager.postModel(
       '$apiV4/team/$teamId/vote',
@@ -336,6 +352,7 @@ class ChaldeaWorkerApi {
     );
   }
 
+  @Deprecated('Use ChaldeaServerApi instead')
   static Future<TeamQueryResult?> teamsRanking({
     int limit = 200,
     int offset = 0,
@@ -352,6 +369,7 @@ class ChaldeaWorkerApi {
 
   // debug/dev
   @visibleForTesting
+  @Deprecated('Use ChaldeaServerApi instead')
   static Future<WorkerResponse?> teamUpdate({required UserBattleData team}) {
     return cacheManager.putModel(
       '$apiV4/team/${team.id}',
