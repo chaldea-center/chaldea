@@ -21,7 +21,6 @@ import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/home_widget.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
-import 'package:chaldea/widgets/modern/modern_theme.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../generated/l10n.dart';
 import '../models/db.dart';
@@ -104,23 +103,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WindowListener
   }
 
   ThemeData _getThemeData({required bool dark}) {
-    final themeData = ThemeData(
-      brightness: dark ? Brightness.dark : Brightness.light,
-      useMaterial3: db.settings.useMaterial3,
-      colorSchemeSeed: db.settings.colorSeed?.color,
-      tooltipTheme: const TooltipThemeData(waitDuration: Duration(milliseconds: 500)),
-    );
-    return themeData.copyWith(
-      appBarTheme: themeData.appBarTheme.copyWith(
-        titleSpacing: 0,
-        toolbarHeight: 48, // kToolbarHeight=56,
-      ),
-      listTileTheme: themeData.listTileTheme.copyWith(minLeadingWidth: 24),
-      extensions: {
-        ...themeData.extensions.values,
-        ModernThemeData.fromColorScheme(themeData.colorScheme),
-      },
-    );
+    return dark ? AppTheme.dark() : AppTheme.light();
   }
 
   void onAppUpdate() {
