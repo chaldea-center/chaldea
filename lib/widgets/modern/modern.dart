@@ -1,6 +1,7 @@
 // Barrel export for the modern widget set. Import as:
 //   import 'package:chaldea/widgets/modern/modern.dart';
 
+export 'accent_container.dart';
 export 'action_row.dart';
 export 'buttons.dart';
 export 'code_input.dart';

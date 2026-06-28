@@ -214,20 +214,9 @@ class _MethodCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: cs.surfaceContainer,
-        borderRadius: BorderRadius.circular(12),
-        border: Border(
-          left: BorderSide(color: primary ? cs.primary : cs.outlineVariant, width: primary ? 4 : 1),
-          top: BorderSide(color: cs.outlineVariant, width: 1),
-          right: BorderSide(color: cs.outlineVariant, width: 1),
-          bottom: BorderSide(color: cs.outlineVariant, width: 1),
-        ),
-        boxShadow: [BoxShadow(color: cs.shadow.withAlpha(10), offset: const Offset(0, 1), blurRadius: 2)],
-      ),
+    return AccentContainer(
+      primary: primary,
+      boxShadow: [BoxShadow(color: cs.shadow.withAlpha(10), offset: const Offset(0, 1), blurRadius: 2)],
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
