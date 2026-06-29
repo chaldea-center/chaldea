@@ -10,16 +10,16 @@ void main() {
       final theme = AppTheme.light();
       expect(theme.useMaterial3, isTrue);
       expect(theme.brightness, Brightness.light);
-      expect(theme.colorScheme.primary, const Color(0xFF1976D2));
+      expect(theme.colorScheme.primary, const Color(0xFF1565C0));
       expect(theme.colorScheme.onPrimary, const Color(0xFFFFFFFF));
-      expect(theme.colorScheme.surface, const Color(0xFFFFFFFF));
-      expect(theme.colorScheme.surfaceContainerHighest, const Color(0xFFF5F5F5));
-      expect(theme.colorScheme.outline, const Color(0xFFBDBDBD));
-      expect(theme.colorScheme.outlineVariant, const Color(0xFFE0E0E0));
-      expect(theme.colorScheme.onSurface, const Color(0xFF212121));
-      expect(theme.colorScheme.onSurfaceVariant, const Color(0xFF757575));
-      expect(theme.colorScheme.error, const Color(0xFFF44336));
-      expect(theme.scaffoldBackgroundColor, const Color(0xFFFAFAFA));
+      expect(theme.colorScheme.surface, const Color(0xFFFAFCFF));
+      expect(theme.colorScheme.surfaceContainerHighest, const Color(0xFFE3E6EA));
+      expect(theme.colorScheme.outline, const Color(0xFF73777F));
+      expect(theme.colorScheme.outlineVariant, const Color(0xFFC3C7CF));
+      expect(theme.colorScheme.onSurface, const Color(0xFF191C1E));
+      expect(theme.colorScheme.onSurfaceVariant, const Color(0xFF43474E));
+      expect(theme.colorScheme.error, const Color(0xFFBA1A1A));
+      expect(theme.scaffoldBackgroundColor, theme.colorScheme.surface);
     });
 
     test('light() registers AppThemeData extension with light values', () {
@@ -46,9 +46,9 @@ void main() {
       final theme = AppTheme.dark();
       expect(theme.useMaterial3, isTrue);
       expect(theme.brightness, Brightness.dark);
-      expect(theme.colorScheme.primary, const Color(0xFF90CAF9));
-      expect(theme.colorScheme.surface, const Color(0xFF1E1E1E));
-      expect(theme.scaffoldBackgroundColor, const Color(0xFF121212));
+      expect(theme.colorScheme.primary, const Color(0xFFA2C8FF));
+      expect(theme.colorScheme.surface, const Color(0xFF111318));
+      expect(theme.scaffoldBackgroundColor, theme.colorScheme.surface);
     });
 
     test('dark() registers AppThemeData with dark values', () {
@@ -58,6 +58,27 @@ void main() {
       expect(tokens.profileGradientEnd, const Color(0xFF42A5F5));
       expect(tokens.stateSuccess, const Color(0xFF66BB6A));
       expect(tokens.accent, const Color(0xFFD0BCFF));
+    });
+
+    test('light() component themes use cs.* per spec', () {
+      final theme = AppTheme.light();
+      final cs = theme.colorScheme;
+      expect(theme.scaffoldBackgroundColor, cs.surface);
+      expect(theme.appBarTheme.backgroundColor, cs.surface);
+      expect(theme.dividerTheme.color, cs.outlineVariant);
+      expect(theme.cardTheme.color, cs.surfaceContainer);
+      expect(theme.cardTheme.shape, isA<RoundedRectangleBorder>());
+      final cardShape = theme.cardTheme.shape as RoundedRectangleBorder;
+      expect(cardShape.borderRadius, AppShape.medium);
+    });
+
+    test('dark() component themes use cs.* per spec', () {
+      final theme = AppTheme.dark();
+      final cs = theme.colorScheme;
+      expect(theme.scaffoldBackgroundColor, cs.surface);
+      expect(theme.appBarTheme.backgroundColor, cs.surface);
+      expect(theme.dividerTheme.color, cs.outlineVariant);
+      expect(theme.cardTheme.color, cs.surfaceContainer);
     });
   });
 

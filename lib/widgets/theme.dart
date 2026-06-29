@@ -224,43 +224,27 @@ class AppTheme {
 
   static ThemeData _build(Brightness brightness) {
     final isDark = brightness == Brightness.dark;
-    final base = ColorScheme.fromSeed(seedColor: const Color(0xFF1976D2), brightness: brightness);
+    final cs = isDark ? AppColorScheme.dark : AppColorScheme.light;
 
-    // Targeted overrides for design-token fidelity. We override at ColorScheme
-    // level only where fromSeed's tonal palette diverges meaningfully from the
-    // chaldea-auth-ui-design token mapping.
-    final cs = base.copyWith(
-      primary: isDark ? const Color(0xFF90CAF9) : const Color(0xFF1976D2),
-      onPrimary: isDark ? const Color(0xFF003258) : const Color(0xFFFFFFFF),
-      surface: isDark ? const Color(0xFF1E1E1E) : const Color(0xFFFFFFFF),
-      surfaceContainerHighest: isDark ? const Color(0xFF2C2C2C) : const Color(0xFFF5F5F5),
-      outline: isDark ? const Color(0xFF424242) : const Color(0xFFBDBDBD),
-      outlineVariant: isDark ? const Color(0xFF383838) : const Color(0xFFE0E0E0),
-      onSurface: isDark ? const Color(0xFFECECEC) : const Color(0xFF212121),
-      onSurfaceVariant: isDark ? const Color(0xFFB0B0B0) : const Color(0xFF757575),
-      error: isDark ? const Color(0xFFEF5350) : const Color(0xFFF44336),
-    );
-
-    final fillColor = cs.surfaceContainerHighest;
     final border = OutlineInputBorder(
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: AppShape.small,
       borderSide: BorderSide(color: cs.outlineVariant, width: 1),
     );
     final focusedBorder = OutlineInputBorder(
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: AppShape.small,
       borderSide: BorderSide(color: cs.primary, width: 2),
     );
     final errorBorder = OutlineInputBorder(
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: AppShape.small,
       borderSide: BorderSide(color: cs.error, width: 1),
     );
 
     return ThemeData(
       useMaterial3: true,
       colorScheme: cs,
-      scaffoldBackgroundColor: isDark ? const Color(0xFF121212) : const Color(0xFFFAFAFA),
+      scaffoldBackgroundColor: cs.surface,
       appBarTheme: AppBarTheme(
-        backgroundColor: isDark ? const Color(0xFF121212) : const Color(0xFFFAFAFA),
+        backgroundColor: cs.surface,
         foregroundColor: cs.onSurface,
         elevation: 0,
         scrolledUnderElevation: 0,
@@ -268,16 +252,16 @@ class AppTheme {
         toolbarHeight: 48,
       ),
       cardTheme: CardThemeData(
-        color: cs.surface,
+        color: cs.surfaceContainer,
         elevation: 0,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: AppShape.medium,
           side: BorderSide(color: cs.outlineVariant, width: 1),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: fillColor,
+        fillColor: cs.surfaceContainerHighest,
         contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         enabledBorder: border,
         focusedBorder: focusedBorder,
@@ -290,17 +274,17 @@ class AppTheme {
       filledButtonTheme: FilledButtonThemeData(
         style: FilledButton.styleFrom(
           minimumSize: const Size(0, 48),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          shape: RoundedRectangleBorder(borderRadius: AppShape.small),
         ),
       ),
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           minimumSize: const Size(0, 48),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          shape: RoundedRectangleBorder(borderRadius: AppShape.small),
           side: BorderSide(color: cs.outline, width: 1),
         ),
       ),
-      dividerTheme: DividerThemeData(thickness: 0.5, color: isDark ? const Color(0xFF2C2C2C) : const Color(0xFFEEEEEE)),
+      dividerTheme: DividerThemeData(thickness: 0.5, color: cs.outlineVariant),
       listTileTheme: const ListTileThemeData(minLeadingWidth: 24),
       tooltipTheme: const TooltipThemeData(waitDuration: Duration(milliseconds: 500)),
       extensions: {AppThemeData.forBrightness(brightness)},
