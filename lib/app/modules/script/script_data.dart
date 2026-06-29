@@ -242,7 +242,7 @@ class ScriptDialog extends ScriptTexts {
     state.clear();
     List<InlineSpan> spans = [];
     if (!hideSpeaker) {
-      state.push(headerStyle.copyWith(color: AppTheme(context).tertiaryContainer), this, _CompType.none);
+      state.push(headerStyle.copyWith(color: Theme.of(context).colorScheme.primary), this, _CompType.none);
       spans.add(state.textSpan(text: kHeaderLeading));
       for (final c in speaker) {
         spans.addAll(c.build(context, state));

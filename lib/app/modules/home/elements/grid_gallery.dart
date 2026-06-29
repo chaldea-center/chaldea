@@ -7,7 +7,6 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/custom_dialogs.dart';
-import 'package:chaldea/widgets/theme.dart';
 import 'gallery_item.dart';
 
 class GridGallery extends StatefulWidget {
@@ -123,9 +122,7 @@ class _GridGalleryState extends State<GridGallery> {
             ? Icon(Icons.remove_circle, color: themeData.disabledColor)
             : Icon(
                 Icons.add_circle,
-                color: (Theme.of(context).useMaterial3
-                    ? Theme.of(context).colorScheme.primary
-                    : AppTheme(context).tertiary),
+                color: Theme.of(context).colorScheme.primary,
               );
         child = Stack(alignment: Alignment.topRight, children: [child, editIcon]);
       }
