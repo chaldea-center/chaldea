@@ -51,7 +51,6 @@ class _ControlsDataContentState extends State<_ControlsDataContent> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final cs = theme.colorScheme;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),

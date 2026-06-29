@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:chaldea/widgets/theme.dart';
-
 import 'controls_data_page.dart';
 import 'surfaces_page.dart';
 import 'typography_buttons_page.dart';
