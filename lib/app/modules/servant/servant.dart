@@ -218,7 +218,7 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
                 // style: Theme.of(context).textTheme.bodySmall,
                 textScaler: const TextScaler.linear(0.9),
                 // style: TextStyle(color: Theme.of(context).colorScheme.primary),
-                style: TextStyle(color: AppTheme(context).tertiary),
+                style: TextStyle(color: Theme.of(context).colorScheme.primary),
               ),
             ),
           const SizedBox(height: 4),
@@ -273,7 +273,7 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(icons[index], color: AppTheme(context).tertiary),
+                              Icon(icons[index], color: Theme.of(context).colorScheme.primary),
                               AutoSizeText(
                                 db.settings.priorityTags[priority] ?? '',
                                 overflow: TextOverflow.visible,
@@ -306,7 +306,6 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
     return FixedHeight.tabBar(
       TabBar(
         tabAlignment: TabAlignment.center,
-        // labelColor: AppTheme(context).tertiary,
         indicatorSize: TabBarIndicatorSize.tab,
         labelPadding: const EdgeInsets.symmetric(horizontal: 8.0),
         // unselectedLabelColor: Colors.grey,

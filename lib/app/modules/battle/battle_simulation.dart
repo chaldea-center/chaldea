@@ -675,7 +675,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                   TextSpan(
                     text: isPlayer ? 'Player Turn' : 'Enemy Turn',
                     style: isPlayer == battleData.isPlayerTurn
-                        ? TextStyle(color: AppTheme(context).tertiary)
+                        ? TextStyle(color: Theme.of(context).colorScheme.primary)
                         : Theme.of(context).textTheme.bodySmall,
                   ),
               ], const TextSpan(text: '\n')),
@@ -767,7 +767,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                   if (mounted) setState(() {});
                 },
           child: battleData.isBattleWin
-              ? Text('Win', style: TextStyle(color: AppTheme(context).tertiary))
+              ? Text('Win', style: TextStyle(color: Theme.of(context).colorScheme.primary))
               : Text(S.current.battle_attack),
         ),
       ],

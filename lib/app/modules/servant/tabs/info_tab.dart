@@ -287,7 +287,7 @@ class SvtInfoTab extends StatelessWidget {
                       if (traitAdd.condType != CondType.none)
                         CenterWidgetSpan(
                           child: InkWell(
-                            child: Icon(Icons.info_outline, size: 16, color: AppTheme(context).tertiary),
+                            child: Icon(Icons.info_outline, size: 16, color: Theme.of(context).colorScheme.primary),
                             onTap: () {
                               SimpleConfirmDialog(
                                 title: Text(S.current.condition),

@@ -146,7 +146,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
           ),
           TextButton(
             onPressed: questPhase == null ? null : () => onTapSharedTeams(questPhase!),
-            style: TextButton.styleFrom(foregroundColor: AppTheme(context).tertiary),
+            style: TextButton.styleFrom(foregroundColor: Theme.of(context).colorScheme.primary),
             child: Text(S.current.team_shared),
           ),
           TextButton(
