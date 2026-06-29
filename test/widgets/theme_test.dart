@@ -22,8 +22,8 @@ void main() {
       expect(theme.scaffoldBackgroundColor, const Color(0xFFFAFAFA));
     });
 
-    test('light() registers ModernTokens extension with light values', () {
-      final tokens = AppTheme.light().extension<ModernTokens>();
+    test('light() registers AppThemeData extension with light values', () {
+      final tokens = AppTheme.light().extension<AppThemeData>();
       expect(tokens, isNotNull);
       expect(tokens!.profileGradientStart, const Color(0xFF1976D2));
       expect(tokens.profileGradientEnd, const Color(0xFF2196F3));
@@ -31,6 +31,7 @@ void main() {
       expect(tokens.stateSuccess, const Color(0xFF4CAF50));
       expect(tokens.stateWarning, const Color(0xFFFF9800));
       expect(tokens.stateInfo, const Color(0xFF2196F3));
+      expect(tokens.accent, const Color(0xFF6750A4));
     });
 
     test('light() configures component themes', () {
@@ -50,12 +51,13 @@ void main() {
       expect(theme.scaffoldBackgroundColor, const Color(0xFF121212));
     });
 
-    test('dark() registers ModernTokens with dark values', () {
-      final tokens = AppTheme.dark().extension<ModernTokens>();
+    test('dark() registers AppThemeData with dark values', () {
+      final tokens = AppTheme.dark().extension<AppThemeData>();
       expect(tokens, isNotNull);
       expect(tokens!.profileGradientStart, const Color(0xFF1976D2));
       expect(tokens.profileGradientEnd, const Color(0xFF42A5F5));
       expect(tokens.stateSuccess, const Color(0xFF66BB6A));
+      expect(tokens.accent, const Color(0xFFD0BCFF));
     });
   });
 

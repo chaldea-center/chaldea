@@ -95,7 +95,7 @@ class _CodeInputState extends State<CodeInput> {
   @override
   Widget build(BuildContext context) {
     // Input fill/border colors come from ThemeData (inputDecorationTheme +
-    // colorScheme) since ModernTokens no longer carries input fields.
+    // colorScheme) since AppThemeData no longer carries input fields.
     final themeData = Theme.of(context);
     final cs = themeData.colorScheme;
     return Row(

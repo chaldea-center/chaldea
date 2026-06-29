@@ -1,7 +1,7 @@
 // ProfileCard: simplified gradient-header card showing a title (e.g.
 // username) and an optional subtitle (e.g. uid). Avatar circle removed —
 // the profile page has no avatar feature. Gradient and foreground colors
-// come from ModernTokens so they can be restyled via ThemeData.
+// come from AppThemeData so they can be restyled via ThemeData.
 
 import 'package:flutter/material.dart';
 
@@ -16,7 +16,7 @@ class ProfileCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = ModernTokens.of(context);
+    final theme = AppThemeData.of(context);
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.only(bottom: 16),
