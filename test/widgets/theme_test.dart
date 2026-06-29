@@ -58,4 +58,41 @@ void main() {
       expect(tokens.stateSuccess, const Color(0xFF66BB6A));
     });
   });
+
+  group('AppColorScheme', () {
+    test('light has spec values', () {
+      const cs = AppColorScheme.light;
+      expect(cs.brightness, Brightness.light);
+      expect(cs.primary, const Color(0xFF1565C0));
+      expect(cs.onPrimary, const Color(0xFFFFFFFF));
+      expect(cs.secondary, const Color(0xFF2E7D32));
+      expect(cs.tertiary, const Color(0xFF0277BD));
+      expect(cs.surface, const Color(0xFFFAFCFF));
+      expect(cs.surfaceContainer, const Color(0xFFEEF0F4));
+      expect(cs.outline, const Color(0xFF73777F));
+      expect(cs.outlineVariant, const Color(0xFFC3C7CF));
+      expect(cs.onSurface, const Color(0xFF191C1E));
+      expect(cs.onSurfaceVariant, const Color(0xFF43474E));
+      expect(cs.error, const Color(0xFFBA1A1A));
+    });
+
+    test('dark has spec values', () {
+      const cs = AppColorScheme.dark;
+      expect(cs.brightness, Brightness.dark);
+      expect(cs.primary, const Color(0xFFA2C8FF));
+      expect(cs.surface, const Color(0xFF111318));
+      expect(cs.surfaceContainer, const Color(0xFF1D2024));
+      expect(cs.outlineVariant, const Color(0xFF43474E));
+      expect(cs.error, const Color(0xFFFFB4AB));
+    });
+  });
+
+  group('AppShape', () {
+    test('constants match MD3 shape scale', () {
+      expect(AppShape.small, BorderRadius.circular(8));
+      expect(AppShape.medium, BorderRadius.circular(12));
+      expect(AppShape.large, BorderRadius.circular(16));
+      expect(AppShape.full, BorderRadius.circular(9999));
+    });
+  });
 }
