@@ -5,6 +5,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/app/modules/misc/showcase/showcase_home_page.dart';
 import '../home/subpage/theme_color.dart';
 
 class DarkLightThemePalette extends StatefulWidget {
@@ -33,6 +34,11 @@ class _DarkLightThemePaletteState extends State<DarkLightThemePalette> {
           //   icon: Icon(useM3 ? Icons.filter_3 : Icons.filter_2),
           //   tooltip: "Material 2/3",
           // ),
+          IconButton(
+            onPressed: () => router.pushPage(const ShowcaseHomePage()),
+            icon: const Icon(Icons.grid_view_rounded),
+            tooltip: 'MD3 Showcase',
+          ),
           IconButton(
             onPressed: () async {
               await router.pushPage(const ThemeColorPage());
