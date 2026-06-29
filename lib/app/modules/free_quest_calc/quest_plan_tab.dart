@@ -131,8 +131,8 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
                           widget.solution!.params!.blacklist.remove(questId);
                         });
                       },
-                      icon: Icon(Icons.clear, color: AppTheme(context).tertiary),
-                      label: Text(S.current.remove_from_blacklist, style: TextStyle(color: AppTheme(context).tertiary)),
+                      icon: Icon(Icons.clear, color: Theme.of(context).colorScheme.primary),
+                      label: Text(S.current.remove_from_blacklist, style: TextStyle(color: Theme.of(context).colorScheme.primary)),
                     )
                   : TextButton.icon(
                       onPressed: () {

@@ -303,7 +303,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
                       );
                       if (mounted) setState(() {});
                     },
-                    icon: Icon(Icons.add, color: AppTheme(context).tertiary),
+                    icon: Icon(Icons.add, color: Theme.of(context).colorScheme.primary),
                     padding: EdgeInsets.zero,
                     constraints: const BoxConstraints(minHeight: 36),
                   ),

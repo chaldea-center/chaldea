@@ -167,8 +167,8 @@ class _MissionSolutionTabState extends State<MissionSolutionTab> {
                       db.settings.masterMissionOptions.blacklist.remove(quest.id);
                     });
                   },
-                  icon: Icon(Icons.clear, color: AppTheme(context).tertiary),
-                  label: Text(S.current.remove_from_blacklist, style: TextStyle(color: AppTheme(context).tertiary)),
+                  icon: Icon(Icons.clear, color: Theme.of(context).colorScheme.primary),
+                  label: Text(S.current.remove_from_blacklist, style: TextStyle(color: Theme.of(context).colorScheme.primary)),
                 )
               : TextButton.icon(
                   onPressed: () {
