@@ -213,10 +213,7 @@ class AppThemeData extends ThemeExtension<AppThemeData> {
   }
 }
 
-class AppTheme {
-  final BuildContext context;
-  AppTheme(this.context);
-
+abstract final class AppTheme {
   // === Theme factories ===
 
   static ThemeData light() => _build(Brightness.light);
@@ -299,15 +296,4 @@ class AppTheme {
       extensions: {AppThemeData.forBrightness(brightness)},
     );
   }
-
-  // === Retained context shortcuts (used across non-auth pages) ===
-
-  ThemeData get themeData => Theme.of(context);
-  ColorScheme get colorScheme => themeData.colorScheme;
-  bool get useMaterial3 => themeData.useMaterial3;
-  bool get isDark => themeData.brightness == Brightness.dark;
-  Color get primary => colorScheme.primary;
-  Color get tertiary => colorScheme.tertiary;
-  Color get tertiaryContainer => colorScheme.tertiaryContainer;
-  Color get color => isDark ? colorScheme.errorContainer : colorScheme.error;
 }
