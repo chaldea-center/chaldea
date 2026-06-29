@@ -2319,7 +2319,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
     );
     final eventDeckKey = '$eventId-$eventDeckNo';
     final showNormalDeck = _hideEventDeck == eventDeckKey;
-    final highlightStyle = TextStyle(color: AppTheme(context).tertiary);
+    final highlightStyle = TextStyle(color: Theme.of(context).colorScheme.primary);
     return [
       DividerWithTitle(
         titleWidget: InkWell(

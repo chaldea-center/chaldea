@@ -369,7 +369,7 @@ class _LuckyBagExpectationState extends State<LuckyBagExpectation> with SingleTi
       // if (!underline) return child;
       return Container(
         decoration: BoxDecoration(
-          border: Border(bottom: BorderSide(color: underline ? AppTheme(context).tertiary : Colors.transparent)),
+          border: Border(bottom: BorderSide(color: underline ? Theme.of(context).colorScheme.primary : Colors.transparent)),
         ),
         child: child,
       );
