@@ -218,7 +218,7 @@ class _DescriptorWrapper extends StatelessWidget {
                 cell = DecoratedBox(
                   decoration: BoxDecoration(
                     border: Border.all(
-                      color: cellIndex == 1 ? Colors.amber.withAlpha(180) : AppTheme(context).tertiary.withAlpha(180),
+                      color: cellIndex == 1 ? Colors.amber.withAlpha(180) : AppTheme.of(context).accent.withAlpha(180),
                     ),
                     borderRadius: BorderRadius.circular(4),
                   ),
@@ -755,7 +755,7 @@ class FuncDescriptor extends StatelessWidget {
         vals: mVals,
         originVals: oVals,
         ignoreRate: false,
-        color: index == 5 || index == 9 ? AppTheme(context).tertiary : null,
+        color: index == 5 || index == 9 ? AppTheme.of(context).accent : null,
         inList: true,
         supportOnly: support,
       );
@@ -1631,7 +1631,7 @@ class FuncDescriptor extends StatelessWidget {
         SharedBuilder.replaceSpan(Transl.special.funcEventOnly, '{0}', [
           TextSpan(
             text: eventName,
-            style: TextStyle(color: AppTheme(context).tertiary),
+            style: TextStyle(color: Theme.of(context).colorScheme.primary),
             recognizer: TapGestureRecognizer()
               ..onTap = () {
                 router.push(url: Routes.eventI(vals!.EventId!));
