@@ -118,4 +118,40 @@ void main() {
       expect(AppShape.full, BorderRadius.circular(9999));
     });
   });
+
+  group('AppTheme.of(context)', () {
+    testWidgets('returns registered AppThemeData from theme', (tester) async {
+      AppThemeData? captured;
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: AppTheme.light(),
+          home: Builder(
+            builder: (context) {
+              captured = AppTheme.of(context);
+              return const SizedBox();
+            },
+          ),
+        ),
+      );
+      expect(captured, isNotNull);
+      expect(captured!.accent, const Color(0xFF6750A4));
+    });
+
+    testWidgets('falls back to AppThemeData.forBrightness when no extension', (tester) async {
+      AppThemeData? captured;
+      await tester.pumpWidget(
+        MaterialApp(
+          theme: ThemeData(brightness: Brightness.light, useMaterial3: true),
+          home: Builder(
+            builder: (context) {
+              captured = AppTheme.of(context);
+              return const SizedBox();
+            },
+          ),
+        ),
+      );
+      expect(captured, isNotNull);
+      expect(captured!.accent, const Color(0xFF6750A4));
+    });
+  });
 }

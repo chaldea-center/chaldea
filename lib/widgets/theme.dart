@@ -222,6 +222,15 @@ class AppTheme {
   static ThemeData light() => _build(Brightness.light);
   static ThemeData dark() => _build(Brightness.dark);
 
+  /// Retrieves the [AppThemeData] extension from the nearest [Theme].
+  /// Falls back to [AppThemeData.forBrightness] if no extension is registered
+  /// (e.g., in tests using bare ThemeData).
+  static AppThemeData of(BuildContext context) {
+    final ext = Theme.of(context).extension<AppThemeData>();
+    if (ext != null) return ext;
+    return AppThemeData.forBrightness(Theme.of(context).brightness);
+  }
+
   static ThemeData _build(Brightness brightness) {
     final isDark = brightness == Brightness.dark;
     final cs = isDark ? AppColorScheme.dark : AppColorScheme.light;
