@@ -2,6 +2,10 @@
 cmake_minimum_required(VERSION 3.14)
 project(chaldea LANGUAGES CXX)
 
+# FIX / ERROR C2338 STL1011 In Visual Studio 18.6.0
+add_compile_definitions(_SILENCE_EXPERIMENTAL_COROUTINE_DEPRECATION_WARNINGS)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /D_SILENCE_EXPERIMENTAL_COROUTINE_DEPRECATION_WARNINGS")
+
 # The name of the executable created for the application. Change this to change
 # the on-disk name of your application.
 set(BINARY_NAME "chaldea")
