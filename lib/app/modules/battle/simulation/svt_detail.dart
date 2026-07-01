@@ -371,7 +371,7 @@ class _BattleSvtDetailState extends State<BattleSvtDetail> with SingleTickerProv
       // else S.current.battle_buff_permanent,
       if (buff.param != 0 && !kBuffValueTriggerTypes.containsKey(buff.buff.type))
         TextSpan(
-          text: Buff.formatRate(buff.buff.type, buff.param),
+          text: Buff.formatRate(buff.buff.type, buff.getValue(svt)),
           style: (buff.buff.percentBase == null) ? const TextStyle(fontStyle: FontStyle.italic) : null,
         ),
     ];
