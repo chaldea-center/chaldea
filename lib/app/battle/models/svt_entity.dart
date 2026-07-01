@@ -2259,6 +2259,7 @@ class BattleServantData {
     final BattleSkillInfoData? skillInfo,
     final List<NiceFunction>? receivedFunctionsList,
     final int? consumedNp,
+    final bool activeFirst = true,
   }) async {
     return await activateBuffs(
       battleData,
@@ -2269,6 +2270,7 @@ class BattleServantData {
       skillInfo: skillInfo,
       receivedFunctionsList: receivedFunctionsList,
       consumedNp: consumedNp,
+      activeFirst: activeFirst,
     );
   }
 
@@ -2307,9 +2309,10 @@ class BattleServantData {
     final BattleSkillInfoData? skillInfo,
     final List<NiceFunction>? receivedFunctionsList,
     final int? consumedNp,
+    final bool activeFirst = true,
   }) async {
     bool activated = false;
-    final allBuffs = getAllBuffs(battleData, activeFirst: true);
+    final allBuffs = getAllBuffs(battleData, activeFirst: activeFirst);
     for (final buffAction in buffActions) {
       for (final buff in collectBuffsPerAction(allBuffs, buffAction)) {
         final List<int> selfTraits = fetchSelfTraits(buffAction, buff, this, cardData: card);

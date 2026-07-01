@@ -55,6 +55,7 @@ class Damage {
           ],
           opponent: target,
           card: currentCard,
+          activeFirst: false,
         );
         await activator.activateBuffs(
           battleData,
@@ -67,6 +68,7 @@ class Damage {
           ],
           opponent: target,
           card: currentCard,
+          activeFirst: false,
         );
       }
     }
@@ -532,6 +534,7 @@ class Damage {
           ],
           opponent: target,
           card: currentCard,
+          activeFirst: false,
         );
         await activator.activateBuffs(
           battleData,
@@ -544,6 +547,7 @@ class Damage {
           ],
           opponent: target,
           card: currentCard,
+          activeFirst: false,
         );
       }
     }
