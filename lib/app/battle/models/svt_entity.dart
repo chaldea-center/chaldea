@@ -1488,10 +1488,12 @@ class BattleServantData {
       return;
     }
 
-    baseAtk = (targetSvt.atkGrowth.getOrNull(playerSvtData!.lv - 1) ?? 0) + playerSvtData!.atkFou;
+    baseAtk =
+        (targetSvt.atkGrowth.getOrNull(playerSvtData!.lv - 1) ?? 0) + playerSvtData!.atkFou + (isGrandSvt ? 1000 : 0);
     _maxHp =
         (targetSvt.hpGrowth.getOrNull(playerSvtData!.lv - 1) ?? 0) +
         playerSvtData!.hpFou +
+        (isGrandSvt ? 1000 : 0) +
         (equip1?.hp ?? 0) +
         (equip2?.hp ?? 0) +
         (equip3?.hp ?? 0);
