@@ -198,11 +198,30 @@ class ChaldeaServerApi {
     );
   }
 
-  static Future<bool?> resetPassword({required String token, required String newPassword}) {
+  static Future<bool?> resetPassword({required String email, required String code, required String newPassword}) {
     return cacheManager.postModel(
       '$apiV1/auth/reset-password',
       fromJson: (_) => true,
-      data: {'token': token, 'new_password': newPassword},
+      data: {'email': email, 'code': code, 'new_password': newPassword},
+      expireAfter: Duration.zero,
+    );
+  }
+
+  static Future<bool?> resetPasswordByDevice({
+    required String username,
+    required String code,
+    required String newEmail,
+    required String newPassword,
+  }) {
+    return cacheManager.postModel(
+      '$apiV1/auth/reset-password-by-device',
+      fromJson: (_) => true,
+      data: {
+        'username': username,
+        'code': code,
+        'new_email': newEmail,
+        'new_password': newPassword,
+      },
       expireAfter: Duration.zero,
     );
   }
@@ -686,7 +705,7 @@ class ChaldeaServerApi {
     final user = db.settings.secrets.user;
     if (user != null) {
       user.accessToken = null;
-      db.saveSettings();
+      // db.saveSettings();
     }
     if (kDebugMode && reason != null) {
       debugPrint('ChaldeaServerApi._forceRelogin: $reason');
@@ -733,7 +752,7 @@ class ChaldeaServerApi {
         break;
       default:
         // `invalid_credentials`, `token_missing`, null, or any unknown code.
-        _forceRelogin(reason: errorCode ?? 'unknown_401');
+        // _forceRelogin(reason: errorCode ?? 'unknown_401');
         break;
     }
   }

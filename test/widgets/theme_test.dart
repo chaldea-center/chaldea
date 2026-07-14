@@ -23,7 +23,7 @@ void main() {
     });
 
     test('light() registers AppThemeData extension with light values', () {
-      final tokens = AppTheme.light().extension<AppThemeData>();
+      final tokens = AppTheme.light().extension<ExtraThemeData>();
       expect(tokens, isNotNull);
       expect(tokens!.profileGradientStart, const Color(0xFF1976D2));
       expect(tokens.profileGradientEnd, const Color(0xFF2196F3));
@@ -52,7 +52,7 @@ void main() {
     });
 
     test('dark() registers AppThemeData with dark values', () {
-      final tokens = AppTheme.dark().extension<AppThemeData>();
+      final tokens = AppTheme.dark().extension<ExtraThemeData>();
       expect(tokens, isNotNull);
       expect(tokens!.profileGradientStart, const Color(0xFF1976D2));
       expect(tokens.profileGradientEnd, const Color(0xFF42A5F5));
@@ -82,34 +82,6 @@ void main() {
     });
   });
 
-  group('AppColorScheme', () {
-    test('light has spec values', () {
-      const cs = AppColorScheme.light;
-      expect(cs.brightness, Brightness.light);
-      expect(cs.primary, const Color(0xFF1565C0));
-      expect(cs.onPrimary, const Color(0xFFFFFFFF));
-      expect(cs.secondary, const Color(0xFF2E7D32));
-      expect(cs.tertiary, const Color(0xFF0277BD));
-      expect(cs.surface, const Color(0xFFFAFCFF));
-      expect(cs.surfaceContainer, const Color(0xFFEEF0F4));
-      expect(cs.outline, const Color(0xFF73777F));
-      expect(cs.outlineVariant, const Color(0xFFC3C7CF));
-      expect(cs.onSurface, const Color(0xFF191C1E));
-      expect(cs.onSurfaceVariant, const Color(0xFF43474E));
-      expect(cs.error, const Color(0xFFBA1A1A));
-    });
-
-    test('dark has spec values', () {
-      const cs = AppColorScheme.dark;
-      expect(cs.brightness, Brightness.dark);
-      expect(cs.primary, const Color(0xFFA2C8FF));
-      expect(cs.surface, const Color(0xFF111318));
-      expect(cs.surfaceContainer, const Color(0xFF1D2024));
-      expect(cs.outlineVariant, const Color(0xFF43474E));
-      expect(cs.error, const Color(0xFFFFB4AB));
-    });
-  });
-
   group('AppShape', () {
     test('constants match MD3 shape scale', () {
       expect(AppShape.small, BorderRadius.circular(8));
@@ -121,13 +93,13 @@ void main() {
 
   group('AppTheme.of(context)', () {
     testWidgets('returns registered AppThemeData from theme', (tester) async {
-      AppThemeData? captured;
+      ExtraThemeData? captured;
       await tester.pumpWidget(
         MaterialApp(
           theme: AppTheme.light(),
           home: Builder(
             builder: (context) {
-              captured = AppTheme.of(context);
+              captured = AppTheme.ofExtra(context);
               return const SizedBox();
             },
           ),
@@ -138,13 +110,13 @@ void main() {
     });
 
     testWidgets('falls back to AppThemeData.forBrightness when no extension', (tester) async {
-      AppThemeData? captured;
+      ExtraThemeData? captured;
       await tester.pumpWidget(
         MaterialApp(
           theme: ThemeData(brightness: Brightness.light, useMaterial3: true),
           home: Builder(
             builder: (context) {
-              captured = AppTheme.of(context);
+              captured = AppTheme.ofExtra(context);
               return const SizedBox();
             },
           ),

@@ -82,7 +82,7 @@ class GalleryItem {
   Widget buildIcon(BuildContext context, {double? size, Color? color}) {
     size ??= 40;
     if (child != null) return child!;
-    var _iconColor = color ?? Theme.of(context).colorScheme.primary;
+    var _iconColor = color ?? Theme.of(context).colorScheme.surfaceTint;
     return icon!.isFontAwesome
         ? Padding(
             padding: EdgeInsets.all(size * 0.05),

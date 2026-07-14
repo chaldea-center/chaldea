@@ -13,19 +13,27 @@ class TypographyButtonsPage extends StatelessWidget {
         builder: (context, constraints) {
           final isWide = constraints.maxWidth >= 800;
           final lightCol = Expanded(
-            child: Theme(data: AppTheme.light(), child: const _TypographyButtonsContent(modeLabel: 'Light')),
+            child: Theme(
+              data: AppTheme.light(),
+              child: const _TypographyButtonsContent(modeLabel: 'Light'),
+            ),
           );
           final darkCol = Expanded(
-            child: Theme(data: AppTheme.dark(), child: const _TypographyButtonsContent(modeLabel: 'Dark')),
+            child: Theme(
+              data: AppTheme.dark(),
+              child: const _TypographyButtonsContent(modeLabel: 'Dark'),
+            ),
           );
           return SingleChildScrollView(
             child: isWide
                 ? Row(crossAxisAlignment: CrossAxisAlignment.start, children: [lightCol, darkCol])
-                : Column(children: [
-                    SizedBox(height: 800, child: lightCol),
-                    const Divider(thickness: 2),
-                    SizedBox(height: 800, child: darkCol),
-                  ]),
+                : Column(
+                    children: [
+                      SizedBox(height: 800, child: lightCol),
+                      const Divider(thickness: 2),
+                      SizedBox(height: 800, child: darkCol),
+                    ],
+                  ),
           );
         },
       ),
@@ -41,7 +49,7 @@ class _TypographyButtonsContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
-    final accent = AppTheme.of(context).accent;
+    final accent = AppTheme.ofExtra(context).accent;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
@@ -111,7 +119,9 @@ class _TypographyButtonsContent extends StatelessWidget {
 
           // === TextField States ===
           _sectionLabel(context, 'TextField States'),
-          const TextField(decoration: InputDecoration(labelText: 'Enabled', hintText: 'Type here...')),
+          const TextField(
+            decoration: InputDecoration(labelText: 'Enabled', hintText: 'Type here...'),
+          ),
           const SizedBox(height: 12),
           const TextField(
             autofocus: false,
@@ -124,11 +134,7 @@ class _TypographyButtonsContent extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           TextField(
-            decoration: InputDecoration(
-              labelText: 'Error',
-              errorText: 'Error message',
-              hintText: 'Type here...',
-            ),
+            decoration: InputDecoration(labelText: 'Error', errorText: 'Error message', hintText: 'Type here...'),
           ),
         ],
       ),
@@ -140,10 +146,9 @@ class _TypographyButtonsContent extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 8),
       child: Text(
         text,
-        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              color: Theme.of(context).colorScheme.primary,
-              fontWeight: FontWeight.w600,
-            ),
+        style: Theme.of(
+          context,
+        ).textTheme.titleSmall?.copyWith(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.w600),
       ),
     );
   }

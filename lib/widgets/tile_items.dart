@@ -192,9 +192,9 @@ class TileGroup extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Widget> group;
     if (innerDivider) {
-      group = divideTiles(children, divider: divider, top: true, bottom: true);
+      group = divideTiles(children, divider: divider, top: false, bottom: false);
     } else {
-      group = [divider, ...children, divider];
+      group = [...children];
     }
     Widget? headerWidget = this.headerWidget, footerWidget = this.footerWidget;
     if (header != null) {

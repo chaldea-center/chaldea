@@ -132,7 +132,10 @@ class _QuestPlanTabState extends State<QuestPlanTab> {
                         });
                       },
                       icon: Icon(Icons.clear, color: Theme.of(context).colorScheme.primary),
-                      label: Text(S.current.remove_from_blacklist, style: TextStyle(color: Theme.of(context).colorScheme.primary)),
+                      label: Text(
+                        S.current.remove_from_blacklist,
+                        style: TextStyle(color: Theme.of(context).colorScheme.primary),
+                      ),
                     )
                   : TextButton.icon(
                       onPressed: () {

@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
 import 'package:chaldea/app/app.dart';
-import 'package:chaldea/models/db.dart';
-import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/app/modules/misc/showcase/showcase_home_page.dart';
+import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/theme.dart';
 import '../home/subpage/theme_color.dart';
 
 class DarkLightThemePalette extends StatefulWidget {
@@ -53,10 +53,10 @@ class _DarkLightThemePaletteState extends State<DarkLightThemePalette> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            for (final dark in [false, true])
+            for (final brightness in [Brightness.light, Brightness.dark])
               Expanded(
                 child: Theme(
-                  data: _getThemeData(dark: dark),
+                  data: _getThemeData(brightness),
                   child: Builder(builder: (context) => const _PaletteForTheme()),
                 ),
               ),
@@ -66,13 +66,8 @@ class _DarkLightThemePaletteState extends State<DarkLightThemePalette> {
     );
   }
 
-  ThemeData _getThemeData({required bool dark}) {
-    final themeData = ThemeData(
-      brightness: dark ? Brightness.dark : Brightness.light,
-      useMaterial3: true,
-      colorSchemeSeed: db.settings.colorSeed?.color,
-    );
-    return themeData;
+  ThemeData _getThemeData(Brightness brightness) {
+    return brightness == .dark ? AppTheme.dark() : AppTheme.light();
   }
 }
 

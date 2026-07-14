@@ -28,7 +28,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   bool _obscureCurrent = true;
   bool _obscureNew = true;
   bool _obscureConfirm = true;
-  bool _touched = false;
   final secrets = db.settings.secrets;
 
   @override
@@ -47,19 +46,17 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
     super.dispose();
   }
 
-  String? get _currentError => _touched ? validatePassword(_currentController.text) : null;
+  String? get _currentError => validatePassword(_currentController.text);
 
   String? get _newError {
-    if (!_touched) return null;
     return validateNewPassword(_newController.text, oldPwd: _currentController.text);
   }
 
   String? get _confirmError {
-    if (!_touched) return null;
     final newPwd = _newController.text;
     final confirm = _confirmController.text;
     if (confirm.isEmpty) return null;
-    if (confirm != newPwd) return S.current.login_password_error_same_as_old;
+    if (confirm != newPwd) return S.current.login_password_error_confirm_mismatch;
     return null;
   }
 
@@ -76,7 +73,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
 
   Future<void> _submit() async {
     if (!_isAvailable) {
-      setState(() => _touched = true);
+      setState(() {});
       return;
     }
     final user = await showEasyLoading(

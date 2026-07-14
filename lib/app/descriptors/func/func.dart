@@ -218,7 +218,9 @@ class _DescriptorWrapper extends StatelessWidget {
                 cell = DecoratedBox(
                   decoration: BoxDecoration(
                     border: Border.all(
-                      color: cellIndex == 1 ? Colors.amber.withAlpha(180) : AppTheme.of(context).accent.withAlpha(180),
+                      color: cellIndex == 1
+                          ? Colors.amber.withAlpha(180)
+                          : AppTheme.of(context).accentColor.withAlpha(180),
                     ),
                     borderRadius: BorderRadius.circular(4),
                   ),
@@ -755,7 +757,7 @@ class FuncDescriptor extends StatelessWidget {
         vals: mVals,
         originVals: oVals,
         ignoreRate: false,
-        color: index == 5 || index == 9 ? AppTheme.of(context).accent : null,
+        color: index == 5 || index == 9 ? AppTheme.of(context).accentColor : null,
         inList: true,
         supportOnly: support,
       );

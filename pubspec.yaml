@@ -19,7 +19,7 @@ version: 2.5.27+989
 
 environment:
   sdk: ">=3.12.0 <4.0.0"
-  flutter: 3.44.0
+  flutter: 3.44.6
 
 dependencies:
   flutter:
@@ -115,6 +115,8 @@ dependencies:
   countly_flutter_np: ^26.1.0
   flutter_gromore_ads: ^3.2.1
   # admanager_web: ^0.0.4
+  flex_color_picker: ^3.8.0
+  flex_color_scheme: ^8.4.0
 
 dev_dependencies:
   flutter_test:

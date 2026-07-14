@@ -35,6 +35,10 @@ class _RegisterPageState extends State<RegisterPage> {
 
   final secrets = db.settings.secrets;
 
+  // Resend countdown: counts down from 60 after sending code.
+  int _resendCountdown = 0;
+  bool _resendTimerActive = false;
+
   @override
   void initState() {
     super.initState();
@@ -67,13 +71,30 @@ class _RegisterPageState extends State<RegisterPage> {
     final name = _nameController.text;
     final email = _emailController.text;
     final pwd = _pwdController.text;
-    if (!_isStep1Available) return;
+    if (!_isStep1Available || _resendTimerActive) return;
     final ok = await showEasyLoading(() => ChaldeaServerApi.register(username: name, email: email, password: pwd));
     if (ok == true) {
       setState(() => _step = 2);
+      _startResendCountdown();
       EasyLoading.showSuccess('${S.current.auth_send_code}: ${S.current.success}');
     }
     db.notifySettings();
+  }
+
+  void _startResendCountdown() {
+    _resendCountdown = 60;
+    _resendTimerActive = true;
+    _tickCountdown();
+  }
+
+  void _tickCountdown() {
+    if (!mounted) return;
+    if (_resendCountdown <= 0) {
+      setState(() => _resendTimerActive = false);
+      return;
+    }
+    setState(() => _resendCountdown--);
+    Future.delayed(const Duration(seconds: 1), _tickCountdown);
   }
 
   Future<void> _verify() async {
@@ -187,7 +208,12 @@ class _RegisterPageState extends State<RegisterPage> {
       const SizedBox(height: 24),
       PrimaryButton(label: S.current.confirm, onPressed: _isStep2Available ? _verify : null),
       const SizedBox(height: 8),
-      TextButton(onPressed: _isStep1Available ? _sendCode : null, child: Text(S.current.auth_resend_code)),
+      TextButton(
+        onPressed: _isStep1Available && !_resendTimerActive ? _sendCode : null,
+        child: Text(
+          _resendTimerActive ? '${S.current.auth_resend_code} (${_resendCountdown}s)' : S.current.auth_resend_code,
+        ),
+      ),
     ];
   }
 }

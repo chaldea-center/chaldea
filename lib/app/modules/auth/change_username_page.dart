@@ -24,7 +24,6 @@ class ChangeUsernamePage extends StatefulWidget {
 
 class _ChangeUsernamePageState extends State<ChangeUsernamePage> {
   late final TextEditingController _nameController;
-  bool _touched = false;
   final secrets = db.settings.secrets;
 
   @override
@@ -43,7 +42,7 @@ class _ChangeUsernamePageState extends State<ChangeUsernamePage> {
 
   String? get _errorText {
     final newName = _nameController.text;
-    if (!_touched || newName.isEmpty) return null;
+    if (newName.isEmpty) return null;
     return validateNewName(newName, oldName: _currentName);
   }
 
@@ -55,7 +54,7 @@ class _ChangeUsernamePageState extends State<ChangeUsernamePage> {
   Future<void> _submit() async {
     final newName = _nameController.text;
     if (!_isAvailable) {
-      setState(() => _touched = true);
+      setState(() {});
       return;
     }
     final user = await showEasyLoading(() => ChaldeaServerApi.updateMe(name: newName));

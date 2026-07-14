@@ -108,7 +108,7 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
     final plan = db.curUser.ticketOf(ticket.id);
     bool planned = plan.enabled;
     bool outdated = ticket.isOutdated();
-    Color? _plannedColor = AppTheme.of(context).accent;
+    Color? _plannedColor = AppTheme.ofExtra(context).accent;
     Color? _outdatedColor = Theme.of(context).textTheme.bodySmall?.color;
     bool hasAnyReplaced = ticket.replaced.values.any((e) => e != null);
     bool isThisMonth = DateUtils.isSameMonth(ticket.date, DateTime.now());

@@ -790,6 +790,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "login_new_password": MessageLookupByLibrary.simpleMessage("新密碼"),
     "login_password": MessageLookupByLibrary.simpleMessage("密碼"),
     "login_password_error": MessageLookupByLibrary.simpleMessage("6-18位字母和數字，至少包含一個字母"),
+    "login_password_error_confirm_mismatch": MessageLookupByLibrary.simpleMessage("兩次輸入的密碼不一致"),
     "login_password_error_same_as_old": MessageLookupByLibrary.simpleMessage("不能與舊密碼相同"),
     "login_signup": MessageLookupByLibrary.simpleMessage("註冊"),
     "login_username": MessageLookupByLibrary.simpleMessage("使用者名稱"),

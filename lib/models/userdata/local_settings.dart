@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:intl/intl.dart';
 
 import 'package:chaldea/generated/l10n.dart';
@@ -40,7 +41,8 @@ class LocalSettings {
   int lastBackup;
   ThemeMode themeMode;
   bool useMaterial3;
-  ColorSeed? colorSeed;
+  FlexScheme? flexScheme;
+  int? colorSeedInt;
   bool enableMouseDrag;
   bool globalSelection;
   String? _language;
@@ -104,7 +106,8 @@ class LocalSettings {
     this.lastBackup = 0,
     this.themeMode = ThemeMode.system,
     this.useMaterial3 = false,
-    this.colorSeed,
+    this.flexScheme,
+    this.colorSeedInt,
     this.enableMouseDrag = true,
     this.globalSelection = false,
     this._language,
@@ -214,6 +217,16 @@ class LocalSettings {
       return WidgetsBinding.instance.platformDispatcher.platformBrightness == Brightness.dark;
     }
     return themeMode == ThemeMode.dark;
+  }
+
+  Color? get colorSeed {
+    if (colorSeedInt == null) return null;
+    try {
+      return Color(colorSeedInt!);
+    } catch (e) {
+      colorSeedInt = null;
+      return null;
+    }
   }
 }
 

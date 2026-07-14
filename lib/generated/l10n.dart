@@ -4246,6 +4246,17 @@ class S {
     );
   }
 
+  /// `Passwords do not match`
+  String get login_password_error_confirm_mismatch {
+    return Intl.message(
+      'Passwords do not match',
+      name: 'login_password_error_confirm_mismatch',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Cannot be the same as the old password`
   String get login_password_error_same_as_old {
     return Intl.message(

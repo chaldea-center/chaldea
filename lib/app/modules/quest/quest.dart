@@ -348,9 +348,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
         );
       },
       icon: const Icon(Icons.search),
-      label: Text(
-        S.current.team_shared,
-      ),
+      label: Text(S.current.team_shared),
     );
   }
 

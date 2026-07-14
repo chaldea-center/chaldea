@@ -365,7 +365,7 @@ class _SettingsPageState extends State<SettingsPage> {
         // Per design D5: migration reminder > email-not-bound reminder > none.
         // When not logged in, no subtitle.
         final user = db.settings.secrets.user;
-        if (user == null) return const SizedBox.shrink();
+        if (user == null) return Text(S.current.login_first_hint);
         final token = user.accessToken ?? '';
         final email = user.email ?? '';
         if (token.isEmpty) {

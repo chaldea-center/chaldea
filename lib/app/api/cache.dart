@@ -90,7 +90,11 @@ class _DownloadingTask {
 class ApiCacheManager {
   bool _initiated = false;
   final String? cacheKey;
-  final List<int> statusCodes = const [200];
+  // final List<int> statusCodes = const [200];
+  bool validateStatusCode(int status) {
+    return status >= 200 && status < 300;
+  }
+
   final Map<String, ApiCachedInfo> _data = {}; // key=hash
   final Map<String, List<int>> _memoryCache = {}; // key=hash
   final Map<String, _DownloadingTask> _downloading = {}; // key=hash
@@ -194,7 +198,7 @@ class ApiCacheManager {
   }
 
   Future<void> _saveEntry(String key, RequestOptions requestOptions, Response<List<int>> response) async {
-    final bytes = response.data!;
+    final bytes = response.data ?? [];
     final file = _getCacheFile(key);
 
     final crc = getCrc32(bytes).toString();
@@ -253,19 +257,26 @@ class ApiCacheManager {
     // final _t = StopwatchX(uri.toString());
     Response<List<int>> response = await createDio().fetch<List<int>>(requestOptions);
     // if (kDebugMode) _t.log();
-    if (!statusCodes.contains(response.statusCode) || response.data == null) {
+    if (response.statusCode == null || !validateStatusCode(response.statusCode!)) {
       throw DioException.badResponse(
         statusCode: response.statusCode ?? -1,
         requestOptions: requestOptions,
         response: response,
       );
     }
+    // if (response.data == null) {
+    //   throw DioException.badResponse(
+    //     statusCode: response.statusCode ?? -1,
+    //     requestOptions: requestOptions,
+    //     response: response,
+    //   );
+    // }
     try {
       await _saveEntry(key, requestOptions, response);
     } catch (e, s) {
       logger.e('save cache entry failed', e, s);
     }
-    return response.data!;
+    return response.data ?? [];
   }
 
   // fetch

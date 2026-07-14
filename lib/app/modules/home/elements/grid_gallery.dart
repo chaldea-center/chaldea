@@ -120,10 +120,7 @@ class _GridGalleryState extends State<GridGallery> {
       if (_editMode && !item.persist) {
         final editIcon = active
             ? Icon(Icons.remove_circle, color: themeData.disabledColor)
-            : Icon(
-                Icons.add_circle,
-                color: Theme.of(context).colorScheme.primary,
-              );
+            : Icon(Icons.add_circle, color: Theme.of(context).colorScheme.primary);
         child = Stack(alignment: Alignment.topRight, children: [child, editIcon]);
       }
       return InkWell(

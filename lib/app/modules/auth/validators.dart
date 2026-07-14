@@ -5,16 +5,61 @@
 
 import 'package:chaldea/generated/l10n.dart';
 
+const _reservedNamePrefixes = <String>[
+  //
+  'admin', 'root', 'superuser', 'sysadmin',
+  'moderator', 'webmaster', 'helpdesk',
+  'security', 'abuse', 'legal',
+  'chaldea', 'laplace',
+];
+
+const _reservedNameExact = <String>[
+  //
+  'administrator', 'mod', 'staff', 'team', 'official',
+  'support', 'help', 'service', 'contact',
+  'safety', 'trust', 'demo',
+  'system', 'null', 'undefined', 'nobody', 'anonymous',
+  'guest', 'test', 'noreply',
+];
+
 /// Returns null if [name] is acceptable, else an error string.
 /// Empty input returns null (caller decides whether empty is allowed).
+///
+/// Rules:
+/// 1. 4-18 characters
+/// 2. Only ASCII letters, digits, and underscores
+/// 3. Must start with a letter (not a digit or underscore)
+/// 4. Must not end with an underscore
+/// 5. Must not start with a prefix-restricted keyword (blocks variants)
+/// 6. Must not exactly match an exact-restricted keyword
 String? validateUsername(String? name) {
   name ??= '';
   if (name.isEmpty) return null;
-  if (RegExp(r'^\d+$').hasMatch(name)) {
-    return 'number only name is not allowed';
-  } else if (!RegExp(r'^[a-zA-Z0-9_]{4,18}$').hasMatch(name)) {
-    return S.current.login_username_error;
+
+  if (name.length < 4 || name.length > 18) {
+    return 'Username must be 4-18 characters long';
   }
+
+  if (!RegExp(r'^[a-zA-Z0-9_]+$').hasMatch(name)) {
+    return 'Username can only contain letters, digits, and underscores';
+  }
+
+  if (!RegExp(r'^[a-zA-Z]').hasMatch(name)) {
+    return 'Username must start with a letter';
+  }
+
+  if (name.endsWith('_')) {
+    return 'Username must not end with an underscore';
+  }
+
+  final lower = name.toLowerCase();
+  if (_reservedNamePrefixes.any((prefix) => lower.startsWith(prefix))) {
+    return 'This username is reserved';
+  }
+  if (_reservedNameExact.contains(lower)) {
+    return 'This username is reserved';
+  }
+
   return null;
 }
 
@@ -34,7 +79,7 @@ String? validatePassword(String? pwd) {
   if (pwd.isEmpty) return null;
   if (RegExp(r'^\d+$').hasMatch(pwd)) {
     return 'number only password is not allowed';
-  } else if (!RegExp(r'^[\x21-\x7e]{6,18}$').hasMatch(pwd)) {
+  } else if (!RegExp(r'^[\x20-\x7e]{6,18}$').hasMatch(pwd)) {
     return S.current.login_password_error;
   }
   return null;

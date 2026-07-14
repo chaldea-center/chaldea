@@ -27,8 +27,11 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
   int _step = 1;
   String _code = '';
   late final TextEditingController _emailController;
-  bool _emailTouched = false;
   final secrets = db.settings.secrets;
+
+  // Resend cooldown: counts down from 60 after sending code.
+  int _resendCountdown = 0;
+  bool _resendTimerActive = false;
 
   @override
   void initState() {
@@ -52,16 +55,33 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
   bool get _isStep2Available => _code.length == 6;
 
   Future<void> _sendCode() async {
-    if (!_isStep1Available) {
-      setState(() => _emailTouched = true);
+    if (!_isStep1Available || _resendTimerActive) {
+      setState(() {});
       return;
     }
     final ok = await showEasyLoading(() => ChaldeaServerApi.changeEmail(newEmail: _emailController.text));
     if (ok == true) {
       setState(() => _step = 2);
+      _startResendCountdown();
       EasyLoading.showSuccess('${S.current.auth_send_code}: ${S.current.success}');
     }
     db.notifySettings();
+  }
+
+  void _startResendCountdown() {
+    _resendCountdown = 60;
+    _resendTimerActive = true;
+    _tickCountdown();
+  }
+
+  void _tickCountdown() {
+    if (!mounted) return;
+    if (_resendCountdown <= 0) {
+      setState(() => _resendTimerActive = false);
+      return;
+    }
+    setState(() => _resendCountdown--);
+    Future.delayed(const Duration(seconds: 1), _tickCountdown);
   }
 
   Future<void> _verify() async {
@@ -113,7 +133,7 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
         controller: _emailController,
         autocorrect: false,
         keyboardType: TextInputType.emailAddress,
-        errorText: _emailTouched ? validateEmail(_emailController.text) : null,
+        errorText: validateEmail(_emailController.text),
         onChanged: (_) => setState(() {}),
       ),
       const SizedBox(height: 24),
@@ -132,7 +152,12 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
       const SizedBox(height: 24),
       PrimaryButton(label: S.current.auth_confirm_change, onPressed: _isStep2Available ? _verify : null),
       const SizedBox(height: 8),
-      TextButton(onPressed: _isStep1Available ? _sendCode : null, child: Text(S.current.auth_resend_code)),
+      TextButton(
+        onPressed: _isStep1Available && !_resendTimerActive ? _sendCode : null,
+        child: Text(
+          _resendTimerActive ? '${S.current.auth_resend_code} (${_resendCountdown}s)' : S.current.auth_resend_code,
+        ),
+      ),
     ];
   }
 }

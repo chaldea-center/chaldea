@@ -13,19 +13,27 @@ class SurfacesPage extends StatelessWidget {
         builder: (context, constraints) {
           final isWide = constraints.maxWidth >= 800;
           final lightCol = Expanded(
-            child: Theme(data: AppTheme.light(), child: const _SurfacesContent(modeLabel: 'Light')),
+            child: Theme(
+              data: AppTheme.light(),
+              child: const _SurfacesContent(modeLabel: 'Light'),
+            ),
           );
           final darkCol = Expanded(
-            child: Theme(data: AppTheme.dark(), child: const _SurfacesContent(modeLabel: 'Dark')),
+            child: Theme(
+              data: AppTheme.dark(),
+              child: const _SurfacesContent(modeLabel: 'Dark'),
+            ),
           );
           return SingleChildScrollView(
             child: isWide
                 ? Row(crossAxisAlignment: CrossAxisAlignment.start, children: [lightCol, darkCol])
-                : Column(children: [
-                    SizedBox(height: 600, child: lightCol),
-                    const Divider(thickness: 2),
-                    SizedBox(height: 600, child: darkCol),
-                  ]),
+                : Column(
+                    children: [
+                      SizedBox(height: 600, child: lightCol),
+                      const Divider(thickness: 2),
+                      SizedBox(height: 600, child: darkCol),
+                    ],
+                  ),
           );
         },
       ),
@@ -57,7 +65,10 @@ class _SurfacesContent extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('Elevated Card', style: Theme.of(context).textTheme.titleMedium),
-                  Text('surfaceContainerLowest bg + outlineVariant border', style: Theme.of(context).textTheme.bodySmall),
+                  Text(
+                    'surfaceContainerLowest bg + outlineVariant border',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
                 ],
               ),
             ),
@@ -89,7 +100,10 @@ class _SurfacesContent extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text('Outlined Card', style: Theme.of(context).textTheme.titleMedium),
-                  Text('surface bg + outlineVariant border (from cardTheme)', style: Theme.of(context).textTheme.bodySmall),
+                  Text(
+                    'surface bg + outlineVariant border (from cardTheme)',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
                 ],
               ),
             ),
@@ -99,10 +113,7 @@ class _SurfacesContent extends StatelessWidget {
           // SearchBar placeholder
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: BoxDecoration(
-              color: cs.surfaceContainerHigh,
-              borderRadius: AppShape.full,
-            ),
+            decoration: BoxDecoration(color: cs.surfaceContainerHigh, borderRadius: AppShape.full),
             child: Row(
               children: [
                 Icon(Icons.search, color: cs.onSurfaceVariant),
@@ -151,10 +162,7 @@ class _SurfacesContent extends StatelessWidget {
 
           // BottomNav (static demo)
           Container(
-            decoration: BoxDecoration(
-              color: cs.surfaceContainer,
-              borderRadius: AppShape.medium,
-            ),
+            decoration: BoxDecoration(color: cs.surfaceContainer, borderRadius: AppShape.medium),
             padding: const EdgeInsets.symmetric(vertical: 12),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,

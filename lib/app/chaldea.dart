@@ -57,8 +57,8 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WindowListener
 
   @override
   Widget build(BuildContext context) {
-    final lightTheme = _getThemeData(dark: false);
-    final darkTheme = _getThemeData(dark: true);
+    final lightTheme = AppTheme.light();
+    final darkTheme = AppTheme.dark();
     Widget child = Screenshot(
       controller: db.runtimeData.screenshotController,
       child: MaterialApp.router(
@@ -100,10 +100,6 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WindowListener
       );
     }
     return child;
-  }
-
-  ThemeData _getThemeData({required bool dark}) {
-    return dark ? AppTheme.dark() : AppTheme.light();
   }
 
   void onAppUpdate() {

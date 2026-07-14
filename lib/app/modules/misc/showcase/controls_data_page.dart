@@ -13,19 +13,27 @@ class ControlsDataPage extends StatelessWidget {
         builder: (context, constraints) {
           final isWide = constraints.maxWidth >= 800;
           final lightCol = Expanded(
-            child: Theme(data: AppTheme.light(), child: const _ControlsDataContent(modeLabel: 'Light')),
+            child: Theme(
+              data: AppTheme.light(),
+              child: const _ControlsDataContent(modeLabel: 'Light'),
+            ),
           );
           final darkCol = Expanded(
-            child: Theme(data: AppTheme.dark(), child: const _ControlsDataContent(modeLabel: 'Dark')),
+            child: Theme(
+              data: AppTheme.dark(),
+              child: const _ControlsDataContent(modeLabel: 'Dark'),
+            ),
           );
           return SingleChildScrollView(
             child: isWide
                 ? Row(crossAxisAlignment: CrossAxisAlignment.start, children: [lightCol, darkCol])
-                : Column(children: [
-                    SizedBox(height: 1000, child: lightCol),
-                    const Divider(thickness: 2),
-                    SizedBox(height: 1000, child: darkCol),
-                  ]),
+                : Column(
+                    children: [
+                      SizedBox(height: 1000, child: lightCol),
+                      const Divider(thickness: 2),
+                      SizedBox(height: 1000, child: darkCol),
+                    ],
+                  ),
           );
         },
       ),
@@ -66,30 +74,22 @@ class _ControlsDataContentState extends State<_ControlsDataContent> {
             onChanged: (v) => setState(() => _checkbox = v ?? false),
             title: const Text('Checkbox'),
           ),
-          RadioListTile<int>(
-            value: 0,
+          RadioGroup(
             groupValue: _radio,
             onChanged: (v) => setState(() => _radio = v ?? 0),
-            title: const Text('Radio 0'),
+            child: Column(
+              mainAxisSize: .min,
+              children: [
+                RadioListTile<int>(value: 0, title: const Text('Radio 0')),
+                RadioListTile<int>(value: 1, title: const Text('Radio 1')),
+              ],
+            ),
           ),
-          RadioListTile<int>(
-            value: 1,
-            groupValue: _radio,
-            onChanged: (v) => setState(() => _radio = v ?? 1),
-            title: const Text('Radio 1'),
-          ),
-          SwitchListTile(
-            value: _switch,
-            onChanged: (v) => setState(() => _switch = v),
-            title: const Text('Switch'),
-          ),
+          SwitchListTile(value: _switch, onChanged: (v) => setState(() => _switch = v), title: const Text('Switch')),
           const SizedBox(height: 16),
 
           _sectionLabel(context, 'Slider'),
-          Slider(
-            value: _slider,
-            onChanged: (v) => setState(() => _slider = v),
-          ),
+          Slider(value: _slider, onChanged: (v) => setState(() => _slider = v)),
           const SizedBox(height: 16),
 
           _sectionLabel(context, 'Progress'),
@@ -104,7 +104,11 @@ class _ControlsDataContentState extends State<_ControlsDataContent> {
             child: Column(
               children: [
                 TabBar(
-                  tabs: const [Tab(text: 'A'), Tab(text: 'B'), Tab(text: 'C')],
+                  tabs: const [
+                    Tab(text: 'A'),
+                    Tab(text: 'B'),
+                    Tab(text: 'C'),
+                  ],
                   onTap: (i) => setState(() => _tabIndex = i),
                 ),
                 SizedBox(
@@ -164,9 +168,8 @@ class _ControlsDataContentState extends State<_ControlsDataContent> {
                 child: const Text('Dialog'),
               ),
               OutlinedButton(
-                onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Snackbar content')),
-                ),
+                onPressed: () =>
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Snackbar content'))),
                 child: const Text('Snackbar'),
               ),
               OutlinedButton(
@@ -188,10 +191,9 @@ class _ControlsDataContentState extends State<_ControlsDataContent> {
       padding: const EdgeInsets.only(bottom: 8),
       child: Text(
         text,
-        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-              color: Theme.of(context).colorScheme.primary,
-              fontWeight: FontWeight.w600,
-            ),
+        style: Theme.of(
+          context,
+        ).textTheme.titleSmall?.copyWith(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.w600),
       ),
     );
   }

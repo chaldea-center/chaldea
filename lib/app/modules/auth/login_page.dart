@@ -31,8 +31,8 @@ class _LoginPageState extends State<LoginPage> {
   late final TextEditingController _nameController;
   late final TextEditingController _pwdController;
   bool _obscurePwd = true;
-  bool _nameTouched = false;
-  bool _pwdTouched = false;
+  // bool _nameTouched = false;
+  // bool _pwdTouched = false;
 
   final secrets = db.settings.secrets;
 
@@ -57,8 +57,8 @@ class _LoginPageState extends State<LoginPage> {
     final pwd = _pwdController.text;
     if (!isLoginAvailable(name, pwd)) {
       setState(() {
-        _nameTouched = true;
-        _pwdTouched = true;
+        // _nameTouched = true;
+        // _pwdTouched = true;
       });
       return;
     }
@@ -91,7 +91,7 @@ class _LoginPageState extends State<LoginPage> {
               hint: S.current.auth_username_or_email,
               controller: _nameController,
               autocorrect: false,
-              errorText: _nameTouched ? validateUsername(_nameController.text) : null,
+              errorText: validateUsername(_nameController.text),
               onChanged: (_) => setState(() {}),
             ),
             const SizedBox(height: 16),
@@ -102,11 +102,11 @@ class _LoginPageState extends State<LoginPage> {
               controller: _pwdController,
               obscure: _obscurePwd,
               autocorrect: false,
-              errorText: _pwdTouched ? validatePassword(_pwdController.text) : null,
+              errorText: validatePassword(_pwdController.text),
               suffixIcon: IconButton(
                 onPressed: () => setState(() => _obscurePwd = !_obscurePwd),
                 icon: Icon(_obscurePwd ? Icons.visibility_off : Icons.visibility),
-                tooltip: _obscurePwd ? 'Show' : 'Hide',
+                tooltip: _obscurePwd ? S.current.show : S.current.hide,
               ),
               onChanged: (_) => setState(() {}),
             ),

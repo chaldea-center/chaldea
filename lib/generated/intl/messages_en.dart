@@ -848,6 +848,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "login_new_password": MessageLookupByLibrary.simpleMessage("New Password"),
     "login_password": MessageLookupByLibrary.simpleMessage("Password"),
     "login_password_error": MessageLookupByLibrary.simpleMessage("6-18 characters, at least one alphabet"),
+    "login_password_error_confirm_mismatch": MessageLookupByLibrary.simpleMessage("Passwords do not match"),
     "login_password_error_same_as_old": MessageLookupByLibrary.simpleMessage("Cannot be the same as the old password"),
     "login_signup": MessageLookupByLibrary.simpleMessage("Signup"),
     "login_username": MessageLookupByLibrary.simpleMessage("Username"),

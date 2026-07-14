@@ -104,6 +104,7 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
     final ascension = ascensions?[asc] ?? ascensions?.values.toList().getOrNull(0);
     return [
       SliverAppBar(
+        titleSpacing: 0,
         title: AutoSizeText(svt.lAscName.l, maxLines: 1),
         actions: [
           if (svt.isUserSvt)
@@ -311,7 +312,7 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
         // unselectedLabelColor: Colors.grey,
         isScrollable: true,
         tabs: builders.map((e) => Tab(text: e.tabBuilder())).toList(),
-        indicatorColor: isDark ? null : Colors.white.withAlpha(210),
+        // indicatorColor: isDark ? null : Colors.white.withAlpha(210),
         unselectedLabelColor: isDark ? Colors.grey.shade200 : Colors.grey.shade800,
       ),
     );

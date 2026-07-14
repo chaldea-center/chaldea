@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/_test_page.dart';
@@ -116,6 +117,7 @@ class _DebugFabState extends State<DebugFab> {
         if (context == null) return;
         showDialog(
           context: context,
+          barrierColor: Colors.transparent,
           builder: (context) => _DebugMenuDialog(state: this),
         ).then((value) {
           isMenuShowing = false;
@@ -153,6 +155,7 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
   Widget build(BuildContext context) {
     return SimpleDialog(
       title: Text(S.current.debug_menu),
+      constraints: const BoxConstraints(minWidth: 280.0, maxWidth: 320),
       children: [
         ListTile(
           leading: const Icon(Icons.dark_mode),
@@ -163,6 +166,56 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
             db.notifyAppUpdate();
           },
         ),
+        if (1 > 2)
+          Container(
+            padding: .symmetric(horizontal: 16),
+            constraints: BoxConstraints(maxWidth: 360),
+            child: DropdownButton<FlexScheme?>(
+              isExpanded: true,
+              value: db.settings.flexScheme,
+              items: [
+                DropdownMenuItem(child: Text('Default')),
+                for (final item in [null, ...FlexScheme.values.toList()..remove(FlexScheme.custom)])
+                  DropdownMenuItem(
+                    value: item,
+                    child: Row(
+                      mainAxisSize: .min,
+                      spacing: 8,
+                      crossAxisAlignment: .center,
+                      children: [
+                        for (final isDark in const [false, true])
+                          SizedBox(
+                            height: 30,
+                            child: FlexThemeModeOptionButton(
+                              flexSchemeColor: isDark
+                                  ? (item?.data ?? FlexColor.materialBaseline).dark
+                                  : (item?.data ?? FlexColor.materialBaseline).light,
+                              backgroundColor: isDark ? Colors.grey.shade800 : Colors.white,
+                              selected: false,
+                              optionButtonPadding: .zero,
+                              optionButtonMargin: .all(1),
+                              height: 10,
+                              width: 10,
+                              padding: .all(2),
+                            ),
+                          ),
+                        Flexible(
+                          child: Text(item?.data.name ?? S.current.general_default, maxLines: 1, overflow: .ellipsis),
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
+              onChanged: (v) {
+                if (db.settings.flexScheme != v) {
+                  setState(() {
+                    db.settings.flexScheme = v;
+                    db.notifyAppUpdate();
+                  });
+                }
+              },
+            ),
+          ),
         ListTile(
           leading: const Icon(Icons.language),
           title: Text(S.current.settings_language),

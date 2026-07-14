@@ -244,7 +244,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
                 width: double.infinity,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: ElevatedButton(onPressed: sendEmail, child: Text(S.current.feedback_send)),
+                  child: FilledButton(onPressed: sendEmail, child: Text(S.current.feedback_send)),
                 ),
               ),
             ],
@@ -310,8 +310,8 @@ class _FeedbackPageState extends State<FeedbackPage> {
       if (!result) {
         throw S.current.sending_failed;
       }
-      subjectController.text = '';
-      bodyController.text = '';
+      // subjectController.text = '[SENT] ${subjectController.text}';
+      // bodyController.text = '';
       EasyLoading.showSuccess(S.current.sent);
     } catch (e, s) {
       logger.e('send feedback failed', e, s);
