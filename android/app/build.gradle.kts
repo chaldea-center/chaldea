@@ -78,6 +78,10 @@ android {
             ndk {
                 debugSymbolLevel = "FULL"
             }
+            // Pangle SDK compat: disable new resource shrinker to avoid
+            // ShrinkProtoResourcesAction ParseError (AGP 8.0+ replacement for
+            // the removed android.enableNewResourceShrinker=false gradle.properties flag)
+            isShrinkResources = false
 
             proguardFiles(
                 getDefaultProguardFile("proguard-android.txt"),
@@ -105,5 +109,4 @@ flutter {
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
     implementation("androidx.glance:glance-appwidget:1.1.1")
-    implementation("com.pangle.cn:ads-sdk-pro:7.6.1.2")
 }
