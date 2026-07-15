@@ -683,14 +683,15 @@ class _MiscSettings {
 
 @JsonSerializable()
 class _SecretsData {
-  ChaldeaUser? user;
+  final ChaldeaUser user;
   String? explorerAuth;
   String atlasReloadKey;
   String atlasExportKey;
 
-  _SecretsData({this.user, this.explorerAuth, this.atlasReloadKey = "", this.atlasExportKey = ""});
+  _SecretsData({ChaldeaUser? user, this.explorerAuth, this.atlasReloadKey = "", this.atlasExportKey = ""})
+    : user = user ?? ChaldeaUser();
 
-  bool get isLoggedIn => user?.accessToken?.isNotEmpty == true;
+  bool get isLoggedIn => user.accessToken?.isNotEmpty == true;
 
   factory _SecretsData.fromJson(Map<String, dynamic> json) => _$SecretsDataFromJson(json);
 

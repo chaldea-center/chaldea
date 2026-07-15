@@ -31,6 +31,9 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   final secrets = db.settings.secrets;
 
+  static ({int userId, DateTime refreshTime})? lastRefresh;
+  static const _kRefreshDuration = Duration(minutes: 10);
+
   @override
   void initState() {
     super.initState();
@@ -38,9 +41,15 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Future<void> _refresh() async {
-    final user = await ChaldeaServerApi.updateMe();
+    if (lastRefresh != null) {
+      final (:userId, :refreshTime) = lastRefresh!;
+      if (db.settings.secrets.user.id == userId && refreshTime.add(_kRefreshDuration).isAfter(DateTime.now())) {
+        return;
+      }
+    }
+    final user = await ChaldeaServerApi.getMe();
     if (user != null && mounted) {
-      secrets.user = user;
+      secrets.user.updateFromUserInfo(user);
       setState(() {});
     }
     db.notifySettings();
@@ -65,7 +74,7 @@ class _ProfilePageState extends State<ProfilePage> {
     if (confirmed != true) return;
     final ok = await showEasyLoading(() => ChaldeaServerApi.logout());
     if (ok == true) {
-      secrets.user = null;
+      secrets.user.clearAuth();
       EasyLoading.showSuccess(S.current.success);
       if (!mounted) return;
       Navigator.of(context).pop();
@@ -80,12 +89,11 @@ class _ProfilePageState extends State<ProfilePage> {
     if (secret == null || secret.isEmpty) return;
     final user = await showEasyLoading(() => ChaldeaServerApi.migrateToken(secret: secret));
     if (user != null) {
-      secrets.user = user;
+      secrets.user.updateFromLoginResponse(user);
       EasyLoading.showSuccess(S.current.auth_migration_success);
       setState(() {});
-    } else {
-      EasyLoading.showError(S.current.auth_migration_failed);
     }
+    // On failure, the API layer's dispatchError already shows a toast — no manual showError here.
     db.notifySettings();
   }
 
@@ -97,11 +105,11 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     final user = secrets.user;
-    final name = user?.name ?? '';
-    final uid = user?.id.toString() ?? '';
-    final email = user?.email ?? '';
-    final accessToken = user?.accessToken ?? '';
-    final isAdmin = user?.isAdmin ?? false;
+    final name = user.name;
+    final uid = user.id.toString();
+    final email = user.email ?? '';
+    final accessToken = user.accessToken ?? '';
+    final isAdmin = user.isAdmin;
 
     return Scaffold(
       appBar: AppBar(title: Text(S.current.auth_profile_title)),
@@ -169,7 +177,7 @@ class _ProfilePageState extends State<ProfilePage> {
           variant: ActionRowVariant.danger,
           onTap: () async {
             await router.push(child: const DeleteAccountPage());
-            if (secrets.user == null && mounted) {
+            if (!secrets.isLoggedIn && mounted) {
               Navigator.of(context).pop();
             }
           },

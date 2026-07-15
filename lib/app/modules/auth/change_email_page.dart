@@ -12,6 +12,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:chaldea/app/api/chaldea_server.dart';
 import 'package:chaldea/app/modules/auth/validators.dart';
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/api/api.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/modern/modern.dart';
@@ -45,7 +46,7 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
     super.dispose();
   }
 
-  String get _currentEmail => secrets.user?.email ?? '';
+  String get _currentEmail => secrets.user.email ?? '';
 
   bool get _isStep1Available {
     final email = _emailController.text;
@@ -88,9 +89,18 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
     if (!_isStep2Available) return;
     final ok = await showEasyLoading(() => ChaldeaServerApi.verifyEmail(newEmail: _emailController.text, code: _code));
     if (ok == true) {
-      final user = secrets.user;
-      if (user != null) {
-        user.email = _emailController.text;
+      // verifyEmail returns bool, not a fresh user — manually update info with new email
+      final currentInfo = secrets.user.info;
+      if (currentInfo != null) {
+        secrets.user.updateFromUserInfo(
+          UserInfo(
+            id: currentInfo.id,
+            name: currentInfo.name,
+            email: _emailController.text,
+            role: currentInfo.role,
+            createdAt: currentInfo.createdAt,
+          ),
+        );
       }
       EasyLoading.showSuccess(S.current.success);
       if (!mounted) return;
@@ -133,7 +143,8 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
         controller: _emailController,
         autocorrect: false,
         keyboardType: TextInputType.emailAddress,
-        errorText: validateEmail(_emailController.text),
+        validator: validateEmail,
+        errorDisplayMode: ErrorDisplayMode.onBlur,
         onChanged: (_) => setState(() {}),
       ),
       const SizedBox(height: 24),

@@ -1,13 +1,14 @@
-import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/auth/login_page.dart';
+import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/language.dart';
@@ -16,20 +17,6 @@ import 'package:chaldea/utils/utils.dart';
 import '../../models/api/api.dart';
 import 'api_error_codes.dart';
 import 'cache.dart';
-
-/// Outcome of a single-flight `/auth/refresh` attempt.
-enum RefreshResult {
-  /// Refresh succeeded; a new access token was persisted. Caller may retry.
-  success,
-
-  /// `/auth/refresh` returned 401 — the refresh token itself is invalid.
-  /// No cooldown; caller should force re-login immediately.
-  invalidToken,
-
-  /// Refresh failed due to network/5xx/timeout. Caller should enter cooldown
-  /// and force re-login.
-  networkError,
-}
 
 // ChaldeaServerApi talks to the new chaldea-server-v2 FastAPI backend (/api/v1).
 // It replaces the legacy ChaldeaWorkerApi for user/team/backup flows.
@@ -42,15 +29,12 @@ class ChaldeaServerApi {
     ..dispatchError = dispatchError
     ..createDio = createDio;
 
-  // ===================== 401 / refresh state =====================
+  // ===================== 401 / session state =====================
   //
-  // Single-flight refresh: the first 401 triggers `/auth/refresh`;
-  // concurrent 401s await the same completer. Prevents N parallel
-  // refresh calls when N requests fail simultaneously.
-  static bool _refreshing = false;
-  static Completer<bool>? _refreshCompleter;
-  static DateTime? _lastRefreshFailAt;
-  static const Duration _refreshCooldown = Duration(minutes: 5);
+  // Single-flight dialog: the first 401 shows the session-expired dialog;
+  // concurrent 401s are suppressed. Prevents N stacked dialogs when N
+  // requests fail simultaneously.
+  static bool _sessionDialogShown = false;
 
   // The new server returns errors as {"detail": {"message": ..., "message_zh": ...}}
   // (FastAPI HTTPException). For 401s, it also includes `error_code`
@@ -94,9 +78,9 @@ class ChaldeaServerApi {
       }
     }
 
-    // 401s are handled by the refresh/re-login pipeline — no toast.
+    // 401s are handled by the session/re-login pipeline — no toast.
     if (response?.statusCode == 401) {
-      await _handle401(errorCode, options);
+      await _handle401(errorCode);
       return;
     }
 
@@ -108,7 +92,7 @@ class ChaldeaServerApi {
   static Dio createDio() {
     return DioE(
       BaseOptions(
-        baseUrl: kDebugMode ? 'http://localhost:8000' : HostsX.apiHost,
+        baseUrl: kDebugMode && 1 > 2 ? 'http://localhost:8000' : HostsX.apiHost,
         headers: {
           'x-chaldea-ver': AppInfo.versionString,
           'x-chaldea-build': AppInfo.buildNumber,
@@ -120,9 +104,11 @@ class ChaldeaServerApi {
     );
   }
 
+  static bool hasToken() => (db.settings.secrets.user.accessToken ?? "").isNotEmpty;
+
   static Options addAuthHeader({Options? options}) {
     options ??= Options();
-    final token = db.settings.secrets.user?.accessToken ?? "";
+    final token = db.settings.secrets.user.accessToken ?? '';
     if (token.isEmpty) return options;
     options.headers = {...?options.headers, 'Authorization': 'Bearer $token'};
     return options;
@@ -138,10 +124,10 @@ class ChaldeaServerApi {
 
   // ===================== Auth =====================
 
-  static Future<ChaldeaUser?> login({required String username, required String password}) {
+  static Future<LoginResponse?> login({required String username, required String password}) {
     return cacheManager.postModel(
       '$apiV1/auth/login',
-      fromJson: (data) => ChaldeaUser.fromJson(data),
+      fromJson: (data) => LoginResponse.fromJson(data),
       data: {'username': username, 'password': password},
       expireAfter: Duration.zero,
     );
@@ -157,7 +143,7 @@ class ChaldeaServerApi {
     );
   }
 
-  static Future<ChaldeaUser?> verifyRegister({
+  static Future<LoginResponse?> verifyRegister({
     required String username,
     required String email,
     required String password,
@@ -165,7 +151,7 @@ class ChaldeaServerApi {
   }) {
     return cacheManager.postModel(
       '$apiV1/auth/verify-register',
-      fromJson: (data) => ChaldeaUser.fromJson(data),
+      fromJson: (data) => LoginResponse.fromJson(data),
       data: {'username': username, 'email': email, 'password': password, 'code': code},
       expireAfter: Duration.zero,
     );
@@ -180,10 +166,10 @@ class ChaldeaServerApi {
     );
   }
 
-  static Future<ChaldeaUser?> refreshToken() {
+  static Future<LoginResponse?> refreshToken() {
     return cacheManager.postModel(
       '$apiV1/auth/refresh',
-      fromJson: (data) => ChaldeaUser.fromJson(data),
+      fromJson: (data) => LoginResponse.fromJson(data),
       options: addAuthHeader(),
       expireAfter: Duration.zero,
     );
@@ -216,21 +202,16 @@ class ChaldeaServerApi {
     return cacheManager.postModel(
       '$apiV1/auth/reset-password-by-device',
       fromJson: (_) => true,
-      data: {
-        'username': username,
-        'code': code,
-        'new_email': newEmail,
-        'new_password': newPassword,
-      },
+      data: {'username': username, 'code': code, 'new_email': newEmail, 'new_password': newPassword},
       expireAfter: Duration.zero,
     );
   }
 
   // Migrate a legacy Worker session_id (secret) into a JWT. Idempotent, no auth header.
-  static Future<ChaldeaUser?> migrateToken({required String secret}) {
+  static Future<LoginResponse?> migrateToken({required String secret}) {
     return cacheManager.postModel(
       '$apiV1/auth/migrate-token',
-      fromJson: (data) => ChaldeaUser.fromJson(data),
+      fromJson: (data) => LoginResponse.fromJson(data),
       data: {'secret': secret},
       expireAfter: Duration.zero,
     );
@@ -274,38 +255,34 @@ class ChaldeaServerApi {
 
   // ===================== Users =====================
 
-  static Future<ChaldeaUser?> getMe() {
+  static Future<UserInfo?> getMe() {
+    if (!hasToken()) return Future.value(null);
     return cacheManager.getModel(
       '$apiV1/users/me',
-      (data) => ChaldeaUser.fromJson(data),
+      (data) => UserInfo.fromJson(data),
       expireAfter: Duration.zero,
       options: addAuthHeader(),
     );
   }
 
-  // The server response for PATCH /users/me does NOT include access_token,
-  // so the existing token is preserved on the returned user.
-  static Future<ChaldeaUser?> updateMe({String? name}) async {
-    final body = <String, dynamic>{};
-    if (name != null) body['name'] = name;
-    final user = await cacheManager.patchModel(
+  // The server response for PATCH /users/me returns the updated profile
+  // without access_token. Callers should use updateFromUserInfo to preserve
+  // the existing token.
+  static Future<UserInfo?> updateMe({String? name}) async {
+    return cacheManager.patchModel(
       '$apiV1/users/me',
-      fromJson: (data) => ChaldeaUser.fromJson(data),
-      data: body,
+      fromJson: (data) => UserInfo.fromJson(data),
+      data: {'name': ?name},
       options: addAuthHeader(),
       expireAfter: Duration.zero,
     );
-    if (user != null) {
-      user.accessToken = db.settings.secrets.user?.accessToken;
-    }
-    return user;
   }
 
   // The server returns a FRESH access_token after a password change.
-  static Future<ChaldeaUser?> changePassword({required String currentPassword, required String newPassword}) {
+  static Future<LoginResponse?> changePassword({required String currentPassword, required String newPassword}) {
     return cacheManager.patchModel(
       '$apiV1/users/me/password',
-      fromJson: (data) => ChaldeaUser.fromJson(data),
+      fromJson: (data) => LoginResponse.fromJson(data),
       data: {'current_password': currentPassword, 'new_password': newPassword},
       options: addAuthHeader(),
       expireAfter: Duration.zero,
@@ -314,8 +291,9 @@ class ChaldeaServerApi {
 
   static Future<bool?> deleteMe({required String password}) {
     return cacheManager.deleteModel(
-      '$apiV1/users/me?password=${Uri.encodeQueryComponent(password)}',
+      '$apiV1/users/me',
       fromJson: (_) => true,
+      data: {'password': password},
       options: addAuthHeader(),
       expireAfter: Duration.zero,
     );
@@ -487,7 +465,7 @@ class ChaldeaServerApi {
     int offset = 0,
     Duration? expireAfter,
   }) {
-    if (username == null) userId ??= db.settings.secrets.user?.id;
+    if (username == null) userId ??= db.settings.secrets.user.id;
     if ((userId == null || userId == 0) && (username == null || username.isEmpty)) return Future.value();
     return teams(userId: userId, username: username, limit: limit, offset: offset, expireAfter: expireAfter);
   }
@@ -610,7 +588,6 @@ class ChaldeaServerApi {
   // decide whether to prompt for email binding.
   static Future<ChaldeaUser?> maybeMigrateLegacyToken() async {
     final user = db.settings.secrets.user;
-    if (user == null) return null;
     if (user.accessToken?.isNotEmpty == true) return null;
     final secret = user.secret;
     if (secret == null || secret.isEmpty) return null;
@@ -618,7 +595,7 @@ class ChaldeaServerApi {
     int? statusCode;
     final migrated = await cacheManager.postModel(
       '$apiV1/auth/migrate-token',
-      fromJson: (data) => ChaldeaUser.fromJson(data),
+      fromJson: (data) => LoginResponse.fromJson(data),
       data: {'secret': secret},
       expireAfter: Duration.zero,
       onError: (options, response, error, stackTrace) {
@@ -638,142 +615,89 @@ class ChaldeaServerApi {
       return null;
     }
 
-    // Migration succeeded — persist the JWT.
-    user.accessToken = migrated.accessToken;
+    // Migration succeeded — persist the JWT and user info from the response.
+    user.updateFromLoginResponse(migrated);
     await db.saveSettings();
 
     // Fetch the full profile (including email) for the caller.
     final me = await getMe();
     if (me != null) {
-      user
-        ..name = me.name
-        ..role = me.role
-        ..email = me.email;
+      user.updateFromUserInfo(me);
       await db.saveSettings();
     }
     return user;
   }
 
-  // ===================== 401 / refresh pipeline =====================
-
-  /// Attempts a single-flight `/auth/refresh`. Concurrent callers await the
-  /// same in-flight attempt.
-  ///
-  /// - [RefreshResult.success] — new token persisted; caller may retry.
-  /// - [RefreshResult.invalidToken] — refresh endpoint returned 401; caller
-  ///   should force re-login. Does NOT set cooldown.
-  /// - [RefreshResult.networkError] — 5xx/timeout/socket; caller should set
-  ///   cooldown and force re-login.
-  static Future<RefreshResult> _tryRefreshTokenOnce() async {
-    if (_refreshing && _refreshCompleter != null) {
-      // Another caller is already refreshing — await its result.
-      final ok = await _refreshCompleter!.future;
-      return ok ? RefreshResult.success : RefreshResult.invalidToken;
-    }
-    _refreshing = true;
-    _refreshCompleter = Completer<bool>();
-    try {
-      final user = await refreshToken();
-      if (user != null && user.accessToken != null && user.accessToken!.isNotEmpty) {
-        db.settings.secrets.user?.accessToken = user.accessToken;
-        await db.saveSettings();
-        _refreshCompleter!.complete(true);
-        return RefreshResult.success;
-      }
-      _refreshCompleter!.complete(false);
-      return RefreshResult.invalidToken;
-    } on DioException catch (e) {
-      _refreshCompleter!.complete(false);
-      if (e.response?.statusCode == 401) {
-        return RefreshResult.invalidToken;
-      }
-      return RefreshResult.networkError;
-    } catch (e) {
-      _refreshCompleter!.complete(false);
-      return RefreshResult.networkError;
-    } finally {
-      _refreshing = false;
-      _refreshCompleter = null;
-    }
-  }
+  // ===================== 401 / session pipeline =====================
 
   /// Clears the access token (preserving the user object for UI display)
   /// and navigates to the login page. Does NOT null out `secrets.user` —
   /// the login page can pre-fill the username and any "logged in as X"
   /// UI can still show the name.
-  static void _forceRelogin({String? reason}) {
+  ///
+  /// Uses `router.push()` (not `popDetailAndPush`) so the user's current
+  /// navigation context (detail pages, in-progress forms) is preserved.
+  /// After re-login the user returns to where they were.
+  static Future<void> _forceRelogin({String? reason}) async {
     final user = db.settings.secrets.user;
-    if (user != null) {
-      user.accessToken = null;
-      // db.saveSettings();
-    }
+    user.accessToken = null;
+    await db.saveSettings();
     if (kDebugMode && reason != null) {
       debugPrint('ChaldeaServerApi._forceRelogin: $reason');
     }
     if (rootRouter.navigatorKey.currentContext != null) {
-      router.popDetailAndPush(child: LoginPage());
+      router.push(child: LoginPage());
     }
+  }
+
+  /// Shows a single-flight session-expired dialog guiding the user to the
+  /// login page. Concurrent 401s are suppressed by `_sessionDialogShown`.
+  static void _showSessionExpiredDialog() {
+    if (_sessionDialogShown) return;
+    _sessionDialogShown = true;
+
+    final context = rootRouter.navigatorKey.currentContext;
+    if (context == null) {
+      _forceRelogin();
+      _sessionDialogShown = false;
+      return;
+    }
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => AlertDialog(
+        title: Text(S.current.auth_session_expired_title),
+        content: Text(S.current.auth_session_expired_message),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              _sessionDialogShown = false;
+              _forceRelogin();
+            },
+            child: Text(S.current.login_login),
+          ),
+        ],
+      ),
+    );
   }
 
   /// Branches on the server's `error_code` for 401 responses.
   ///
-  /// - `token_expired`: attempt single-flight refresh; on success retry the
-  ///   original request, on failure force re-login (with cooldown for
-  ///   network errors only).
-  /// - `token_revoked`: force re-login immediately.
-  /// - default (incl. `invalid_credentials`, `token_missing`, null): force
-  ///   re-login immediately.
-  static Future<void> _handle401(String? errorCode, RequestOptions options) async {
+  /// - `invalid_credentials`: toast only (user is on the login form).
+  /// - `token_expired` / `token_revoked` / `token_missing` / unknown:
+  ///   session-expired dialog + redirect to login.
+  static Future<void> _handle401(String? errorCode) async {
     switch (errorCode) {
+      case ApiErrorCode.invalidCredentials:
+        EasyLoading.showError(S.current.auth_invalid_credentials);
+        return;
       case ApiErrorCode.tokenExpired:
-        // If a recent network-related refresh failure is still in cooldown,
-        // skip refresh and go straight to re-login (prevents hammering the
-        // server when the network is down).
-        if (_lastRefreshFailAt != null && DateTime.now().difference(_lastRefreshFailAt!) < _refreshCooldown) {
-          _forceRelogin(reason: 'cooldown');
-          return;
-        }
-        final result = await _tryRefreshTokenOnce();
-        switch (result) {
-          case RefreshResult.success:
-            await _retryRequest(options);
-            break;
-          case RefreshResult.invalidToken:
-            _forceRelogin(reason: 'refresh_invalid');
-            break;
-          case RefreshResult.networkError:
-            _lastRefreshFailAt = DateTime.now();
-            _forceRelogin(reason: 'refresh_network');
-            break;
-        }
-        break;
       case ApiErrorCode.tokenRevoked:
-        _forceRelogin(reason: 'token_revoked');
-        break;
+      case ApiErrorCode.tokenMissing:
       default:
-        // `invalid_credentials`, `token_missing`, null, or any unknown code.
-        // _forceRelogin(reason: errorCode ?? 'unknown_401');
-        break;
-    }
-  }
-
-  /// Retries the original request with the refreshed Authorization header.
-  /// Errors are swallowed — the retried response flows through Dio's normal
-  /// pipeline; we don't surface a second error here.
-  static Future<void> _retryRequest(RequestOptions options) async {
-    try {
-      final dio = createDio();
-      // Refresh the auth header with the (possibly new) access token.
-      final authOptions = addAuthHeader(
-        options: Options(method: options.method, headers: options.headers),
-      );
-      options.headers = authOptions.headers ?? {};
-      await dio.fetch(options);
-    } catch (e) {
-      // Best-effort retry — swallow.
-      if (kDebugMode) {
-        debugPrint('ChaldeaServerApi._retryRequest failed: $e');
-      }
+        _showSessionExpiredDialog();
     }
   }
 }

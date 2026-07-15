@@ -27,7 +27,6 @@ class DeleteAccountPage extends StatefulWidget {
 class _DeleteAccountPageState extends State<DeleteAccountPage> {
   late final TextEditingController _pwdController;
   bool _obscurePwd = true;
-  bool _touched = false;
   final secrets = db.settings.secrets;
 
   @override
@@ -45,10 +44,7 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
   bool get _isAvailable => _pwdController.text.isNotEmpty && validatePassword(_pwdController.text) == null;
 
   Future<void> _delete() async {
-    if (!_isAvailable) {
-      setState(() => _touched = true);
-      return;
-    }
+    if (!_isAvailable) return;
     final confirmed = await SimpleConfirmDialog(
       title: Text(S.current.auth_delete_account_confirm),
       content: Text(S.current.auth_delete_account_warning),
@@ -57,7 +53,7 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
     if (confirmed != true) return;
     final ok = await showEasyLoading(() => ChaldeaServerApi.deleteMe(password: _pwdController.text));
     if (ok == true) {
-      secrets.user = null;
+      secrets.user.clearAuth();
       EasyLoading.showSuccess(S.current.success);
       if (!mounted) return;
       router.popAll();
@@ -87,7 +83,8 @@ class _DeleteAccountPageState extends State<DeleteAccountPage> {
               controller: _pwdController,
               obscure: _obscurePwd,
               autocorrect: false,
-              errorText: _touched ? validatePassword(_pwdController.text) : null,
+              validator: validatePassword,
+              errorDisplayMode: ErrorDisplayMode.onBlur,
               suffixIcon: IconButton(
                 onPressed: () => setState(() => _obscurePwd = !_obscurePwd),
                 icon: Icon(_obscurePwd ? Icons.visibility_off : Icons.visibility),

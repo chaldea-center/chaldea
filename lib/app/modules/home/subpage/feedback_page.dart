@@ -20,7 +20,9 @@ import 'package:chaldea/widgets/tile_items.dart';
 const _kDiscordLink = 'https://discord.gg/5M6w5faqjP';
 
 class FeedbackPage extends StatefulWidget {
-  FeedbackPage({super.key});
+  FeedbackPage({super.key, this.prefilledContext});
+
+  final Map<String, String>? prefilledContext;
 
   @override
   _FeedbackPageState createState() => _FeedbackPageState();
@@ -42,6 +44,10 @@ class _FeedbackPageState extends State<FeedbackPage> {
   @override
   void initState() {
     super.initState();
+    // Pre-fill body with UUID when entering from the password recovery flow.
+    if (widget.prefilledContext?['source'] == 'forgot_password') {
+      bodyController.text = '${S.current.auth_contact_device_uuid_hint}: ${AppInfo.uuid}\n\n';
+    }
     contactController.addListener(_onTextFieldChanged);
     subjectController.addListener(_onTextFieldChanged);
     bodyController.addListener(_onTextFieldChanged);
@@ -82,6 +88,24 @@ class _FeedbackPageState extends State<FeedbackPage> {
       body: ListView(
         padding: const EdgeInsets.symmetric(vertical: 8),
         children: [
+          if (widget.prefilledContext?['source'] == 'forgot_password')
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.errorContainer.withAlpha(100),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  children: [
+                    Icon(Icons.info_outline, color: Theme.of(context).colorScheme.error),
+                    const SizedBox(width: 8),
+                    Expanded(child: Text(S.current.feedback_password_recovery_banner)),
+                  ],
+                ),
+              ),
+            ),
           Text(Language.isZH ? '目前无人管理反馈' : 'Nobody maintain the feedback now.', textAlign: TextAlign.center),
           Card(
             elevation: 4,

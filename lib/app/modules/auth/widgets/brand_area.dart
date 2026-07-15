@@ -21,7 +21,7 @@ class BrandArea extends StatelessWidget {
           style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700, color: cs.onSurface),
         ),
         const SizedBox(height: 4),
-        Text('FGO Game Helper', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: cs.onSurfaceVariant)),
+        // Text('', style: Theme.of(context).textTheme.bodySmall?.copyWith(color: cs.onSurfaceVariant)),
       ],
     );
   }

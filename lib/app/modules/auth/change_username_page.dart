@@ -38,13 +38,7 @@ class _ChangeUsernamePageState extends State<ChangeUsernamePage> {
     super.dispose();
   }
 
-  String get _currentName => secrets.user?.name ?? '';
-
-  String? get _errorText {
-    final newName = _nameController.text;
-    if (newName.isEmpty) return null;
-    return validateNewName(newName, oldName: _currentName);
-  }
+  String get _currentName => secrets.user.name;
 
   bool get _isAvailable {
     final newName = _nameController.text;
@@ -59,11 +53,7 @@ class _ChangeUsernamePageState extends State<ChangeUsernamePage> {
     }
     final user = await showEasyLoading(() => ChaldeaServerApi.updateMe(name: newName));
     if (user != null) {
-      final previous = secrets.user;
-      if (previous != null && (user.accessToken == null || user.accessToken!.isEmpty)) {
-        user.accessToken = previous.accessToken;
-      }
-      secrets.user = user;
+      secrets.user.updateFromUserInfo(user);
       EasyLoading.showSuccess(S.current.success);
       if (!mounted) return;
       Navigator.of(context).pop();
@@ -93,7 +83,8 @@ class _ChangeUsernamePageState extends State<ChangeUsernamePage> {
               controller: _nameController,
               autocorrect: false,
               helperText: S.current.auth_username_helper,
-              errorText: _errorText,
+              validator: (v) => v.isEmpty ? null : validateNewName(v, oldName: _currentName),
+              errorDisplayMode: ErrorDisplayMode.onBlur,
               onChanged: (_) => setState(() {}),
             ),
             const SizedBox(height: 24),

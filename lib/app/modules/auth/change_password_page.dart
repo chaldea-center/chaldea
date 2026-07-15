@@ -46,20 +46,6 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
     super.dispose();
   }
 
-  String? get _currentError => validatePassword(_currentController.text);
-
-  String? get _newError {
-    return validateNewPassword(_newController.text, oldPwd: _currentController.text);
-  }
-
-  String? get _confirmError {
-    final newPwd = _newController.text;
-    final confirm = _confirmController.text;
-    if (confirm.isEmpty) return null;
-    if (confirm != newPwd) return S.current.login_password_error_confirm_mismatch;
-    return null;
-  }
-
   bool get _isAvailable {
     final cur = _currentController.text;
     final newPwd = _newController.text;
@@ -80,7 +66,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
       () => ChaldeaServerApi.changePassword(currentPassword: _currentController.text, newPassword: _newController.text),
     );
     if (user != null) {
-      secrets.user = user;
+      secrets.user.updateFromLoginResponse(user);
       EasyLoading.showSuccess(S.current.success);
       if (!mounted) return;
       Navigator.of(context).pop();
@@ -106,7 +92,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
               controller: _currentController,
               obscure: _obscureCurrent,
               autocorrect: false,
-              errorText: _currentError,
+              validator: validatePassword,
+              errorDisplayMode: ErrorDisplayMode.onBlur,
               suffixIcon: IconButton(
                 onPressed: () => setState(() => _obscureCurrent = !_obscureCurrent),
                 icon: Icon(_obscureCurrent ? Icons.visibility_off : Icons.visibility),
@@ -122,7 +109,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
               controller: _newController,
               obscure: _obscureNew,
               autocorrect: false,
-              errorText: _newError,
+              validator: (v) => validateNewPassword(v, oldPwd: _currentController.text),
+              errorDisplayMode: ErrorDisplayMode.onBlur,
               suffixIcon: IconButton(
                 onPressed: () => setState(() => _obscureNew = !_obscureNew),
                 icon: Icon(_obscureNew ? Icons.visibility_off : Icons.visibility),
@@ -138,7 +126,12 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
               controller: _confirmController,
               obscure: _obscureConfirm,
               autocorrect: false,
-              errorText: _confirmError,
+              validator: (v) {
+                if (v.isEmpty) return null;
+                if (v != _newController.text) return S.current.login_password_error_confirm_mismatch;
+                return null;
+              },
+              errorDisplayMode: ErrorDisplayMode.onBlur,
               suffixIcon: IconButton(
                 onPressed: () => setState(() => _obscureConfirm = !_obscureConfirm),
                 icon: Icon(_obscureConfirm ? Icons.visibility_off : Icons.visibility),

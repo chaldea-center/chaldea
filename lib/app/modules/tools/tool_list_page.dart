@@ -64,8 +64,7 @@ class ToolListPage extends StatelessWidget {
               buildOne('Skipped Svt ID', const SkippedSvtIdPage()),
               buildOne('Combine Images', const CombineImagePage()),
               if (PlatformU.isDesktop) buildOne('Script Commands', const ScriptCmdPage()),
-              if (db.settings.secrets.user?.isAdmin == true)
-                buildOne('Admin Tools', AdminToolsPage(), supportWeb: false),
+              if (db.settings.secrets.user.isAdmin) buildOne('Admin Tools', AdminToolsPage(), supportWeb: false),
               if (!kIsWeb) buildOne('TreeSize', const TreeSizePage()),
               if (AppInfo.isDebugOn) buildOne('Y(^o^)Y', const HiddenToolsPage()),
             ],

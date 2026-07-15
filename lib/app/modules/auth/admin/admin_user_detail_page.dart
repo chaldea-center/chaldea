@@ -1,9 +1,9 @@
 // AdminUserDetailPage: read-only user detail + 2 admin actions.
 // Sections: ProfileCard (admin sees full email, no masking) + Basic Info
-// (info-rows: name/id/email/role+badge/createdAt/isOnline) + Statistics
+// (info-rows: name/id/email/role+badge/createdAt) + Statistics
 // (info-rows: backupsCount/teamsCount/sessions list/logins list — last two
 // read-only lists) + Admin Actions with exactly 2 ActionRows: Reset Password
-// (confirm dialog → adminRecoverUser(password:)) and Send Recovery Email
+// (password input dialog → adminRecoverUser(password:)) and Send Recovery Email
 // (confirm → adminRecoverUser(email:)). No other action-rows per design D6.
 
 import 'package:flutter/material.dart';
@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/chaldea_server.dart';
+import 'package:chaldea/app/modules/auth/validators.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/api/api.dart';
 import 'package:chaldea/models/models.dart';
@@ -53,14 +54,11 @@ class _AdminUserDetailPageState extends State<AdminUserDetailPage> {
   }
 
   Future<void> _resetPassword() async {
-    final confirmed = await SimpleConfirmDialog(
-      title: Text(S.current.auth_admin_reset_password_confirm),
-      content: Text(S.current.auth_admin_reset_password_prompt),
-      confirmText: S.current.confirm,
-    ).showDialog(context);
-    if (confirmed != true) return;
+    final newPassword = await showDialog<String>(context: context, builder: (context) => const _ResetPasswordDialog());
+    if (newPassword == null) return; // User cancelled or validation failed
+    if (!mounted) return;
     final resp = await showEasyLoading(
-      () => ChaldeaServerApi.adminRecoverUser(userId: widget.userId, password: 'temporary'),
+      () => ChaldeaServerApi.adminRecoverUser(userId: widget.userId, password: newPassword),
     );
     if (resp != null) {
       EasyLoading.showSuccess(resp.messageZh.isNotEmpty ? resp.messageZh : resp.message);
@@ -161,11 +159,6 @@ class _AdminUserDetailPageState extends State<AdminUserDetailPage> {
           valueWidget: user.isAdmin ? Chip(label: Text(S.current.auth_role_admin)) : null,
         ),
         InfoRow(leading: Icon(Icons.calendar_today_outlined), title: S.current.auth_admin_created_at, value: created),
-        InfoRow(
-          leading: Icon(Icons.circle),
-          title: S.current.auth_admin_online_status,
-          value: user.role == ChaldeaUserRole.admin ? S.current.auth_admin_online : S.current.auth_admin_offline,
-        ),
       ],
     );
   }
@@ -215,6 +208,69 @@ class _AdminUserDetailPageState extends State<AdminUserDetailPage> {
           leading: Icon(Icons.email_outlined),
           title: S.current.auth_admin_send_recovery,
           onTap: _sendRecoveryEmail,
+        ),
+      ],
+    );
+  }
+}
+
+// Dialog that lets an admin type a new password before resetting.
+// On Confirm: validates input — empty or invalid passwords are rejected with a
+// toast and the dialog stays open; a valid password pops the dialog with the
+// value so the caller can invoke the API.
+class _ResetPasswordDialog extends StatefulWidget {
+  const _ResetPasswordDialog();
+
+  @override
+  State<_ResetPasswordDialog> createState() => _ResetPasswordDialogState();
+}
+
+class _ResetPasswordDialogState extends State<_ResetPasswordDialog> {
+  final _controller = TextEditingController();
+  bool _forceShowError = false;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  // Wraps validatePassword so an empty field is also flagged as invalid.
+  // validatePassword itself returns null for empty (callers decide), but a
+  // reset password dialog must not submit an empty value.
+  String? _validate(String? value) {
+    if (value == null || value.isEmpty) {
+      return S.current.validation_required;
+    }
+    return validatePassword(value);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(S.current.auth_admin_reset_password),
+      content: FormInput(
+        controller: _controller,
+        label: S.current.login_password,
+        obscure: true,
+        autocorrect: false,
+        validator: _validate,
+        errorDisplayMode: ErrorDisplayMode.onBlur,
+        forceShowError: _forceShowError,
+      ),
+      actions: [
+        TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(S.current.cancel)),
+        TextButton(
+          onPressed: () {
+            final error = _validate(_controller.text);
+            if (error != null) {
+              setState(() => _forceShowError = true);
+              EasyLoading.showError(error);
+              return;
+            }
+            Navigator.of(context).pop(_controller.text);
+          },
+          child: Text(S.current.confirm),
         ),
       ],
     );

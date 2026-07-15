@@ -49,7 +49,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
   static const _defaultPageSize = 200;
   int pageSize = _defaultPageSize;
   final secrets = db.settings.secrets;
-  int? get curUserId => secrets.user?.id;
+  int? get curUserId => secrets.user.id;
 
   TeamQueryMode get mode => widget.mode;
 
@@ -76,7 +76,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
   }
 
   PreferredSizeWidget? get appBar {
-    final username = widget.username ?? widget.userId ?? secrets.user?.name ?? "Not Login";
+    final username = widget.username ?? widget.userId ?? (secrets.user.name.isEmpty ? null : secrets.user.name);
     return AppBar(
       title: Text(switch (mode) {
         TeamQueryMode.user => '${S.current.team} @$username',
@@ -226,7 +226,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     final style = themeData.textTheme.bodySmall;
     Future<void> onVote(bool isUpVote) async {
       if (!secrets.isLoggedIn) return;
-      if (record.userId == secrets.user?.id) {
+      if (record.userId == secrets.user.id) {
         EasyLoading.showInfo("Do not vote your own team.");
         return;
       }
@@ -502,7 +502,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
       ),
     );
 
-    if (mode == TeamQueryMode.user || record.userId == curUserId || secrets.user?.isTeamMod == true) {
+    if (mode == TeamQueryMode.user || record.userId == curUserId || secrets.user.isTeamMod == true) {
       actions.add(
         TextButton(
           onPressed: () {
@@ -789,7 +789,7 @@ class _ReportTeamDialogState extends State<ReportTeamDialog> {
         "War: ${quest?.war?.longName.setMaxLines(1)}",
         "ID: ${record.id}",
         "Uploader: ${record.username}",
-        "Reporter: ${db.settings.secrets.user?.name}",
+        "Reporter: ${db.settings.secrets.user.name}",
         "Reason:\n$reason",
       ], '\n');
 

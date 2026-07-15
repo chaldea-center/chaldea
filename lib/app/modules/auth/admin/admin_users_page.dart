@@ -37,7 +37,7 @@ class _AdminUsersPageState extends State<AdminUsersPage> {
   @override
   void initState() {
     super.initState();
-    _load(reset: true);
+    // _load(reset: true);
   }
 
   @override
@@ -60,9 +60,12 @@ class _AdminUsersPageState extends State<AdminUsersPage> {
       }
     });
     try {
-      final result = _activeSearch.isEmpty
-          ? null
-          : await ChaldeaServerApi.adminSearchUsers(search: _activeSearch, limit: 20, offset: _offset);
+      // Empty search term loads all users (search: null); non-empty filters by it.
+      final result = await ChaldeaServerApi.adminSearchUsers(
+        search: _activeSearch.isEmpty ? null : _activeSearch,
+        limit: 20,
+        offset: _offset,
+      );
       if (result != null) {
         _users.addAll(result.data);
         _offset = result.offset + result.data.length;
@@ -99,6 +102,7 @@ class _AdminUsersPageState extends State<AdminUsersPage> {
                     prefixIcon: Icons.search,
                     controller: _searchController,
                     autocorrect: false,
+                    validator: (_) => null,
                     onChanged: (_) => setState(() {}),
                   ),
                 ),
@@ -130,7 +134,7 @@ class _AdminUsersPageState extends State<AdminUsersPage> {
       return const Center(child: CircularProgressIndicator());
     }
     if (_users.isEmpty) {
-      return Center(child: Text(S.current.auth_admin_no_email, style: Theme.of(context).textTheme.bodyMedium));
+      return Center(child: Text(S.current.auth_admin_no_users, style: Theme.of(context).textTheme.bodyMedium));
     }
     return ListView(
       controller: _scrollController,

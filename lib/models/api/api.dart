@@ -70,33 +70,92 @@ abstract class ChaldeaUserRole {
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake)
+class UserInfo {
+  final int id;
+  final String name;
+  final String? email;
+  final int role;
+  final int? createdAt;
+
+  UserInfo({required this.id, required this.name, this.email, this.role = ChaldeaUserRole.member, this.createdAt});
+
+  factory UserInfo.fromJson(Map<String, dynamic> json) => _$UserInfoFromJson(json);
+  Map<String, dynamic> toJson() => _$UserInfoToJson(this);
+}
+
+@JsonSerializable(fieldRename: FieldRename.snake)
+class LoginResponse {
+  final String accessToken;
+  final String tokenType;
+  final UserInfo userInfo;
+
+  LoginResponse({required this.accessToken, this.tokenType = 'bearer', required this.userInfo});
+
+  factory LoginResponse.fromJson(Map<String, dynamic> json) => _$LoginResponseFromJson(json);
+  Map<String, dynamic> toJson() => _$LoginResponseToJson(this);
+}
+
+@JsonSerializable(fieldRename: FieldRename.snake)
 class ChaldeaUser {
-  int id;
-  String name;
-  int role;
+  UserInfo? info;
+  String? accessToken;
   String? secret; // legacy Worker session_id, kept for migration detection only
-  String? email; // returned by the new FastAPI server
-  String? accessToken; // JWT bearer token for the new FastAPI server
-  // Null for LoginResponse-shaped payloads (login/register/refresh/migrate-token);
-  // populated by UserPublic-shaped responses (GET /users/me, admin endpoints).
-  int? createdAt;
 
-  ChaldeaUser({
-    required this.id,
-    required this.name,
-    this.role = ChaldeaUserRole.member,
-    this.secret,
-    this.email,
-    this.accessToken,
-    this.createdAt,
-  });
+  ChaldeaUser({this.info, this.accessToken, this.secret});
 
-  factory ChaldeaUser.fromJson(Map<String, dynamic> json) => _$ChaldeaUserFromJson(json);
+  // ---- Update methods (mutate internal state, never reassign secrets.user) ----
 
-  Map<String, dynamic> toJson() => _$ChaldeaUserToJson(this);
+  /// Update from a LoginResponse-shaped API response.
+  void updateFromLoginResponse(LoginResponse resp) {
+    accessToken = resp.accessToken;
+    info = resp.userInfo;
+  }
 
+  /// Update from a UserInfo-shaped API response (getMe/updateMe/admin).
+  /// accessToken and secret are preserved.
+  void updateFromUserInfo(UserInfo newInfo) {
+    info = newInfo;
+  }
+
+  /// Clear auth state on logout / account deletion.
+  /// secret is kept for legacy migration detection.
+  void clearAuth() {
+    info = null;
+    accessToken = null;
+  }
+
+  // ---- Backward-compatible getters (delegate to info) ----
+
+  int get id => info?.id ?? 0;
+  String get name => info?.name ?? '';
+  String? get email => info?.email;
+  int get role => info?.role ?? ChaldeaUserRole.member;
+  int? get createdAt => info?.createdAt;
   bool get isAdmin => role == ChaldeaUserRole.admin;
   bool get isTeamMod => isAdmin || role == ChaldeaUserRole.teamMod;
+
+  // ---- JSON serialization with backward compat ----
+
+  factory ChaldeaUser.fromJson(Map<String, dynamic> json) {
+    // Preprocess legacy flat format into nested format, then delegate to generated parser.
+    // New nested format: { info: {...}, access_token, secret }
+    // Legacy flat format: { id, name, role, email, access_token, secret, created_at }
+    final normalized = json.containsKey('info')
+        ? json
+        : <String, dynamic>{
+            ...json,
+            'info': {
+              'id': json['id'],
+              'name': json['name'],
+              'email': json['email'],
+              'role': json['role'],
+              'created_at': json['created_at'],
+            },
+          };
+    return _$ChaldeaUserFromJson(normalized);
+  }
+
+  Map<String, dynamic> toJson() => _$ChaldeaUserToJson(this);
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake)
@@ -343,7 +402,6 @@ class AdminUserListItem {
   final String? email;
   final int role;
   final int createdAt;
-  final bool isOnline;
 
   AdminUserListItem({
     required this.id,
@@ -351,7 +409,6 @@ class AdminUserListItem {
     this.email,
     required this.role,
     required this.createdAt,
-    required this.isOnline,
   });
 
   factory AdminUserListItem.fromJson(Map<String, dynamic> json) => _$AdminUserListItemFromJson(json);

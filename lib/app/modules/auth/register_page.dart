@@ -106,12 +106,10 @@ class _RegisterPageState extends State<RegisterPage> {
       () => ChaldeaServerApi.verifyRegister(username: name, email: email, password: pwd, code: _code),
     );
     if (user != null) {
-      secrets.user = user;
+      secrets.user.updateFromLoginResponse(user);
       EasyLoading.showSuccess(S.current.success);
       if (!mounted) return;
-      router.pop();
-      router.pop();
-      router.push(child: const ProfilePage());
+      router.popDetailAndPush(child: const ProfilePage());
     }
     db.notifySettings();
   }
@@ -144,7 +142,8 @@ class _RegisterPageState extends State<RegisterPage> {
         controller: _nameController,
         autocorrect: false,
         helperText: S.current.auth_username_helper,
-        errorText: validateUsername(_nameController.text),
+        validator: validateUsername,
+        errorDisplayMode: ErrorDisplayMode.onBlur,
         onChanged: (_) => setState(() {}),
       ),
       const SizedBox(height: 16),
@@ -155,7 +154,8 @@ class _RegisterPageState extends State<RegisterPage> {
         controller: _emailController,
         autocorrect: false,
         keyboardType: TextInputType.emailAddress,
-        errorText: validateEmail(_emailController.text),
+        validator: validateEmail,
+        errorDisplayMode: ErrorDisplayMode.onBlur,
         onChanged: (_) => setState(() {}),
       ),
       const SizedBox(height: 16),
@@ -166,7 +166,8 @@ class _RegisterPageState extends State<RegisterPage> {
         controller: _pwdController,
         obscure: _obscurePwd,
         autocorrect: false,
-        errorText: validatePassword(_pwdController.text),
+        validator: validatePassword,
+        errorDisplayMode: ErrorDisplayMode.onBlur,
         suffixIcon: IconButton(
           onPressed: () => setState(() => _obscurePwd = !_obscurePwd),
           icon: Icon(_obscurePwd ? Icons.visibility_off : Icons.visibility),
@@ -182,9 +183,9 @@ class _RegisterPageState extends State<RegisterPage> {
         controller: _confirmController,
         obscure: _obscurePwd,
         autocorrect: false,
-        errorText: _confirmController.text.isEmpty || _confirmController.text == _pwdController.text
-            ? null
-            : S.current.login_password_error_same_as_old,
+        validator: (v) =>
+            v.isNotEmpty && v != _pwdController.text ? S.current.login_password_error_confirm_mismatch : null,
+        errorDisplayMode: ErrorDisplayMode.onBlur,
         suffixIcon: IconButton(
           onPressed: () => setState(() => _obscurePwd = !_obscurePwd),
           icon: Icon(_obscurePwd ? Icons.visibility_off : Icons.visibility),

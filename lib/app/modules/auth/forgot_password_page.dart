@@ -15,6 +15,7 @@ import 'package:chaldea/app/modules/auth/validators.dart';
 import 'package:chaldea/app/modules/home/subpage/feedback_page.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/modern/modern.dart';
 
@@ -27,7 +28,6 @@ class ForgotPasswordPage extends StatefulWidget {
 
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   late final TextEditingController _emailController;
-  bool _emailTouched = false;
 
   // Method 1 state
   bool _emailCodeSent = false;
@@ -42,7 +42,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   late final TextEditingController _usernameController;
   late final TextEditingController _deviceIdController;
   late final TextEditingController _newEmailController;
-  bool _devTouched = false;
 
   // Method 2 state
   bool _deviceCodeSent = false;
@@ -105,7 +104,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
   Future<void> _sendEmailCode() async {
     if (!_isEmailResetAvailable || _emailResendTimerActive) {
-      setState(() => _emailTouched = true);
       return;
     }
     final ok = await showEasyLoading(() => ChaldeaServerApi.forgotPassword(email: _emailController.text));
@@ -153,7 +151,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
   Future<void> _sendDeviceCode() async {
     if (!_isDeviceVerifyAvailable || _deviceResendTimerActive) {
-      setState(() => _devTouched = true);
       return;
     }
     final ok = await showEasyLoading(
@@ -255,7 +252,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           controller: _emailController,
           autocorrect: false,
           keyboardType: TextInputType.emailAddress,
-          errorText: _emailTouched ? validateEmail(_emailController.text) : null,
+          validator: validateEmail,
+          errorDisplayMode: ErrorDisplayMode.onBlur,
           onChanged: (_) => setState(() {}),
         ),
         const SizedBox(height: 8),
@@ -281,7 +279,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             controller: _newPasswordController,
             obscure: _obscurePwd,
             autocorrect: false,
-            errorText: validatePassword(_newPasswordController.text),
+            validator: validatePassword,
+            errorDisplayMode: ErrorDisplayMode.onBlur,
             suffixIcon: IconButton(
               onPressed: () => setState(() => _obscurePwd = !_obscurePwd),
               icon: Icon(_obscurePwd ? Icons.visibility_off : Icons.visibility),
@@ -297,10 +296,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             controller: _confirmPasswordController,
             obscure: _obscurePwd,
             autocorrect: false,
-            errorText: _confirmPasswordController.text.isNotEmpty &&
-                    _confirmPasswordController.text != _newPasswordController.text
+            validator: (v) => v.isNotEmpty && v != _newPasswordController.text
                 ? S.current.login_password_error_confirm_mismatch
                 : null,
+            errorDisplayMode: ErrorDisplayMode.onBlur,
             suffixIcon: IconButton(
               onPressed: () => setState(() => _obscurePwd = !_obscurePwd),
               icon: Icon(_obscurePwd ? Icons.visibility_off : Icons.visibility),
@@ -352,6 +351,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           prefixIcon: Icons.person_outline,
           controller: _usernameController,
           autocorrect: false,
+          validator: (_) => null,
           onChanged: (_) => setState(() {}),
         ),
         const SizedBox(height: 8),
@@ -360,6 +360,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           prefixIcon: Icons.devices_outlined,
           controller: _deviceIdController,
           autocorrect: false,
+          validator: (_) => null,
           onChanged: (_) => setState(() {}),
         ),
         const SizedBox(height: 8),
@@ -369,9 +370,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           controller: _newEmailController,
           autocorrect: false,
           keyboardType: TextInputType.emailAddress,
-          errorText: _devTouched && _newEmailController.text.isNotEmpty
-              ? validateEmail(_newEmailController.text)
-              : null,
+          validator: (v) => v.isNotEmpty ? validateEmail(v) : null,
+          errorDisplayMode: ErrorDisplayMode.onBlur,
           onChanged: (_) => setState(() {}),
         ),
         const SizedBox(height: 8),
@@ -397,7 +397,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             controller: _deviceNewPasswordController,
             obscure: _deviceObscurePwd,
             autocorrect: false,
-            errorText: validatePassword(_deviceNewPasswordController.text),
+            validator: validatePassword,
+            errorDisplayMode: ErrorDisplayMode.onBlur,
             suffixIcon: IconButton(
               onPressed: () => setState(() => _deviceObscurePwd = !_deviceObscurePwd),
               icon: Icon(_deviceObscurePwd ? Icons.visibility_off : Icons.visibility),
@@ -413,10 +414,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             controller: _deviceConfirmPasswordController,
             obscure: _deviceObscurePwd,
             autocorrect: false,
-            errorText: _deviceConfirmPasswordController.text.isNotEmpty &&
-                    _deviceConfirmPasswordController.text != _deviceNewPasswordController.text
+            validator: (v) => v.isNotEmpty && v != _deviceNewPasswordController.text
                 ? S.current.login_password_error_confirm_mismatch
                 : null,
+            errorDisplayMode: ErrorDisplayMode.onBlur,
             suffixIcon: IconButton(
               onPressed: () => setState(() => _deviceObscurePwd = !_deviceObscurePwd),
               icon: Icon(_deviceObscurePwd ? Icons.visibility_off : Icons.visibility),
@@ -449,9 +450,30 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       title: S.current.auth_method_contact_developer_title,
       desc: S.current.auth_method_contact_developer_desc,
       children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Text(
+            S.current.auth_contact_required_info_hint,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.error),
+          ),
+        ),
+        Row(
+          children: [
+            Flexible(child: Text(S.current.auth_contact_device_uuid_hint)),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(AppInfo.uuid, style: const TextStyle(fontFamily: 'monospace', fontSize: 12)),
+            ),
+            IconButton(
+              icon: const Icon(Icons.copy, size: 18),
+              onPressed: () => copyToClipboard(AppInfo.uuid, toast: true),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
         SecondaryButton(
-          label: S.current.auth_contact_developer_btn,
-          onPressed: () => router.push(child: FeedbackPage()),
+          label: S.current.auth_open_feedback,
+          onPressed: () => router.push(child: FeedbackPage(prefilledContext: {'source': 'forgot_password'})),
         ),
       ],
     );

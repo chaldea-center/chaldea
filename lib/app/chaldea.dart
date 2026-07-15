@@ -222,17 +222,22 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WindowListener
   /// covers the edge case where a token expires mid-session).
   Future<void> _tryProactiveRefresh() async {
     try {
-      final token = db.settings.secrets.user?.accessToken;
+      final token = db.settings.secrets.user.accessToken;
       if (token == null || token.isEmpty) return;
       final remaining = JwtUtils.remainingTime(token);
-      // null/zero → unparseable or already expired; let passive refresh handle.
-      if (remaining == null || remaining <= Duration.zero) return;
+      if (remaining == null || remaining <= Duration.zero) {
+        // Invalid or expired token — clear and persist
+        // db.settings.secrets.user.accessToken = null;
+        // await db.saveSettings();
+        return;
+      }
       if (remaining < const Duration(days: 7)) {
         final user = await ChaldeaServerApi.refreshToken();
-        if (user != null && user.accessToken != null && user.accessToken!.isNotEmpty) {
-          db.settings.secrets.user?.accessToken = user.accessToken;
+        if (user != null && user.accessToken.isNotEmpty) {
+          db.settings.secrets.user.updateFromLoginResponse(user);
           await db.saveAll();
         }
+        // Refresh failed — silent, runtime 401 will handle
       }
     } catch (e, s) {
       logger.d('Proactive refresh failed (silent): $e', e, s);

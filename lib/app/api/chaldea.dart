@@ -69,7 +69,7 @@ class ChaldeaWorkerApi {
 
   static Options addAuthHeader({Options? options}) {
     options ??= Options();
-    final secret = db.settings.secrets.user?.secret ?? "";
+    final secret = db.settings.secrets.user.secret ?? "";
     String? authHeader;
     if (secret.isNotEmpty) {
       authHeader = secret;
@@ -272,7 +272,7 @@ class ChaldeaWorkerApi {
     int offset = 0,
     Duration? expireAfter,
   }) {
-    if (username == null) userId ??= db.settings.secrets.user?.id;
+    if (username == null) userId ??= db.settings.secrets.user.id;
     if ((userId == null || userId == 0) && (username == null || username.isEmpty)) return Future.value();
     return teams(userId: userId, username: username, limit: limit, offset: offset, expireAfter: expireAfter);
   }

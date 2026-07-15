@@ -23,27 +23,53 @@ Map<String, dynamic> _$WorkerResponseToJson(WorkerResponse instance) => <String,
   'body': instance.body,
 };
 
-ChaldeaUser _$ChaldeaUserFromJson(Map json) => $checkedCreate('ChaldeaUser', json, ($checkedConvert) {
-  final val = ChaldeaUser(
+UserInfo _$UserInfoFromJson(Map json) => $checkedCreate('UserInfo', json, ($checkedConvert) {
+  final val = UserInfo(
     id: $checkedConvert('id', (v) => (v as num).toInt()),
     name: $checkedConvert('name', (v) => v as String),
-    role: $checkedConvert('role', (v) => (v as num?)?.toInt() ?? ChaldeaUserRole.member),
-    secret: $checkedConvert('secret', (v) => v as String?),
     email: $checkedConvert('email', (v) => v as String?),
-    accessToken: $checkedConvert('access_token', (v) => v as String?),
+    role: $checkedConvert('role', (v) => (v as num?)?.toInt() ?? ChaldeaUserRole.member),
     createdAt: $checkedConvert('created_at', (v) => (v as num?)?.toInt()),
   );
   return val;
-}, fieldKeyMap: const {'accessToken': 'access_token', 'createdAt': 'created_at'});
+}, fieldKeyMap: const {'createdAt': 'created_at'});
 
-Map<String, dynamic> _$ChaldeaUserToJson(ChaldeaUser instance) => <String, dynamic>{
+Map<String, dynamic> _$UserInfoToJson(UserInfo instance) => <String, dynamic>{
   'id': instance.id,
   'name': instance.name,
-  'role': instance.role,
-  'secret': instance.secret,
   'email': instance.email,
-  'access_token': instance.accessToken,
+  'role': instance.role,
   'created_at': instance.createdAt,
+};
+
+LoginResponse _$LoginResponseFromJson(Map json) => $checkedCreate('LoginResponse', json, ($checkedConvert) {
+  final val = LoginResponse(
+    accessToken: $checkedConvert('access_token', (v) => v as String),
+    tokenType: $checkedConvert('token_type', (v) => v as String? ?? 'bearer'),
+    userInfo: $checkedConvert('user_info', (v) => UserInfo.fromJson(Map<String, dynamic>.from(v as Map))),
+  );
+  return val;
+}, fieldKeyMap: const {'accessToken': 'access_token', 'tokenType': 'token_type', 'userInfo': 'user_info'});
+
+Map<String, dynamic> _$LoginResponseToJson(LoginResponse instance) => <String, dynamic>{
+  'access_token': instance.accessToken,
+  'token_type': instance.tokenType,
+  'user_info': instance.userInfo.toJson(),
+};
+
+ChaldeaUser _$ChaldeaUserFromJson(Map json) => $checkedCreate('ChaldeaUser', json, ($checkedConvert) {
+  final val = ChaldeaUser(
+    info: $checkedConvert('info', (v) => v == null ? null : UserInfo.fromJson(Map<String, dynamic>.from(v as Map))),
+    accessToken: $checkedConvert('access_token', (v) => v as String?),
+    secret: $checkedConvert('secret', (v) => v as String?),
+  );
+  return val;
+}, fieldKeyMap: const {'accessToken': 'access_token'});
+
+Map<String, dynamic> _$ChaldeaUserToJson(ChaldeaUser instance) => <String, dynamic>{
+  'info': instance.info?.toJson(),
+  'access_token': instance.accessToken,
+  'secret': instance.secret,
 };
 
 UserBackupData _$UserBackupDataFromJson(Map json) => $checkedCreate('UserBackupData', json, ($checkedConvert) {
@@ -169,10 +195,9 @@ AdminUserListItem _$AdminUserListItemFromJson(Map json) => $checkedCreate('Admin
     email: $checkedConvert('email', (v) => v as String?),
     role: $checkedConvert('role', (v) => (v as num).toInt()),
     createdAt: $checkedConvert('created_at', (v) => (v as num).toInt()),
-    isOnline: $checkedConvert('is_online', (v) => v as bool),
   );
   return val;
-}, fieldKeyMap: const {'createdAt': 'created_at', 'isOnline': 'is_online'});
+}, fieldKeyMap: const {'createdAt': 'created_at'});
 
 Map<String, dynamic> _$AdminUserListItemToJson(AdminUserListItem instance) => <String, dynamic>{
   'id': instance.id,
@@ -180,7 +205,6 @@ Map<String, dynamic> _$AdminUserListItemToJson(AdminUserListItem instance) => <S
   'email': instance.email,
   'role': instance.role,
   'created_at': instance.createdAt,
-  'is_online': instance.isOnline,
 };
 
 AdminUsersList _$AdminUsersListFromJson(Map json) => $checkedCreate('AdminUsersList', json, ($checkedConvert) {

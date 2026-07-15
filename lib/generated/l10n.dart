@@ -333,6 +333,11 @@ class S {
     return Intl.message('Not bound', name: 'auth_admin_no_email', desc: '', locale: localeName, args: []);
   }
 
+  /// `No users found`
+  String get auth_admin_no_users {
+    return Intl.message('No users found', name: 'auth_admin_no_users', desc: '', locale: localeName, args: []);
+  }
+
   /// `Offline`
   String get auth_admin_offline {
     return Intl.message('Offline', name: 'auth_admin_offline', desc: '', locale: localeName, args: []);
@@ -489,6 +494,28 @@ class S {
     return Intl.message('Email Developer', name: 'auth_contact_developer_btn', desc: '', locale: localeName, args: []);
   }
 
+  /// `Your device UUID (please include in your message)`
+  String get auth_contact_device_uuid_hint {
+    return Intl.message(
+      'Your device UUID (please include in your message)',
+      name: 'auth_contact_device_uuid_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Please provide your username and new email when contacting support`
+  String get auth_contact_required_info_hint {
+    return Intl.message(
+      'Please provide your username and new email when contacting support',
+      name: 'auth_contact_required_info_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Current Email`
   String get auth_current_email {
     return Intl.message('Current Email', name: 'auth_current_email', desc: '', locale: localeName, args: []);
@@ -627,6 +654,17 @@ class S {
     return Intl.message('Forgot Password', name: 'auth_forgot_password_title', desc: '', locale: localeName, args: []);
   }
 
+  /// `Invalid username or password`
+  String get auth_invalid_credentials {
+    return Intl.message(
+      'Invalid username or password',
+      name: 'auth_invalid_credentials',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Login`
   String get auth_login_title {
     return Intl.message('Login', name: 'auth_login_title', desc: '', locale: localeName, args: []);
@@ -751,6 +789,11 @@ class S {
     );
   }
 
+  /// `Open Feedback`
+  String get auth_open_feedback {
+    return Intl.message('Open Feedback', name: 'auth_open_feedback', desc: '', locale: localeName, args: []);
+  }
+
   /// `Personal Info`
   String get auth_personal_info {
     return Intl.message('Personal Info', name: 'auth_personal_info', desc: '', locale: localeName, args: []);
@@ -799,6 +842,22 @@ class S {
   /// `Send Reset Email`
   String get auth_send_reset_email {
     return Intl.message('Send Reset Email', name: 'auth_send_reset_email', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Your session has expired. Please log in again.`
+  String get auth_session_expired_message {
+    return Intl.message(
+      'Your session has expired. Please log in again.',
+      name: 'auth_session_expired_message',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Session Expired`
+  String get auth_session_expired_title {
+    return Intl.message('Session Expired', name: 'auth_session_expired_title', desc: '', locale: localeName, args: []);
   }
 
   /// `Submit Verification`
@@ -3014,6 +3073,17 @@ class S {
     return Intl.message(
       'Please check <**FAQ**> first before sending feedback. And following detail is desired:\n- How to reproduce, expected behaviour\n- App/dataset version, device system and version\n- Attach screenshots and logs\n- provide contact info (Email) if want reply\n- DO NOT ask me why cannot find servant xxx',
       name: 'feedback_info',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Password recovery support — please include your username and device UUID in your message`
+  String get feedback_password_recovery_banner {
+    return Intl.message(
+      'Password recovery support — please include your username and device UUID in your message',
+      name: 'feedback_password_recovery_banner',
       desc: '',
       locale: localeName,
       args: [],
@@ -6826,6 +6896,159 @@ class S {
   /// `Valentine Script`
   String get valentine_script {
     return Intl.message('Valentine Script', name: 'valentine_script', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Invalid email address`
+  String get validation_email_invalid {
+    return Intl.message(
+      'Invalid email address',
+      name: 'validation_email_invalid',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `New username cannot be the same as the old username`
+  String get validation_name_same_as_old {
+    return Intl.message(
+      'New username cannot be the same as the old username',
+      name: 'validation_name_same_as_old',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Cannot contain whitespace`
+  String get validation_no_whitespace {
+    return Intl.message(
+      'Cannot contain whitespace',
+      name: 'validation_no_whitespace',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Password can only contain printable ASCII characters`
+  String get validation_password_format {
+    return Intl.message(
+      'Password can only contain printable ASCII characters',
+      name: 'validation_password_format',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Password must be 6-18 characters`
+  String get validation_password_length {
+    return Intl.message(
+      'Password must be 6-18 characters',
+      name: 'validation_password_length',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Password cannot be all digits`
+  String get validation_password_not_all_digits {
+    return Intl.message(
+      'Password cannot be all digits',
+      name: 'validation_password_not_all_digits',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `New password cannot be the same as the old password`
+  String get validation_password_same_as_old {
+    return Intl.message(
+      'New password cannot be the same as the old password',
+      name: 'validation_password_same_as_old',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Required`
+  String get validation_required {
+    return Intl.message('Required', name: 'validation_required', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Too long`
+  String get validation_too_long {
+    return Intl.message('Too long', name: 'validation_too_long', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Username cannot end with an underscore`
+  String get validation_username_end_no_underscore {
+    return Intl.message(
+      'Username cannot end with an underscore',
+      name: 'validation_username_end_no_underscore',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Username can only contain letters, digits, and underscores`
+  String get validation_username_format {
+    return Intl.message(
+      'Username can only contain letters, digits, and underscores',
+      name: 'validation_username_format',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Username must be 4-18 characters long`
+  String get validation_username_length {
+    return Intl.message(
+      'Username must be 4-18 characters long',
+      name: 'validation_username_length',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Username cannot be all digits`
+  String get validation_username_not_all_digits {
+    return Intl.message(
+      'Username cannot be all digits',
+      name: 'validation_username_not_all_digits',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `This username is reserved`
+  String get validation_username_reserved {
+    return Intl.message(
+      'This username is reserved',
+      name: 'validation_username_reserved',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Username must start with a letter`
+  String get validation_username_start_letter {
+    return Intl.message(
+      'Username must start with a letter',
+      name: 'validation_username_start_letter',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
   }
 
   /// `Version`

@@ -37,27 +37,27 @@ String? validateUsername(String? name) {
   if (name.isEmpty) return null;
 
   if (name.length < 4 || name.length > 18) {
-    return 'Username must be 4-18 characters long';
+    return S.current.validation_username_length;
   }
 
   if (!RegExp(r'^[a-zA-Z0-9_]+$').hasMatch(name)) {
-    return 'Username can only contain letters, digits, and underscores';
+    return S.current.validation_username_format;
   }
 
   if (!RegExp(r'^[a-zA-Z]').hasMatch(name)) {
-    return 'Username must start with a letter';
+    return S.current.validation_username_start_letter;
   }
 
   if (name.endsWith('_')) {
-    return 'Username must not end with an underscore';
+    return S.current.validation_username_end_no_underscore;
   }
 
   final lower = name.toLowerCase();
   if (_reservedNamePrefixes.any((prefix) => lower.startsWith(prefix))) {
-    return 'This username is reserved';
+    return S.current.validation_username_reserved;
   }
   if (_reservedNameExact.contains(lower)) {
-    return 'This username is reserved';
+    return S.current.validation_username_reserved;
   }
 
   return null;
@@ -68,7 +68,7 @@ String? validateEmail(String? email) {
   email ??= '';
   if (email.isEmpty) return null;
   if (!RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(email)) {
-    return 'Invalid email address';
+    return S.current.validation_email_invalid;
   }
   return null;
 }
@@ -78,9 +78,13 @@ String? validatePassword(String? pwd) {
   pwd ??= '';
   if (pwd.isEmpty) return null;
   if (RegExp(r'^\d+$').hasMatch(pwd)) {
-    return 'number only password is not allowed';
-  } else if (!RegExp(r'^[\x20-\x7e]{6,18}$').hasMatch(pwd)) {
-    return S.current.login_password_error;
+    return S.current.validation_password_not_all_digits;
+  }
+  if (pwd.length < 6 || pwd.length > 18) {
+    return S.current.validation_password_length;
+  }
+  if (!RegExp(r'^[\x20-\x7e]+$').hasMatch(pwd)) {
+    return S.current.validation_password_format;
   }
   return null;
 }
@@ -90,7 +94,7 @@ String? validateNewPassword(String? newPwd, {String? oldPwd}) {
   newPwd ??= '';
   if (newPwd.isEmpty) return null;
   if (oldPwd != null && oldPwd.isNotEmpty && newPwd == oldPwd) {
-    return S.current.login_password_error_same_as_old;
+    return S.current.validation_password_same_as_old;
   }
   return validatePassword(newPwd);
 }
@@ -100,12 +104,25 @@ String? validateNewName(String? newName, {String? oldName}) {
   newName ??= '';
   if (newName.isEmpty) return null;
   if (oldName != null && oldName.isNotEmpty && newName == oldName) {
-    return 'Name not changed';
+    return S.current.validation_name_same_as_old;
   }
   return validateUsername(newName);
 }
 
+/// Login identifier: accepts both username and email.
+/// Only checks non-empty, reasonable length, and no whitespace/control chars.
+/// Format validation deferred to server.
+String? validateLoginIdentifier(String value) {
+  if (value.isEmpty) return S.current.validation_required;
+  if (value.length > 254) return S.current.validation_too_long;
+  // Reject whitespace and control characters
+  if (RegExp(r'[\s\x00-\x1f\x7f]').hasMatch(value)) {
+    return S.current.validation_no_whitespace;
+  }
+  return null;
+}
+
 /// Returns true if [name] + [pwd] together satisfy login preconditions.
 bool isLoginAvailable(String name, String pwd) {
-  return name.isNotEmpty && validateUsername(name) == null && pwd.isNotEmpty && validatePassword(pwd) == null;
+  return validateLoginIdentifier(name) == null && pwd.isNotEmpty && validatePassword(pwd) == null;
 }

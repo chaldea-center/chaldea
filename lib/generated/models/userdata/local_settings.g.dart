@@ -666,7 +666,7 @@ _SecretsData _$SecretsDataFromJson(Map json) => $checkedCreate('_SecretsData', j
 });
 
 Map<String, dynamic> _$SecretsDataToJson(_SecretsData instance) => <String, dynamic>{
-  'user': instance.user?.toJson(),
+  'user': instance.user.toJson(),
   'explorerAuth': instance.explorerAuth,
   'atlasReloadKey': instance.atlasReloadKey,
   'atlasExportKey': instance.atlasExportKey,

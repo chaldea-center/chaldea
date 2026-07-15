@@ -39,7 +39,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController(text: secrets.user?.name ?? '');
+    _nameController = TextEditingController(text: secrets.user.name);
     _pwdController = TextEditingController();
   }
 
@@ -64,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
     }
     final user = await showEasyLoading(() => ChaldeaServerApi.login(username: name, password: pwd));
     if (user != null) {
-      secrets.user = user;
+      secrets.user.updateFromLoginResponse(user);
       EasyLoading.showSuccess(S.current.success);
       if (!mounted) return;
       Navigator.of(context).pop();
@@ -91,7 +91,8 @@ class _LoginPageState extends State<LoginPage> {
               hint: S.current.auth_username_or_email,
               controller: _nameController,
               autocorrect: false,
-              errorText: validateUsername(_nameController.text),
+              validator: validateLoginIdentifier,
+              errorDisplayMode: ErrorDisplayMode.onBlur,
               onChanged: (_) => setState(() {}),
             ),
             const SizedBox(height: 16),
@@ -102,7 +103,8 @@ class _LoginPageState extends State<LoginPage> {
               controller: _pwdController,
               obscure: _obscurePwd,
               autocorrect: false,
-              errorText: validatePassword(_pwdController.text),
+              validator: (v) => validatePassword(v),
+              errorDisplayMode: ErrorDisplayMode.onBlur,
               suffixIcon: IconButton(
                 onPressed: () => setState(() => _obscurePwd = !_obscurePwd),
                 icon: Icon(_obscurePwd ? Icons.visibility_off : Icons.visibility),

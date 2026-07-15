@@ -298,7 +298,7 @@ class ServerFeedbackHandler extends ReportHandler {
       'lang': Language.current.code,
       'locale': Language.systemLocale.toString(),
       'uuid': AppInfo.uuid,
-      'user': db.settings.secrets.user?.name ?? "",
+      'user': db.settings.secrets.user.name,
     };
     for (var entry in summary.entries) {
       buffer.write("<b>${entry.key}</b>: ${escape(entry.value.toString())}<br>");

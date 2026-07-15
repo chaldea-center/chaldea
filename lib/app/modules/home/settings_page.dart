@@ -62,7 +62,7 @@ class _SettingsPageState extends State<SettingsPage> {
           TileGroup(
             header: S.current.chaldea_account,
             children: [
-              userTile,
+              db.onSettings((context, _) => userTile),
               ListTile(
                 leading: const Icon(Icons.dns),
                 title: Text(S.current.network_settings),
@@ -358,45 +358,39 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Widget get userTile {
+    String? subtitle;
+    // Per design D5: migration reminder > email-not-bound reminder > none.
+    // When not logged in, no subtitle.
+    final user = db.settings.secrets.user;
+    final token = user.accessToken ?? '';
+    final legacySecret = user.secret ?? '';
+    final email = user.email ?? '';
+    if (token.isEmpty && legacySecret.isNotEmpty) {
+      subtitle ??= S.current.auth_not_migrated_hint;
+    }
+    if (email.isEmpty) {
+      subtitle ??= S.current.auth_email_not_bound_hint;
+    }
+
     return ListTile(
       leading: const Icon(Icons.person),
       title: Text(S.current.login_username),
-      subtitle: db.onSettings((context, snapshot) {
-        // Per design D5: migration reminder > email-not-bound reminder > none.
-        // When not logged in, no subtitle.
-        final user = db.settings.secrets.user;
-        if (user == null) return Text(S.current.login_first_hint);
-        final token = user.accessToken ?? '';
-        final email = user.email ?? '';
-        if (token.isEmpty) {
-          return Text(
-            S.current.auth_not_migrated_hint,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.error),
-          );
-        }
-        if (email.isEmpty) {
-          return Text(
-            S.current.auth_email_not_bound_hint,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.error),
-          );
-        }
-        return const SizedBox.shrink();
-      }),
-      trailing: db.onSettings((context, snapshot) {
-        final user = db.settings.secrets.user;
-        if (user == null) return const SizedBox.shrink();
-        return Text.rich(
-          TextSpan(
-            text: user.name,
-            // children: [TextSpan(text: '\n${user.id}', style: Theme.of(context).textTheme.bodySmall)],
-          ),
-          textAlign: TextAlign.end,
-        );
-      }),
+      subtitle: subtitle == null
+          ? null
+          : Text(
+              subtitle,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.error),
+            ),
+      trailing: Text.rich(
+        TextSpan(
+          text: user.name,
+          // children: [TextSpan(text: '\n${user.id}', style: Theme.of(context).textTheme.bodySmall)],
+        ),
+        textAlign: TextAlign.end,
+      ),
       onTap: () {
         // Smart navigation: profile if logged in, login if not.
-        final user = db.settings.secrets.user;
-        if (user != null) {
+        if (db.settings.secrets.isLoggedIn) {
           router.push(child: const ProfilePage());
         } else {
           router.push(child: const LoginPage());
