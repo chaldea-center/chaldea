@@ -176,7 +176,9 @@ abstract final class AppTheme {
       subThemesData: FlexSubThemesData(
         //
         inputDecoratorBorderType: .outline,
+        inputDecoratorContentPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 12),
         useInputDecoratorThemeInDialogs: true,
+        buttonPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       ),
       extensions: {ExtraThemeData.forBrightness(brightness)},
     );
