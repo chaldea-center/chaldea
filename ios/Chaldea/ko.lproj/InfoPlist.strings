@@ -1,0 +1,8 @@
+/* Privacy and permission descriptions for ad features */
+
+/* App Tracking Transparency description */
+"NSUserTrackingUsageDescription" = "맞춤 광고를 표시하기 위해 광고 식별자에 접근합니다.";
+
+/* Photo library access */
+"NSPhotoLibraryAddUsageDescription" = "사진에 이미지 내보내기";
+"NSPhotoLibraryUsageDescription" = "Chaldea는 데이터 가져오기 및 백업 내보내기를 위해 사진 라이브러리 접근이 필요합니다";

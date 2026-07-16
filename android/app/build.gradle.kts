@@ -78,6 +78,10 @@ android {
             ndk {
                 debugSymbolLevel = "FULL"
             }
+            // Pangle SDK compat: disable new resource shrinker to avoid
+            // ShrinkProtoResourcesAction ParseError (AGP 8.0+ replacement for
+            // the removed android.enableNewResourceShrinker=false gradle.properties flag)
+            isShrinkResources = false
 
             proguardFiles(
                 getDefaultProguardFile("proguard-android.txt"),

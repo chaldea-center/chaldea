@@ -526,7 +526,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
     Widget trailingIcon;
     if (detailPageBuilder != null) {
       trailingIcon = IconButton(
-        icon: Icon(Icons.info_outline, color: AppTheme(context).tertiary),
+        icon: Icon(Icons.info_outline, color: Theme.of(context).colorScheme.primary),
         onPressed: () => showDialog(context: context, builder: detailPageBuilder, useRootNavigator: false),
       );
     } else {

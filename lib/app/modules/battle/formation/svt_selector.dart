@@ -313,10 +313,7 @@ class ServantSelector extends StatelessWidget {
           right: 0,
           top: -iconSize / 2,
           child: Container(
-            decoration: ShapeDecoration(
-              color: Theme.of(context).colorScheme.errorContainer,
-              shape: const CircleBorder(),
-            ),
+            decoration: ShapeDecoration(color: Theme.of(context).colorScheme.error, shape: const CircleBorder()),
             child: IconButton(
               onPressed: onTapClear,
               icon: const Icon(Icons.remove_circle_outline),

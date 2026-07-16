@@ -560,6 +560,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "login_new_password": MessageLookupByLibrary.simpleMessage("새 비밀번호"),
     "login_password": MessageLookupByLibrary.simpleMessage("비밀번호"),
     "login_password_error": MessageLookupByLibrary.simpleMessage("6-18자리의 문자와 숫자만, 최소한 하나 이상의 영어 문자를 포함하십시오."),
+    "login_password_error_confirm_mismatch": MessageLookupByLibrary.simpleMessage("비밀번호가 일치하지 않습니다"),
     "login_password_error_same_as_old": MessageLookupByLibrary.simpleMessage("이전 비밀번호와 같음"),
     "login_signup": MessageLookupByLibrary.simpleMessage("회원가입"),
     "login_username": MessageLookupByLibrary.simpleMessage("사용자 이름"),

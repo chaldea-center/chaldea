@@ -107,7 +107,7 @@ class _FgoAnnualReportPageState extends State<FgoAnnualReportPage> {
     ThemeData themeData = ThemeData(
       brightness: Brightness.dark,
       useMaterial3: db.settings.useMaterial3,
-      colorSchemeSeed: db.settings.colorSeed?.color,
+      colorSchemeSeed: db.settings.colorSeed,
       tooltipTheme: const TooltipThemeData(waitDuration: Duration(milliseconds: 500)),
     );
     themeData = themeData.copyWith(

@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
-import 'package:chaldea/app/api/chaldea.dart';
+import 'package:chaldea/app/api/chaldea_server.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/utils/battle_logger.dart';
@@ -675,7 +675,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                   TextSpan(
                     text: isPlayer ? 'Player Turn' : 'Enemy Turn',
                     style: isPlayer == battleData.isPlayerTurn
-                        ? TextStyle(color: AppTheme(context).tertiary)
+                        ? TextStyle(color: Theme.of(context).colorScheme.primary)
                         : Theme.of(context).textTheme.bodySmall,
                   ),
               ], const TextSpan(text: '\n')),
@@ -767,7 +767,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                   if (mounted) setState(() {});
                 },
           child: battleData.isBattleWin
-              ? Text('Win', style: TextStyle(color: AppTheme(context).tertiary))
+              ? Text('Win', style: TextStyle(color: Theme.of(context).colorScheme.primary))
               : Text(S.current.battle_attack),
         ),
       ],
@@ -1065,10 +1065,10 @@ class _TeamUploadDialogState extends State<_TeamUploadDialog> {
     }
 
     final teamData = runtime.getShareData(isCritTeam: isCritTeam);
-    final insertedId = await showEasyLoading(() => ChaldeaWorkerApi.teamUpload(data: teamData));
+    final insertedId = await showEasyLoading(() => ChaldeaServerApi.teamUpload(data: teamData));
     if (insertedId == null) return;
     db.runtimeData.lastUpload = DateTime.now().timestamp;
-    ChaldeaWorkerApi.clearTeamCache();
+    ChaldeaServerApi.clearTeamCache();
     if (mounted) {
       Navigator.pop(context);
       SimpleConfirmDialog(

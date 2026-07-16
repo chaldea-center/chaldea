@@ -26,7 +26,7 @@ class _ClassBoardMissionDemandState extends State<ClassBoardMissionDemand> {
       }
     }
     for (final userSvt in widget.userSvtCollection) {
-      if (!userSvt.isOwned) continue;
+      if (!userSvt.isGet) continue;
       final svt = db.gameData.servantsById[userSvt.svtId];
       if (svt == null) continue;
       final boardId = clsIdToBoardId[svt.classId];

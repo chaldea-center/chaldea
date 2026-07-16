@@ -1416,6 +1416,113 @@ enum CondType {
   static CondType? fromId(int v) {
     return CondType.values.firstWhereOrNull((e) => e.value == v);
   }
+
+  /// Maps not-CondType to its positive counterpart (pairs where the only naming difference is "Not").
+  static const Map<CondType, CondType> kNegativeToPositiveMap = {
+    // not* → positive
+    .questNotClear: .questClear,
+    .notQuestGroupClear: .questGroupClear,
+    .notSvtGet: .svtGet,
+    .notSvtHaving: .svtHaving,
+    .notItemGet: .itemGet,
+    .notCostumeGet: .costumeGet,
+    .notSvtCostumeReleased: .svtCostumeReleased,
+    .notSvtGroup: .svtGroup,
+    .notQuestClearPhase: .questClearPhase,
+    .notQuestResetAvailable: .questResetAvailable,
+    .notQuestClearRaw: .questClearRaw,
+    .notQuestGroupClearRaw: .questGroupClearRaw,
+    .notEventMissionClear: .eventMissionClear,
+    .notEventMissionAchieve: .eventMissionAchieve,
+    .notEventStatus: .eventStatus,
+    .notRouteSelect: .routeSelect,
+    .notCommandCodeGet: .commandCodeGet,
+    .notShopPurchase: .purchaseShop,
+    .notWarClear: .warClear,
+    .notCompleteHeelPortrait: .completeHeelPortrait,
+    .notPlayQuestPhase: .playQuestPhase,
+    .notLatestQuestPhaseEqual: .latestQuestPhaseEqual,
+    .notHaveChargeStone: .haveChargeStone,
+    .notBattleFunctionTargetAllIndividuality: .battleFunctionTargetAllIndividuality,
+    .notBattleFunctionTargetOneIndividuality: .battleFunctionTargetOneIndividuality,
+    .eventScriptNotPlay: .eventScriptPlay,
+    .notBattleActionOpponentIndividuality: .battleActionOpponentIndividuality,
+    .notPlayedMovie: .playedMovie,
+    .notEquipGet: .equipGet,
+    .notQuestAvailable: .questAvailable,
+    .notImagePartsGroup: .imagePartsGroup,
+    .notUseEventPassiveSkillGivenItem: .useEventPassiveSkillGivenItem,
+    .notSelfIndividuality: .selfIndividuality,
+    .notShopGroupLimitNum: .shopGroupLimitNum,
+    .notEventSuperBossValueEqual: .eventSuperBossValueEqual,
+    .notExistBoxGachaScriptReplaceGiftId: .existBoxGachaScriptReplaceGiftId,
+    .notQuestClearBeforeEventStart: .questClearBeforeEventStart,
+    .notElapsedTimeAfterQuestClear: .elapsedTimeAfterQuestClear,
+    .notElapsedTimeAfterSvtGet: .elapsedTimeAfterSvtGet,
+    .eventNormaPointNotClear: .eventNormaPointClear,
+    // NotEqual → Equal
+    .eventValueNotEqual: .eventValueEqual,
+    .battleValueNotEqual: .battleValueEqual,
+    .battlePointNotEqual: .battlePointEqual,
+    // NotDownload → Downloaded
+    .movieNotDownload: .movieDownloaded,
+    // Off → On
+    // .eventFlagOff: .eventFlagOn,
+    // .questStatusFlagOff: .questStatusFlagOn,
+    // .shopFlagOff: .shopFlagOn,
+    // .eventTutorialFlagOff: .eventTutorialFlagOn,
+    // Lose → Win
+    // .battleResultLose: .battleResultWin,
+    // .battleLineLoseAbove: .battleLineWinAbove,
+    // .battleLineContinueLose: .battleLineContinueWin,
+    // .battleLineContinueLoseBelow: .battleLineContinueWinBelow,
+    // .battleGroupLoseAvove: .battleGroupWinAvove,
+    // Dead → Alive
+    // .raidDead: .raidAlive,
+    // Below → Above
+    // .svtFriendshipBelow: .svtFriendshipAbove,
+    // .limitCountBelow: .limitCountAbove,
+    // .totalTdLevelBelow: .totalTdLevelAbove,
+    // .limitCountMaxBelow: .limitCountMaxAbove,
+    // .limitCountImageBelow: .limitCountImageAbove,
+    // .superBossDamageBelow: .superBossDamageAbove,
+    // .raidDamageBelow: .raidDamageAbove,
+    // .raidGroupDamageBelow: .raidGroupDamageAbove,
+    // .raidDamageRateBelow: .raidDamageRateAbove,
+    // .raidDamageRateNotBelow: .raidDamageRateNotAbove,
+    // .raidGroupDamageRateBelow: .raidGroupDamageRateAbove,
+    // .raidGroupDamageRateNotBelow: .raidGroupDamageRateNotAbove,
+    // .raidGroupOpenBelow: .raidGroupOpenAbove,
+    // .commonValueBelow: .commonValueAbove,
+    // .battlePointBelow: .battlePointAbove,
+    // .userLevelBelow: .userLevelAbove,
+    // .highestWaveBelow: .highestWaveAbove,
+    // .battleSvtFriendshipBelow: .battleSvtFriendshipAbove,
+    // .battleValueBelow: .battleValueAbove,
+    // .battleEntryPlayerTotalCountBelow: .battleEntryPlayerTotalCountAbove,
+    // .battleEntryEnemyTotalCountBelow: .battleEntryEnemyTotalCountAbove,
+    // .progressValueBelow: .progressValueAbove,
+    // .limitedMissionAchieveNumBelow: .limitedMissionAchieveNumAbove,
+    // Invalid → Valid
+    // .privilegeInvalid: .privilegeValid,
+    // After → Before
+    // .svtGetAfterDate: .svtGetBeforeDate,
+    // .afterQuestClearTime: .beforeQuestClearTime,
+  };
+
+  /// Auto-reversed: positive → not-CondType.
+  static final Map<CondType, CondType> kPositiveToNegativeMap = {
+    for (final e in kNegativeToPositiveMap.entries) e.value: e.key,
+  };
+
+  static CondType? getNegativeSideCond(CondType cond) {
+    final result = kNegativeToPositiveMap[cond] ?? kPositiveToNegativeMap[cond];
+    if (result == null) {
+      assert(false, 'No opposite CondType found for $cond');
+      return null;
+    }
+    return result;
+  }
 }
 
 @JsonSerializable()

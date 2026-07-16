@@ -1,0 +1,55 @@
+// SectionCard: a Card wrapper that optionally renders a title above its
+// children and inserts themed Dividers between them. Card shape/elevation/
+// border come from cardTheme; this widget only adds title + divider layout.
+
+import 'package:flutter/material.dart';
+
+class SectionCard extends StatelessWidget {
+  final String? title;
+  final EdgeInsetsGeometry? titlePadding;
+  final List<Widget> children;
+  final bool divided;
+  final EdgeInsetsGeometry? padding;
+
+  const SectionCard({
+    super.key,
+    this.title,
+    this.titlePadding,
+    required this.children,
+    this.divided = true,
+    this.padding,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    List<Widget> content;
+    if (divided && children.length > 1) {
+      content = [children.first];
+      for (var i = 1; i < children.length; i++) {
+        content.add(const Divider(height: 1, thickness: 0.5));
+        content.add(children[i]);
+      }
+    } else {
+      content = children;
+    }
+
+    Widget child = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (title != null)
+          Padding(
+            padding: titlePadding ?? const EdgeInsets.fromLTRB(16, 12, 16, 8),
+            child: Text(title!, style: theme.textTheme.titleSmall?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+          ),
+        ...content,
+      ],
+    );
+    if (padding != null) {
+      child = Padding(padding: padding!, child: child);
+    }
+
+    return Card(child: child);
+  }
+}

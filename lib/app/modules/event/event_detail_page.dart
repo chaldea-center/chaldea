@@ -383,7 +383,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
       rows.add(
         CustomTableRow.fromTexts(
           texts: [event.eventDetail!.flags.map((e) => e.name).join(" / ")],
-          defaults: TableCellData(textAlign: TextAlign.center),
+          defaults: TableCellData(textAlign: TextAlign.center, style: Theme.of(context).textTheme.bodySmall),
         ),
       );
     }

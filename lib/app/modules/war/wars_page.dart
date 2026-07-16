@@ -127,6 +127,7 @@ class WarListPage extends StatelessWidget {
         return ListTile(
           leading: war.shownBanner == null ? null : db.getIconImage(war.shownBanner, width: 150),
           title: AutoSizeText(
+            // {war.id, war.priority, war.resolvedPriority, title}.join('/'),
             title,
             maxLines: subtitle == null ? 2 : 1,
             minFontSize: 12,

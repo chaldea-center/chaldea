@@ -1,0 +1,164 @@
+// DeleteAccountPage: destructive action with explicit confirmation.
+// Layout: danger banner (icon + title + warning) + consequences card
+// (4 list items with X icons) + password input + destructive button +
+// cancel link. On success: clear user, pop to root, push LoginPage.
+
+import 'package:flutter/material.dart';
+
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+
+import 'package:chaldea/app/api/chaldea_server.dart';
+import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/modules/auth/login_page.dart';
+import 'package:chaldea/app/modules/auth/validators.dart';
+import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/models.dart';
+import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/custom_dialogs.dart';
+import 'package:chaldea/widgets/modern/modern.dart';
+
+class DeleteAccountPage extends StatefulWidget {
+  const DeleteAccountPage({super.key});
+
+  @override
+  State<DeleteAccountPage> createState() => _DeleteAccountPageState();
+}
+
+class _DeleteAccountPageState extends State<DeleteAccountPage> {
+  late final TextEditingController _pwdController;
+  bool _obscurePwd = true;
+  final secrets = db.settings.secrets;
+
+  @override
+  void initState() {
+    super.initState();
+    _pwdController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _pwdController.dispose();
+    super.dispose();
+  }
+
+  bool get _isAvailable => _pwdController.text.isNotEmpty && validatePassword(_pwdController.text) == null;
+
+  Future<void> _delete() async {
+    if (!_isAvailable) return;
+    final confirmed = await SimpleConfirmDialog(
+      title: Text(S.current.auth_delete_account_confirm),
+      content: Text(S.current.auth_delete_account_warning),
+      confirmText: S.current.delete,
+    ).showDialog(context);
+    if (confirmed != true) return;
+    final ok = await showEasyLoading(() => ChaldeaServerApi.deleteMe(password: _pwdController.text));
+    if (ok == true) {
+      secrets.user.clearAuth();
+      EasyLoading.showSuccess(S.current.success);
+      if (!mounted) return;
+      router.popAll();
+      router.push(child: const LoginPage());
+    }
+    db.notifySettings();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return Scaffold(
+      appBar: AppBar(title: Text(S.current.auth_delete_account_title)),
+      body: SafeArea(
+        top: false, // AppBar already handles top safe area
+        child: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          children: [
+            _buildDangerHeader(cs),
+            const SizedBox(height: 16),
+            _buildConsequencesCard(cs),
+            const SizedBox(height: 16),
+            FormInput(
+              label: S.current.auth_confirm_password_prompt,
+              prefixIcon: Icons.lock_outline,
+              hint: S.current.auth_confirm_password_prompt,
+              controller: _pwdController,
+              obscure: _obscurePwd,
+              autocorrect: false,
+              validator: validatePassword,
+              errorDisplayMode: ErrorDisplayMode.onBlur,
+              suffixIcon: IconButton(
+                onPressed: () => setState(() => _obscurePwd = !_obscurePwd),
+                icon: Icon(_obscurePwd ? Icons.visibility_off : Icons.visibility),
+                tooltip: _obscurePwd ? 'Show' : 'Hide',
+              ),
+              onChanged: (_) => setState(() {}),
+            ),
+            const SizedBox(height: 24),
+            PrimaryButton(
+              label: S.current.auth_delete_account_confirm,
+              danger: true,
+              onPressed: _isAvailable ? _delete : null,
+            ),
+            const SizedBox(height: 8),
+            TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(S.current.auth_cancel_back)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDangerHeader(ColorScheme cs) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(color: cs.error.withAlpha(25), borderRadius: BorderRadius.circular(12)),
+      child: Column(
+        children: [
+          Icon(Icons.warning_amber_rounded, size: 36, color: cs.error),
+          const SizedBox(height: 8),
+          Text(
+            S.current.auth_delete_account_title,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(color: cs.error, fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            S.current.auth_delete_account_warning,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(color: cs.onSurfaceVariant, height: 1.45),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildConsequencesCard(ColorScheme cs) {
+    final items = [
+      S.current.auth_delete_account_consequence_1,
+      S.current.auth_delete_account_consequence_2,
+      S.current.auth_delete_account_consequence_3,
+      S.current.auth_delete_account_consequence_4,
+    ];
+    return SectionCard(
+      divided: false,
+      padding: .symmetric(vertical: 8),
+      children: [
+        for (final text in items)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(Icons.close, size: 18, color: cs.error),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    text,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: cs.onSurface, height: 1.45),
+                  ),
+                ),
+              ],
+            ),
+          ),
+      ],
+    );
+  }
+}

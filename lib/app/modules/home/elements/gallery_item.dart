@@ -21,7 +21,6 @@ import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/extension.dart';
-import 'package:chaldea/widgets/theme.dart';
 import '../../../faker/account/accounts.dart';
 import '../../april_fool/april_fool_home.dart';
 import '../../bgm/bgm_list.dart';
@@ -83,8 +82,7 @@ class GalleryItem {
   Widget buildIcon(BuildContext context, {double? size, Color? color}) {
     size ??= 40;
     if (child != null) return child!;
-    var _iconColor =
-        color ?? (Theme.of(context).useMaterial3 ? Theme.of(context).colorScheme.primary : AppTheme(context).tertiary);
+    var _iconColor = color ?? Theme.of(context).colorScheme.surfaceTint;
     return icon!.isFontAwesome
         ? Padding(
             padding: EdgeInsets.all(size * 0.05),

@@ -8,17 +8,24 @@ import 'package:web/web.dart' as web;
 
 import './interface.dart';
 
-// import 'package:admanager_web/admanager_web.dart';
-
+/// Web platform ad implementation
+/// Only maintains API-level interface consistency, does not implement actual ad functionality
+/// Web platform ad functionality is currently disabled (supported = false)
 class AppAdImpl implements AppAdInterface {
   @override
   final bool supported = kIsWeb && false;
+
   @override
   late final bool supportBannerAd = supported;
+
   @override
-  late final bool supportAppOpenAd = false;
+  final bool supportAppOpenAd = false;
+
+  @override
+  final bool supportInterstitialAd = false;
 
   bool _initialized = false;
+
   @override
   bool get initialized => _initialized;
 
@@ -26,7 +33,7 @@ class AppAdImpl implements AppAdInterface {
   Future<void> init() async {
     if (initialized) return;
     if (supported) {
-      // AdManagerWeb.init();
+      // Web platform ad initialization (currently disabled)
       _initialized = true;
     }
     return;
@@ -36,8 +43,13 @@ class AppAdImpl implements AppAdInterface {
   Future<void> initAppOpenAd() => Future.value();
 
   @override
+  Future<void> showAppOpenAdIfAvailable() => Future.value();
+
+  @override
+  Future<void> showInterstitialAd(String posId) => Future.value();
+
+  @override
   Widget buildBanner(BuildContext context, AdOptions options, WidgetBuilder? placeholder) {
-    // AdBlockSize adBlockSize = AdBlockSize(width: options.size.width, height: options.size.height);
     if (!_initialized) {
       return placeholder?.call(context) ?? const SizedBox.shrink();
     }
@@ -73,4 +85,12 @@ class AppAdImpl implements AppAdInterface {
   Widget? buildAppOpen(BuildContext context, AdOptions options) {
     return null;
   }
+
+  @override
+  void setAdEventListener(AdEventCallback? callback) {
+    // Ad events not supported on web platform
+  }
+
+  @override
+  Future<bool?> requestAttPermission() => Future.value(null);
 }

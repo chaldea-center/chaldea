@@ -76,7 +76,7 @@ class MyVideoPlayer extends StatefulWidget {
           SharedBuilder.textButtonSpan(
             context: context,
             text: '▶ $name',
-            style: TextStyle(color: AppTheme(context).tertiaryContainer),
+            style: TextStyle(color: Theme.of(context).colorScheme.primary),
             onTap: () {
               if (url != null) launch(url);
             },

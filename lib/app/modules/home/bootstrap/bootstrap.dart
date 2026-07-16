@@ -561,7 +561,7 @@ class _IntroPage extends StatelessWidget {
           FaIcon(
             FaIconData(icon!),
             size: 80,
-            color: Theme.of(context).brightness == Brightness.dark ? null : AppTheme(context).tertiary,
+            color: Theme.of(context).brightness == Brightness.dark ? null : Theme.of(context).colorScheme.primary,
           ),
         if (title != null)
           Padding(

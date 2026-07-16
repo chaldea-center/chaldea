@@ -13,6 +13,10 @@ allprojects {
         //  maven {
         //      setUrl("https://maven.aliyun.com/repository/gradle-plugin")
         //  }
+        // GroMore SDK Maven
+        maven {
+            setUrl("https://artifact.bytedance.com/repository/pangle")
+        }
         google()
         mavenCentral()
     }

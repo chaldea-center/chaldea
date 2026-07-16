@@ -25,3 +25,23 @@
 # Retain generic signatures of TypeToken and its subclasses with R8 version 3.0 and higher.
 -keep,allowobfuscation,allowshrinking class com.google.gson.reflect.TypeToken
 -keep,allowobfuscation,allowshrinking class * extends com.google.gson.reflect.TypeToken
+
+## GroMore SDK
+-keep class com.bytedance.sdk.openadsdk.** { *; }
+-keep class com.pangle.** { *; }
+-keep class com.bytedance.gromore.** { *; }
+-keep class com.bytedance.tools.** { *; }
+
+-keep class com.bytedance.sdk.openadsdk.activity.** { *; }
+
+-keep class com.bytedance.sdk.openadsdk.TTFileProvider { *; }
+-keep class com.bytedance.sdk.openadsdk.multipro.TTMultiProvider { *; }
+
+-keep class com.bytedance.sdk.openadsdk.AdSlot { *; }
+-keep class com.bytedance.sdk.openadsdk.TTAdNative { *; }
+-keep class com.bytedance.sdk.openadsdk.TTAdSdk { *; }
+-keep class com.bytedance.sdk.openadsdk.TTNativeAd { *; }
+
+# okio
+-dontwarn okio.**
+-dontwarn org.apache.commons.**

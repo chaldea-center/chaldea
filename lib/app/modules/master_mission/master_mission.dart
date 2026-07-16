@@ -203,7 +203,7 @@ class _MasterMissionPageState extends State<MasterMissionPage> with RegionBasedS
                   router.push(child: CustomMissionPage(initMissions: [customMission]));
                 },
                 icon: const Icon(Icons.search),
-                color: AppTheme(context).tertiary,
+                color: Theme.of(context).colorScheme.primary,
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 constraints: const BoxConstraints(minWidth: 24),
               ),

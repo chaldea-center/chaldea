@@ -750,7 +750,7 @@ class UserServantCollectionEntity with DataEntityBase<_IntStr> {
        updatedAt = _toInt(updatedAt),
        createdAt = _toInt(createdAt);
 
-  bool get isOwned => status == SvtCollectionStatus.get.value;
+  bool get isGet => status == SvtCollectionStatus.get.value;
 
   int get maxFriendshipRank => (svtId == kMashSvtId ? 5 : 10) + friendshipExceedCount;
   int get usedLanternCount => svtId == kMashSvtId ? friendshipExceedCount - 5 : friendshipExceedCount;
@@ -1187,7 +1187,7 @@ class UserEquipEntity with DataEntityBase<int> {
 class UserCommandCodeCollectionEntity with DataEntityBase<_IntStr> {
   int userId;
   int commandCodeId;
-  int status; // 0-find, 2-got
+  int status; // 0-not met, 1-met, 2-got
   int getNum;
   // updatedAt, createdAt
 
@@ -1203,6 +1203,8 @@ class UserCommandCodeCollectionEntity with DataEntityBase<_IntStr> {
       getNum = _toInt(getNum);
   factory UserCommandCodeCollectionEntity.fromJson(Map<String, dynamic> data) =>
       _$UserCommandCodeCollectionEntityFromJson(data);
+
+  bool get isGet => status == 2;
 
   CommandCode? get dbCC => db.gameData.commandCodesById[commandCodeId];
 }
@@ -1735,6 +1737,30 @@ class UserEventEntity with DataEntityBase<_IntStr> {
        updatedAt = _toInt(updatedAt),
        createdAt = _toInt(createdAt);
   factory UserEventEntity.fromJson(Map<String, dynamic> data) => _$UserEventEntityFromJson(data);
+
+  bool hasEventFlag(EventStatusType flagId) {
+    return (flag & flagId.value) != 0;
+  }
+
+  bool hasScriptFlag(int flagId) => (scriptFlag & (1 << flagId)) != 0;
+}
+
+enum EventStatusType {
+  none(0),
+  purchasedRarePri(1),
+  strictCampaignEnd(2),
+  isComebackTargetUser(3),
+  battleLineLose(4),
+  battleLineResultEnd(5),
+  battleLineResultWin(6),
+  useEventItem(7),
+  viewOpeningMovie(8),
+  raidParticipate(9),
+  getItemFromBoxGacha(10);
+
+  const EventStatusType(this.kind);
+  final int kind;
+  int get value => 1 << kind;
 }
 
 @JsonSerializable(createToJson: false)
@@ -2281,6 +2307,44 @@ class UserQuestEntity with DataEntityBase<_IntStr> {
     }
     return (successNum: successNum, failNum: failNum);
   }
+
+  bool _isResetInterval() {
+    final quest = db.gameData.quests[questId];
+    if (quest == null) return false;
+    if (quest.afterClear != .resetInterval) return false;
+    int intervalHours = 0; // Quest.intervalHours
+    return DateTime.now().timestamp >= lastStartedAt + intervalHours * 3600;
+  }
+
+  int getClearNum() {
+    if (_isResetInterval()) return 0;
+    return clearNum;
+  }
+
+  int getQuestPhase() {
+    if (_isResetInterval()) return 0;
+    return questPhase;
+  }
+
+  bool hasStatusFlag(UserQuestStatusFlag flag) {
+    return (status & flag.value) != 0;
+  }
+}
+
+enum UserQuestStatusFlag {
+  reset(1),
+  resetReward(2),
+  purchasedRarePri(3),
+  challengedNewestPhase(4),
+  battleResultWin(5),
+  battleResultLose(6),
+  latestResultWin(7),
+  latestResultLose(8),
+  notGetQuestClearGift(9);
+
+  const UserQuestStatusFlag(this.kind);
+  final int kind;
+  int get value => 1 << kind;
 }
 
 @JsonSerializable(createToJson: false)

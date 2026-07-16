@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 
 import 'package:chaldea/app/app.dart';
-import 'package:chaldea/models/db.dart';
+import 'package:chaldea/app/modules/misc/showcase/showcase_home_page.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/theme.dart';
 import '../home/subpage/theme_color.dart';
 
 class DarkLightThemePalette extends StatefulWidget {
@@ -34,6 +35,11 @@ class _DarkLightThemePaletteState extends State<DarkLightThemePalette> {
           //   tooltip: "Material 2/3",
           // ),
           IconButton(
+            onPressed: () => router.pushPage(const ShowcaseHomePage()),
+            icon: const Icon(Icons.grid_view_rounded),
+            tooltip: 'MD3 Showcase',
+          ),
+          IconButton(
             onPressed: () async {
               await router.pushPage(const ThemeColorPage());
               if (mounted) setState(() {});
@@ -47,27 +53,21 @@ class _DarkLightThemePaletteState extends State<DarkLightThemePalette> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            for (final useM3 in [false, true])
-              for (final dark in [false, true])
-                Expanded(
-                  child: Theme(
-                    data: _getThemeData(dark: dark, useM3: useM3),
-                    child: Builder(builder: (context) => const _PaletteForTheme()),
-                  ),
+            for (final brightness in [Brightness.light, Brightness.dark])
+              Expanded(
+                child: Theme(
+                  data: _getThemeData(brightness),
+                  child: Builder(builder: (context) => const _PaletteForTheme()),
                 ),
+              ),
           ],
         ),
       ),
     );
   }
 
-  ThemeData _getThemeData({required bool dark, required bool useM3}) {
-    final themeData = ThemeData(
-      brightness: dark ? Brightness.dark : Brightness.light,
-      useMaterial3: useM3,
-      colorSchemeSeed: db.settings.colorSeed?.color,
-    );
-    return themeData;
+  ThemeData _getThemeData(Brightness brightness) {
+    return brightness == .dark ? AppTheme.dark() : AppTheme.light();
   }
 }
 

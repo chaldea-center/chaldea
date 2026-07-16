@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -32,6 +33,9 @@ void main() async {
     await _initiateCommon();
     await db.initiate();
     AppAnalysis.instance.initiate();
+    // Silent migration of legacy Worker tokens now runs in
+    // _ChaldeaState.afterFirstLayout() — after the first frame renders, so the
+    // user never sees a black screen and the app stays interactive.
     catcherOptions = CatcherUtil.getOptions(
       logPath: db.paths.crashLog,
       feedbackHandler: ServerFeedbackHandler(

@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:intl/intl.dart';
 
 import 'package:chaldea/generated/l10n.dart';
@@ -40,7 +41,8 @@ class LocalSettings {
   int lastBackup;
   ThemeMode themeMode;
   bool useMaterial3;
-  ColorSeed? colorSeed;
+  FlexScheme? flexScheme;
+  int? colorSeedInt;
   bool enableMouseDrag;
   bool globalSelection;
   String? _language;
@@ -104,7 +106,8 @@ class LocalSettings {
     this.lastBackup = 0,
     this.themeMode = ThemeMode.system,
     this.useMaterial3 = false,
-    this.colorSeed,
+    this.flexScheme,
+    this.colorSeedInt,
     this.enableMouseDrag = true,
     this.globalSelection = false,
     this._language,
@@ -215,6 +218,16 @@ class LocalSettings {
     }
     return themeMode == ThemeMode.dark;
   }
+
+  Color? get colorSeed {
+    if (colorSeedInt == null) return null;
+    try {
+      return Color(colorSeedInt!);
+    } catch (e) {
+      colorSeedInt = null;
+      return null;
+    }
+  }
 }
 
 @JsonSerializable()
@@ -319,18 +332,60 @@ class DisplaySettings {
 
 @JsonSerializable()
 class AdSetting {
-  bool? enabled;
-  bool? banner;
-  bool? appOpen;
+  /// 广告总开关状态（使用AdFeatureState序列化）
+  /// defaults=未设置（跟随远程配置），on=开启，off=关闭
+  /// 注意：本地设置不支持forcedOn，forcedOn仅远程配置可用
+  AdFeatureState enabled;
 
-  int lastAppOpen; // update after loaded
+  /// Banner广告开关状态
+  AdFeatureState banner;
 
-  bool get shouldShowBanner => banner ?? true;
-  bool get shouldShowAppOpen {
-    return (appOpen ?? true) && DateTime.now().timestamp - lastAppOpen > 2 * 3600;
+  /// 开屏广告开关状态
+  AdFeatureState appOpen;
+
+  /// 插屏广告开关状态
+  AdFeatureState interstitial;
+
+  /// 个性化广告开关（null=未设置，默认关闭以合规优先）
+  /// true: 允许基于用户兴趣的个性化广告
+  /// false: 仅展示非个性化（上下文）广告
+  bool? personalizedAds;
+
+  /// 上次开屏广告展示时间戳
+  int lastAppOpen;
+
+  /// 上次ATT权限请求时间戳（用于防重复弹窗）
+  int lastAttRequestTime;
+
+  /// ATT权限请求结果（null=未请求，true=已授权，false=已拒绝）
+  bool? attAuthorized;
+
+  /// 用户是否已同意隐私政策（广告相关）
+  bool privacyPolicyAccepted;
+
+  /// 是否允许个性化广告
+  /// null或false均视为不允许（合规优先原则）
+  bool get shouldPersonalizeAds => personalizedAds == true;
+
+  /// 是否可以请求ATT权限（距上次请求超过7天冷却期，或从未请求）
+  bool get canRequestAtt {
+    if (attAuthorized != null) return false; // 已有明确结果，不再请求
+    if (lastAttRequestTime == 0) return true; // 从未请求
+    final elapsed = DateTime.now().timestamp - lastAttRequestTime;
+    return elapsed > 30 * 24 * 3600; // 30天冷却期
   }
 
-  AdSetting({this.enabled, this.banner, this.appOpen, this.lastAppOpen = 0});
+  AdSetting({
+    this.enabled = .defaults,
+    this.banner = .defaults,
+    this.appOpen = .defaults,
+    this.interstitial = .defaults,
+    this.personalizedAds,
+    this.lastAppOpen = 0,
+    this.lastAttRequestTime = 0,
+    this.attAuthorized,
+    this.privacyPolicyAccepted = false,
+  });
 
   factory AdSetting.fromJson(Map<String, dynamic> data) => _$AdSettingFromJson(data);
 
@@ -628,14 +683,15 @@ class _MiscSettings {
 
 @JsonSerializable()
 class _SecretsData {
-  ChaldeaUser? user;
+  final ChaldeaUser user;
   String? explorerAuth;
   String atlasReloadKey;
   String atlasExportKey;
 
-  _SecretsData({this.user, this.explorerAuth, this.atlasReloadKey = "", this.atlasExportKey = ""});
+  _SecretsData({ChaldeaUser? user, this.explorerAuth, this.atlasReloadKey = "", this.atlasExportKey = ""})
+    : user = user ?? ChaldeaUser();
 
-  bool get isLoggedIn => user?.secret?.isNotEmpty == true;
+  bool get isLoggedIn => user.accessToken?.isNotEmpty == true;
 
   factory _SecretsData.fromJson(Map<String, dynamic> json) => _$SecretsDataFromJson(json);
 

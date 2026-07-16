@@ -298,11 +298,610 @@ class S {
     return Intl.message('Attack NP Rate', name: 'attack_np_rate', desc: '', locale: localeName, args: []);
   }
 
+  /// `Account Actions`
+  String get auth_account_actions {
+    return Intl.message('Account Actions', name: 'auth_account_actions', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Admin Actions`
+  String get auth_admin_actions {
+    return Intl.message('Admin Actions', name: 'auth_admin_actions', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Backups`
+  String get auth_admin_backups_count {
+    return Intl.message('Backups', name: 'auth_admin_backups_count', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Basic Info`
+  String get auth_admin_basic_info {
+    return Intl.message('Basic Info', name: 'auth_admin_basic_info', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Created At`
+  String get auth_admin_created_at {
+    return Intl.message('Created At', name: 'auth_admin_created_at', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Load More`
+  String get auth_admin_load_more {
+    return Intl.message('Load More', name: 'auth_admin_load_more', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Not bound`
+  String get auth_admin_no_email {
+    return Intl.message('Not bound', name: 'auth_admin_no_email', desc: '', locale: localeName, args: []);
+  }
+
+  /// `No users found`
+  String get auth_admin_no_users {
+    return Intl.message('No users found', name: 'auth_admin_no_users', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Offline`
+  String get auth_admin_offline {
+    return Intl.message('Offline', name: 'auth_admin_offline', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Online`
+  String get auth_admin_online {
+    return Intl.message('Online', name: 'auth_admin_online', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Online Status`
+  String get auth_admin_online_status {
+    return Intl.message('Online Status', name: 'auth_admin_online_status', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Recent Logins`
+  String get auth_admin_recent_logins {
+    return Intl.message('Recent Logins', name: 'auth_admin_recent_logins', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Reset Password`
+  String get auth_admin_reset_password {
+    return Intl.message('Reset Password', name: 'auth_admin_reset_password', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Reset this user's password?`
+  String get auth_admin_reset_password_confirm {
+    return Intl.message(
+      'Reset this user\'s password?',
+      name: 'auth_admin_reset_password_confirm',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Enter new password`
+  String get auth_admin_reset_password_prompt {
+    return Intl.message(
+      'Enter new password',
+      name: 'auth_admin_reset_password_prompt',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Send Recovery Email`
+  String get auth_admin_send_recovery {
+    return Intl.message(
+      'Send Recovery Email',
+      name: 'auth_admin_send_recovery',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Send recovery email to this user?`
+  String get auth_admin_send_recovery_confirm {
+    return Intl.message(
+      'Send recovery email to this user?',
+      name: 'auth_admin_send_recovery_confirm',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Active Sessions`
+  String get auth_admin_sessions {
+    return Intl.message('Active Sessions', name: 'auth_admin_sessions', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Statistics`
+  String get auth_admin_statistics {
+    return Intl.message('Statistics', name: 'auth_admin_statistics', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Teams`
+  String get auth_admin_teams_count {
+    return Intl.message('Teams', name: 'auth_admin_teams_count', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Admin Tools`
+  String get auth_admin_tools {
+    return Intl.message('Admin Tools', name: 'auth_admin_tools', desc: '', locale: localeName, args: []);
+  }
+
+  /// `User Detail`
+  String get auth_admin_user_detail_title {
+    return Intl.message('User Detail', name: 'auth_admin_user_detail_title', desc: '', locale: localeName, args: []);
+  }
+
+  /// `User Management`
+  String get auth_admin_users_title {
+    return Intl.message('User Management', name: 'auth_admin_users_title', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Cancel, Go Back`
+  String get auth_cancel_back {
+    return Intl.message('Cancel, Go Back', name: 'auth_cancel_back', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Change Email`
+  String get auth_change_email_title {
+    return Intl.message('Change Email', name: 'auth_change_email_title', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Change Password`
+  String get auth_change_password {
+    return Intl.message('Change Password', name: 'auth_change_password', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Change Password`
+  String get auth_change_password_title {
+    return Intl.message('Change Password', name: 'auth_change_password_title', desc: '', locale: localeName, args: []);
+  }
+
+  /// `After changing password, all devices will need to re-login.`
+  String get auth_change_password_warning {
+    return Intl.message(
+      'After changing password, all devices will need to re-login.',
+      name: 'auth_change_password_warning',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Change Username`
+  String get auth_change_username_title {
+    return Intl.message('Change Username', name: 'auth_change_username_title', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Confirm Change`
+  String get auth_confirm_change {
+    return Intl.message('Confirm Change', name: 'auth_confirm_change', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Enter password to confirm`
+  String get auth_confirm_password_prompt {
+    return Intl.message(
+      'Enter password to confirm',
+      name: 'auth_confirm_password_prompt',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Email Developer`
+  String get auth_contact_developer_btn {
+    return Intl.message('Email Developer', name: 'auth_contact_developer_btn', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Your device UUID (please include in your message)`
+  String get auth_contact_device_uuid_hint {
+    return Intl.message(
+      'Your device UUID (please include in your message)',
+      name: 'auth_contact_device_uuid_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Please provide your username and new email when contacting support`
+  String get auth_contact_required_info_hint {
+    return Intl.message(
+      'Please provide your username and new email when contacting support',
+      name: 'auth_contact_required_info_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Current Email`
+  String get auth_current_email {
+    return Intl.message('Current Email', name: 'auth_current_email', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Current Password`
+  String get auth_current_password {
+    return Intl.message('Current Password', name: 'auth_current_password', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Current Username`
+  String get auth_current_username {
+    return Intl.message('Current Username', name: 'auth_current_username', desc: '', locale: localeName, args: []);
+  }
+
   /// `Hints:\n- userId here is not friend code you saw on login/friend page\n- DO NOT share above keys or screenshot to others!!!\n- choose one of following methods to import`
   String get auth_data_hints {
     return Intl.message(
       'Hints:\n- userId here is not friend code you saw on login/friend page\n- DO NOT share above keys or screenshot to others!!!\n- choose one of following methods to import',
       name: 'auth_data_hints',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Delete Account`
+  String get auth_delete_account {
+    return Intl.message('Delete Account', name: 'auth_delete_account', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Delete My Account`
+  String get auth_delete_account_confirm {
+    return Intl.message(
+      'Delete My Account',
+      name: 'auth_delete_account_confirm',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `All backups will be lost.`
+  String get auth_delete_account_consequence_1 {
+    return Intl.message(
+      'All backups will be lost.',
+      name: 'auth_delete_account_consequence_1',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `All shared teams will be removed.`
+  String get auth_delete_account_consequence_2 {
+    return Intl.message(
+      'All shared teams will be removed.',
+      name: 'auth_delete_account_consequence_2',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Account cannot be recovered.`
+  String get auth_delete_account_consequence_3 {
+    return Intl.message(
+      'Account cannot be recovered.',
+      name: 'auth_delete_account_consequence_3',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Login credentials will be cleared.`
+  String get auth_delete_account_consequence_4 {
+    return Intl.message(
+      'Login credentials will be cleared.',
+      name: 'auth_delete_account_consequence_4',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Delete Account`
+  String get auth_delete_account_title {
+    return Intl.message('Delete Account', name: 'auth_delete_account_title', desc: '', locale: localeName, args: []);
+  }
+
+  /// `This action cannot be undone. All data will be permanently deleted.`
+  String get auth_delete_account_warning {
+    return Intl.message(
+      'This action cannot be undone. All data will be permanently deleted.',
+      name: 'auth_delete_account_warning',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Device ID`
+  String get auth_device_id {
+    return Intl.message('Device ID', name: 'auth_device_id', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Email`
+  String get auth_email_field {
+    return Intl.message('Email', name: 'auth_email_field', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Email not bound`
+  String get auth_email_not_bound_hint {
+    return Intl.message('Email not bound', name: 'auth_email_not_bound_hint', desc: '', locale: localeName, args: []);
+  }
+
+  /// `If you forgot your password, you can reset it via email or device verification.`
+  String get auth_forgot_password_hint {
+    return Intl.message(
+      'If you forgot your password, you can reset it via email or device verification.',
+      name: 'auth_forgot_password_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Forgot Password?`
+  String get auth_forgot_password_link {
+    return Intl.message('Forgot Password?', name: 'auth_forgot_password_link', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Forgot Password`
+  String get auth_forgot_password_title {
+    return Intl.message('Forgot Password', name: 'auth_forgot_password_title', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Invalid username or password`
+  String get auth_invalid_credentials {
+    return Intl.message(
+      'Invalid username or password',
+      name: 'auth_invalid_credentials',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Login`
+  String get auth_login_title {
+    return Intl.message('Login', name: 'auth_login_title', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Logout`
+  String get auth_logout {
+    return Intl.message('Logout', name: 'auth_logout', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Contact the developer for help.`
+  String get auth_method_contact_developer_desc {
+    return Intl.message(
+      'Contact the developer for help.',
+      name: 'auth_method_contact_developer_desc',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Contact Developer`
+  String get auth_method_contact_developer_title {
+    return Intl.message(
+      'Contact Developer',
+      name: 'auth_method_contact_developer_title',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Verify by username and device ID.`
+  String get auth_method_device_verify_desc {
+    return Intl.message(
+      'Verify by username and device ID.',
+      name: 'auth_method_device_verify_desc',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Device Verification`
+  String get auth_method_device_verify_title {
+    return Intl.message(
+      'Device Verification',
+      name: 'auth_method_device_verify_title',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Send a reset link to your bound email.`
+  String get auth_method_email_reset_desc {
+    return Intl.message(
+      'Send a reset link to your bound email.',
+      name: 'auth_method_email_reset_desc',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Reset via Email`
+  String get auth_method_email_reset_title {
+    return Intl.message(
+      'Reset via Email',
+      name: 'auth_method_email_reset_title',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Migrate Account`
+  String get auth_migrate_account {
+    return Intl.message('Migrate Account', name: 'auth_migrate_account', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Migration failed. Please try again.`
+  String get auth_migration_failed {
+    return Intl.message(
+      'Migration failed. Please try again.',
+      name: 'auth_migration_failed',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Account migrated successfully.`
+  String get auth_migration_success {
+    return Intl.message(
+      'Account migrated successfully.',
+      name: 'auth_migration_success',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `New Email`
+  String get auth_new_email {
+    return Intl.message('New Email', name: 'auth_new_email', desc: '', locale: localeName, args: []);
+  }
+
+  /// `New Username`
+  String get auth_new_username {
+    return Intl.message('New Username', name: 'auth_new_username', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Account not migrated, tap to migrate`
+  String get auth_not_migrated_hint {
+    return Intl.message(
+      'Account not migrated, tap to migrate',
+      name: 'auth_not_migrated_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Open Feedback`
+  String get auth_open_feedback {
+    return Intl.message('Open Feedback', name: 'auth_open_feedback', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Personal Info`
+  String get auth_personal_info {
+    return Intl.message('Personal Info', name: 'auth_personal_info', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Profile`
+  String get auth_profile_title {
+    return Intl.message('Profile', name: 'auth_profile_title', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Register Account`
+  String get auth_register_account {
+    return Intl.message('Register Account', name: 'auth_register_account', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Register`
+  String get auth_register_title {
+    return Intl.message('Register', name: 'auth_register_title', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Resend Code`
+  String get auth_resend_code {
+    return Intl.message('Resend Code', name: 'auth_resend_code', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Role`
+  String get auth_role {
+    return Intl.message('Role', name: 'auth_role', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Admin`
+  String get auth_role_admin {
+    return Intl.message('Admin', name: 'auth_role_admin', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Search username or email`
+  String get auth_search_users {
+    return Intl.message('Search username or email', name: 'auth_search_users', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Send Code`
+  String get auth_send_code {
+    return Intl.message('Send Code', name: 'auth_send_code', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Send Reset Email`
+  String get auth_send_reset_email {
+    return Intl.message('Send Reset Email', name: 'auth_send_reset_email', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Your session has expired. Please log in again.`
+  String get auth_session_expired_message {
+    return Intl.message(
+      'Your session has expired. Please log in again.',
+      name: 'auth_session_expired_message',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Session Expired`
+  String get auth_session_expired_title {
+    return Intl.message('Session Expired', name: 'auth_session_expired_title', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Submit Verification`
+  String get auth_submit_verification {
+    return Intl.message(
+      'Submit Verification',
+      name: 'auth_submit_verification',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `User ID`
+  String get auth_user_id {
+    return Intl.message('User ID', name: 'auth_user_id', desc: '', locale: localeName, args: []);
+  }
+
+  /// `User Management`
+  String get auth_user_management {
+    return Intl.message('User Management', name: 'auth_user_management', desc: '', locale: localeName, args: []);
+  }
+
+  /// `4-18 chars, letters/digits/underscore only`
+  String get auth_username_helper {
+    return Intl.message(
+      '4-18 chars, letters/digits/underscore only',
+      name: 'auth_username_helper',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Username or Email`
+  String get auth_username_or_email {
+    return Intl.message('Username or Email', name: 'auth_username_or_email', desc: '', locale: localeName, args: []);
+  }
+
+  /// `A verification code has been sent to`
+  String get auth_verification_code_sent {
+    return Intl.message(
+      'A verification code has been sent to',
+      name: 'auth_verification_code_sent',
       desc: '',
       locale: localeName,
       args: [],
@@ -2480,6 +3079,17 @@ class S {
     );
   }
 
+  /// `Password recovery support — please include your username and device UUID in your message`
+  String get feedback_password_recovery_banner {
+    return Intl.message(
+      'Password recovery support — please include your username and device UUID in your message',
+      name: 'feedback_password_recovery_banner',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Send`
   String get feedback_send {
     return Intl.message('Send', name: 'feedback_send', desc: '', locale: localeName, args: []);
@@ -3700,6 +4310,17 @@ class S {
     return Intl.message(
       '6-18 characters, at least one alphabet',
       name: 'login_password_error',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Passwords do not match`
+  String get login_password_error_confirm_mismatch {
+    return Intl.message(
+      'Passwords do not match',
+      name: 'login_password_error_confirm_mismatch',
       desc: '',
       locale: localeName,
       args: [],
@@ -6275,6 +6896,159 @@ class S {
   /// `Valentine Script`
   String get valentine_script {
     return Intl.message('Valentine Script', name: 'valentine_script', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Invalid email address`
+  String get validation_email_invalid {
+    return Intl.message(
+      'Invalid email address',
+      name: 'validation_email_invalid',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `New username cannot be the same as the old username`
+  String get validation_name_same_as_old {
+    return Intl.message(
+      'New username cannot be the same as the old username',
+      name: 'validation_name_same_as_old',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Cannot contain whitespace`
+  String get validation_no_whitespace {
+    return Intl.message(
+      'Cannot contain whitespace',
+      name: 'validation_no_whitespace',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Password can only contain printable ASCII characters`
+  String get validation_password_format {
+    return Intl.message(
+      'Password can only contain printable ASCII characters',
+      name: 'validation_password_format',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Password must be 6-18 characters`
+  String get validation_password_length {
+    return Intl.message(
+      'Password must be 6-18 characters',
+      name: 'validation_password_length',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Password cannot be all digits`
+  String get validation_password_not_all_digits {
+    return Intl.message(
+      'Password cannot be all digits',
+      name: 'validation_password_not_all_digits',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `New password cannot be the same as the old password`
+  String get validation_password_same_as_old {
+    return Intl.message(
+      'New password cannot be the same as the old password',
+      name: 'validation_password_same_as_old',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Required`
+  String get validation_required {
+    return Intl.message('Required', name: 'validation_required', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Too long`
+  String get validation_too_long {
+    return Intl.message('Too long', name: 'validation_too_long', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Username cannot end with an underscore`
+  String get validation_username_end_no_underscore {
+    return Intl.message(
+      'Username cannot end with an underscore',
+      name: 'validation_username_end_no_underscore',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Username can only contain letters, digits, and underscores`
+  String get validation_username_format {
+    return Intl.message(
+      'Username can only contain letters, digits, and underscores',
+      name: 'validation_username_format',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Username must be 4-18 characters long`
+  String get validation_username_length {
+    return Intl.message(
+      'Username must be 4-18 characters long',
+      name: 'validation_username_length',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Username cannot be all digits`
+  String get validation_username_not_all_digits {
+    return Intl.message(
+      'Username cannot be all digits',
+      name: 'validation_username_not_all_digits',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `This username is reserved`
+  String get validation_username_reserved {
+    return Intl.message(
+      'This username is reserved',
+      name: 'validation_username_reserved',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Username must start with a letter`
+  String get validation_username_start_letter {
+    return Intl.message(
+      'Username must start with a letter',
+      name: 'validation_username_start_letter',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
   }
 
   /// `Version`

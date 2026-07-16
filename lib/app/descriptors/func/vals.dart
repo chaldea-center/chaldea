@@ -3,6 +3,7 @@ import 'package:chaldea/packages/json_viewer/json_viewer.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
+@Deprecated('Not used emm...')
 class ValListDsc extends StatelessWidget {
   final BaseFunction func;
   final List<DataVals> mutaingVals;
@@ -30,7 +31,7 @@ class ValListDsc extends StatelessWidget {
                 vals: vals,
                 originVals: originVals.getOrNull(j),
                 ignoreRate: false,
-                color: j == 5 || j == 9 ? AppTheme(context).tertiary : null,
+                color: j == 5 || j == 9 ? Theme.of(context).colorScheme.primary : null,
                 inList: true,
               );
             }
@@ -38,7 +39,7 @@ class ValListDsc extends StatelessWidget {
             if (selected != null && selected! - 1 == j) {
               child = DecoratedBox(
                 decoration: BoxDecoration(
-                  border: Border.all(color: AppTheme(context).tertiaryContainer.withAlpha(180)),
+                  border: Border.all(color: Theme.of(context).colorScheme.secondary.withAlpha(180)),
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: child,

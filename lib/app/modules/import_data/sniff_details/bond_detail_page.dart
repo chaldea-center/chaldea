@@ -80,7 +80,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
     }
 
     for (final collection in widget.userSvtCollections) {
-      if (!collection.isOwned) continue;
+      if (!collection.isGet) continue;
       final svt = db.gameData.servantsById[collection.svtId];
       if (svt != null) {
         collections.add((svt: svt, collection: collection));

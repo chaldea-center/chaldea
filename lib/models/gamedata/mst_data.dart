@@ -195,13 +195,14 @@ class FateResponseDetail {
 }
 
 class MasterDataManager extends MasterDataManagerBase {
+  late final _MasterDataHelper helper = _MasterDataHelper(this);
+
   bool get isLoggedIn => user != null && userSvt.isNotEmpty;
 
   bool get isCurPlanUser => db.curUser.lastImportId != null && db.curUser.lastImportId == user?.friendCode;
 
   Iterable<UserServantEntity> get userSvtAndStorage => userSvt.followedBy(userSvtStorage);
   UserServantEntity? getUserSvt(int userSvtId) => userSvt[userSvtId] ?? userSvtStorage[userSvtId];
-  bool isSvtOwned(int svtId) => userSvtCollection[svtId]?.isOwned == true;
 
   MagusGrade? get magusGrade {
     if (isQuestClear(4000709)) {
@@ -408,6 +409,20 @@ class MasterDataManager extends MasterDataManagerBase {
 
   CraftStatus getSvtEquipStatus(UserServantEntity userSvt) {
     return CraftStatus(status: CraftStatus.owned, lv: userSvt.lv, limitCount: userSvt.limitCount);
+  }
+}
+
+class _MasterDataHelper {
+  @protected
+  final MasterDataManager mstData;
+  const _MasterDataHelper(this.mstData);
+
+  int getQuestClearCountFromIds(List<int> questIds) {
+    return Maths.sum(questIds.map((e) => mstData.userQuest[e]?.clearNum ?? 0));
+  }
+
+  int getQuestChallengeCountFromIds(List<int> questIds) {
+    return Maths.sum(questIds.map((e) => mstData.userQuest[e]?.challengeNum ?? 0));
   }
 }
 

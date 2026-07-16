@@ -1,0 +1,211 @@
+// ProfilePage: hub for the logged-in user.
+// Layout: ProfileCard + Personal Info SectionCard + Account Actions SectionCard
+// + (if accessToken empty) Migrate Account ActionRow
+// + (if isAdmin) Admin Tools SectionCard with User Management.
+// Logout pops back to settings; sub-pages push and refresh on pop.
+
+import 'package:flutter/material.dart';
+
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+
+import 'package:chaldea/app/api/chaldea_server.dart';
+import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/modules/auth/admin/admin_users_page.dart';
+import 'package:chaldea/app/modules/auth/change_email_page.dart';
+import 'package:chaldea/app/modules/auth/change_password_page.dart';
+import 'package:chaldea/app/modules/auth/change_username_page.dart';
+import 'package:chaldea/app/modules/auth/delete_account_page.dart';
+import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/models.dart';
+import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/custom_dialogs.dart';
+import 'package:chaldea/widgets/modern/modern.dart';
+
+class ProfilePage extends StatefulWidget {
+  const ProfilePage({super.key});
+
+  @override
+  State<ProfilePage> createState() => _ProfilePageState();
+}
+
+class _ProfilePageState extends State<ProfilePage> {
+  final secrets = db.settings.secrets;
+
+  static ({int userId, DateTime refreshTime})? lastRefresh;
+  static const _kRefreshDuration = Duration(minutes: 10);
+
+  @override
+  void initState() {
+    super.initState();
+    _refresh();
+  }
+
+  Future<void> _refresh() async {
+    if (lastRefresh != null) {
+      final (:userId, :refreshTime) = lastRefresh!;
+      if (db.settings.secrets.user.id == userId && refreshTime.add(_kRefreshDuration).isAfter(DateTime.now())) {
+        return;
+      }
+    }
+    final user = await ChaldeaServerApi.getMe();
+    if (user != null && mounted) {
+      secrets.user.updateFromUserInfo(user);
+      setState(() {});
+    }
+    db.notifySettings();
+  }
+
+  String _maskEmail(String email) {
+    if (email.isEmpty) return '';
+    final at = email.indexOf('@');
+    if (at <= 0) return email;
+    final domain = email.substring(at);
+    final local = email.substring(0, at);
+    final first = local.isNotEmpty ? local[0] : '';
+    return '$first***$domain';
+  }
+
+  Future<void> _logout() async {
+    final confirmed = await SimpleConfirmDialog(
+      title: Text(S.current.auth_logout),
+      content: Text(S.current.auth_logout),
+      confirmText: S.current.confirm,
+    ).showDialog(context);
+    if (confirmed != true) return;
+    final ok = await showEasyLoading(() => ChaldeaServerApi.logout());
+    if (ok == true) {
+      secrets.user.clearAuth();
+      EasyLoading.showSuccess(S.current.success);
+      if (!mounted) return;
+      Navigator.of(context).pop();
+    }
+    db.notifySettings();
+  }
+
+  Future<void> _migrateAccount() async {
+    final secret =
+        await InputCancelOkDialog(title: S.current.auth_migrate_account, hintText: 'secret').showDialog(context)
+            as String?;
+    if (secret == null || secret.isEmpty) return;
+    final user = await showEasyLoading(() => ChaldeaServerApi.migrateToken(secret: secret));
+    if (user != null) {
+      secrets.user.updateFromLoginResponse(user);
+      EasyLoading.showSuccess(S.current.auth_migration_success);
+      setState(() {});
+    }
+    // On failure, the API layer's dispatchError already shows a toast — no manual showError here.
+    db.notifySettings();
+  }
+
+  Future<void> _pushAndRefresh(Widget child) async {
+    await router.push(child: child);
+    if (mounted) setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final user = secrets.user;
+    final name = user.name;
+    final uid = user.id.toString();
+    final email = user.email ?? '';
+    final accessToken = user.accessToken ?? '';
+    final isAdmin = user.isAdmin;
+
+    return Scaffold(
+      appBar: AppBar(title: Text(S.current.auth_profile_title)),
+      body: SafeArea(
+        top: false, // AppBar already handles top safe area
+        child: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          children: [
+            // ProfileCard(title: name, subtitle: '${S.current.auth_user_id}: $uid'),
+            _buildPersonalInfoSection(name, uid, email, isAdmin),
+            _buildAccountActionsSection(),
+            if (accessToken.isEmpty) _buildMigrationSection(),
+            if (isAdmin) _buildAdminSection(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPersonalInfoSection(String name, String uid, String email, bool isAdmin) {
+    return SectionCard(
+      title: S.current.auth_personal_info,
+      children: [
+        InfoRow(leading: Icon(Icons.tag), title: S.current.auth_user_id, value: uid, valueMono: true),
+        InfoRow(
+          leading: Icon(Icons.person_outline),
+          title: S.current.login_username,
+          value: name,
+          onTap: () => _pushAndRefresh(const ChangeUsernamePage()),
+          showChevron: true,
+        ),
+        InfoRow(
+          leading: Icon(Icons.email_outlined),
+          title: S.current.auth_email_field,
+          value: email.isEmpty ? S.current.auth_admin_no_email : _maskEmail(email),
+          valueWidget: Text(
+            email.isEmpty ? S.current.auth_admin_no_email : _maskEmail(email),
+            style: email.isEmpty ? TextStyle(color: Colors.red) : null,
+          ),
+          onTap: () => _pushAndRefresh(const ChangeEmailPage()),
+          showChevron: true,
+        ),
+        InfoRow(
+          leading: Icon(Icons.shield_outlined),
+          title: S.current.auth_role,
+          valueWidget: isAdmin ? Chip(label: Text(S.current.auth_role_admin)) : null,
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAccountActionsSection() {
+    return SectionCard(
+      title: S.current.auth_account_actions,
+      children: [
+        ActionRow(
+          leading: Icon(Icons.lock_outline),
+          title: S.current.auth_change_password,
+          onTap: () => _pushAndRefresh(const ChangePasswordPage()),
+        ),
+        ActionRow(leading: Icon(Icons.logout), title: S.current.auth_logout, onTap: _logout),
+        ActionRow(
+          leading: Icon(Icons.delete_outline),
+          title: S.current.auth_delete_account,
+          variant: ActionRowVariant.danger,
+          onTap: () async {
+            await router.push(child: const DeleteAccountPage());
+            if (!secrets.isLoggedIn && mounted) {
+              Navigator.of(context).pop();
+            }
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMigrationSection() {
+    return SectionCard(
+      title: S.current.auth_migrate_account,
+      divided: false,
+      children: [
+        ActionRow(leading: Icon(Icons.swap_horiz), title: S.current.auth_migrate_account, onTap: _migrateAccount),
+      ],
+    );
+  }
+
+  Widget _buildAdminSection() {
+    return SectionCard(
+      title: S.current.auth_admin_tools,
+      children: [
+        ActionRow(
+          leading: Icon(Icons.admin_panel_settings_outlined),
+          title: S.current.auth_user_management,
+          onTap: () => router.push(child: const AdminUsersPage()),
+        ),
+      ],
+    );
+  }
+}

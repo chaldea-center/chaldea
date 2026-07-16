@@ -8,7 +8,7 @@ class FixedHeight extends StatelessWidget implements PreferredSizeWidget {
 
   const FixedHeight({super.key, required this.height, required this.child});
 
-  const FixedHeight.tabBar(Widget child, {Key? key, double height = 32}) : this(key: key, height: height, child: child);
+  const FixedHeight.tabBar(this.child, {super.key, this.height = 32});
 
   @override
   Size get preferredSize => Size.fromHeight(height);

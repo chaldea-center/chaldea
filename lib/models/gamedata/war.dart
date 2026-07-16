@@ -89,7 +89,7 @@ class NiceWar with RouteInfo {
   num get resolvedPriority {
     if (_fixedWarPriorities.containsKey(id)) return _fixedWarPriorities[id]!;
     if (parentWars.contains(16000) && priority > 10000) {
-      return priority - 10000;
+      return id;
     }
     return priority;
   }

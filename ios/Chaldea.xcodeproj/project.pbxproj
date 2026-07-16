@@ -250,6 +250,7 @@
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				BCE107502259B1D67AA3C231 /* [CP] Embed Pods Frameworks */,
 				938129CE2DC76AA8009DF462 /* ShellScript */,
+				424D3362725B4100A58467F7 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -347,6 +348,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" embed_and_thin";
+		};
+		424D3362725B4100A58467F7 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Chaldea/Pods-Chaldea-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Chaldea/Pods-Chaldea-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Chaldea/Pods-Chaldea-resources.sh\"\n";
+			showEnvVarsInLog = 0;
 		};
 		8DEE1C958864B16B46ED3501 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;

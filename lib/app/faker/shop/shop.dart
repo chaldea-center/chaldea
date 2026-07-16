@@ -141,6 +141,9 @@ class _UserShopsPageState extends State<UserShopsPage>
         ? TextStyle(color: Theme.of(context).hintColor)
         : TextStyle(color: Theme.of(context).disabledColor);
     Widget? leading = reward?.$1;
+    if (shop.image != null) {
+      leading = db.getIconImage(shop.image, width: 32);
+    }
     if (leading != null && !canBuy) {
       leading = Opacity(opacity: 0.5, child: leading);
     }

@@ -1,3 +1,5 @@
+import 'package:flex_color_scheme/flex_color_scheme.dart';
+
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -34,43 +36,64 @@ class _ThemeColorPageState extends State<ThemeColorPage> {
               ],
             ),
           ),
-          RadioGroup<bool>(
-            groupValue: db.settings.useMaterial3,
+          // RadioGroup<bool>(
+          //   groupValue: db.settings.useMaterial3,
+          //   onChanged: (v) {
+          //     if (v != null && v != db.settings.useMaterial3) {
+          //       db.settings.useMaterial3 = v;
+          //       db.notifySettings();
+          //       db.notifyAppUpdate();
+          //     }
+          //     setState(() {});
+          //   },
+          //   child: TileGroup(
+          //     header: "Material Design",
+          //     children: [
+          //       for (final useM3 in [false, true])
+          //         RadioListTile<bool>(value: useM3, title: Text(useM3 ? 'Material 3' : 'Material 2')),
+          //     ],
+          //   ),
+          // ),
+          RadioGroup<FlexScheme?>(
+            groupValue: db.settings.flexScheme,
             onChanged: (v) {
-              if (v != null && v != db.settings.useMaterial3) {
-                db.settings.useMaterial3 = v;
+              if (v != db.settings.flexScheme) {
+                db.settings.flexScheme = v;
                 db.notifySettings();
                 db.notifyAppUpdate();
               }
               setState(() {});
             },
             child: TileGroup(
-              header: "Material Design",
+              header: 'Color Scheme',
               children: [
-                for (final useM3 in [false, true])
-                  RadioListTile<bool>(value: useM3, title: Text(useM3 ? 'Material 3' : 'Material 2')),
-              ],
-            ),
-          ),
-          RadioGroup<ColorSeed?>(
-            groupValue: db.settings.colorSeed,
-            onChanged: (v) {
-              if (v != db.settings.colorSeed) {
-                db.settings.colorSeed = v;
-                db.notifySettings();
-                db.notifyAppUpdate();
-              }
-              setState(() {});
-            },
-            child: TileGroup(
-              header: 'Theme Color',
-              children: [
-                for (final seed in [null, ...ColorSeed.values])
-                  RadioListTile<ColorSeed?>(
-                    value: seed,
-                    title: Text(seed?.label ?? S.current.general_default),
-                    secondary: seed == null ? null : Container(width: 24, height: 24, color: seed.color),
-                  ),
+                for (final scheme in [null, ...FlexScheme.values])
+                  if (scheme != .custom)
+                    RadioListTile<FlexScheme?>(
+                      value: scheme,
+                      title: Text(scheme?.data.name ?? S.current.general_default),
+                      secondary: Row(
+                        mainAxisSize: .min,
+                        spacing: 4,
+                        children: [
+                          for (final isDark in [false, true])
+                            FlexThemeModeOptionButton(
+                              flexSchemeColor: isDark
+                                  ? scheme?.data.dark ?? FlexColor.materialBaseline.dark
+                                  : scheme?.data.light ?? FlexColor.materialBaseline.light,
+                              backgroundColor: isDark ? Colors.grey.shade800 : Colors.white,
+                              selected: false,
+                              optionButtonPadding: .zero,
+                              optionButtonMargin: .all(2),
+                              // optionButtonBorderRadius: optionButtonBorderRadius,
+                              height: 12,
+                              width: 12,
+                              // borderRadius: borderRadius,
+                              padding: .all(2),
+                            ),
+                        ],
+                      ),
+                    ),
               ],
             ),
           ),

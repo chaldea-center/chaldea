@@ -577,7 +577,7 @@ class BattleRecorderPanelBase extends StatelessWidget {
           text: '${pskill.lName.l} ',
           onTap: pskill.routeTo,
           style: (Theme.of(context).textTheme.bodySmall ?? const TextStyle()).copyWith(
-            color: AppTheme(context).tertiaryContainer,
+            color: Theme.of(context).colorScheme.primary,
           ),
         ),
       if (skill.skillLv != 0 && showDetail) TextSpan(text: 'Lv.${skill.skillLv} '),

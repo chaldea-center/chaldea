@@ -45,7 +45,7 @@ class MultiDescriptor {
   static TextSpan inkWell({required BuildContext context, required String text, VoidCallback? onTap}) {
     return TextSpan(
       text: ' $text ',
-      style: TextStyle(color: AppTheme(context).tertiary),
+      style: TextStyle(color: Theme.of(context).colorScheme.primary),
       recognizer: onTap == null ? null : (TapGestureRecognizer()..onTap = onTap),
     );
   }

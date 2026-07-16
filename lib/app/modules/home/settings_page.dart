@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:chaldea/_test_page.dart';
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/modules/auth/login_page.dart';
+import 'package:chaldea/app/modules/auth/profile_page.dart';
 import 'package:chaldea/app/modules/common/frame_rate_layer.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -9,7 +11,6 @@ import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
-import 'package:chaldea/widgets/theme.dart';
 import 'package:chaldea/widgets/tile_items.dart';
 import '../root/global_fab.dart';
 import 'subpage/about_page.dart';
@@ -18,7 +19,6 @@ import 'subpage/display_setting_page.dart';
 import 'subpage/feedback_page.dart';
 import 'subpage/game_data_page.dart';
 import 'subpage/game_server_page.dart';
-import 'subpage/login_page.dart';
 import 'subpage/network_settings.dart';
 import 'subpage/share_app_dialog.dart';
 import 'subpage/theme_color.dart';
@@ -62,7 +62,7 @@ class _SettingsPageState extends State<SettingsPage> {
           TileGroup(
             header: S.current.chaldea_account,
             children: [
-              userTile,
+              db.onSettings((context, _) => userTile),
               ListTile(
                 leading: const Icon(Icons.dns),
                 title: Text(S.current.network_settings),
@@ -200,13 +200,13 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               if (!const [Language.chs, Language.cht, Language.en].contains(Language.current))
                 Card(
-                  color: AppTheme(context).tertiary,
+                  color: Theme.of(context).colorScheme.primaryContainer,
                   margin: const EdgeInsets.symmetric(horizontal: 16),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                     child: Text(
                       'We are seeking translators!',
-                      style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+                      style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer),
                     ),
                   ),
                 ),
@@ -358,22 +358,43 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Widget get userTile {
+    String? subtitle;
+    // Per design D5: migration reminder > email-not-bound reminder > none.
+    // When not logged in, no subtitle.
+    final user = db.settings.secrets.user;
+    final token = user.accessToken ?? '';
+    final legacySecret = user.secret ?? '';
+    final email = user.email ?? '';
+    if (token.isEmpty && legacySecret.isNotEmpty) {
+      subtitle ??= S.current.auth_not_migrated_hint;
+    }
+    if (email.isEmpty) {
+      subtitle ??= S.current.auth_email_not_bound_hint;
+    }
+
     return ListTile(
       leading: const Icon(Icons.person),
       title: Text(S.current.login_username),
-      trailing: db.onSettings((context, snapshot) {
-        final user = db.settings.secrets.user;
-        if (user == null) return const SizedBox.shrink();
-        return Text.rich(
-          TextSpan(
-            text: user.name,
-            children: [TextSpan(text: '\n${user.id}', style: Theme.of(context).textTheme.bodySmall)],
-          ),
-          textAlign: TextAlign.end,
-        );
-      }),
+      subtitle: subtitle == null
+          ? null
+          : Text(
+              subtitle,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.error),
+            ),
+      trailing: Text.rich(
+        TextSpan(
+          text: user.name,
+          // children: [TextSpan(text: '\n${user.id}', style: Theme.of(context).textTheme.bodySmall)],
+        ),
+        textAlign: TextAlign.end,
+      ),
       onTap: () {
-        router.popDetailAndPush(child: LoginPage());
+        // Smart navigation: profile if logged in, login if not.
+        if (db.settings.secrets.isLoggedIn) {
+          router.push(child: const ProfilePage());
+        } else {
+          router.push(child: const LoginPage());
+        }
       },
     );
   }
