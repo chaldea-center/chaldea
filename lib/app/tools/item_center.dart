@@ -134,6 +134,9 @@ class ItemCenter {
     final cur = user.svtStatusOf(svtId).cur;
     final consumed = calcOneSvt(svt, SvtPlan.empty()..favorite = cur.favorite, cur, priorityFiltered: true);
     final demands = calcOneSvt(svt, cur, user.svtPlanOf(svtId), priorityFiltered: true);
+    // Lanterns of Chaldea only displays the amount consumed, the demands are always 0
+    demands.special.remove(Items.lanternId);
+    demands.all = Maths.sumDict(demands.parts);
 
     _svtCur._sparseMatrix.remove(svtId);
     for (final itemId in consumed.allKeys) {
