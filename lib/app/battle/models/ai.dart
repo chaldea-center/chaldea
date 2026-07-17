@@ -37,7 +37,7 @@ class FieldAiManager with _AiManagerBase {
         if (ai.timing != timing.value) continue;
         if (ai.cond == NiceAiCond.none ||
             (ai.cond == NiceAiCond.turn && ai.vals.firstOrNull == 1) ||
-            (ai.cond == NiceAiCond.commonReleaseId && await isSkipCommonRelease(ai.vals))) {
+            (ai.cond == NiceAiCond.commonReleaseId && await isSkipSpecificCommonRelease(ai.vals))) {
           if (ai.aiAct.type == NiceAiActType.skillId && ai.aiAct.target == NiceAiActTarget.random) {
             final skill = ai.aiAct.skill;
             if (skill == null) continue;
@@ -58,14 +58,16 @@ class FieldAiManager with _AiManagerBase {
     }
   }
 
-  Future<bool> isSkipCommonRelease(List<int> commonReleaseId) async {
+  Future<bool> isSkipSpecificCommonRelease(List<int> commonReleaseId) async {
     if (commonReleaseId.isEmpty) return false;
-    List<CommonRelease> commonRelease = [];
+    List<CommonRelease> allCommonRelease = [];
     for (final id in commonReleaseId) {
-      commonRelease.addAll(await showEasyLoading(() => AtlasApi.commonRelease(id), mask: true) ?? []);
+      final crs = await showEasyLoading(() => AtlasApi.commonRelease(id), mask: true);
+      if (crs == null) return false;
+      allCommonRelease.addAll(crs);
     }
     // Check if commonRelease that needs to be skipped is only CondType.questClearPhase
-    return commonRelease.isNotEmpty && commonRelease.every((cr) => cr.condType == CondType.questClearPhase);
+    return allCommonRelease.isNotEmpty && allCommonRelease.every((cr) => cr.condType == CondType.questClearPhase);
   }
 
   Future<void> actWaveStart(BattleData battleData) async {
