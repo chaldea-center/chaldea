@@ -623,7 +623,7 @@ class _ItemListTabState extends State<ItemListTab> {
       textAlign: TextAlign.center,
       keyboardType: const TextInputType.numberWithOptions(signed: true),
       textInputAction: TextInputAction.next,
-      decoration: const InputDecoration(counterText: ''),
+      decoration: const InputDecoration(counterText: '', contentPadding: .zero),
       // inputFormatters: [
       // FilteringTextInputFormatter.allow(RegExp(r'-?[\d,]*')),
       // if (itemKey == Item.qp) NumberInputFormatter(),

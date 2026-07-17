@@ -232,7 +232,7 @@ class FilterOption<T> extends StatelessWidget {
               ? (enabled ? selectedColor : selectedColor.withValues(alpha: selectedColor.a * 0.5))
               : unselectedColor,
           minimumSize: minimumSize ?? (shrinkWrap ? const Size(2, 2) : const Size(48, 36)),
-          padding: shrinkWrap ? const EdgeInsets.all(0) : null,
+          padding: shrinkWrap ? EdgeInsets.zero : .symmetric(horizontal: 16),
           textStyle: const TextStyle(fontWeight: FontWeight.normal),
           // tapTargetSize: shrinkWrap ? MaterialTapTargetSize.shrinkWrap : null,
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,

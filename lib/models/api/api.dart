@@ -403,13 +403,7 @@ class AdminUserListItem {
   final int role;
   final int createdAt;
 
-  AdminUserListItem({
-    required this.id,
-    required this.name,
-    this.email,
-    required this.role,
-    required this.createdAt,
-  });
+  AdminUserListItem({required this.id, required this.name, this.email, required this.role, required this.createdAt});
 
   factory AdminUserListItem.fromJson(Map<String, dynamic> json) => _$AdminUserListItemFromJson(json);
 
