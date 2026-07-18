@@ -1793,8 +1793,13 @@ class BattleServantData {
     }
   }
 
-  List<BuffData> getAllBuffs(final BattleData battleData, {bool activeFirst = false}) {
-    final selfBuffs = activeFirst ? battleBuff.validBuffsActiveFirst : battleBuff.validBuffs;
+  List<BuffData> getAllBuffs(final BattleData battleData, {BuffsOrder? buffsOrder = BuffsOrder.activeFirst}) {
+    final selfBuffs = switch (buffsOrder) {
+      null => [],
+      BuffsOrder.activeFirst => battleBuff.validBuffsActiveFirst,
+      BuffsOrder.passiveFirst => battleBuff.validBuffs,
+      BuffsOrder.addOrder => battleBuff.validBuffsAddOrder,
+    };
     return [...selfBuffs, ...battleData.getFieldBuffs(isPlayer)];
   }
 
@@ -1888,7 +1893,7 @@ class BattleServantData {
       return null;
     }
 
-    final allBuffs = getAllBuffs(battleData, activeFirst: true);
+    final allBuffs = getAllBuffs(battleData, buffsOrder: BuffsOrder.activeFirst);
     for (final buff in collectBuffsPerAction(allBuffs, BuffAction.multiattack)) {
       if (await buff.shouldActivateBuff(
         battleData,
@@ -2261,7 +2266,7 @@ class BattleServantData {
     final BattleSkillInfoData? skillInfo,
     final List<NiceFunction>? receivedFunctionsList,
     final int? consumedNp,
-    final bool activeFirst = true,
+    final BuffsOrder? buffsOrder = BuffsOrder.activeFirst,
   }) async {
     return await activateBuffs(
       battleData,
@@ -2272,7 +2277,7 @@ class BattleServantData {
       skillInfo: skillInfo,
       receivedFunctionsList: receivedFunctionsList,
       consumedNp: consumedNp,
-      activeFirst: activeFirst,
+      buffsOrder: buffsOrder,
     );
   }
 
@@ -2311,10 +2316,10 @@ class BattleServantData {
     final BattleSkillInfoData? skillInfo,
     final List<NiceFunction>? receivedFunctionsList,
     final int? consumedNp,
-    final bool activeFirst = true,
+    final BuffsOrder? buffsOrder = BuffsOrder.activeFirst,
   }) async {
     bool activated = false;
-    final allBuffs = getAllBuffs(battleData, activeFirst: activeFirst);
+    final allBuffs = getAllBuffs(battleData, buffsOrder: buffsOrder);
     for (final buffAction in buffActions) {
       for (final buff in collectBuffsPerAction(allBuffs, buffAction)) {
         final List<int> selfTraits = fetchSelfTraits(buffAction, buff, this, cardData: card);
@@ -2863,3 +2868,5 @@ enum BattleServantActionHistoryType {
 
   bool get isDamage => this != none;
 }
+
+enum BuffsOrder { activeFirst, passiveFirst, addOrder }

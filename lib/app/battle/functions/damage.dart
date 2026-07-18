@@ -55,7 +55,7 @@ class Damage {
           ],
           opponent: target,
           card: currentCard,
-          activeFirst: false,
+          buffsOrder: BuffsOrder.passiveFirst,
         );
         await activator.activateBuffs(
           battleData,
@@ -68,7 +68,7 @@ class Damage {
           ],
           opponent: target,
           card: currentCard,
-          activeFirst: false,
+          buffsOrder: BuffsOrder.passiveFirst,
         );
       }
     }
@@ -534,7 +534,7 @@ class Damage {
           ],
           opponent: target,
           card: currentCard,
-          activeFirst: false,
+          buffsOrder: BuffsOrder.passiveFirst,
         );
         await activator.activateBuffs(
           battleData,
@@ -547,7 +547,7 @@ class Damage {
           ],
           opponent: target,
           card: currentCard,
-          activeFirst: false,
+          buffsOrder: BuffsOrder.passiveFirst,
         );
       }
     }
