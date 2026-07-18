@@ -987,20 +987,10 @@ class BattleServantData {
       case BuffAction.grantInstantdeath:
       case BuffAction.multiattack:
         final activeOnly = buff.buff.script.IndvAddBuffPassive != 1;
-        List<int> npDamageTrait = [];
-        final damageType = self.playerSvtData?.td?.damageType;
-        if (damageType != null) {
-          npDamageTrait = switch (damageType) {
-            TdEffectFlag.support => ConstData.constantStr.npIndividualityNotDamage,
-            TdEffectFlag.attackEnemyAll => ConstData.constantStr.npIndividualityDamageAll,
-            TdEffectFlag.attackEnemyOne => ConstData.constantStr.npIndividualityDamageOne,
-          };
-        }
         return self.getTraits(
           addTraits: [
             ...cardData?.traits ?? [],
             ...self.getBuffTraits(activeOnly: activeOnly),
-            ...npDamageTrait,
           ],
         );
       case BuffAction.donotActCommandtype:
