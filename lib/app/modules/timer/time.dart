@@ -161,7 +161,7 @@ class _RegionTimeTabState extends State<RegionTimeTab> {
         [local.hour, local.minute, local.second].map(_pad).join(':'),
         style: const TextStyle(fontFamily: kMonoFont, fontSize: 32),
       ),
-      subtitle: Text.rich(TextSpan(children: subtitles)),
+      subtitle: Text.rich(TextSpan(text: ' ', children: subtitles)),
     );
   }
 

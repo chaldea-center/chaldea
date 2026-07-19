@@ -203,8 +203,9 @@ class _TimerHomePageState extends State<TimerHomePage>
       padding: ButtonStyleButton.allOrNull<EdgeInsetsGeometry>(const EdgeInsets.symmetric(horizontal: 4)),
     );
     return OverflowBar(
-      alignment: MainAxisAlignment.center,
       spacing: 4,
+      alignment: MainAxisAlignment.center,
+      overflowAlignment: .center,
       children: [
         FilterGroup<TimerSortType>(
           padding: EdgeInsets.zero,
