@@ -200,7 +200,7 @@ class _PaletteForThemeState extends State<_PaletteForTheme> {
                   maxLines: 2,
                   maxFontSize: 12,
                   style: TextStyle(
-                    shadows: const [Shadow(offset: Offset(0, 0), blurRadius: 2, color: Colors.grey)],
+                    // shadows: const [Shadow(offset: Offset(0, 0), blurRadius: 2, color: Colors.grey)],
                     color: color,
                   ),
                 ),

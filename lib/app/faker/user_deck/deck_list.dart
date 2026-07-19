@@ -323,6 +323,8 @@ extension BattleTeamFormationX on BattleTeamFormation {
               appendId2Num[skillId]!: userSvt.appendPassiveSkillLvs?.getOrNull(index) ?? 0,
         };
 
+        bool grandBondEquipSkillChange = false;
+
         SvtEquipSaveData? getEquipData(SvtEquipTarget equipTarget) {
           final userCE = userSvts[svt?.userSvtEquipIds?.getOrNull(equipTarget.value)];
           if (userCE == null) return null;
@@ -338,6 +340,11 @@ extension BattleTeamFormationX on BattleTeamFormation {
             }
           } else {
             limitBreak = userCE.limitCount == 4;
+          }
+          if (equipTarget == .bond &&
+              userCE.skillId1 != 0 &&
+              userCE.skillId1 == ConstData.constants.grandFriendshipEquipSkillId) {
+            grandBondEquipSkillChange = true;
           }
           return SvtEquipSaveData(id: userCE.svtId, lv: userCE.lv, limitBreak: limitBreak);
         }
@@ -363,6 +370,7 @@ extension BattleTeamFormationX on BattleTeamFormation {
           cardStrengthens: null,
           commandCodeIds: null,
           grandSvt: userSvt.grandSvt == 1,
+          classBoardData: ClassBoardStatisticsData(grandBondEquipSkillChange: grandBondEquipSkillChange),
         );
       }),
     );
@@ -453,6 +461,9 @@ extension BattleTeamFormationX on BattleTeamFormation {
         //  customPassives,
         //  customPassiveLvs,
         grandSvt: mstData.userSvtGrand.any((e) => e.userSvtId == userSvt.id),
+        classBoardData: ClassBoardStatisticsData(
+          grandBondEquipSkillChange: (svtData.equipTarget2SkillChange ?? 0) != 0,
+        ),
       );
     }
 

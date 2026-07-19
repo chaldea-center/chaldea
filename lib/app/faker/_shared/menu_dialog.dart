@@ -211,7 +211,7 @@ class _FakerMenuDialogState extends State<FakerMenuDialog> with FakerRuntimeStat
     List<Widget> children = [];
     final disabledColor = Theme.of(context).disabledColor;
     for (final button in buttons) {
-      final color = button.enabled ? ButtonTheme.of(context).colorScheme?.tertiaryContainer : disabledColor;
+      final color = button.enabled ? Theme.of(context).colorScheme.surfaceTint : disabledColor;
       Widget child = SizedBox(
         width: x.toDouble(),
         height: (y1 + y2).toDouble(),

@@ -25,7 +25,6 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
     return Scaffold(
       body: IndexedStack(
         index: _curIndex,
@@ -38,11 +37,6 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
-        unselectedItemColor: themeData.unselectedWidgetColor,
-        selectedItemColor: switch (themeData.brightness) {
-          Brightness.light => themeData.colorScheme.primary,
-          Brightness.dark => themeData.colorScheme.secondary,
-        },
         currentIndex: _curIndex,
         items: [
           const BottomNavigationBarItem(

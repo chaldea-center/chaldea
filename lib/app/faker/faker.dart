@@ -317,7 +317,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
     );
 
     return Container(
-      color: Theme.of(context).secondaryHeaderColor,
+      color: Theme.of(context).colorScheme.tertiaryContainer,
       padding: const EdgeInsets.only(bottom: 4),
       child: Column(mainAxisSize: MainAxisSize.min, children: children),
     );
@@ -820,7 +820,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
         CheckboxListTile.adaptive(
           dense: true,
           value: battleOption.waitApRecoverGold,
-          title: const Text("Recover Golden Fruit right after AP changed"),
+          title: const Text("Wait AP changed before eating Golden Fruit"),
           onChanged: (v) {
             runtime.lockTask(() {
               setState(() {

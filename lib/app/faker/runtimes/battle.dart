@@ -836,7 +836,7 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
       final apConsume = option.isApHalf ? quest.consume ~/ 2 : quest.consume;
       if (mstData.user!.calCurAp() >= apConsume) return;
       List<int> recoverIds = option.recoverIds.toList();
-      if (option.goldApplePrior && recoverIds.isNotEmpty) {
+      if (option.goldApplePrior && recoverIds.length > 1) {
         final firstRecover = mstRecovers[recoverIds.first];
         if (firstRecover != null && !firstRecover.isRecoverFullAp && recoverIds.contains(RecoverId.goldApple.id)) {
           int dt = mstData.user!.actRecoverAt - DateTime.now().timestamp;

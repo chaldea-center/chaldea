@@ -52,18 +52,18 @@ class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
       onChanged: (v) => settings.data = v,
     ),
     _Group(
-      title: '${S.current.chaldea_server}(Account/Laplace)',
-      globalUrl: '${HostsX.worker.global}/network/ping',
-      cnUrl: '${HostsX.worker.cn}/network/ping',
-      getValue: () => settings.worker,
-      onChanged: (v) => settings.worker = v,
-    ),
-    _Group(
-      title: '${S.current.chaldea_server}(Recognizer)',
+      title: S.current.chaldea_server,
       globalUrl: '${HostsX.api.global}/network/ping',
       cnUrl: '${HostsX.api.cn}/network/ping',
       getValue: () => settings.api,
       onChanged: (v) => settings.api = v,
+    ),
+    _Group(
+      title: '${S.current.chaldea_server}(Worker)',
+      globalUrl: '${HostsX.worker.global}/network/ping',
+      cnUrl: '${HostsX.worker.cn}/network/ping',
+      getValue: () => settings.worker,
+      onChanged: (v) => settings.worker = v,
     ),
     _Group(
       title: 'Atlas Api',

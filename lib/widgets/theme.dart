@@ -144,7 +144,7 @@ class AppThemeData {
   const AppThemeData(this.themeData, this.extra);
 
   bool get isDark => themeData.brightness == .dark;
-  Color get inlineLinkColor => themeData.colorScheme.secondary;
+  Color get inlineLinkColor => themeData.colorScheme.tertiary;
   Color get accentColor => themeData.colorScheme.primary;
 }
 

@@ -253,7 +253,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WindowListener
 
     showDialog(
       context: context,
-      barrierDismissible: true,
+      barrierDismissible: false,
       builder: (dialogContext) {
         return AlertDialog(
           title: Text(Language.isZH ? '绑定邮箱' : 'Bind Email'),
