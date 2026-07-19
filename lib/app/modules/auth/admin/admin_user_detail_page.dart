@@ -144,7 +144,7 @@ class _AdminUserDetailPageState extends State<AdminUserDetailPage> {
         ? DateTime.fromMillisecondsSinceEpoch(user.createdAt! * 1000).toDateString()
         : '-';
     return SectionCard(
-      title: S.current.auth_admin_basic_info,
+      header: S.current.auth_admin_basic_info,
       children: [
         InfoRow(leading: Icon(Icons.person_outline), title: S.current.login_username, value: user.name),
         InfoRow(leading: Icon(Icons.tag), title: S.current.auth_user_id, value: user.id.toString(), valueMono: true),
@@ -165,7 +165,7 @@ class _AdminUserDetailPageState extends State<AdminUserDetailPage> {
 
   Widget _buildStatistics(AdminUserDetail d) {
     return SectionCard(
-      title: S.current.auth_admin_statistics,
+      header: S.current.auth_admin_statistics,
       children: [
         InfoRow(
           leading: Icon(Icons.cloud_upload_outlined),
@@ -197,7 +197,7 @@ class _AdminUserDetailPageState extends State<AdminUserDetailPage> {
 
   Widget _buildAdminActions() {
     return SectionCard(
-      title: S.current.auth_admin_actions,
+      header: S.current.auth_admin_actions,
       children: [
         ActionRow(
           leading: Icon(Icons.lock_reset_outlined),

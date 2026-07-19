@@ -633,6 +633,17 @@ class S {
     return Intl.message('Email not bound', name: 'auth_email_not_bound_hint', desc: '', locale: localeName, args: []);
   }
 
+  /// `Didn't get the code? Check your spam folder or add us to your allowlist, then resend.`
+  String get auth_email_not_received_hint {
+    return Intl.message(
+      'Didn\'t get the code? Check your spam folder or add us to your allowlist, then resend.',
+      name: 'auth_email_not_received_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `If you forgot your password, you can reset it via email or device verification.`
   String get auth_forgot_password_hint {
     return Intl.message(

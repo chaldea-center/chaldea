@@ -212,6 +212,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "auth_device_id": MessageLookupByLibrary.simpleMessage("Device ID"),
     "auth_email_field": MessageLookupByLibrary.simpleMessage("Email"),
     "auth_email_not_bound_hint": MessageLookupByLibrary.simpleMessage("Email not bound"),
+    "auth_email_not_received_hint": MessageLookupByLibrary.simpleMessage(
+      "Didn\'t get the code? Check your spam folder or add us to your allowlist, then resend.",
+    ),
     "auth_forgot_password_hint": MessageLookupByLibrary.simpleMessage(
       "If you forgot your password, you can reset it via email or device verification.",
     ),

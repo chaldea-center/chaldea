@@ -96,6 +96,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "attach_help": MessageLookupByLibrary.simpleMessage("アルバムで画像をインポートする時問題があれば、ファイルでインポートしてください"),
     "attachment": MessageLookupByLibrary.simpleMessage("添付"),
     "attack_np_rate": MessageLookupByLibrary.simpleMessage("攻撃NP获得量"),
+    "auth_email_not_received_hint": MessageLookupByLibrary.simpleMessage(
+      "コードが届きませんか？迷惑メールフォルダを確認するか、当方のメールを許可リストに追加してから再送信してください。",
+    ),
     "auto_reset": MessageLookupByLibrary.simpleMessage("自動リセット"),
     "auto_update": MessageLookupByLibrary.simpleMessage("自動更新"),
     "autoplay": MessageLookupByLibrary.simpleMessage("自動プレイ"),

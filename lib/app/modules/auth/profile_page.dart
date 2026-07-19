@@ -4,8 +4,6 @@
 // + (if isAdmin) Admin Tools SectionCard with User Management.
 // Logout pops back to settings; sub-pages push and refresh on pop.
 
-import 'package:flutter/material.dart';
-
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/chaldea_server.dart';
@@ -18,8 +16,8 @@ import 'package:chaldea/app/modules/auth/delete_account_page.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
-import 'package:chaldea/widgets/custom_dialogs.dart';
 import 'package:chaldea/widgets/modern/modern.dart';
+import 'package:chaldea/widgets/widgets.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -113,25 +111,22 @@ class _ProfilePageState extends State<ProfilePage> {
 
     return Scaffold(
       appBar: AppBar(title: Text(S.current.auth_profile_title)),
-      body: SafeArea(
-        top: false, // AppBar already handles top safe area
-        child: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-          children: [
-            // ProfileCard(title: name, subtitle: '${S.current.auth_user_id}: $uid'),
-            _buildPersonalInfoSection(name, uid, email, isAdmin),
-            _buildAccountActionsSection(),
-            if (accessToken.isEmpty) _buildMigrationSection(),
-            if (isAdmin) _buildAdminSection(),
-          ],
-        ),
+      body: ListView(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        children: [
+          // ProfileCard(title: name, subtitle: '${S.current.auth_user_id}: $uid'),
+          _buildPersonalInfoSection(name, uid, email, isAdmin),
+          _buildAccountActionsSection(),
+          if (accessToken.isEmpty) _buildMigrationSection(),
+          if (isAdmin) _buildAdminSection(),
+        ],
       ),
     );
   }
 
   Widget _buildPersonalInfoSection(String name, String uid, String email, bool isAdmin) {
-    return SectionCard(
-      title: S.current.auth_personal_info,
+    return TileGroup(
+      header: S.current.auth_personal_info,
       children: [
         InfoRow(leading: Icon(Icons.tag), title: S.current.auth_user_id, value: uid, valueMono: true),
         InfoRow(
@@ -162,8 +157,8 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _buildAccountActionsSection() {
-    return SectionCard(
-      title: S.current.auth_account_actions,
+    return TileGroup(
+      header: S.current.auth_account_actions,
       children: [
         ActionRow(
           leading: Icon(Icons.lock_outline),
@@ -187,9 +182,9 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _buildMigrationSection() {
-    return SectionCard(
-      title: S.current.auth_migrate_account,
-      divided: false,
+    return TileGroup(
+      header: S.current.auth_migrate_account,
+      // divided: false,
       children: [
         ActionRow(leading: Icon(Icons.swap_horiz), title: S.current.auth_migrate_account, onTap: _migrateAccount),
       ],
@@ -197,8 +192,8 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _buildAdminSection() {
-    return SectionCard(
-      title: S.current.auth_admin_tools,
+    return TileGroup(
+      header: S.current.auth_admin_tools,
       children: [
         ActionRow(
           leading: Icon(Icons.admin_panel_settings_outlined),

@@ -321,6 +321,15 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   : S.current.auth_resend_code,
             ),
           ),
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              S.current.auth_email_not_received_hint,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.outline),
+              textAlign: TextAlign.center,
+            ),
+          ),
         ],
       ],
     );
@@ -437,6 +446,15 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               _deviceResendTimerActive
                   ? '${S.current.auth_resend_code} (${_deviceResendCountdown}s)'
                   : S.current.auth_resend_code,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              S.current.auth_email_not_received_hint,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.outline),
+              textAlign: TextAlign.center,
             ),
           ),
         ],

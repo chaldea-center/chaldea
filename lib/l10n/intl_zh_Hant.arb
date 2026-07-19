@@ -85,6 +85,7 @@
   "auth_device_id": null,
   "auth_email_field": null,
   "auth_email_not_bound_hint": null,
+  "auth_email_not_received_hint": "未收到驗證碼？請檢查垃圾郵件匣，或將我們的郵箱加入白名單後重新發送。",
   "auth_forgot_password_hint": null,
   "auth_forgot_password_link": null,
   "auth_forgot_password_title": null,

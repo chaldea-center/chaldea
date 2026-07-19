@@ -90,6 +90,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "Si tienes problemas para seleccionar desde Imágenes, utiliza Archivos en su lugar",
     ),
     "attachment": MessageLookupByLibrary.simpleMessage("Archivo adjunto"),
+    "auth_email_not_received_hint": MessageLookupByLibrary.simpleMessage(
+      "¿No recibiste el código? Revisa tu carpeta de spam o añádenos a tu lista de permitidos, luego reenvía.",
+    ),
     "auto_reset": MessageLookupByLibrary.simpleMessage("Reinicio automático"),
     "auto_update": MessageLookupByLibrary.simpleMessage("Actualizar automáticamente"),
     "background": MessageLookupByLibrary.simpleMessage("Fondo"),

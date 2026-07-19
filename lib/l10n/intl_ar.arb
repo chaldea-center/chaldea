@@ -81,6 +81,7 @@
   "auth_device_id": null,
   "auth_email_field": null,
   "auth_email_not_bound_hint": null,
+  "auth_email_not_received_hint": "لم تصلك الرمز؟ تحقق من مجلد الرسائل غير المرغوبة أو أضفنا إلى قائمة السماح، ثم أعد الإرسال.",
   "auth_forgot_password_hint": null,
   "auth_forgot_password_link": null,
   "auth_forgot_password_title": null,

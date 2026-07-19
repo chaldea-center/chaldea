@@ -81,6 +81,7 @@
   "auth_device_id": null,
   "auth_email_field": null,
   "auth_email_not_bound_hint": null,
+  "auth_email_not_received_hint": "¿No recibiste el código? Revisa tu carpeta de spam o añádenos a tu lista de permitidos, luego reenvía.",
   "auth_forgot_password_hint": null,
   "auth_forgot_password_link": null,
   "auth_forgot_password_title": null,

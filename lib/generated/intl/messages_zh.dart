@@ -194,6 +194,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "auth_device_id": MessageLookupByLibrary.simpleMessage("设备ID"),
     "auth_email_field": MessageLookupByLibrary.simpleMessage("邮箱"),
     "auth_email_not_bound_hint": MessageLookupByLibrary.simpleMessage("邮箱未绑定"),
+    "auth_email_not_received_hint": MessageLookupByLibrary.simpleMessage("未收到验证码？请检查垃圾邮件箱，或将我们的邮箱加入白名单后重新发送。"),
     "auth_forgot_password_hint": MessageLookupByLibrary.simpleMessage("如果忘记密码，可通过邮箱或设备验证重置。"),
     "auth_forgot_password_link": MessageLookupByLibrary.simpleMessage("忘记密码？"),
     "auth_forgot_password_title": MessageLookupByLibrary.simpleMessage("忘记密码"),

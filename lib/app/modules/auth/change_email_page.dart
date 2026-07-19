@@ -169,6 +169,15 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
           _resendTimerActive ? '${S.current.auth_resend_code} (${_resendCountdown}s)' : S.current.auth_resend_code,
         ),
       ),
+      const SizedBox(height: 8),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Text(
+          S.current.auth_email_not_received_hint,
+          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.outline),
+          textAlign: TextAlign.center,
+        ),
+      ),
     ];
   }
 }

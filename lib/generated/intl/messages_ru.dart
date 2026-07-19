@@ -142,6 +142,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "auth_data_hints": MessageLookupByLibrary.simpleMessage(
       "Подсказки: - userId здесь не является кодом друга, который вы видели на странице входа / друга - НЕ передавайте указанные ключи или скриншоты другим лицам!!! - выберите один из следующих методов импорта",
     ),
+    "auth_email_not_received_hint": MessageLookupByLibrary.simpleMessage(
+      "Не получили код? Проверьте папку спама или добавьте нас в белый список, затем отправьте повторно.",
+    ),
     "authfile_login_warning": MessageLookupByLibrary.simpleMessage(
       "В первую очередь ознакомьтесь с инструкцией по применению и РИСКАМИ!",
     ),

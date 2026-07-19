@@ -86,6 +86,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "auth_data_hints": MessageLookupByLibrary.simpleMessage(
       "\"تلميحات:\n - معرف المستخدم \"ID\" هنا ليس كود الصداقه الذي تراه في صفحة تسجيل الدخول / صفحة الاصدقاء\n - لا تشارك المفاتيح أعلاه أو لقطة الشاشة للآخرين !!!\n - اختر إحدى الطرق التالية للاستيراد \"",
     ),
+    "auth_email_not_received_hint": MessageLookupByLibrary.simpleMessage(
+      "لم تصلك الرمز؟ تحقق من مجلد الرسائل غير المرغوبة أو أضفنا إلى قائمة السماح، ثم أعد الإرسال.",
+    ),
     "auto_reset": MessageLookupByLibrary.simpleMessage("إعادة ضبط تلقائي"),
     "auto_update": MessageLookupByLibrary.simpleMessage("تحديث تلقائي"),
     "autoplay": MessageLookupByLibrary.simpleMessage("تشغيل تلقائي"),

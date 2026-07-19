@@ -88,6 +88,7 @@
   "auth_device_id": "Device ID",
   "auth_email_field": "Email",
   "auth_email_not_bound_hint": "Email not bound",
+  "auth_email_not_received_hint": "Didn't get the code? Check your spam folder or add us to your allowlist, then resend.",
   "auth_forgot_password_hint": "If you forgot your password, you can reset it via email or device verification.",
   "auth_forgot_password_link": "Forgot Password?",
   "auth_forgot_password_title": "Forgot Password",

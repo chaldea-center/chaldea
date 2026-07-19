@@ -5,7 +5,7 @@
 import 'package:flutter/material.dart';
 
 class SectionCard extends StatelessWidget {
-  final String? title;
+  final String? header;
   final EdgeInsetsGeometry? titlePadding;
   final List<Widget> children;
   final bool divided;
@@ -13,7 +13,7 @@ class SectionCard extends StatelessWidget {
 
   const SectionCard({
     super.key,
-    this.title,
+    this.header,
     this.titlePadding,
     required this.children,
     this.divided = true,
@@ -38,10 +38,13 @@ class SectionCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (title != null)
+        if (header != null)
           Padding(
             padding: titlePadding ?? const EdgeInsets.fromLTRB(16, 12, 16, 8),
-            child: Text(title!, style: theme.textTheme.titleSmall?.copyWith(color: theme.colorScheme.onSurfaceVariant)),
+            child: Text(
+              header!,
+              style: theme.textTheme.titleSmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+            ),
           ),
         ...content,
       ],

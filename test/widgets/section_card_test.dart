@@ -16,7 +16,7 @@ void main() {
   }
 
   testWidgets('renders title when provided', (tester) async {
-    await pumpCard(tester, const SectionCard(title: 'Account Info', children: [Text('row1')]));
+    await pumpCard(tester, const SectionCard(header: 'Account Info', children: [Text('row1')]));
     expect(find.text('Account Info'), findsOneWidget);
     expect(find.text('row1'), findsOneWidget);
   });
