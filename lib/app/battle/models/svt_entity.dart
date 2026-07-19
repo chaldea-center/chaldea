@@ -1182,7 +1182,7 @@ class BattleServantData {
     return results;
   }
 
-  List<int> getTraits({final List<int>? addTraits}) {
+  List<int> getTraits({final List<int>? addTraits, final bool isIncludeNpEffectIndiv = true}) {
     final List<int> allTraits = [];
     allTraits.addAll(getBasicSvtTraits());
 
@@ -1218,6 +1218,13 @@ class BattleServantData {
           if (isServant) ...logicalClassInfo.relationSvtIndividuality,
         ];
         allTraits.addAll(addClassTraitIds);
+      }
+    }
+
+    if (isIncludeNpEffectIndiv) {
+      final npDamageTrait = getCurrentNP()?.getNpEffectIndiv();
+      if (npDamageTrait != null) {
+        allTraits.addAll(npDamageTrait);
       }
     }
 
