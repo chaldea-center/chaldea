@@ -109,4 +109,7 @@ flutter {
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
     implementation("androidx.glance:glance-appwidget:1.1.1")
+    // OkHttp: required by Pangle/GroMore SDK for network requests
+    // (see official docs: https://www.csjplatform.com/supportcenter/28659)
+    implementation("com.squareup.okhttp3:okhttp:3.12.1")
 }

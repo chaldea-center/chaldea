@@ -35,6 +35,19 @@ subprojects {
 subprojects {
     project.evaluationDependsOn(":app")
 }
+// Force Kotlin version alignment for plugin subprojects that declare their own
+// buildscript classpath (e.g. alarm 5.5.0 pins kotlin-serialization:2.1.0,
+// which conflicts with the root project's Kotlin 2.2.20).
+subprojects {
+    buildscript {
+        configurations.configureEach {
+            resolutionStrategy {
+                force("org.jetbrains.kotlin:kotlin-serialization:2.2.20")
+                force("org.jetbrains.kotlin:kotlin-gradle-plugin:2.2.20")
+            }
+        }
+    }
+}
 
 tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)

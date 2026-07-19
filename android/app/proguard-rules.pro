@@ -42,6 +42,13 @@
 -keep class com.bytedance.sdk.openadsdk.TTAdSdk { *; }
 -keep class com.bytedance.sdk.openadsdk.TTNativeAd { *; }
 
+# Suppress R8 "Missing class" errors for optional ByteDance/Pangle SDK dependencies
+-dontwarn com.bytedance.component.sdk.**
+-dontwarn com.bytedance.embed_dr.**
+-dontwarn com.bytedance.framwork.core.sdkmonitor.**
+-dontwarn com.bytedance.keva.**
+-dontwarn okhttp3.**
+
 # okio
 -dontwarn okio.**
 -dontwarn org.apache.commons.**
