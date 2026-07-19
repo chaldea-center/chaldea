@@ -7,21 +7,22 @@ var self=this||{};try{self.WeakRef=WeakRef,self.FinalizationGroup=FinalizationGr
 
 _flutter.buildConfig.builds[0].mainJsPath = "/main.dart.js?v=MAIN_DART_JS_VERSION";
 
-let _host = window.location.hostname.toLowerCase();
+const _host = window.location.hostname.toLowerCase();
 window.isCNHost =
   "true" === window.localStorage.getItem("useProxy") ||
   _host.startsWith("cn.") ||
-  -1 != "narumi.cc".indexOf(_host) ||
-  -1 != ["localhost"].indexOf(_host);
+  -1 !== "narumi.cc".indexOf(_host) ||
+  -1 !== ["localhost"].indexOf(_host);
 
 const userConfig = {
   canvasKitBaseUrl: "/canvaskit/",
   renderer: "canvaskit",
 };
 
-if(window.isCNHost){
-  userConfig.fontFallbackBaseUrl = "https://fonts.gstatic.font.im/s/";
-}
+// if(window.isCNHost){
+//   userConfig.fontFallbackBaseUrl = "https://fonts.gstatic.font.im/s/"; // CERT Outdated frequently
+// }
+userConfig.fontFallbackBaseUrl = "https://worker.chaldea.center/proxy/raw/https/fonts.gstatic.com/s/";
 
 _flutter.loader.load({
   config: userConfig,
