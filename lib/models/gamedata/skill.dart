@@ -850,6 +850,14 @@ extension TdMethods on BaseTd {
       },
     }.toList();
   }
+
+  List<int> getNpEffectIndiv() {
+    return switch (damageType) {
+      TdEffectFlag.support => ConstData.constantStr.npIndividualityNotDamage,
+      TdEffectFlag.attackEnemyAll => ConstData.constantStr.npIndividualityDamageAll,
+      TdEffectFlag.attackEnemyOne => ConstData.constantStr.npIndividualityDamageOne,
+    };
+  }
 }
 
 @JsonSerializable()

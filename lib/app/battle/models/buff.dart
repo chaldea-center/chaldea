@@ -29,6 +29,10 @@ class BattleBuff {
   // TODO: add field buff info
   List<BuffData> get validBuffs => [...getPassiveList(), ...getActiveList(), ...getCommandCodeList()];
   List<BuffData> get validBuffsActiveFirst => [...getActiveList(), ...getPassiveList(), ...getCommandCodeList()];
+  List<BuffData> get validBuffsAddOrder => [
+    ...[...getPassiveList(), ...getActiveList()]..sort((a, b) => a.addOrder.compareTo(b.addOrder)),
+    ...getCommandCodeList(),
+  ];
 
   void setPassiveList(List<BuffData> list) => _passiveList = list;
   void setActiveList(List<BuffData> list) => _activeList = list;

@@ -50,23 +50,25 @@ class Damage {
         await activator.activateBuffs(
           battleData,
           [
-            BuffAction.functionCommandcodeattackBefore,
             if (isMainTarget) BuffAction.functionCommandcodeattackBeforeMainOnly,
+            BuffAction.functionCommandcodeattackBefore,
           ],
           opponent: target,
           card: currentCard,
+          buffsOrder: BuffsOrder.passiveFirst,
         );
         await activator.activateBuffs(
           battleData,
           [
-            if (!currentCard.isTD) BuffAction.functionCommandattackBefore,
             if (!currentCard.isTD && isMainTarget) BuffAction.functionCommandattackBeforeMainOnly,
-            BuffAction.functionAttackBefore,
+            if (!currentCard.isTD) BuffAction.functionCommandattackBefore,
             if (isMainTarget) BuffAction.functionAttackBeforeMainOnly,
+            BuffAction.functionAttackBefore,
             // if (isComboStart) BuffAction.functionComboStart,
           ],
           opponent: target,
           card: currentCard,
+          buffsOrder: BuffsOrder.passiveFirst,
         );
       }
     }
@@ -527,23 +529,25 @@ class Damage {
         await activator.activateBuffs(
           battleData,
           [
-            BuffAction.functionCommandcodeattackAfter,
             if (isMainTarget) BuffAction.functionCommandcodeattackAfterMainOnly,
+            BuffAction.functionCommandcodeattackAfter,
           ],
           opponent: target,
           card: currentCard,
+          buffsOrder: BuffsOrder.passiveFirst,
         );
         await activator.activateBuffs(
           battleData,
           [
-            if (!currentCard.isTD) BuffAction.functionCommandattackAfter,
             if (!currentCard.isTD && isMainTarget) BuffAction.functionCommandattackAfterMainOnly,
-            BuffAction.functionAttackAfter,
+            if (!currentCard.isTD) BuffAction.functionCommandattackAfter,
             if (isMainTarget) BuffAction.functionAttackAfterMainOnly,
+            BuffAction.functionAttackAfter,
             // if (isComboEnd) BuffAction.functionComboEnd,
           ],
           opponent: target,
           card: currentCard,
+          buffsOrder: BuffsOrder.passiveFirst,
         );
       }
     }

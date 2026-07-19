@@ -398,7 +398,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData, ServantFilt
               FilterGroup<int>(
                 combined: true,
                 padding: EdgeInsets.zero,
-                options: const [5, 6, 10, 15],
+                options: const [5, 6, 7, 8, 9, 10, 15],
                 minimumSize: const Size(36, 36),
                 values: filterData.bondValue,
                 onFilterChanged: (v, _) {
