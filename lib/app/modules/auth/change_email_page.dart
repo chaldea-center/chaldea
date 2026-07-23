@@ -1,5 +1,7 @@
 // ChangeEmailPage: 2-step email-binding flow.
-// Step 1: enter new email → call `changeEmail` to send verification code.
+// Step 1: enter current password + new email → call `changeEmail` to send
+// verification code. Password is required because email is the root-trust
+// anchor of the account — see the `secure-email-change` OpenSpec change.
 // Step 2: enter code → call `verifyEmail` to confirm. On success, manually
 // patch `secrets.user.email` (verifyEmail returns bool, not a fresh user)
 // then pop; ProfilePage refreshes via its _pushAndRefresh await.
@@ -28,6 +30,8 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
   int _step = 1;
   String _code = '';
   late final TextEditingController _emailController;
+  late final TextEditingController _passwordController;
+  bool _obscurePassword = true;
   final secrets = db.settings.secrets;
 
   // Resend cooldown: counts down from 60 after sending code.
@@ -38,11 +42,13 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
   void initState() {
     super.initState();
     _emailController = TextEditingController();
+    _passwordController = TextEditingController();
   }
 
   @override
   void dispose() {
     _emailController.dispose();
+    _passwordController.dispose();
     super.dispose();
   }
 
@@ -50,7 +56,11 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
 
   bool get _isStep1Available {
     final email = _emailController.text;
-    return email.isNotEmpty && validateEmail(email) == null && email != _currentEmail;
+    final password = _passwordController.text;
+    return password.isNotEmpty &&
+        email.isNotEmpty &&
+        validateEmail(email) == null &&
+        email != _currentEmail;
   }
 
   bool get _isStep2Available => _code.length == 6;
@@ -60,7 +70,12 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
       setState(() {});
       return;
     }
-    final ok = await showEasyLoading(() => ChaldeaServerApi.changeEmail(newEmail: _emailController.text));
+    final ok = await showEasyLoading(
+      () => ChaldeaServerApi.changeEmail(
+        currentPassword: _passwordController.text,
+        newEmail: _emailController.text,
+      ),
+    );
     if (ok == true) {
       setState(() => _step = 2);
       _startResendCountdown();
@@ -136,6 +151,23 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
 
   List<Widget> _buildStep1() {
     return [
+      FormInput(
+        label: S.current.auth_current_password,
+        prefixIcon: Icons.lock_outline,
+        hint: S.current.auth_current_password,
+        controller: _passwordController,
+        obscure: _obscurePassword,
+        autocorrect: false,
+        validator: validatePassword,
+        errorDisplayMode: ErrorDisplayMode.onBlur,
+        suffixIcon: IconButton(
+          onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+          icon: Icon(_obscurePassword ? Icons.visibility_off : Icons.visibility),
+          tooltip: _obscurePassword ? 'Show' : 'Hide',
+        ),
+        onChanged: (_) => setState(() {}),
+      ),
+      const SizedBox(height: 16),
       FormInput(
         label: S.current.auth_new_email,
         prefixIcon: Icons.email_outlined,
