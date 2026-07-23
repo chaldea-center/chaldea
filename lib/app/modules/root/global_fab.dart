@@ -117,7 +117,7 @@ class _DebugFabState extends State<DebugFab> {
         if (context == null) return;
         showDialog(
           context: context,
-          barrierColor: Colors.transparent,
+          // barrierColor: kDebugMode ? Colors.transparent : null,
           builder: (context) => _DebugMenuDialog(state: this),
         ).then((value) {
           isMenuShowing = false;

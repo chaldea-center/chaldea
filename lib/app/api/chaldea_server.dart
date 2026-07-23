@@ -99,6 +99,7 @@ class ChaldeaServerApi {
           'x-chaldea-uuid': AppInfo.uuid,
           'x-chaldea-lang': Language.current.code,
           'x-chaldea-platform': PlatformU.operatingSystem,
+          'x-chaldea-client': 'app',
         },
       ),
     );
