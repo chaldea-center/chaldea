@@ -57,10 +57,7 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
   bool get _isStep1Available {
     final email = _emailController.text;
     final password = _passwordController.text;
-    return password.isNotEmpty &&
-        email.isNotEmpty &&
-        validateEmail(email) == null &&
-        email != _currentEmail;
+    return password.isNotEmpty && email.isNotEmpty && validateEmail(email) == null && email != _currentEmail;
   }
 
   bool get _isStep2Available => _code.length == 6;
@@ -71,10 +68,7 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
       return;
     }
     final ok = await showEasyLoading(
-      () => ChaldeaServerApi.changeEmail(
-        currentPassword: _passwordController.text,
-        newEmail: _emailController.text,
-      ),
+      () => ChaldeaServerApi.changeEmail(currentPassword: _passwordController.text, newEmail: _emailController.text),
     );
     if (ok == true) {
       setState(() => _step = 2);

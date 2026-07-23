@@ -376,6 +376,8 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData, ServantFilt
               FilterGroup<CompareOperator>(
                 combined: true,
                 padding: EdgeInsets.zero,
+                minimumSize: const Size(36, 36),
+                innerPadding: const .symmetric(horizontal: 12),
                 options: CompareOperator.values,
                 values: filterData.bondCompare,
                 optionBuilder: (v) => Text(v.text),
@@ -398,8 +400,9 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData, ServantFilt
               FilterGroup<int>(
                 combined: true,
                 padding: EdgeInsets.zero,
-                options: const [5, 6, 7, 8, 9, 10, 15],
                 minimumSize: const Size(36, 36),
+                innerPadding: const .symmetric(horizontal: 12),
+                options: const [5, 6, 7, 8, 9, 10, 15],
                 values: filterData.bondValue,
                 onFilterChanged: (v, _) {
                   setState(() {
