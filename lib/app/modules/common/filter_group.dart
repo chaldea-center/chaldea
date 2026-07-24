@@ -19,6 +19,8 @@ class FilterGroup<T> extends StatelessWidget {
   final bool combined;
   final EdgeInsetsGeometry padding;
   final bool showCollapse;
+  // Options
+  final EdgeInsetsGeometry? innerPadding;
   final BoxConstraints? constraints;
   final Size? minimumSize;
   final ButtonStyle? buttonStyle;
@@ -37,6 +39,7 @@ class FilterGroup<T> extends StatelessWidget {
     this.combined = false,
     this.padding = const EdgeInsets.symmetric(horizontal: 12),
     this.showCollapse = false,
+    this.innerPadding,
     this.constraints,
     this.minimumSize,
     this.buttonStyle,
@@ -85,6 +88,7 @@ class FilterGroup<T> extends StatelessWidget {
           selected: values.options.contains(key),
           value: key,
           shrinkWrap: shrinkWrap,
+          padding: innerPadding,
           constraints: constraints,
           minimumSize: minimumSize,
           buttonStyle: buttonStyle,
@@ -188,6 +192,7 @@ class FilterOption<T> extends StatelessWidget {
   final Color? selectedTextColor;
   final BorderRadius borderRadius;
   final bool shrinkWrap;
+  final EdgeInsetsGeometry? padding;
   final BoxConstraints? constraints;
   final Size? minimumSize;
   final ButtonStyle? buttonStyle;
@@ -204,6 +209,7 @@ class FilterOption<T> extends StatelessWidget {
     this.selectedTextColor,
     this.borderRadius = const BorderRadius.all(Radius.circular(3)),
     this.shrinkWrap = false,
+    this.padding,
     this.constraints,
     this.minimumSize,
     this.buttonStyle,
@@ -233,7 +239,7 @@ class FilterOption<T> extends StatelessWidget {
                 ? (enabled ? selectedColor : selectedColor.withValues(alpha: selectedColor.a * 0.5))
                 : unselectedColor,
             minimumSize: minimumSize ?? (shrinkWrap ? const Size(2, 2) : const Size(48, 36)),
-            padding: shrinkWrap ? EdgeInsets.zero : .symmetric(horizontal: 16),
+            padding: padding ?? (shrinkWrap ? EdgeInsets.zero : .symmetric(horizontal: 16)),
             textStyle: const TextStyle(fontWeight: FontWeight.normal),
             // tapTargetSize: shrinkWrap ? MaterialTapTargetSize.shrinkWrap : null,
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,

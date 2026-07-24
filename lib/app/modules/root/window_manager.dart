@@ -408,7 +408,6 @@ class WindowThumb extends StatelessWidget {
       child: LayoutBuilder(
         builder: (context, constraints) {
           final biggest = constraints.biggest;
-          biggest.isFinite;
           return FittedBox(
             fit: BoxFit.contain,
             child: SizedBox.fromSize(
@@ -559,7 +558,8 @@ class WindowThumb extends StatelessWidget {
         color: Colors.yellowAccent,
         padding: const EdgeInsets.all(4),
         iconSize: 16,
-        constraints: const BoxConstraints(minWidth: 0),
+        constraints: const BoxConstraints(minWidth: 24, minHeight: 24),
+        style: IconButton.styleFrom(tapTargetSize: .shrinkWrap),
       );
     });
 
@@ -571,7 +571,8 @@ class WindowThumb extends StatelessWidget {
       icon: const Icon(Icons.clear),
       padding: const EdgeInsets.all(4),
       iconSize: 16,
-      constraints: const BoxConstraints(minWidth: 24),
+      constraints: const BoxConstraints(minWidth: 24, minHeight: 24),
+      style: IconButton.styleFrom(tapTargetSize: .shrinkWrap),
     );
 
     return DecoratedBox(

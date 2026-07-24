@@ -99,6 +99,7 @@ class ChaldeaServerApi {
           'x-chaldea-uuid': AppInfo.uuid,
           'x-chaldea-lang': Language.current.code,
           'x-chaldea-platform': PlatformU.operatingSystem,
+          'x-chaldea-client': 'app',
         },
       ),
     );
@@ -232,11 +233,15 @@ class ChaldeaServerApi {
   }
 
   // Step 1 of email binding: send verification code to new email.
-  static Future<bool?> changeEmail({required String newEmail}) {
+  //
+  // Requires `currentPassword` to re-confirm identity before initiating the
+  // change — email is the root-trust anchor of the account. See the
+  // `secure-email-change` OpenSpec change for the threat model.
+  static Future<bool?> changeEmail({required String currentPassword, required String newEmail}) {
     return cacheManager.postModel(
       '$apiV1/users/me/change-email',
       fromJson: (_) => true,
-      data: {'new_email': newEmail},
+      data: {'current_password': currentPassword, 'new_email': newEmail},
       options: addAuthHeader(),
       expireAfter: Duration.zero,
     );

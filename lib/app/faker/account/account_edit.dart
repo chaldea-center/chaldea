@@ -337,9 +337,12 @@ class _FakerAccountEditPageState extends State<FakerAccountEditPage> {
         child: FilledButton.tonal(
           onPressed: () async {
             final _runtime = runtime ??= await FakerRuntime.init(user, null);
-            await _runtime.runTask(() async {
-              await (_runtime.agent as FakerAgentCN).biliSdkLogin();
-            });
+            await showEasyLoading(
+              () => _runtime.runTask(() async {
+                (_runtime.agent as FakerAgentCN).biliSdkLogin();
+              }),
+            );
+            if (mounted) setState(() {});
           },
           child: Text('Login'),
         ),
