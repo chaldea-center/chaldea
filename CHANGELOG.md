@@ -4,6 +4,11 @@
 
 > ⚠️ **This is an internal test build.** It is incompatible with the production server/app and will not work for regular use. Please use the latest stable release instead.
 
+- Service Migration: The legacy app and services will be discontinued in September
+- Added email binding for password recovery
+- Adapted to the Material 3 theme
+- Bug fix
+
 ## 2.5.27
 
 - bug fix and improvements
