@@ -1,9 +1,3 @@
-// LoginPage: entry auth page reusing the shared modern widget library.
-// Design deviation: keeps a back button (native AppBar auto-shows it when
-// the route can pop) because in Chaldea auth pages are pushed from settings
-// rather than being app entry points. Drops the design's "OR" divider per
-// design.md D2.
-
 import 'package:flutter/material.dart';
 
 import 'package:flutter_easyloading/flutter_easyloading.dart';

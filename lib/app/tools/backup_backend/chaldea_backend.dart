@@ -34,9 +34,9 @@ class ChaldeaServerBackup extends BackupBackend<UserData> {
     dynamic error;
     try {
       final content = UserBackupData.encode(db.userData);
-      final resp = await showEasyLoading(() => ChaldeaServerApi.uploadBackup(content: content));
-      if (resp != null) {
-        EasyLoading.showSuccess(S.current.success);
+      final backupId = await showEasyLoading(() => ChaldeaServerApi.uploadBackup(content: content));
+      if (backupId != null) {
+        EasyLoading.showSuccess("${S.current.success}: ID $backupId");
         return true;
       }
       return false;

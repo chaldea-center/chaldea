@@ -313,11 +313,11 @@ class ChaldeaServerApi {
     );
   }
 
-  static Future<UserBackupData?> uploadBackup({required String content}) {
+  static Future<int?> uploadBackup({required String content}) {
     AppInfo.deviceParams;
     return cacheManager.postModel(
       '$apiV1/users/me/backups',
-      fromJson: (data) => UserBackupData.fromJson(Map.from(data)),
+      fromJson: (data) => data['id'],
       options: addAuthHeader(),
       data: <String, String>{
         'content': content,

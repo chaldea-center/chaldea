@@ -155,7 +155,7 @@ class ChaldeaUser {
     return _$ChaldeaUserFromJson(normalized);
   }
 
-  Map<String, dynamic> toJson() => _$ChaldeaUserToJson(this);
+  Map<String, dynamic> toJson() => {'id': id, 'name': name, 'role': role, ..._$ChaldeaUserToJson(this)};
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake)

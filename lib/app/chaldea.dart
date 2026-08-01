@@ -208,12 +208,13 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WindowListener
     try {
       final user = await ChaldeaServerApi.maybeMigrateLegacyToken();
       if (user == null) return;
+      logger.i('Silent migration success');
       if (user.email == null || user.email!.isEmpty) {
         _showEmailBindingPrompt();
       }
     } catch (e, s) {
       // Swallow — migration is best-effort and must never block the UI.
-      logger.d('Silent migration failed (silent): $e', e, s);
+      logger.e('Silent migration failed: $e', e, s);
     }
   }
 
