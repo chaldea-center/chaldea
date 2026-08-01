@@ -758,7 +758,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
         ),
       );
       buttons.add(
-        ElevatedButton(
+        FilledButton(
           onPressed: () {
             setState(() {
               // reset enhance plan every time enter the enhance mode

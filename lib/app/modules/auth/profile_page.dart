@@ -73,25 +73,11 @@ class _ProfilePageState extends State<ProfilePage> {
     final ok = await showEasyLoading(() => ChaldeaServerApi.logout());
     if (ok == true) {
       secrets.user.clearAuth();
+      secrets.user.secret = null;
       EasyLoading.showSuccess(S.current.success);
       if (!mounted) return;
       Navigator.of(context).pop();
     }
-    db.notifySettings();
-  }
-
-  Future<void> _migrateAccount() async {
-    final secret =
-        await InputCancelOkDialog(title: S.current.auth_migrate_account, hintText: 'secret').showDialog(context)
-            as String?;
-    if (secret == null || secret.isEmpty) return;
-    final user = await showEasyLoading(() => ChaldeaServerApi.migrateToken(secret: secret));
-    if (user != null) {
-      secrets.user.updateFromLoginResponse(user);
-      EasyLoading.showSuccess(S.current.auth_migration_success);
-      setState(() {});
-    }
-    // On failure, the API layer's dispatchError already shows a toast — no manual showError here.
     db.notifySettings();
   }
 
@@ -106,7 +92,6 @@ class _ProfilePageState extends State<ProfilePage> {
     final name = user.name;
     final uid = user.id.toString();
     final email = user.email ?? '';
-    final accessToken = user.accessToken ?? '';
     final isAdmin = user.isAdmin;
 
     return Scaffold(
@@ -117,7 +102,6 @@ class _ProfilePageState extends State<ProfilePage> {
           // ProfileCard(title: name, subtitle: '${S.current.auth_user_id}: $uid'),
           _buildPersonalInfoSection(name, uid, email, isAdmin),
           _buildAccountActionsSection(),
-          if (accessToken.isEmpty) _buildMigrationSection(),
           if (isAdmin) _buildAdminSection(),
         ],
       ),
@@ -147,11 +131,12 @@ class _ProfilePageState extends State<ProfilePage> {
           onTap: () => _pushAndRefresh(const ChangeEmailPage()),
           showChevron: true,
         ),
-        InfoRow(
-          leading: Icon(Icons.shield_outlined),
-          title: S.current.auth_role,
-          valueWidget: isAdmin ? Chip(label: Text(S.current.auth_role_admin)) : null,
-        ),
+        if (isAdmin)
+          InfoRow(
+            leading: Icon(Icons.shield_outlined),
+            title: S.current.auth_role,
+            valueWidget: Text(S.current.auth_role_admin),
+          ),
       ],
     );
   }
@@ -177,16 +162,6 @@ class _ProfilePageState extends State<ProfilePage> {
             }
           },
         ),
-      ],
-    );
-  }
-
-  Widget _buildMigrationSection() {
-    return TileGroup(
-      header: S.current.auth_migrate_account,
-      // divided: false,
-      children: [
-        ActionRow(leading: Icon(Icons.swap_horiz), title: S.current.auth_migrate_account, onTap: _migrateAccount),
       ],
     );
   }

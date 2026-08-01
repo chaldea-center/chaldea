@@ -208,7 +208,14 @@ class TileGroup extends StatelessWidget {
       Card(
         color: tileColor,
         margin: const EdgeInsets.symmetric(horizontal: 8),
-        child: Column(crossAxisAlignment: crossAxisAlignment, mainAxisSize: MainAxisSize.min, children: group),
+        child: Column(
+          crossAxisAlignment: crossAxisAlignment,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(width: .infinity),
+            ...group,
+          ],
+        ),
       ),
       ?footerWidget,
     ];

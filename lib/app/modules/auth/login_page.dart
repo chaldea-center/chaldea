@@ -12,6 +12,7 @@ import 'package:chaldea/app/modules/auth/widgets/brand_area.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/custom_dialogs.dart';
 import 'package:chaldea/widgets/modern/modern.dart';
 
 class LoginPage extends StatefulWidget {
@@ -109,6 +110,10 @@ class _LoginPageState extends State<LoginPage> {
             const SizedBox(height: 24),
             PrimaryButton(label: S.current.auth_login_title, onPressed: _isLoginAvailable ? _doLogin : null),
             const SizedBox(height: 16),
+            if (secrets.user.accessToken?.isNotEmpty != true && secrets.user.secret?.isNotEmpty == true) ...[
+              PrimaryButton(label: S.current.auth_migrate_account, onPressed: _migrateAccount),
+              const SizedBox(height: 16),
+            ],
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -126,5 +131,31 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+  Future<void> _migrateAccount() async {
+    final user = secrets.user;
+    final accessToken = user.accessToken ?? "", secret = user.secret ?? "";
+    if (accessToken.isNotEmpty || secret.isEmpty) return;
+    final confirm = await SimpleConfirmDialog(
+      title: Text(S.current.auth_migrate_account),
+      content: Text([user.name, 'ID: ${user.id}', 'secret: ${"*" * 6}'].join('\n')),
+    ).showDialog(context);
+    if (confirm != true) return;
+
+    final user2 = await showEasyLoading(() => ChaldeaServerApi.migrateToken(secret: secret));
+    if (user2 == null) {
+      if (mounted) {
+        SimpleConfirmDialog(title: Text(S.current.error), showCancel: false).showDialog(context);
+      }
+      return;
+    }
+    secrets.user.updateFromLoginResponse(user2);
+    setState(() {});
+    if (mounted) {
+      Navigator.pop(context);
+      router.showDialog(builder: (context) => SimpleConfirmDialog(title: Text(S.current.success), showCancel: false));
+    }
+    db.notifyAppUpdate();
   }
 }
