@@ -1802,7 +1802,7 @@ class BattleServantData {
 
   List<BuffData> getAllBuffs(final BattleData battleData, {BuffsOrder? buffsOrder = BuffsOrder.activeFirst}) {
     final selfBuffs = switch (buffsOrder) {
-      null => [],
+      null => battleBuff.validBuffsActiveFirst,
       BuffsOrder.activeFirst => battleBuff.validBuffsActiveFirst,
       BuffsOrder.passiveFirst => battleBuff.validBuffs,
       BuffsOrder.addOrder => battleBuff.validBuffsAddOrder,
@@ -2273,7 +2273,7 @@ class BattleServantData {
     final BattleSkillInfoData? skillInfo,
     final List<NiceFunction>? receivedFunctionsList,
     final int? consumedNp,
-    final BuffsOrder? buffsOrder = BuffsOrder.activeFirst,
+    final BuffsOrder? buffsOrder,
   }) async {
     return await activateBuffs(
       battleData,
@@ -2323,7 +2323,7 @@ class BattleServantData {
     final BattleSkillInfoData? skillInfo,
     final List<NiceFunction>? receivedFunctionsList,
     final int? consumedNp,
-    final BuffsOrder? buffsOrder = BuffsOrder.activeFirst,
+    final BuffsOrder? buffsOrder,
   }) async {
     bool activated = false;
     final allBuffs = getAllBuffs(battleData, buffsOrder: buffsOrder);
