@@ -578,6 +578,8 @@ class FunctionExecutor {
         case FuncType.addBattleMissionValue:
         case FuncType.setBattleMissionValue:
         case FuncType.changeEnemyStatusUiType:
+        case FuncType.setBattleMissionValueAsMax:
+          break;
       }
 
       for (final target in targets) {

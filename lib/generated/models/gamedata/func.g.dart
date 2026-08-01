@@ -337,6 +337,7 @@ const _$FuncTypeEnumMap = {
   FuncType.hastenNpturnFromOtherUsedNpturn: 'hastenNpturnFromOtherUsedNpturn',
   FuncType.damageFuncType164: 'damageFuncType164',
   FuncType.damageFuncType165: 'damageFuncType165',
+  FuncType.setBattleMissionValueAsMax: 'setBattleMissionValueAsMax',
 };
 
 const _$FuncApplyTargetEnumMap = {

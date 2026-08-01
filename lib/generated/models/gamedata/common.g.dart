@@ -505,4 +505,9 @@ const _$CondTypeEnumMap = {
   CondType.battleEntryEnemyTotalCountAbove: 'battleEntryEnemyTotalCountAbove',
   CondType.battleEntryEnemyTotalCountBelow: 'battleEntryEnemyTotalCountBelow',
   CondType.battleEntryEnemyTotalCountEqual: 'battleEntryEnemyTotalCountEqual',
+  CondType.jobMaxLevelNumAbove: 'jobMaxLevelNumAbove',
+  CondType.jobMaxLevelNumBelow: 'jobMaxLevelNumBelow',
+  CondType.jobMaxLevelNumEqual: 'jobMaxLevelNumEqual',
+  CondType.svtHpReachNum: 'svtHpReachNum',
+  CondType.svtAtkReachNum: 'svtAtkReachNum',
 };

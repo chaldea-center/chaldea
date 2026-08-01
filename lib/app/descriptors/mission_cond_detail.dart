@@ -333,6 +333,27 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
       case EventMissionCondDetailType.battleMissionValue:
       case null:
         break;
+      case EventMissionCondDetailType.mapGimmickCountOnce:
+      case EventMissionCondDetailType.questClearTurnNumBelow:
+      case EventMissionCondDetailType.questClearTurnNumAbove:
+      case EventMissionCondDetailType.questClearWithSvtIndividualityOnly:
+      case EventMissionCondDetailType.questClearWithMyDeckSvtNumEqual:
+      case EventMissionCondDetailType.questClearWithMyDeckSvtNumAbove:
+      case EventMissionCondDetailType.questClearWithMyDeckSvtNumBelow:
+      case EventMissionCondDetailType.questClearWithSvtRarityEqual:
+      case EventMissionCondDetailType.questClearWithSvtRarityAbove:
+      case EventMissionCondDetailType.questClearWithSvtRarityBelow:
+      case EventMissionCondDetailType.questClearWithTotalCostAbove:
+      case EventMissionCondDetailType.questClearWithTotalCostBelow:
+      case EventMissionCondDetailType.questClearWithTreasureDeviceTypeSvtOnly:
+      case EventMissionCondDetailType.questClearWithSvtFriendshipRankAbove:
+      case EventMissionCondDetailType.questClearWithSvtIndividualityNumAboveOnlyStartingMember:
+      case EventMissionCondDetailType.questClearWithSvtRarityEqualNumAboveOnlyStartingMember:
+      case EventMissionCondDetailType.questClearWithSvtRarityAboveNumAboveOnlyStartingMember:
+      case EventMissionCondDetailType.questClearWithSvtRarityBelowNumAboveOnlyStartingMember:
+      case EventMissionCondDetailType.questClearWithSvtFriendshipRankAboveNumAboveOnlyStartingMember:
+      case EventMissionCondDetailType.questClearWithEquip:
+        break;
     }
     final condTypeStr = condType?.name ?? detail.missionCondType;
     return wrapMsg(

@@ -403,6 +403,7 @@ const _$BuffTypeEnumMap = {
   BuffType.multiGutsBeforeFunction: 'multiGutsBeforeFunction',
   BuffType.limitMaxNp: 'limitMaxNp',
   BuffType.limitMinNp: 'limitMinNp',
+  BuffType.lastSelfturnprogressFunction: 'lastSelfturnprogressFunction',
   BuffType.toFieldChangeField: 'toFieldChangeField',
   BuffType.toFieldAvoidBuff: 'toFieldAvoidBuff',
   BuffType.toFieldSubIndividualityField: 'toFieldSubIndividualityField',

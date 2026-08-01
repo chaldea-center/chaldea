@@ -1408,7 +1408,12 @@ enum CondType {
   battleEntryPlayerTotalCountEqual(282),
   battleEntryEnemyTotalCountAbove(283),
   battleEntryEnemyTotalCountBelow(284),
-  battleEntryEnemyTotalCountEqual(285);
+  battleEntryEnemyTotalCountEqual(285),
+  jobMaxLevelNumAbove(286),
+  jobMaxLevelNumBelow(287),
+  jobMaxLevelNumEqual(288),
+  svtHpReachNum(289),
+  svtAtkReachNum(290);
 
   const CondType(this.value);
   final int value;

@@ -341,6 +341,7 @@ const _$NiceAiActTypeEnumMap = {
   NiceAiActType.messageGroup: 'messageGroup',
   NiceAiActType.overwriteFieldMotion: 'overwriteFieldMotion',
   NiceAiActType.overwriteAddUniqueCamera: 'overwriteAddUniqueCamera',
+  NiceAiActType.gimmickSkill: 'gimmickSkill',
   NiceAiActType.noblePhantasm: 'noblePhantasm',
   NiceAiActType.battleEnd: 'battleEnd',
   NiceAiActType.loseEnd: 'loseEnd',

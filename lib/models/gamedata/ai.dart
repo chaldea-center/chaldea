@@ -374,6 +374,7 @@ enum NiceAiActType {
   messageGroup,
   overwriteFieldMotion,
   overwriteAddUniqueCamera,
+  gimmickSkill,
   noblePhantasm,
   battleEnd,
   loseEnd,

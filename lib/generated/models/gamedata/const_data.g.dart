@@ -127,6 +127,11 @@ ConstGameData _$ConstGameDataFromJson(Map json) => ConstGameData(
       const {},
   sameQuestRemap:
       (json['sameQuestRemap'] as Map?)?.map((k, e) => MapEntry(int.parse(k as String), (e as num).toInt())) ?? const {},
+  subEvents:
+      (json['subEvents'] as Map?)?.map(
+        (k, e) => MapEntry(int.parse(k as String), (e as List<dynamic>).map((e) => (e as num).toInt()).toList()),
+      ) ??
+      const {},
   routeSelects:
       (json['routeSelects'] as Map?)?.map(
         (k, e) => MapEntry(k as String, (e as List<dynamic>).map((e) => e as String).toList()),
@@ -171,6 +176,7 @@ Map<String, dynamic> _$ConstGameDataToJson(ConstGameData instance) => <String, d
   'svtFaceLimits': instance.svtFaceLimits.map((k, e) => MapEntry(k.toString(), e)),
   'extraWarEventMapping': instance.extraWarEventMapping.map((k, e) => MapEntry(k.toString(), e)),
   'sameQuestRemap': instance.sameQuestRemap.map((k, e) => MapEntry(k.toString(), e)),
+  'subEvents': instance.subEvents.map((k, e) => MapEntry(k.toString(), e)),
   'routeSelects': instance.routeSelects,
   'config': instance.config.toJson(),
 };

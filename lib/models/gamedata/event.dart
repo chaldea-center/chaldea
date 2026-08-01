@@ -2207,7 +2207,9 @@ enum ShopType {
   revivalItem(15),
   eventSvtEquip(16),
   exchangeSvtCoin(17),
-  classBoardReset(18);
+  classBoardReset(18),
+  exRoomShop(19),
+  exRoomShopDaily(20);
 
   const ShopType(this.value);
   final int value;
@@ -2234,7 +2236,7 @@ enum MissionProgressType {
   bool get isClearOrAchieve => this == clear || this == achieve;
 }
 
-enum MissionType { none, event, weekly, daily, extra, limited, complete, random, servant }
+enum MissionType { none, event, weekly, daily, extra, limited, complete, random, exRoom }
 
 enum MissionRewardType { gift, extra, set }
 
@@ -2339,6 +2341,27 @@ enum EventMissionCondDetailType {
   purchaseShopNum(41),
   itemUseQuestNum(42), // storm pod
   battleMissionValue(43),
+
+  mapGimmickCountOnce(44),
+  questClearTurnNumBelow(45),
+  questClearTurnNumAbove(46),
+  questClearWithSvtIndividualityOnly(47),
+  questClearWithMyDeckSvtNumEqual(48),
+  questClearWithMyDeckSvtNumAbove(49),
+  questClearWithMyDeckSvtNumBelow(50),
+  questClearWithSvtRarityEqual(51),
+  questClearWithSvtRarityAbove(52),
+  questClearWithSvtRarityBelow(53),
+  questClearWithTotalCostAbove(54),
+  questClearWithTotalCostBelow(55),
+  questClearWithTreasureDeviceTypeSvtOnly(56),
+  questClearWithSvtFriendshipRankAbove(57),
+  questClearWithSvtIndividualityNumAboveOnlyStartingMember(58),
+  questClearWithSvtRarityEqualNumAboveOnlyStartingMember(59),
+  questClearWithSvtRarityAboveNumAboveOnlyStartingMember(60),
+  questClearWithSvtRarityBelowNumAboveOnlyStartingMember(61),
+  questClearWithSvtFriendshipRankAboveNumAboveOnlyStartingMember(62),
+  questClearWithEquip(63),
 
   /// custom, only used in app
   questClearIndividuality(999);

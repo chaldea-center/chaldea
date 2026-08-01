@@ -548,6 +548,8 @@ const _$ShopTypeEnumMap = {
   ShopType.eventSvtEquip: 'eventSvtEquip',
   ShopType.exchangeSvtCoin: 'exchangeSvtCoin',
   ShopType.classBoardReset: 'classBoardReset',
+  ShopType.exRoomShop: 'exRoomShop',
+  ShopType.exRoomShopDaily: 'exRoomShopDaily',
 };
 
 const _$PayTypeEnumMap = {
@@ -791,7 +793,7 @@ const _$MissionTypeEnumMap = {
   MissionType.limited: 'limited',
   MissionType.complete: 'complete',
   MissionType.random: 'random',
-  MissionType.servant: 'servant',
+  MissionType.exRoom: 'exRoom',
 };
 
 const _$MissionRewardTypeEnumMap = {

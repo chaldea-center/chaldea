@@ -432,6 +432,11 @@ class DataVals {
   int? get NotActIfAlreadyAvoidStateBuff => _get('NotActIfAlreadyAvoidStateBuff');
   int? get AvoidFieldBuff => _get('AvoidFieldBuff');
   int? get UseUserSpecifiedLimitCount => _get('UseUserSpecifiedLimitCount');
+  int? get ParamAddOpCheckDead => _get('ParamAddOpCheckDead');
+  int? get ResultAggregateGroupId => _get('ResultAggregateGroupId');
+  int? get SelfTurnProgressGroup => _get('SelfTurnProgressGroup');
+  int? get EnemyCountWaitTimeAfterEffect => _get('EnemyCountWaitTimeAfterEffect');
+
   //
   int? get Individuality => _get('Individuality');
   int? get EventId => _get('EventId');

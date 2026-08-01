@@ -556,6 +556,7 @@ enum BuffType {
   multiGutsBeforeFunction(245),
   limitMaxNp(246),
   limitMinNp(247),
+  lastSelfturnprogressFunction(248),
 
   toFieldChangeField(10001),
   toFieldAvoidBuff(10002),
