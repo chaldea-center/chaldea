@@ -116,11 +116,15 @@ jobs:
       - run: flutter pub get
       - run: dart ./scripts/patch_before_build.dart ${{ matrix.target }} ${{ github.ref }}
       - run: flutter pub get
-      - run: flutter build ${{ matrix.build_target }} -v --release ${{ matrix.build_options }}
 
       - name: Build AAB
         if: matrix.target == 'android'
         run: flutter build appbundle -v --release --flavor=play
+
+      - name: Build release
+        run: |
+          sed -i '/android.permission.REQUEST_INSTALL_PACKAGES/ s/\s*tools:node="remove"//' android/app/src/main/AndroidManifest.xml
+          flutter build ${{ matrix.build_target }} -v --release ${{ matrix.build_options }}
 
       # Package the build.
       - name: Copy VC redistributables to release directory for Windows
