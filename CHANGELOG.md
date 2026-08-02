@@ -1,8 +1,8 @@
 # Changelog
 
-## beta
+## 2.6.0
 
-> ⚠️ **This is an internal test build.** It is incompatible with the production server/app and will not work for regular use. Please use the latest stable release instead.
+BREAKING CHANGE!!!
 
 - Service Migration: The legacy app and services will be discontinued in September
 - Added email binding for password recovery
