@@ -1140,8 +1140,8 @@ class CondBranchSkillInfo {
   BattleBranchSkillCondBranchType condType;
   List<int> condValue;
   int skillId;
-  String detailText;
-  int iconBuffId;
+  String detailText; // nullable
+  int iconBuffId; // nullable
 
   CondBranchSkillInfo({
     this.condType = BattleBranchSkillCondBranchType.none,

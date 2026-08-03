@@ -71,10 +71,12 @@ class _AppRouteEntrancePageState extends State<AppRouteEntrancePage> {
     String v = c.text.trim().trimCharLeft('/').trim();
     return ListTile(
       dense: true,
+      contentPadding: EdgeInsetsDirectional.only(start: 16),
       title: TextFormField(
         decoration: InputDecoration(
           hintText: '${S.current.general_custom} e.g. /servant/xxx',
           helperText: 'OR https://chaldea.center/free-calc',
+          contentPadding: .fromLTRB(8, 8, 8, 8),
         ),
         controller: c,
         onChanged: (value) {
@@ -97,12 +99,17 @@ class _AppRouteEntrancePageState extends State<AppRouteEntrancePage> {
       dense: true,
       title: Text(title),
       subtitle: Text('$path/${v ?? "{id}"}'),
+      contentPadding: EdgeInsetsDirectional.only(start: 16),
       trailing: Wrap(
         children: [
           ConstrainedBox(
             constraints: BoxConstraints(maxWidth: (c.text.length * 12.0).clamp(80, 160)),
             child: TextFormField(
-              decoration: const InputDecoration(isDense: true),
+              decoration: const InputDecoration(
+                isDense: true,
+                border: UnderlineInputBorder(),
+                contentPadding: .fromLTRB(4, 8, 4, 8),
+              ),
               controller: c,
               onChanged: (value) {
                 setState(() {});

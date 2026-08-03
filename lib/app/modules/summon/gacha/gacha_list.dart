@@ -262,7 +262,7 @@ class _GachaListPageState extends State<GachaListPage>
         alignment: MainAxisAlignment.center,
         children: [
           const SizedBox(width: kMinInteractiveDimension),
-          ElevatedButton(
+          FilledButton(
             onPressed: _selectedGachas.isEmpty
                 ? null
                 : () {

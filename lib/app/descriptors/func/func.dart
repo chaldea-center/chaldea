@@ -497,10 +497,12 @@ class SkillScriptDescriptor extends StatelessWidget {
       for (final (index, branch) in branches.indexed) {
         String title = transl("Branch").l.replaceFirst('{0}', '${index + 1}');
         title = '[$title] ';
-        if (Transl.md.skillNames.containsKey(branch.detailText)) {
-          title += Transl.skillNames(branch.detailText).l;
-        } else {
-          title += transl(branch.detailText).l;
+        if (branch.detailText.isNotEmpty) {
+          if (Transl.md.skillNames.containsKey(branch.detailText)) {
+            title += Transl.skillNames(branch.detailText).l;
+          } else {
+            title += transl(branch.detailText).l;
+          }
         }
         InlineSpan condSpan = switch (branch.condType) {
           BattleBranchSkillCondBranchType.none => TextSpan(text: branch.condType.name),
@@ -518,23 +520,25 @@ class SkillScriptDescriptor extends StatelessWidget {
               border: Border.all(color: Theme.of(context).colorScheme.secondaryContainer, width: 1),
               borderRadius: BorderRadius.circular(8),
             ),
-            padding: const EdgeInsets.all(4),
-            margin: const EdgeInsets.only(bottom: 8),
+            margin: const EdgeInsets.symmetric(vertical: 4),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ListTile(
                   dense: true,
-                  leading: FutureBuilder2<int, String?>(
-                    id: branch.iconBuffId,
-                    loader: () async {
-                      return branch.icon ?? (await AtlasApi.buff(branch.iconBuffId, region: region ?? Region.jp))?.icon;
-                    },
-                    builder: (context, icon) {
-                      return db.getIconImage(icon, width: 24, height: 24);
-                    },
-                  ),
+                  leading: branch.iconBuffId > 0
+                      ? FutureBuilder2<int, String?>(
+                          id: branch.iconBuffId,
+                          loader: () async {
+                            return branch.icon ??
+                                (await AtlasApi.buff(branch.iconBuffId, region: region ?? Region.jp))?.icon;
+                          },
+                          builder: (context, icon) {
+                            return db.getIconImage(icon, width: 24, height: 24);
+                          },
+                        )
+                      : null,
                   title: Text(title),
                   subtitle: Text.rich(
                     TextSpan(
@@ -564,8 +568,8 @@ class SkillScriptDescriptor extends StatelessWidget {
     }
     if (children.isEmpty) return const SizedBox();
     return Container(
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(4), color: Theme.of(context).hoverColor),
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      // decoration: BoxDecoration(borderRadius: BorderRadius.circular(4), color: Theme.of(context).hoverColor),
+      margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
       child: SizedBox(
         width: double.infinity,
         child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.start, children: children),

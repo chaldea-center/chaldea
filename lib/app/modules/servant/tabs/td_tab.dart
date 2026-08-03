@@ -148,17 +148,13 @@ class SvtTdTab extends StatelessWidget {
               ),
             ),
             if (td.svt.condQuestId > 0 || oTdData != null)
-              IconButton(
-                padding: const EdgeInsets.all(2),
-                constraints: const BoxConstraints(minWidth: 48, minHeight: 24),
-                onPressed: () => showDialog(
+              InkWell(
+                onTap: () => showDialog(
                   context: context,
                   useRootNavigator: false,
                   builder: (_) => releaseCondition(svt, td, oTdData),
                 ),
-                icon: const Icon(Icons.info_outline),
-                color: Theme.of(context).hintColor,
-                tooltip: S.current.open_condition,
+                child: const Padding(padding: .symmetric(vertical: 2, horizontal: 8), child: Icon(Icons.info_outline)),
               ),
           ],
         );

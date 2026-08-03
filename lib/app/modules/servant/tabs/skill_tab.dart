@@ -207,17 +207,13 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
               ),
             ),
             if (skill.svt.condQuestId > 0 || SvtSkillTab.hasUnusualLimitCond(skill))
-              IconButton(
-                padding: const EdgeInsets.all(2),
-                constraints: const BoxConstraints(minWidth: 48, minHeight: 24),
-                onPressed: () => showDialog(
+              InkWell(
+                onTap: () => showDialog(
                   context: context,
                   useRootNavigator: false,
                   builder: (_) => SvtSkillTab.releaseCondition(skill),
                 ),
-                icon: const Icon(Icons.info_outline),
-                color: Theme.of(context).hintColor,
-                tooltip: S.current.open_condition,
+                child: const Padding(padding: .symmetric(vertical: 2, horizontal: 8), child: Icon(Icons.info_outline)),
               ),
           ],
         );

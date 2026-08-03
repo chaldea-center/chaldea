@@ -368,7 +368,7 @@ class _SettingsPageState extends State<SettingsPage> {
     if (token.isEmpty && legacySecret.isNotEmpty) {
       subtitle ??= S.current.auth_not_migrated_hint;
     }
-    if (email.isEmpty) {
+    if (user.id != 0 && email.isEmpty) {
       subtitle ??= S.current.auth_email_not_bound_hint;
     }
 

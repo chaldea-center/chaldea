@@ -233,7 +233,7 @@ class _MasterMissionPageState extends State<MasterMissionPage> with RegionBasedS
     return OverflowBar(
       alignment: MainAxisAlignment.center,
       children: [
-        ElevatedButton.icon(
+        FilledButton.icon(
           onPressed: () {
             final customMissions = masterMission.missions
                 .map((e) => CustomMission.fromEventMission(e))
