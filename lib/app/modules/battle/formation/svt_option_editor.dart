@@ -89,7 +89,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       SliderWithPrefix(
         label: S.current.bond,
         min: 0,
-        max: 15,
+        max: kBondLvMax,
         value: playerSvtData.bondLv,
         valueFormatter: (v) => 'Lv.$v',
         onChange: (v) {

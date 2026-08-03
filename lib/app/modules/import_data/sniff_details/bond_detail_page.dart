@@ -542,7 +542,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
       'RankMax',
       'Total',
       'Next',
-      for (int bond = 4; bond < 15; bond++) 'Total(Lv${bond + 1})',
+      for (int bond = 5; bond <= kBondLvMax; bond++) 'Total(Lv$bond)',
     ]);
     for (final (:svt, :collection) in collections) {
       // final svt = entry.key, status = entry.value;
@@ -555,7 +555,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
         collection.maxFriendshipRank,
         collection.friendship,
         _getBondNext(svt, collection),
-        for (int bond = 4; bond < 15; bond++) svt.bondGrowth.getOrNull(bond) ?? "",
+        for (int bond = 5; bond <= kBondLvMax; bond++) svt.bondGrowth.getOrNull(bond - 1) ?? "",
       ]);
     }
     final content = csv.encode(table);

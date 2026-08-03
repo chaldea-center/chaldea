@@ -40,6 +40,7 @@ class SniffPresentBoxDetailPage extends StatelessWidget {
       Items.summonTicketId,
       Items.quartzFragmentId,
       Items.lanternId,
+      Items.greatLanternId,
       Items.grailId,
       Items.crystalId,
       ...Items.apples,

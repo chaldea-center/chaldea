@@ -358,7 +358,7 @@ class BattleRecordManager {
       if (requiredCoins > maxCoins) {
         reasons.setUpload(
           '${S.current.servant_coin}($svtName): required $requiredCoins, '
-          'but max $maxCoins at ${S.current.np_short}${svtData.tdLv} & ${S.current.bond}15 ',
+          'but max $maxCoins at ${S.current.np_short}${svtData.tdLv} & ${S.current.bond}$kNormalLanternBondLvMax ',
         );
       }
     }

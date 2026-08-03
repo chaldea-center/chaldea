@@ -75,6 +75,7 @@ class FgoAnnualReportData {
   // misc
   List<UserServantCollectionEntity> usedLanternSvt = [];
   int get usedLanternCount => Maths.sum(usedLanternSvt.map((e) => e.usedLanternCount));
+  int get usedGreatLanternCount => Maths.sum(usedLanternSvt.map((e) => e.usedGreatLanternCount));
 
   List<UserShopEntity> svtAnonymousShops = [];
   int get usedSvtAnonymousCount => Maths.sum(svtAnonymousShops.map((e) => e.num));
@@ -185,9 +186,11 @@ class FgoAnnualReportData {
       final svt = db.gameData.servantsById[collection.svtId];
       if (!collection.isGet) continue;
       if (svt == null || svt.collectionNo == 0 || !svt.isUserSvt) continue;
-      if (collection.usedLanternCount > 0) report.usedLanternSvt.add(collection);
-      if (collection.friendshipRank >= 10) report.bond10SvtCollections[collection.svtId] = collection;
-      if (collection.friendshipRank >= 15) report.bond15SvtCollections[collection.svtId] = collection;
+      if (collection.usedAllLanternCount > 0) report.usedLanternSvt.add(collection);
+      if (collection.friendshipRank >= kBondLvDefaultMax) report.bond10SvtCollections[collection.svtId] = collection;
+      if (collection.friendshipRank >= kNormalLanternBondLvMax) {
+        report.bond15SvtCollections[collection.svtId] = collection;
+      }
     }
     final releasedSvtEquipIds = db.gameData.mappingData.entityRelease.ofRegion(region);
     final regionBondEquips = {

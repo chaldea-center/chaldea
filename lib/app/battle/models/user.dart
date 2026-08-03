@@ -163,7 +163,7 @@ class PlayerSvtData {
       ..grandSvt = status.grandSvt
       ..limitCount = limitCount ?? plan.ascension
       ..lv = svt.grailedLv(plan.grail)
-      ..bondLv = status.bond.clamp(0, 15)
+      ..bondLv = status.bond.clamp(0, kBondLvMax)
       ..tdLv = plan.npLv.clamp(1, 5)
       ..skillLvs = plan.skills.toList()
       ..appendLvs = plan.appendSkills.toList()

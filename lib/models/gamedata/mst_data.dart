@@ -10,6 +10,7 @@ import '../db.dart';
 import '../userdata/userdata.dart';
 import '_helper.dart';
 import 'common.dart';
+import 'constants.dart';
 import 'event.dart';
 import 'item.dart';
 import 'mst_tables.dart';
@@ -393,7 +394,7 @@ class MasterDataManager extends MasterDataManagerBase {
         fouAtk: max(0, (userSvt.adjustAtk - 100) ~/ 2),
         fouHp3: min(100, userSvt.adjustHp ~/ 5),
         fouAtk3: min(100, userSvt.adjustAtk ~/ 5),
-        bondLimit: collection?.maxFriendshipRank ?? 10,
+        bondLimit: collection?.maxFriendshipRank ?? kBondLvDefaultMax,
         npLv: userSvt.treasureDeviceLv1,
       ),
       priority: status0.priority,

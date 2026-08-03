@@ -473,14 +473,14 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
       FilterOption(
         selected:
             svtFilterData.bondCompare.options.equalTo(const {CompareOperator.lessThan}) &&
-            svtFilterData.bondValue.radioValue == 10,
+            svtFilterData.bondValue.radioValue == kBondLvDefaultMax,
         value: 0,
-        child: Text('${S.current.bond}＜10'),
+        child: Text('${S.current.bond}＜$kBondLvDefaultMax'),
         onChanged: (value) {
           setState(() {
             if (value) {
               svtFilterData.bondCompare.options = {CompareOperator.lessThan};
-              svtFilterData.bondValue.set(10);
+              svtFilterData.bondValue.set(kBondLvDefaultMax);
             } else {
               svtFilterData.bondValue.reset();
             }

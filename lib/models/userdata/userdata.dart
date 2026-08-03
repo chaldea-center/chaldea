@@ -356,9 +356,9 @@ class SvtStatus {
   bool get isReachBondLimit => bond >= cur.bondLimit;
 
   void validate([Servant? svt]) {
-    bond = bond.clamp2(0, 15);
+    bond = bond.clamp2(0, kBondLvMax);
     priority = priority.clamp2(1, 5);
-    cur.bondLimit = cur.bondLimit.clamp2(max(bond, 10), 15);
+    cur.bondLimit = cur.bondLimit.clamp2(max(bond, kBondLvDefaultMax), kBondLvMax);
     cur.validate(null, svt);
     // equipCmdCodes
     if (cmdCardStrengthen != null) {
@@ -477,7 +477,7 @@ class SvtPlan {
     this.fouAtk = 0,
     this.fouHp3 = 20,
     this.fouAtk3 = 20,
-    this.bondLimit = 10,
+    this.bondLimit = kBondLvDefaultMax,
     this._npLv,
   }) : skills = List.generate(kActiveSkillNums.length, (index) => skills?.getOrNull(index) ?? 1, growable: false),
        costumes = costumes ?? {},
@@ -502,7 +502,7 @@ class SvtPlan {
       fouAtk = 50,
       fouHp3 = 20,
       fouAtk3 = 20,
-      bondLimit = 15,
+      bondLimit = kBondLvMax,
       _npLv = 5;
   static const _grailCostByRarity = [10, 10, 10, 9, 7, 5];
 
@@ -542,7 +542,7 @@ class SvtPlan {
     fouAtk = fouAtk.clamp2(lower?.fouAtk ?? 0, 50);
     fouHp3 = fouHp3.clamp2(lower?.fouHp3 ?? 0, 20);
     fouAtk3 = fouAtk3.clamp2(lower?.fouAtk3 ?? 0, 20);
-    bondLimit = bondLimit.clamp2(lower?.bondLimit ?? 10, 15);
+    bondLimit = bondLimit.clamp2(lower?.bondLimit ?? kBondLvDefaultMax, kBondLvMax);
 
     if (_npLv == null && svt != null) {
       if (svt.rarity <= 3 || svt.obtains.contains(SvtObtain.eventReward)) {
@@ -563,7 +563,7 @@ class SvtPlan {
     grail = 0;
     fouHp = fouAtk = 0;
     fouHp3 = fouAtk3 = 20;
-    bondLimit = 10;
+    bondLimit = kBondLvDefaultMax;
   }
 
   void setMax({int skill = 10, bool isActive = true}) {

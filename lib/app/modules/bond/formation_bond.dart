@@ -22,8 +22,9 @@ class SvtExtraBondBonus {
   int addValue;
   int addRate;
   bool isBond15;
+  bool isBondReachLimit;
 
-  SvtExtraBondBonus({this.addValue = 0, this.addRate = 0, this.isBond15 = false});
+  SvtExtraBondBonus({this.addValue = 0, this.addRate = 0, this.isBond15 = false, this.isBondReachLimit = false});
 }
 
 class SvtBondBonusResult {
@@ -311,7 +312,10 @@ class _FormationBondTabState extends State<FormationBondTab> {
 
     for (final index in range(results.length)) {
       final deckSvt = option.formation.svts.getOrNull(index);
-      if (deckSvt == null || deckSvt.svt == null || deckSvt.supportType.isSupport || option.svtBonus[index].isBond15) {
+      if (deckSvt == null ||
+          deckSvt.svt == null ||
+          deckSvt.supportType.isSupport ||
+          option.svtBonus[index].isBondReachLimit) {
         results[index] = SvtBondBonusResult();
       }
     }
@@ -344,7 +348,7 @@ class _FormationBondTabState extends State<FormationBondTab> {
             if (mounted) setState(() {});
           },
         ),
-        DividerWithTitle(title: '${S.current.general_custom} / ${S.current.bond} 15'),
+        DividerWithTitle(title: '${S.current.general_custom} / ${S.current.bond} 15 / ${S.current.bond_limit}'),
         Row(
           children: [
             for (final index in range(option.svtBonus.length)) Expanded(child: Center(child: buildExtraBonus(index))),
@@ -578,6 +582,15 @@ class _FormationBondTabState extends State<FormationBondTab> {
             });
           },
         ),
+        Checkbox(
+          visualDensity: VisualDensity.compact,
+          value: detail.isBondReachLimit,
+          onChanged: (v) {
+            setState(() {
+              detail.isBondReachLimit = v!;
+            });
+          },
+        ),
       ],
     );
   }
@@ -588,8 +601,8 @@ class _FormationBondTabState extends State<FormationBondTab> {
     final detail = option.svtBonus[index];
     if (deckSvt.supportType.isSupport) {
       return Text('-', style: Theme.of(context).textTheme.bodySmall);
-    } else if (detail.isBond15) {
-      return Text('Lv.15', style: Theme.of(context).textTheme.bodySmall);
+    } else if (detail.isBondReachLimit) {
+      return Text('Lv.MAX', style: Theme.of(context).textTheme.bodySmall);
     }
 
     Widget _row(String text, [double? textScaleFactor]) {

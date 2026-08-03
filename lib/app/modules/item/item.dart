@@ -78,6 +78,7 @@ class _ItemDetailPageState extends State<ItemDetailPage> with SingleTickerProvid
           Items.qpId,
           Items.grailId,
           Items.lanternId,
+          Items.greatLanternId,
           Items.stellarSandId,
           Items.torchNovaId,
           Items.torchMorningStarId,

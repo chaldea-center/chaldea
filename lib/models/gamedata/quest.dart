@@ -796,7 +796,12 @@ class Gift extends BaseGift {
     Gift(id: 482, type: GiftType.item, objectId: 46, num: 1),
     Gift(id: 482, type: GiftType.item, objectId: 103, num: 1),
   ];
-  static final _commonGifts = {448: kGift448, 482: kGift482};
+  static final kGiftSvtBond16 = <Gift>[
+    Gift(id: 90008780, type: .servant, objectId: 9570600, num: 1),
+    Gift(id: 90008780, type: .servant, objectId: 9670600, num: 1),
+    Gift(id: 90008780, type: .item, objectId: 2, num: 30),
+  ];
+  static final _commonGifts = {448: kGift448, 482: kGift482, 90008780: kGiftSvtBond16};
 
   factory Gift.fromJson(Map<String, dynamic> json) => _$GiftFromJson(json);
 
@@ -883,6 +888,8 @@ class Gift extends BaseGift {
 
   @override
   Map<String, dynamic> toJson() => _$GiftToJson(this);
+
+  static final Map<int, List<Gift>> kSvtFixedBondGifts = {16: kGiftSvtBond16};
 }
 
 @JsonSerializable()

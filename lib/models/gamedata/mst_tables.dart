@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:math' show min;
+import 'dart:math' show min, max;
 
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/logger.dart';
@@ -7,6 +7,7 @@ import 'package:chaldea/utils/utils.dart';
 import '_helper.dart';
 import 'command_code.dart';
 import 'common.dart';
+import 'constants.dart';
 import 'gift.dart';
 import 'item.dart';
 import 'quest.dart';
@@ -752,8 +753,11 @@ class UserServantCollectionEntity with DataEntityBase<_IntStr> {
 
   bool get isGet => status == SvtCollectionStatus.get.value;
 
-  int get maxFriendshipRank => (svtId == kMashSvtId ? 5 : 10) + friendshipExceedCount;
-  int get usedLanternCount => svtId == kMashSvtId ? friendshipExceedCount - 5 : friendshipExceedCount;
+  int get maxFriendshipRank =>
+      (svtId == kMashSvtId ? kBondLvDefaultMax - 5 : kBondLvDefaultMax) + friendshipExceedCount;
+  int get usedAllLanternCount => svtId == kMashSvtId ? friendshipExceedCount - 5 : friendshipExceedCount;
+  int get usedLanternCount => min(5, usedAllLanternCount);
+  int get usedGreatLanternCount => max(0, usedAllLanternCount - 5);
 
   Map<int, int> costumeIdsTo01() {
     Map<int, int> result = {};
@@ -766,7 +770,7 @@ class UserServantCollectionEntity with DataEntityBase<_IntStr> {
     return result;
   }
 
-  bool get isReachBondLimit => friendshipRank >= 10 + friendshipExceedCount;
+  bool get isReachBondLimit => friendshipRank >= maxFriendshipRank;
 
   factory UserServantCollectionEntity.fromJson(Map<String, dynamic> data) =>
       _$UserServantCollectionEntityFromJson(data);

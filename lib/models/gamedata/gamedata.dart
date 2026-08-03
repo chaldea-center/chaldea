@@ -34,6 +34,7 @@ export 'class_board.dart';
 export 'command_code.dart';
 export 'common.dart';
 export 'const_data.dart';
+export 'constants.dart';
 export 'daily_bonus.dart';
 export 'drop_rate.dart';
 export 'enemy_master.dart';

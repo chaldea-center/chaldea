@@ -136,6 +136,7 @@ class ItemCenter {
     final demands = calcOneSvt(svt, cur, user.svtPlanOf(svtId), priorityFiltered: true);
     // Lanterns of Chaldea only displays the amount consumed, the demands are always 0
     demands.special.remove(Items.lanternId);
+    demands.special.remove(Items.greatLanternId);
     demands.all = Maths.sumDict(demands.parts);
 
     _svtCur._sparseMatrix.remove(svtId);
@@ -216,7 +217,8 @@ class ItemCenter {
       Items.atkFou3: max(0, target.fouAtk3 - cur.fouAtk3),
       // Mash 80-90 doesn't need grail
       Items.grailId: max(0, target.grail - grailStart),
-      Items.lanternId: max(0, target.bondLimit - cur.bondLimit),
+      Items.lanternId: max(0, min(kNormalLanternBondLvMax, target.bondLimit) - cur.bondLimit),
+      Items.greatLanternId: max(0, target.bondLimit - max(kNormalLanternBondLvMax, cur.bondLimit)),
       Items.qpId:
           QpCost.grail(svt.rarity, grailStart, target.grail) + QpCost.bondLimit(cur.bondLimit, target.bondLimit),
       ?coinId: coin,

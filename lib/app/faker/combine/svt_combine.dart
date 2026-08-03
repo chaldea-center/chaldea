@@ -351,9 +351,16 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
           trailing: FilledButton(
             onPressed:
                 collection != null &&
-                    collection.friendshipRank < 15 &&
+                    collection.friendshipRank < kBondLvMax &&
                     collection.friendshipRank == collection.maxFriendshipRank
                 ? () {
+                    if (collection.friendshipRank >= kNormalLanternBondLvMax) {
+                      SimpleConfirmDialog(
+                        title: Text('Bond Lv ${collection.friendshipRank}>=$kNormalLanternBondLvMax'),
+                        content: Text('Unlock bond limit in game!'),
+                      ).showDialog(context);
+                      return;
+                    }
                     final lanternNum = mstData.getItemOrSvtNum(Items.lanternId);
                     SimpleConfirmDialog(
                       title: Text('羁绊等级上限提升'),

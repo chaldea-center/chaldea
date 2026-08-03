@@ -123,11 +123,11 @@ class _SelectUserSvtPageState extends State<SelectUserSvtPage> {
           case _CombineType.bondLimit:
             final collection = mstData.userSvtCollection[userSvt.svtId];
             return collection != null &&
-                collection.friendshipRank < 15 &&
+                collection.friendshipRank < kBondLvMax &&
                 collection.friendshipRank == collection.maxFriendshipRank;
           case _CombineType.bondLessThan10:
             final collection = mstData.userSvtCollection[userSvt.svtId];
-            return collection != null && collection.friendshipRank < 10;
+            return collection != null && collection.friendshipRank < kBondLvDefaultMax;
           case _CombineType.ccUnlock:
             return mstData.userSvtCommandCard[userSvt.svtId]?.commandCardParam.any((e) => e == -1) ?? true;
         }

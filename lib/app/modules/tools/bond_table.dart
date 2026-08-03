@@ -14,9 +14,9 @@ class BondTotalTable extends StatefulWidget {
 }
 
 class _BondTotalStateTable extends State<BondTotalTable> {
-  final kBondLvs = const [5, 6, 10, 15];
+  final kBondLvs = const [5, 6, kBondLvDefaultMax, kNormalLanternBondLvMax, kBondLvMax];
   final int kGroupBondWidth = 5000;
-  int maxBondLv = 10;
+  int maxBondLv = kBondLvDefaultMax;
   // bool get useGroupBond => maxBondLv > 5;
   bool get useGroupBond => false;
   final svtFilter = SvtFilterData();

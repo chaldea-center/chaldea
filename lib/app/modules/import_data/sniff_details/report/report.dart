@@ -1427,6 +1427,8 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
   Widget _miscTile() {
     // 圣晶石购入
     const largeFontSize = 18.0;
+    final usedGreatLanternCount = report.usedGreatLanternCount + 2;
+    final ownGreatLanternCount = mstData.getItemOrSvtNum(Items.greatLanternId) + 3;
     return ReportCard(
       padding: .symmetric(vertical: 16),
       child: Column(
@@ -1443,15 +1445,26 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
               TextSpan(
                 children: [
                   TextSpan(
-                    text: ' ${report.usedLanternCount} ',
+                    text: ' ${report.usedLanternCount}',
                     style: const TextStyle(fontWeight: FontWeight.bold, fontSize: largeFontSize),
                   ),
+                  if (usedGreatLanternCount > 0)
+                    TextSpan(
+                      text: '+$usedGreatLanternCount ',
+                      style: const TextStyle(fontWeight: FontWeight.normal),
+                    ),
                   TextSpan(
-                    text: ' +${report.mstData.getItemOrSvtNum(Items.lanternId)} ',
+                    text: ' +${report.mstData.getItemOrSvtNum(Items.lanternId)}',
                     style: TextStyle(color: _greyColor),
                   ),
+                  if (ownGreatLanternCount > 0)
+                    TextSpan(
+                      text: '+$ownGreatLanternCount',
+                      style: TextStyle(color: _greyColor),
+                    ),
                   TextSpan(
-                    text: ' =${report.usedLanternCount + report.mstData.getItemOrSvtNum(Items.lanternId)} ',
+                    text:
+                        '  =${report.usedLanternCount + usedGreatLanternCount + report.mstData.getItemOrSvtNum(Items.lanternId) + ownGreatLanternCount} ',
                     style: TextStyle(color: _greyColor),
                   ),
                 ],

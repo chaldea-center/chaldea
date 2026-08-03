@@ -304,7 +304,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           start: status.bond,
           end: curVal.bondLimit,
           minVal: 0,
-          maxVal: 15,
+          maxVal: kBondLvMax,
           onValueChanged: (_start, _end) {
             status.favorite = true;
             status.bond = _start;

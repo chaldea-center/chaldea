@@ -358,11 +358,9 @@ class SvtInfoTab extends StatelessWidget {
                     children: [
                       Text('Gift'),
                       for (int i = row * 5; i < row * 5 + 5; i++)
-                        Wrap(
-                          children: [
-                            for (final gift in svt.bondGifts[i + 1] ?? <Gift>[])
-                              gift.iconBuilder(context: context, width: 28),
-                          ],
+                        _buildBondGifts(
+                          context,
+                          svt.bondGifts[i + 1] ?? (i < svt.bondGrowth.length ? Gift.kSvtFixedBondGifts[i + 1] : null),
                         ),
                     ],
                   ),
@@ -383,6 +381,17 @@ class SvtInfoTab extends StatelessWidget {
 
   String _infoWithLimits<T>(T base, Iterable<T?> limits, [String Function(T v)? format]) {
     return <T>{base, ...limits.whereType<T>()}.map((e) => format?.call(e) ?? e.toString()).join(' / ');
+  }
+
+  Widget _buildBondGifts(BuildContext context, List<Gift>? gifts) {
+    gifts ??= [];
+    if (gifts.isEmpty) return const SizedBox.shrink();
+    return Wrap(
+      spacing: 1,
+      runSpacing: 2,
+      alignment: .center,
+      children: [for (final gift in gifts) gift.iconBuilder(context: context, width: gifts.length > 2 ? 20 : 28)],
+    );
   }
 
   List<Widget> relateEvents() {
