@@ -211,8 +211,10 @@ class ItemCenter {
     if (svt.collectionNo == 1) grailStart = max(2, grailStart);
 
     detail.special = {
-      Items.hpFou4: max(0, target.fouHp - cur.fouHp),
-      Items.atkFou4: max(0, target.fouAtk - cur.fouAtk),
+      Items.hpFou5b: max(0, target.fouHp5 - cur.fouHp5),
+      Items.atkFou5b: max(0, target.fouAtk5 - cur.fouAtk5),
+      Items.hpFou4: max(0, target.fouHp4 - cur.fouHp4),
+      Items.atkFou4: max(0, target.fouAtk4 - cur.fouAtk4),
       Items.hpFou3: max(0, target.fouHp3 - cur.fouHp3),
       Items.atkFou3: max(0, target.fouAtk3 - cur.fouAtk3),
       // Mash 80-90 doesn't need grail

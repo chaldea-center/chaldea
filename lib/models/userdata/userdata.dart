@@ -451,10 +451,15 @@ class SvtPlan {
 
   int grail; // 0~
 
-  // 0-50, ★4 fou-kun
-  int fouHp;
-  int fouAtk;
-  // 0-20, ★3 fou-kun
+  // 100× 0-10, ★4 fou-kun
+  int fouHp5;
+  int fouAtk5;
+  // 20× 0-50, ★4 fou-kun
+  @JsonKey(name: 'fouHp')
+  int fouHp4;
+  @JsonKey(name: 'fouAtk')
+  int fouAtk4;
+  // 50× 0-20, ★3 fou-kun
   int fouHp3;
   int fouAtk3;
 
@@ -473,8 +478,10 @@ class SvtPlan {
     List<int>? appendSkills,
     Map<int, int>? costumes,
     this.grail = 0,
-    this.fouHp = 0,
-    this.fouAtk = 0,
+    this.fouHp5 = 0,
+    this.fouAtk5 = 0,
+    this.fouHp4 = 0,
+    this.fouAtk4 = 0,
     this.fouHp3 = 20,
     this.fouAtk3 = 20,
     this.bondLimit = kBondLvDefaultMax,
@@ -498,8 +505,10 @@ class SvtPlan {
       appendSkills = List.filled(kAppendSkillNums.length, 10),
       costumes = svt.costumeMaterialsForPlan.map((key, value) => MapEntry(key, 1)),
       grail = _grailCostByRarity[svt.rarity] + 10,
-      fouHp = 50,
-      fouAtk = 50,
+      fouHp5 = 10,
+      fouAtk5 = 10,
+      fouHp4 = 50,
+      fouAtk4 = 50,
       fouHp3 = 20,
       fouAtk3 = 20,
       bondLimit = kBondLvMax,
@@ -512,6 +521,18 @@ class SvtPlan {
 
   List<int> getSkills(bool isActive) {
     return isActive ? skills : appendSkills;
+  }
+
+  int getFouHp() {
+    if (fouHp5 > 0) return 2000 + fouHp5 * 100;
+    if (fouHp4 > 0) return 1000 + fouHp4 * 20;
+    return fouHp3 * 50;
+  }
+
+  int getFouAtk() {
+    if (fouAtk5 > 0) return 2000 + fouAtk5 * 100;
+    if (fouAtk4 > 0) return 1000 + fouAtk4 * 20;
+    return fouHp3 * 50;
   }
 
   void validate([SvtPlan? lower, Servant? svt]) {
@@ -538,8 +559,10 @@ class SvtPlan {
     }
     final _grailLvs = db.gameData.constData.svtGrailCost[svt?.rarity]?.keys;
     grail = grail.clamp2(lower?.grail ?? 0, _grailLvs == null ? 20 : Maths.max(_grailLvs));
-    fouHp = fouHp.clamp2(lower?.fouHp ?? 0, 50);
-    fouAtk = fouAtk.clamp2(lower?.fouAtk ?? 0, 50);
+    fouHp5 = fouHp5.clamp2(lower?.fouHp5 ?? 0, 10);
+    fouAtk5 = fouAtk5.clamp2(lower?.fouAtk5 ?? 0, 10);
+    fouHp4 = fouHp4.clamp2(lower?.fouHp4 ?? 0, 50);
+    fouAtk4 = fouAtk4.clamp2(lower?.fouAtk4 ?? 0, 50);
     fouHp3 = fouHp3.clamp2(lower?.fouHp3 ?? 0, 20);
     fouAtk3 = fouAtk3.clamp2(lower?.fouAtk3 ?? 0, 20);
     bondLimit = bondLimit.clamp2(lower?.bondLimit ?? kBondLvDefaultMax, kBondLvMax);
@@ -561,7 +584,8 @@ class SvtPlan {
     costumes.clear();
     appendSkills.fillRange(0, appendSkills.length, 0);
     grail = 0;
-    fouHp = fouAtk = 0;
+    fouHp5 = fouAtk5 = 0;
+    fouHp4 = fouAtk4 = 0;
     fouHp3 = fouAtk3 = 20;
     bondLimit = kBondLvDefaultMax;
   }

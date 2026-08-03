@@ -63,8 +63,10 @@ class ServantFilterPage extends FilterPage<SvtFilterData> {
         if (!svtStat.isReachBondLimit) SvtPlanScope.bond,
         if ([
           svtPlan.grail > svtStat.cur.grail,
-          svtPlan.fouHp > svtStat.cur.fouHp,
-          svtPlan.fouAtk > svtStat.cur.fouAtk,
+          svtPlan.fouHp5 > svtStat.cur.fouHp5,
+          svtPlan.fouAtk5 > svtStat.cur.fouAtk5,
+          svtPlan.fouHp4 > svtStat.cur.fouHp4,
+          svtPlan.fouAtk4 > svtStat.cur.fouAtk4,
           svtPlan.fouHp3 > svtStat.cur.fouHp3,
           svtPlan.fouAtk3 > svtStat.cur.fouAtk3,
         ].any((e) => e))

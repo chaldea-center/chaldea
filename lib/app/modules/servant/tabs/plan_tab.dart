@@ -325,6 +325,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           SvtClassX.clsIcon(db.gameData.grandGraphDetails[svt.classId]?.grandClassId ?? svt.classId, 5),
           width: 28,
         ),
+        contentPadding: EdgeInsetsDirectional.only(start: 16),
         onChanged: (v) async {
           if (v) {
             final prevGrandSvts = db.gameData.servantsWithDup.values
@@ -370,47 +371,85 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
       children.add(TileGroup(header: S.current.general_others, children: extraParts1));
     }
 
-    // Extra part2: grail/fou-kun
+    // Extra part2: fou-kun
     final extraParts2 = <Widget>[
-      if (showDetail(SvtPlanDetail.fou4))
+      if (showDetail(SvtPlanDetail.fou5)) ...[
+        buildPlanRow(
+          useSlider: sliderMode,
+          leading: Item.iconBuilder(context: context, item: null, itemId: Items.hpFou5b, width: 33),
+          title: '${kStarChar}5 HP ${S.current.foukun}',
+          start: curVal.fouHp5,
+          end: targetVal.fouHp5,
+          minVal: 0,
+          maxVal: 10,
+          labelFormatter: (v) => (v * 100).toString(),
+          trailingLabelFormatter: (a, b) => '${curVal.fouHp5 * 100}→${targetVal.fouHp5 * 100}',
+          onValueChanged: (_start, _end) {
+            status.cur.favorite = true;
+            curVal.fouHp5 = _start;
+            targetVal.fouHp5 = _end;
+            updateState();
+          },
+          detailPageBuilder: null,
+        ),
+        buildPlanRow(
+          useSlider: sliderMode,
+          leading: Item.iconBuilder(context: context, item: null, itemId: Items.atkFou5b, width: 33),
+          title: '${kStarChar}5 ATK ${S.current.foukun}',
+          start: curVal.fouAtk5,
+          end: targetVal.fouAtk5,
+          minVal: 0,
+          maxVal: 10,
+          labelFormatter: (v) => (v * 100).toString(),
+          trailingLabelFormatter: (a, b) => '${curVal.fouAtk4 * 100}→${targetVal.fouAtk5 * 100}',
+          onValueChanged: (_start, _end) {
+            status.cur.favorite = true;
+            curVal.fouAtk5 = _start;
+            targetVal.fouAtk5 = _end;
+            updateState();
+          },
+          detailPageBuilder: null,
+        ),
+      ],
+      if (showDetail(SvtPlanDetail.fou4)) ...[
         buildPlanRow(
           useSlider: sliderMode,
           leading: Item.iconBuilder(context: context, item: null, itemId: Items.hpFou4, width: 33),
           title: '${kStarChar}4 HP ${S.current.foukun}',
-          start: curVal.fouHp,
-          end: targetVal.fouHp,
+          start: curVal.fouHp4,
+          end: targetVal.fouHp4,
           minVal: 0,
           maxVal: 50,
           labelFormatter: (v) => (v * 20).toString(),
-          trailingLabelFormatter: (a, b) => '${curVal.fouHp * 20}→${targetVal.fouHp * 20}',
+          trailingLabelFormatter: (a, b) => '${curVal.fouHp4 * 20}→${targetVal.fouHp4 * 20}',
           onValueChanged: (_start, _end) {
             status.cur.favorite = true;
-            curVal.fouHp = _start;
-            targetVal.fouHp = _end;
+            curVal.fouHp4 = _start;
+            targetVal.fouHp4 = _end;
             updateState();
           },
           detailPageBuilder: null,
         ),
-      if (showDetail(SvtPlanDetail.fou4))
         buildPlanRow(
           useSlider: sliderMode,
           leading: Item.iconBuilder(context: context, item: null, itemId: Items.atkFou4, width: 33),
           title: '${kStarChar}4 ATK ${S.current.foukun}',
-          start: curVal.fouAtk,
-          end: targetVal.fouAtk,
+          start: curVal.fouAtk4,
+          end: targetVal.fouAtk4,
           minVal: 0,
           maxVal: 50,
           labelFormatter: (v) => (v * 20).toString(),
-          trailingLabelFormatter: (a, b) => '${curVal.fouAtk * 20}→${targetVal.fouAtk * 20}',
+          trailingLabelFormatter: (a, b) => '${curVal.fouAtk4 * 20}→${targetVal.fouAtk4 * 20}',
           onValueChanged: (_start, _end) {
             status.cur.favorite = true;
-            curVal.fouAtk = _start;
-            targetVal.fouAtk = _end;
+            curVal.fouAtk4 = _start;
+            targetVal.fouAtk4 = _end;
             updateState();
           },
           detailPageBuilder: null,
         ),
-      if (showDetail(SvtPlanDetail.fou3))
+      ],
+      if (showDetail(SvtPlanDetail.fou3)) ...[
         buildPlanRow(
           useSlider: sliderMode,
           leading: Item.iconBuilder(context: context, item: null, itemId: Items.hpFou3, width: 33),
@@ -429,7 +468,6 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           },
           detailPageBuilder: null,
         ),
-      if (showDetail(SvtPlanDetail.fou3))
         buildPlanRow(
           useSlider: sliderMode,
           leading: Item.iconBuilder(context: context, item: null, itemId: Items.atkFou3, width: 33),
@@ -448,6 +486,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           },
           detailPageBuilder: null,
         ),
+      ],
     ];
     if (extraParts2.isNotEmpty) {
       children.add(TileGroup(header: S.current.event_item_extra, children: extraParts2));

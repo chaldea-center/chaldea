@@ -58,6 +58,7 @@ class _HideSvtPlanDetailSettingPageState extends State<HideSvtPlanDetailSettingP
           SvtPlanDetail.costume: S.current.costume,
           SvtPlanDetail.grail: S.current.grail_up,
           SvtPlanDetail.noblePhantasm: S.current.noble_phantasm_level,
+          SvtPlanDetail.fou5: '${kStarChar}5 ${S.current.foukun}',
           SvtPlanDetail.fou4: '${kStarChar}4 ${S.current.foukun}',
           SvtPlanDetail.fou3: '${kStarChar}3 ${S.current.foukun}',
           SvtPlanDetail.bondLimit: S.current.bond,

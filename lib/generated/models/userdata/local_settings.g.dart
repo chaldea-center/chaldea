@@ -412,6 +412,7 @@ const _$SvtPlanDetailEnumMap = {
   SvtPlanDetail.coin: 'coin',
   SvtPlanDetail.grail: 'grail',
   SvtPlanDetail.noblePhantasm: 'noblePhantasm',
+  SvtPlanDetail.fou5: 'fou5',
   SvtPlanDetail.fou4: 'fou4',
   SvtPlanDetail.fou3: 'fou3',
   SvtPlanDetail.bondLimit: 'bondLimit',

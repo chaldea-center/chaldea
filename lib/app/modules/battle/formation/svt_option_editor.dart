@@ -124,14 +124,16 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       SliderWithPrefix(
         label: 'ATK ${S.current.foukun}',
         min: 0,
-        max: 2000,
+        max: 3000,
         value: playerSvtData.atkFou,
         // division: 200,
         valueFormatter: (v) => '+$v',
         onChange: (v) {
           _updateState(() {
             int v2 = (v / 10).round();
-            if (v2 > 100) {
+            if (v2 > 200) {
+              v2 = v2 ~/ 10 * 10;
+            } else if (v2 > 100) {
               v2 = v2 ~/ 2 * 2;
             }
             playerSvtData.atkFou = v2 * 10;
@@ -141,14 +143,16 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       SliderWithPrefix(
         label: 'HP ${S.current.foukun}',
         min: 0,
-        max: 2000,
+        max: 3000,
         value: playerSvtData.hpFou,
         // division: 200,
         valueFormatter: (v) => '+$v',
         onChange: (v) {
           _updateState(() {
             int v2 = (v / 10).round();
-            if (v2 > 100) {
+            if (v2 > 200) {
+              v2 = v2 ~/ 10 * 10;
+            } else if (v2 > 100) {
               v2 = v2 ~/ 2 * 2;
             }
             playerSvtData.hpFou = v2 * 10;

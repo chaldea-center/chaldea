@@ -224,15 +224,17 @@ SvtPlan _$SvtPlanFromJson(Map json) => $checkedCreate('SvtPlan', json, ($checked
       (v) => (v as Map?)?.map((k, e) => MapEntry(int.parse(k as String), (e as num).toInt())),
     ),
     grail: $checkedConvert('grail', (v) => (v as num?)?.toInt() ?? 0),
-    fouHp: $checkedConvert('fouHp', (v) => (v as num?)?.toInt() ?? 0),
-    fouAtk: $checkedConvert('fouAtk', (v) => (v as num?)?.toInt() ?? 0),
+    fouHp5: $checkedConvert('fouHp5', (v) => (v as num?)?.toInt() ?? 0),
+    fouAtk5: $checkedConvert('fouAtk5', (v) => (v as num?)?.toInt() ?? 0),
+    fouHp4: $checkedConvert('fouHp', (v) => (v as num?)?.toInt() ?? 0),
+    fouAtk4: $checkedConvert('fouAtk', (v) => (v as num?)?.toInt() ?? 0),
     fouHp3: $checkedConvert('fouHp3', (v) => (v as num?)?.toInt() ?? 20),
     fouAtk3: $checkedConvert('fouAtk3', (v) => (v as num?)?.toInt() ?? 20),
-    bondLimit: $checkedConvert('bondLimit', (v) => (v as num?)?.toInt() ?? 10),
+    bondLimit: $checkedConvert('bondLimit', (v) => (v as num?)?.toInt() ?? kBondLvDefaultMax),
     npLv: $checkedConvert('npLv', (v) => (v as num?)?.toInt()),
   );
   return val;
-});
+}, fieldKeyMap: const {'fouHp4': 'fouHp', 'fouAtk4': 'fouAtk'});
 
 Map<String, dynamic> _$SvtPlanToJson(SvtPlan instance) => <String, dynamic>{
   'favorite': instance.favorite,
@@ -241,8 +243,10 @@ Map<String, dynamic> _$SvtPlanToJson(SvtPlan instance) => <String, dynamic>{
   'appendSkills': instance.appendSkills,
   'costumes': instance.costumes.map((k, e) => MapEntry(k.toString(), e)),
   'grail': instance.grail,
-  'fouHp': instance.fouHp,
-  'fouAtk': instance.fouAtk,
+  'fouHp5': instance.fouHp5,
+  'fouAtk5': instance.fouAtk5,
+  'fouHp': instance.fouHp4,
+  'fouAtk': instance.fouAtk4,
   'fouHp3': instance.fouHp3,
   'fouAtk3': instance.fouAtk3,
   'bondLimit': instance.bondLimit,

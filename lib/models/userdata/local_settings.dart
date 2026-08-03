@@ -748,6 +748,7 @@ enum SvtPlanDetail {
   coin,
   grail,
   noblePhantasm,
+  fou5,
   fou4,
   fou3,
   bondLimit,

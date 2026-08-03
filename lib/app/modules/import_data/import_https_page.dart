@@ -910,8 +910,10 @@ class ImportHttpPageState extends State<ImportHttpPage> {
           ..grail = svt.exceedCount
           ..fouHp3 = min(100, svt.adjustHp ~/ 5)
           ..fouAtk3 = min(100, svt.adjustAtk ~/ 5)
-          ..fouHp = max(0, (svt.adjustHp - 100) ~/ 2)
-          ..fouAtk = max(0, (svt.adjustAtk - 100) ~/ 2)
+          ..fouHp4 = max(0, (svt.adjustHp - 100) ~/ 2)
+          ..fouAtk4 = max(0, (svt.adjustAtk - 100) ~/ 2)
+          ..fouHp5 = max(0, (svt.adjustHp - 200) ~/ 10)
+          ..fouAtk5 = max(0, (svt.adjustAtk - 200) ~/ 10)
           ..bondLimit = collection.maxFriendshipRank;
         if (svt.appendLvs != null) {
           status.cur.appendSkills = List.generate(kAppendSkillNums.length, (i) => svt.appendLvs!.getOrNull(i) ?? 0);

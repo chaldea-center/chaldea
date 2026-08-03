@@ -168,8 +168,8 @@ class PlayerSvtData {
       ..skillLvs = plan.skills.toList()
       ..appendLvs = plan.appendSkills.toList()
       ..allowedExtraSkills.clear()
-      ..atkFou = plan.fouAtk > 0 ? 1000 + plan.fouAtk * 20 : plan.fouAtk3 * 50
-      ..hpFou = plan.fouHp > 0 ? 1000 + plan.fouHp * 20 : plan.fouHp3 * 50
+      ..atkFou = plan.getFouAtk()
+      ..hpFou = plan.getFouHp()
       ..cardStrengthens = List.generate(svt.cards.length, (index) {
         return (status.cmdCardStrengthen?.getOrNull(index) ?? 0) * 20;
       })

@@ -27,6 +27,8 @@ class PlanDataSheetConverter {
   static const _append4 = 'append4';
   static const _append5 = 'append5';
   static const _grail = 'grail';
+  static const _fouHp5 = 'fouHp5';
+  static const _fouAtk5 = 'fouAtk5';
   static const _fouHp = 'fouHp4';
   static const _fouAtk = 'fouAtk4';
   static const _fouHp3 = 'fouHp3';
@@ -106,8 +108,10 @@ class PlanDataSheetConverter {
     _write(_append4, plan.appendSkills[3]);
     _write(_append5, plan.appendSkills[4]);
     _write(_grail, plan.grail);
-    _write(_fouHp, plan.fouHp);
-    _write(_fouAtk, plan.fouAtk);
+    _write(_fouHp5, plan.fouHp5);
+    _write(_fouAtk5, plan.fouAtk5);
+    _write(_fouHp, plan.fouHp4);
+    _write(_fouAtk, plan.fouAtk4);
     _write(_fouHp3, plan.fouHp3);
     _write(_fouAtk3, plan.fouAtk3);
     _write(_bondLimit, plan.bondLimit);
@@ -135,8 +139,10 @@ class PlanDataSheetConverter {
         _toInt(_append5) ?? 0,
       ],
       grail: _toInt(_grail) ?? 0,
-      fouHp: _toInt(_fouHp) ?? 0,
-      fouAtk: _toInt(_fouAtk) ?? 0,
+      fouHp5: _toInt(_fouHp5) ?? 0,
+      fouAtk5: _toInt(_fouAtk5) ?? 0,
+      fouHp4: _toInt(_fouHp) ?? 0,
+      fouAtk4: _toInt(_fouAtk) ?? 0,
       fouHp3: _toInt(_fouHp3) ?? 0,
       fouAtk3: _toInt(_fouAtk3) ?? 0,
       bondLimit: _toInt(_bondLimit) ?? 0,
@@ -251,8 +257,10 @@ class ParedSvtCsvRow {
       ..skills = src.skills.toList()
       ..appendSkills = src.appendSkills.toList()
       ..grail = src.grail
-      ..fouHp = src.fouHp
-      ..fouAtk = src.fouAtk
+      ..fouHp5 = src.fouHp5
+      ..fouAtk5 = src.fouAtk5
+      ..fouHp4 = src.fouHp4
+      ..fouAtk4 = src.fouAtk4
       ..fouHp3 = src.fouHp3
       ..fouAtk3 = src.fouAtk3
       ..bondLimit = src.bondLimit
