@@ -54,8 +54,8 @@ class _ThemeColorPageState extends State<ThemeColorPage> {
           //     ],
           //   ),
           // ),
-          RadioGroup<FlexScheme?>(
-            groupValue: db.settings.flexScheme,
+          RadioGroup<FlexScheme>(
+            groupValue: db.settings.resolvedFlexScheme,
             onChanged: (v) {
               if (v != db.settings.flexScheme) {
                 db.settings.flexScheme = v;
@@ -67,20 +67,18 @@ class _ThemeColorPageState extends State<ThemeColorPage> {
             child: TileGroup(
               header: 'Color Scheme',
               children: [
-                for (final scheme in [null, ...FlexScheme.values])
+                for (final scheme in AppTheme.kFlexSchemes)
                   if (scheme != .custom)
-                    RadioListTile<FlexScheme?>(
+                    RadioListTile<FlexScheme>(
                       value: scheme,
-                      title: Text(scheme?.data.name ?? S.current.general_default),
+                      title: Text(scheme.data.name),
                       secondary: Row(
                         mainAxisSize: .min,
                         spacing: 4,
                         children: [
                           for (final isDark in [false, true])
                             FlexThemeModeOptionButton(
-                              flexSchemeColor: isDark
-                                  ? scheme?.data.dark ?? FlexColor.materialBaseline.dark
-                                  : scheme?.data.light ?? FlexColor.materialBaseline.light,
+                              flexSchemeColor: isDark ? scheme.data.dark : scheme.data.light,
                               backgroundColor: isDark ? Colors.grey.shade800 : Colors.white,
                               selected: false,
                               optionButtonPadding: .zero,

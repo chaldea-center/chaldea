@@ -42,6 +42,7 @@ class LocalSettings {
   ThemeMode themeMode;
   bool useMaterial3;
   FlexScheme? flexScheme;
+  FlexScheme get resolvedFlexScheme => flexScheme ?? .tealM3;
   int? colorSeedInt;
   bool enableMouseDrag;
   bool globalSelection;

@@ -170,12 +170,11 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
           Container(
             padding: .symmetric(horizontal: 16),
             constraints: BoxConstraints(maxWidth: 360),
-            child: DropdownButton<FlexScheme?>(
+            child: DropdownButton<FlexScheme>(
               isExpanded: true,
-              value: db.settings.flexScheme,
+              value: db.settings.resolvedFlexScheme,
               items: [
-                DropdownMenuItem(child: Text('Default')),
-                for (final item in [null, ...FlexScheme.values.toList()..remove(FlexScheme.custom)])
+                for (final item in AppTheme.kFlexSchemes)
                   DropdownMenuItem(
                     value: item,
                     child: Row(
@@ -187,9 +186,7 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
                           SizedBox(
                             height: 30,
                             child: FlexThemeModeOptionButton(
-                              flexSchemeColor: isDark
-                                  ? (item?.data ?? FlexColor.materialBaseline).dark
-                                  : (item?.data ?? FlexColor.materialBaseline).light,
+                              flexSchemeColor: isDark ? item.data.dark : item.data.light,
                               backgroundColor: isDark ? Colors.grey.shade800 : Colors.white,
                               selected: false,
                               optionButtonPadding: .zero,
@@ -199,9 +196,7 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
                               padding: .all(2),
                             ),
                           ),
-                        Flexible(
-                          child: Text(item?.data.name ?? S.current.general_default, maxLines: 1, overflow: .ellipsis),
-                        ),
+                        Flexible(child: Text(item.data.name, maxLines: 1, overflow: .ellipsis)),
                       ],
                     ),
                   ),

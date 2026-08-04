@@ -172,7 +172,7 @@ abstract final class AppTheme {
   static ThemeData _build(Brightness brightness) {
     final isDark = brightness == Brightness.dark;
     ThemeData themeData = (isDark ? FlexThemeData.dark : FlexThemeData.light)(
-      scheme: db.settings.flexScheme,
+      scheme: db.settings.resolvedFlexScheme,
       subThemesData: FlexSubThemesData(
         //
         inputDecoratorBorderType: .outline,
@@ -245,4 +245,13 @@ abstract final class AppTheme {
     //   extensions: {AppThemeData.forBrightness(brightness)},
     // );
   }
+
+  static const kDefaultScheme = FlexScheme.tealM3;
+  static final kFlexSchemes = <FlexScheme>{
+    FlexScheme.flutterDash,
+    FlexScheme.blue,
+    FlexScheme.aquaBlue,
+    FlexScheme.tealM3,
+    ...FlexScheme.values.where((e) => e != FlexScheme.custom),
+  }.toList();
 }
