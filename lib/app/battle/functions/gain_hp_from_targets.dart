@@ -38,7 +38,7 @@ class GainHpFromTargets {
       gainValue += min(absorbTarget.hp - 1, checkValue);
     }
 
-    receiver.heal(gainValue);
+    receiver.heal(max(gainValue, 0));
     receiver.procAccumulationDamage(previousHp);
     battleData.setFuncResult(receiver.uniqueId, true);
 
