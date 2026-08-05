@@ -738,8 +738,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
       ];
     }
 
-    Widget _buildTypeVal(int type) {
-      final stat = playerSvtData.classBoardData.getClassStatistic(type, dispSvt.classId);
+    Set<num> _getMaxCounts(int type) {
       Set<num> maxCounts = {};
       if (grandBoard != null) {
         for (final vals in valsList) {
@@ -753,6 +752,12 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
         }
       }
       maxCounts.remove(0);
+      return maxCounts;
+    }
+
+    Widget _buildTypeVal(int type) {
+      final stat = playerSvtData.classBoardData.getClassStatistic(type, dispSvt.classId);
+      final maxCounts = _getMaxCounts(type);
 
       final dispName = ClassStatisticsType.fromId(type)?.dispName ?? 'Type $type';
       return ListTile(
@@ -788,22 +793,54 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           _buildBoard(grandBoard, playerSvtData.classBoardData.grandClassBoardSquares),
           DividerWithTitle(
             indent: 16,
-            titleWidget: Text.rich(
-              TextSpan(
-                text: '${Transl.svtClassId(dispSvt.classId).l} ${S.current.svt_class} ${S.current.statistics_title} ',
-                style: Theme.of(context).textTheme.bodySmall,
-                children: [
-                  SharedBuilder.textButtonSpan(
-                    context: context,
-                    text: S.current.clear,
-                    onTap: () {
-                      setState(() {
-                        playerSvtData.classBoardData.classStatistics.clear();
-                      });
-                    },
-                  ),
-                ],
-              ),
+            titleWidget: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              spacing: 4,
+              children: [
+                Text(
+                  '${Transl.svtClassId(dispSvt.classId).l} ${S.current.svt_class} ${S.current.statistics_title}',
+                  style: Theme.of(context).textTheme.bodySmall,
+                  textAlign: TextAlign.center,
+                ),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          playerSvtData.classBoardData.classStatistics.clear();
+                        });
+                      },
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        textStyle: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      child: Text(S.current.clear),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          for (final type in classStatTypes) {
+                            final stat = playerSvtData.classBoardData.getClassStatistic(type, dispSvt.classId);
+                            final maxCounts = _getMaxCounts(type);
+                            stat.typeVal = (maxCounts.isEmpty ? 0 : maxCounts.reduce(max)).toInt();
+                          }
+                        });
+                      },
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        minimumSize: Size.zero,
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        textStyle: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      child: Text('${S.current.set_all} MAX'),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
           for (final type in classStatTypes) _buildTypeVal(type),
