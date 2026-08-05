@@ -397,6 +397,26 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData, ServantFilt
                   });
                 },
               ),
+              DropdownButton<int?>(
+                value: filterData.bondValue.radioValue,
+                isDense: true,
+                hint: Text(S.current.general_any),
+                items: [
+                  DropdownMenuItem(value: null, child: Text(S.current.general_any)),
+                  for (int value = 0; value <= 16; value++)
+                    DropdownMenuItem(value: value, child: Text(value.toString())),
+                ],
+                onChanged: (value) {
+                  setState(() {
+                    if (value == null) {
+                      filterData.bondValue.reset();
+                    } else {
+                      filterData.bondValue.set(value);
+                    }
+                    update();
+                  });
+                },
+              ),
               FilterGroup<int>(
                 combined: true,
                 padding: EdgeInsets.zero,
