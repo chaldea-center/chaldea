@@ -79,8 +79,14 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
               },
             );
           }),
-          PopupMenuButton(
+          PopupMenuButton<dynamic>(
             itemBuilder: (context) => [
+              PopupMenuItem(
+                enabled: false,
+                height: 32,
+                child: Text(summon.id, textScaler: const TextScaler.linear(0.9)),
+              ),
+              const PopupMenuDivider(),
               ...SharedBuilder.websitesPopupMenuItems(mooncell: summon.mcLink, fandom: summon.fandomLink),
               ...SharedBuilder.noticeLinkPopupMenuItems(noticeLink: summon.noticeLink),
             ],

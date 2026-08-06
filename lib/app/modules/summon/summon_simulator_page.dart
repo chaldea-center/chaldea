@@ -263,7 +263,7 @@ class _SummonSimulatorPageState extends State<SummonSimulatorPage> {
         if (block.rarity == 5 &&
             summon.isLuckyBag &&
             data.svts.where((e) => e.rarity == 5).length == 1 &&
-            block.ids.length < 100) {
+            block.ids.length < 20) {
           //
         } else {
           continue;

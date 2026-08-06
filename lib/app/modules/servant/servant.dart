@@ -227,16 +227,13 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
       ),
       titlePadding: const EdgeInsetsDirectional.only(start: 16),
       contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 0),
-      subtitle: SizedBox(
-        height: 22,
-        child: ListView(
-          scrollDirection: Axis.horizontal,
-          shrinkWrap: true,
+      subtitle: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          mainAxisSize: .min,
           children: <Widget>[
             // more tags/info here
-            if (!const [SvtType.combineMaterial, SvtType.statusUp].contains(svt.type))
-              for (final badge in getObtainBadges())
-                Padding(padding: const EdgeInsetsDirectional.only(end: 4), child: badge),
+            if (!const [SvtType.combineMaterial, SvtType.statusUp].contains(svt.type)) ...getObtainBadges(),
             if (Items.specialSvtMat.contains(svt.id))
               TextButton(
                 onPressed: () {

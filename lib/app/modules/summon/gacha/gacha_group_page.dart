@@ -67,6 +67,7 @@ class _GachaGroupPageState extends State<GachaGroupPage> {
     return ListView(
       children: [
         SimpleAccordion(
+          expanded: gachas.length <= 3,
           headerBuilder: (context, _) {
             final invalidCount = gachas.where((e) => e.isInvalid).length, validCount = gachas.length - invalidCount;
             return ListTile(
@@ -109,7 +110,7 @@ class _GachaGroupPageState extends State<GachaGroupPage> {
                 final summon = toLimitedSummon();
                 router.pushPage(SummonDetailPage(summon: summon));
               },
-              child: Text(S.current.simulator),
+              child: Text('${S.current.details}/${S.current.simulator}'),
             ),
           ],
         ),
@@ -634,7 +635,7 @@ class _GachaGroupPageState extends State<GachaGroupPage> {
     final name = _findCleanCommonPrefix(gachas.map((e) => e.gacha.name).toList());
     return LimitedSummon(
       isFromWiki: false,
-      id: '',
+      id: gachas.length == 1 ? gachas.single.gacha.id.toString() : '',
       name: name,
       type: gachas.firstOrNull?.gacha.isLuckyBag == true ? .gssr : .limited,
       startTime: MappingBase(jp: Maths.min(gachas.map((e) => e.gacha.openedAt))),

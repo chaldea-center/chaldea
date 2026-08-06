@@ -268,7 +268,7 @@ class JpGachaParser {
       final names = <String?>{
         card.name,
         svt?.ascensionAdd.overWriteServantName.ascension[0],
-        ...?svt?.svtChange.map((e) => e.name),
+        for (final change in svt?.svtChange ?? <ServantChange>[]) ...[change.name, '${card.name}（${change.name}）'],
       }.whereType<String>().toList();
 
       if (names.contains(name)) {

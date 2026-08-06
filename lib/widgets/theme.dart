@@ -175,7 +175,7 @@ abstract final class AppTheme {
       scheme: db.settings.resolvedFlexScheme,
       subThemesData: FlexSubThemesData(
         //
-        inputDecoratorBorderType: .outline,
+        inputDecoratorBorderType: .underline,
         useInputDecoratorThemeInDialogs: true,
       ),
       extensions: {ExtraThemeData.forBrightness(brightness)},
