@@ -11,6 +11,7 @@ import '../gacha/gacha_draw.dart';
 import '../mission/mission_receive.dart';
 import '../present_box/present_box.dart';
 import '../runtime.dart';
+import '../shop/ex_room_shop.dart';
 import '../shop/shop.dart';
 
 class FakerReminders extends StatelessWidget {
@@ -25,6 +26,7 @@ class FakerReminders extends StatelessWidget {
     final now = DateTime.now().timestamp;
     List<Widget> children = [
       ...getGachas(context, now),
+      ...getExRoomShop(context, now),
       ...getShops(context, now),
       ...getMissions(context, now),
       ...getPresents(context, now),
@@ -101,6 +103,68 @@ class FakerReminders extends StatelessWidget {
         ),
       );
     }
+  }
+
+  List<Widget> getExRoomShop(BuildContext context, int now) {
+    final todayKey = ShopDailyInfo.getTodayKey(runtime.region);
+    final shops = mstData.mstShopDaily.where((e) => e.dayKey == todayKey).toList();
+    shops.sortByList((e) => [-e.lineupGroup, e.shopId]);
+    List<Widget> children = [];
+    for (final shopDaily in shops) {
+      final useItemId = shopDaily.useItemIds.firstOrNull ?? 0, useItemOwnNum = mstData.getItemOrSvtNum(useItemId);
+      final targetItemId = ConstData.shopDailyTargets[shopDaily.shopId] ?? 0,
+          targetItemOwnNum = mstData.getItemOrSvtNum(targetItemId);
+      if (targetItemOwnNum > useItemOwnNum + 200) continue;
+      final buyNum = mstData.userShopDaily[shopDaily.shopId]?.validate(shopDaily.dayKey)?.num ?? 0;
+      if (buyNum >= shopDaily.dailyLimitNum) continue;
+      final suggestBuy = targetItemOwnNum < useItemOwnNum;
+      children.add(
+        Row(
+          mainAxisSize: .min,
+          children: [
+            Opacity(
+              opacity: 0.5,
+              child: Item.iconBuilder(
+                context: context,
+                item: null,
+                itemId: useItemId,
+                text: useItemOwnNum.format(),
+                width: 28,
+              ),
+            ),
+            Opacity(
+              opacity: suggestBuy ? 1 : 0.75,
+              child: Item.iconBuilder(
+                context: context,
+                item: null,
+                itemId: targetItemId,
+                text: [(shopDaily.dailyLimitNum - buyNum).format(), targetItemOwnNum.format()].join('\n'),
+                width: 32,
+                option: suggestBuy
+                    ? ImageWithTextOption(
+                        shadowColor: Colors.white,
+                        shadowSize: 1,
+                        textStyle: TextStyle(color: Colors.red, fontWeight: .bold),
+                      )
+                    : null,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+    if (children.isEmpty) return [];
+    return [
+      ListTile(
+        dense: true,
+        // leading: ,
+        title: Wrap(spacing: 6, runSpacing: 2, children: children),
+        trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+        onTap: () {
+          router.pushPage(ExRoomShopPage(runtime: runtime));
+        },
+      ),
+    ];
   }
 
   List<Widget> getShops(BuildContext context, int now) {

@@ -95,6 +95,7 @@ Future<String> genConstStrCode() async {
     "ENABLE_OVERWRITE_CLASS_IDS",
     "OVERWRITE_TO_NP_INDIVIDUALITY_DAMAGE_ALL_BY_TREASURE_DEVICE_IDS",
     "OVERWRITE_TO_NP_INDIVIDUALITY_DAMAGE_ONE_BY_TREASURE_DEVICE_IDS",
+    "EX_ROOM_WAR_IDS",
   ];
 
   Object? parseValue(String name, String value) {

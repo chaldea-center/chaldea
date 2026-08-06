@@ -24,6 +24,8 @@ class _ShopListHomeState extends State<ShopListHome> {
     ShopType.mana,
     ShopType.rarePri,
     ShopType.revivalItem,
+    ShopType.exRoomShop,
+    ShopType.exRoomShopDaily,
     ShopType.purePri,
     ShopType.svtCostume,
     ShopType.eventSvtEquip,

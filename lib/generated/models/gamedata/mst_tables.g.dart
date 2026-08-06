@@ -544,6 +544,28 @@ UserShopEntity _$UserShopEntityFromJson(Map json) => UserShopEntity(
   createdAt: json['createdAt'],
 );
 
+ShopDailyEntity _$ShopDailyEntityFromJson(Map json) => ShopDailyEntity(
+  dayKey: json['dayKey'],
+  shopId: json['shopId'],
+  shopType: json['shopType'],
+  lineupGroup: json['lineupGroup'],
+  dailyLimitNum: json['dailyLimitNum'],
+  poolCycleNo: json['poolCycleNo'],
+  useItemIds: json['useItemIds'],
+  usePrices: json['usePrices'],
+  openedAt: json['openedAt'],
+  closedAt: json['closedAt'],
+  updatedAt: json['updatedAt'],
+);
+
+UserShopDailyEntity _$UserShopDailyEntityFromJson(Map json) => UserShopDailyEntity(
+  userId: json['userId'],
+  shopId: json['shopId'],
+  dayKey: json['dayKey'],
+  num: json['num'],
+  updatedAt: json['updatedAt'],
+);
+
 UserQuestEntity _$UserQuestEntityFromJson(Map json) => UserQuestEntity(
   userId: json['userId'],
   questId: json['questId'],

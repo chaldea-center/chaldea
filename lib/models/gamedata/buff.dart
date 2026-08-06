@@ -595,7 +595,7 @@ final Map<BuffType, List<BuffValueTriggerType Function(DataVals)>> kBuffValueTri
     ),
   };
 
-  for (final type in {
+  final normalTriggerBuffTypes = {
     BuffType.delayFunction,
     BuffType.deadFunction,
     BuffType.battlestartFunction,
@@ -641,7 +641,18 @@ final Map<BuffType, List<BuffValueTriggerType Function(DataVals)>> kBuffValueTri
     BuffType.multiDeadFunction,
     BuffType.multiGutsFunction,
     BuffType.multiGutsBeforeFunction,
-  }) {
+    BuffType.lastSelfturnprogressFunction,
+    BuffType.classboardCommandSpellAfterFunction,
+  };
+
+  for (final type in BuffType.values.reversed.take(5)) {
+    if (type.name.endsWith('Function')) {
+      assert(normalTriggerBuffTypes.contains(type), '$type is trigger function? If yes, add it');
+      normalTriggerBuffTypes.add(type);
+    }
+  }
+
+  for (final type in normalTriggerBuffTypes) {
     types[type] = (v) => BuffValueTriggerType(buffType: type, skill: v.Value, level: v.Value2, rate: v.UseRate);
   }
 

@@ -718,6 +718,7 @@ abstract class WarId {
   static const interlude = 1003;
   static const mainInterlude = 1004;
   static const advanced = 1006;
+  static const exRoomWar = 1007;
   static const ordealCall = 401;
   static const grandBoardWar = 8395;
 

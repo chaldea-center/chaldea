@@ -44,7 +44,7 @@ class ShopEventListPage extends StatelessWidget {
 
     final now = DateTime.now().timestamp;
 
-    final List<ShopType> _kShownShopTypes = [ShopType.mana, ShopType.rarePri, ShopType.revivalItem];
+    const _kShownShopTypes = <ShopType>[.mana, .rarePri, .revivalItem, .exRoomShop];
     children.addAll([for (final shopType in _kShownShopTypes) _buildShopType(context, shopType)]);
 
     final events = runtime.gameData.timerData.events.values
@@ -89,6 +89,7 @@ class ShopEventListPage extends StatelessWidget {
       ShopType.mana => Items.manaPrism?.icon,
       ShopType.rarePri => Items.rarePrism?.icon,
       ShopType.revivalItem => Items.revivalItem?.icon,
+      ShopType.exRoomShop => Items.exRoomItem?.icon,
       _ => null,
     };
 

@@ -4,7 +4,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/faker/present_box/present_box.dart';
 import 'package:chaldea/generated/l10n.dart';
-import 'package:chaldea/models/db.dart';
+import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/utils/constants.dart';
 import 'package:chaldea/utils/extension.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -18,6 +19,7 @@ import '../friend/friend_list.dart';
 import '../gacha/gacha_draw.dart';
 import '../mission/mission_receive.dart';
 import '../runtime.dart';
+import '../shop/ex_room_shop.dart';
 import '../shop/shop_event_list.dart';
 import 'history.dart';
 
@@ -174,6 +176,14 @@ class _FakerMenuDialogState extends State<FakerMenuDialog> with FakerRuntimeStat
                   router.pushPage(ShopEventListPage(runtime: runtime));
                 },
               ),
+              _ButtonData(
+                icon: Icons.currency_exchange,
+                name: Transl.enums(ShopType.exRoomShop, (e) => e.shopType).l,
+                enabled: isLoggedIn && (mstData.mstShopDaily.isNotEmpty || mstData.userShopDaily.isNotEmpty),
+                onTap: () {
+                  router.pushPage(ExRoomShopPage(runtime: runtime));
+                },
+              ),
               if (mstData.userEventTrade.isNotEmpty)
                 _ButtonData(
                   icon: Icons.event,
@@ -237,7 +247,7 @@ class _FakerMenuDialogState extends State<FakerMenuDialog> with FakerRuntimeStat
                   child: Text(
                     button.name,
                     maxLines: 2,
-                    style: TextStyle(fontSize: 11),
+                    style: TextStyle(fontSize: Language.isZH && button.name.length > 4 ? 10 : 11),
                     overflow: TextOverflow.visible,
                     textAlign: TextAlign.center,
                   ),

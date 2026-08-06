@@ -222,6 +222,14 @@ final _$mstMasterSchemes = <String, (Type, DataMaster Function(String mstName))>
     (mstName) => DataMaster<_IntStr, UserBoxGachaEntity>(mstName, UserBoxGachaEntity.fromJson),
   ),
   "userShop": (UserShopEntity, (mstName) => DataMaster<_IntStr, UserShopEntity>(mstName, UserShopEntity.fromJson)),
+  "mstShopDaily": (
+    ShopDailyEntity,
+    (mstName) => DataMaster<String, ShopDailyEntity>(mstName, ShopDailyEntity.fromJson),
+  ),
+  "userShopDaily": (
+    UserShopDailyEntity,
+    (mstName) => DataMaster<_IntStr, UserShopDailyEntity>(mstName, UserShopDailyEntity.fromJson),
+  ),
   "userQuest": (UserQuestEntity, (mstName) => DataMaster<_IntStr, UserQuestEntity>(mstName, UserQuestEntity.fromJson)),
   "userDeck": (UserDeckEntity, (mstName) => DataMaster<int, UserDeckEntity>(mstName, UserDeckEntity.fromJson)),
   "userEventDeck": (
@@ -399,6 +407,8 @@ abstract class MasterDataManagerBase {
   DataMaster<String, TotalEventRaidEntity> get totalEventRaid => get<String, TotalEventRaidEntity>();
   DataMaster<_IntStr, UserBoxGachaEntity> get userBoxGacha => get<_IntStr, UserBoxGachaEntity>();
   DataMaster<_IntStr, UserShopEntity> get userShop => get<_IntStr, UserShopEntity>();
+  DataMaster<String, ShopDailyEntity> get mstShopDaily => get<String, ShopDailyEntity>();
+  DataMaster<_IntStr, UserShopDailyEntity> get userShopDaily => get<_IntStr, UserShopDailyEntity>();
   // event/quest
   DataMaster<_IntStr, UserQuestEntity> get userQuest => get<_IntStr, UserQuestEntity>();
 
@@ -2231,6 +2241,77 @@ class UserShopEntity with DataEntityBase<_IntStr> {
         return prefix == 40 || (shopId >= 400011 && shopId <= 400134);
     }
   }
+}
+
+@JsonSerializable(createToJson: false)
+class ShopDailyEntity with DataEntityBase<String> {
+  int dayKey; // 20260802
+  int shopId;
+  int shopType;
+  int lineupGroup;
+  int dailyLimitNum;
+  int poolCycleNo;
+  List<int> useItemIds;
+  List<int> usePrices;
+  int openedAt;
+  int closedAt;
+  int updatedAt;
+
+  @override
+  String get primaryKey => createPK(dayKey, shopId);
+
+  static String createPK(int dayKey, int shopId) => _createPK2(dayKey, shopId);
+
+  ShopDailyEntity({
+    dynamic dayKey,
+    dynamic shopId,
+    dynamic shopType,
+    dynamic lineupGroup,
+    dynamic dailyLimitNum,
+    dynamic poolCycleNo,
+    dynamic useItemIds,
+    dynamic usePrices,
+    dynamic openedAt,
+    dynamic closedAt,
+    dynamic updatedAt,
+  }) : dayKey = _toInt(dayKey),
+       shopId = _toInt(shopId),
+       shopType = _toInt(shopType),
+       lineupGroup = _toInt(lineupGroup),
+       dailyLimitNum = _toInt(dailyLimitNum),
+       poolCycleNo = _toInt(poolCycleNo),
+       useItemIds = _toIntList(useItemIds),
+       usePrices = _toIntList(usePrices),
+       openedAt = _toInt(openedAt),
+       closedAt = _toInt(closedAt),
+       updatedAt = _toInt(updatedAt);
+
+  factory ShopDailyEntity.fromJson(Map<String, dynamic> data) => _$ShopDailyEntityFromJson(data);
+}
+
+@JsonSerializable(createToJson: false)
+class UserShopDailyEntity with DataEntityBase<_IntStr> {
+  int userId;
+  int shopId;
+  int dayKey;
+  int num;
+  int updatedAt;
+
+  @override
+  _IntStr get primaryKey => shopId;
+
+  static _IntStr createPK(int shopId) => shopId;
+
+  UserShopDailyEntity({dynamic userId, dynamic shopId, dynamic dayKey, dynamic num, dynamic updatedAt})
+    : userId = _toInt(userId),
+      shopId = _toInt(shopId),
+      dayKey = _toInt(dayKey),
+      num = _toInt(num),
+      updatedAt = _toInt(updatedAt);
+
+  factory UserShopDailyEntity.fromJson(Map<String, dynamic> data) => _$UserShopDailyEntityFromJson(data);
+
+  UserShopDailyEntity? validate(int dayKey) => dayKey == this.dayKey ? this : null;
 }
 
 @JsonSerializable(createToJson: false)

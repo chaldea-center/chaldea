@@ -619,6 +619,7 @@ class MstMasterMission with RouteInfo {
     if (a == 1) return MissionType.weekly;
     if (a == 2) return MissionType.limited;
     if (a == 3) return MissionType.daily;
+    if (a == 4) return MissionType.exRoom;
     final b = id ~/ 10000;
     if (b == 8) return MissionType.complete;
     if (id == MasterMission.kExtraMasterMissionId) return MissionType.extra;

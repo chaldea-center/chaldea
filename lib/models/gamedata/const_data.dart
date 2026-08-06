@@ -54,6 +54,7 @@ class ConstGameData {
   late final Map<int, int> sameQuestRemapReverse = {for (final (k, v) in sameQuestRemap.items) v: k};
   final Map<int, List<int>> subEvents;
   final Map<String, List<String>> routeSelects;
+  final Map<int, int> shopDailyTargets;
   final ConstDataConfig config;
 
   static Map<String, Map<String, int>> deprecatedEnums = {};
@@ -92,6 +93,7 @@ class ConstGameData {
     this.sameQuestRemap = const {},
     this.subEvents = const {},
     this.routeSelects = const {},
+    this.shopDailyTargets = const {},
   }) : buffTypeActionMap = {} {
     _fixBuffActions();
   }
@@ -485,7 +487,7 @@ class GameConstants {
   final int coinRoomMaxNum; // 2
   final int coinRoomReleaseQuestId; // 3001101
   final int combineLimitSpecialPrivilegeId; // 100
-  final int comebackTargetDay; // 1753261200
+  final int comebackTargetDay; // 1774861200
   final int commandArts; // 4001
   final int commandBuster; // 4002
   final int commandCardPrmUpMax; // 500
@@ -533,7 +535,11 @@ class GameConstants {
   final int extraAttackRateGrand; // 3500
   final int extraAttackRateSingle; // 2000
   final int extraCriticalRate; // 0
+  final int exRoomFeatureReleaseCommonId; // 20160502
+  final int exRoomFirstEffectQuestId; // 94158821
+  final int exRoomReleaseCommonId; // 20160501
   final int fesWarId; // 108
+  final int figureUseSimpleMesh; // 1
   final int firstEquipId; // 1
   final int fixEventSupportDeckNum; // 3
   final int fixMainSupportDeckNum; // 3
@@ -550,6 +556,7 @@ class GameConstants {
   final int flag20241004; // 1
   final int flag20250430; // 1
   final int flag20250516; // 1
+  final int flag20260802; // 1
   final int flagCineraria4; // 0
   final int followerListExpireAt; // 3600
   final int followerRefreshResetTime; // 10
@@ -561,7 +568,7 @@ class GameConstants {
   final int friendpointBoostItemEffectId; // 3
   final int friendGachaAddLimit; // 100
   final int friendGachaCommandCodeAddLimit; // 100
-  final int friendNum; // 43
+  final int friendNum; // 46
   final int friendOfferedNum; // 20
   final int friendPoint; // 25
   final int fullTdPoint; // 10000
@@ -575,20 +582,19 @@ class GameConstants {
   final int grandFriendshipEquipSkillId; // 994725
   final int grandSvtSupportFriendPoint; // 100
   final int heroineChangecardvoice; // 800104
-  final int hydeSvtId; // 600710
+  final int ignoreResumePauseOnStop; // 0
   final int individualityIsPlayer; // 7001
   final int individualityIsSupport; // 7000
   final int isEventPointMenu; // 1
   final int isIosExamination; // 0
   final int itemIdQp; // 1
-  final int jekyllSvtId; // 600700
   final int largeSuccessMultExp; // 2000
   final int largeSuccessRate; // 100
   final int lastAttackToSelfIndividuality; // 6045
-  final int lastWarId; // 500
+  final int lastWarId; // 501
   final int limitedPeriodVoiceChangeType; // 0
   final int limitedShopRemainDays; // 1000
-  final int loginDay; // 1459436400
+  final int loginDay; // 1774969200
   final int loginResetAt; // 4
   final int mashuChangeQuestId; // 1000501
   final int mashuChangeWarId; // 105
@@ -622,12 +628,12 @@ class GameConstants {
   final int maxRarePri; // 999999999
   final int maxRp; // 8
   final int maxStone; // 999999999
-  final int maxUserCommandCode; // 1000
+  final int maxUserCommandCode; // 1100
   final int maxUserEquipExpUpRatio; // 3000
   final int maxUserItem; // 999999999
   final int maxUserLv; // 200
-  final int maxUserSvt; // 1000
-  final int maxUserSvtEquip; // 1000
+  final int maxUserSvt; // 1100
+  final int maxUserSvtEquip; // 1100
   final int maxUserSvtEquipStorage; // 100
   final int maxUserSvtStorage; // 100
   final int memoryDeckLimitByQuest; // 100
@@ -638,7 +644,6 @@ class GameConstants {
   final int mstBuffIndvAddBuffActive; // 1
   final int needRebootTime; // 86400
   final int nothinkAiactid; // 1002
-  final int notChangeBehaviorTransformSvtId; // 600700
   final int notFriendPoint; // 10
   final int noNoblePhantasmIndividuality; // 7030
   final int npcFriendPoint; // 200
@@ -655,6 +660,8 @@ class GameConstants {
   final int overKillStarRate; // 1000
   final int part2FinalChapterCommonReleaseId; // 20151711
   final int perSameCommand; // 0
+  final int photoStandFigureZoomRateMax; // 2000
+  final int photoStandFigureZoomRateMin; // 500
   final int presentValidTime; // 31536000
   final int prologueQuestId; // 1000000
   final int qp; // 0
@@ -679,6 +686,7 @@ class GameConstants {
   final int shopSpecialItemEnable; // 1
   final int startingMemberFriendshipRate; // 1200
   final int startDashSummon2PrivilegeId; // 300
+  final int startDashSummon3PrivilegeId; // 400
   final int startDashSummonPrivilegeId; // 200
   final int starRateMax; // 3000
   final int statusUpAdjustAtk; // 10
@@ -819,7 +827,7 @@ class GameConstants {
     this.coinRoomMaxNum = 2,
     this.coinRoomReleaseQuestId = 3001101,
     this.combineLimitSpecialPrivilegeId = 100,
-    this.comebackTargetDay = 1753261200,
+    this.comebackTargetDay = 1774861200,
     this.commandArts = 4001,
     this.commandBuster = 4002,
     this.commandCardPrmUpMax = 500,
@@ -867,7 +875,11 @@ class GameConstants {
     this.extraAttackRateGrand = 3500,
     this.extraAttackRateSingle = 2000,
     this.extraCriticalRate = 0,
+    this.exRoomFeatureReleaseCommonId = 20160502,
+    this.exRoomFirstEffectQuestId = 94158821,
+    this.exRoomReleaseCommonId = 20160501,
     this.fesWarId = 108,
+    this.figureUseSimpleMesh = 1,
     this.firstEquipId = 1,
     this.fixEventSupportDeckNum = 3,
     this.fixMainSupportDeckNum = 3,
@@ -884,6 +896,7 @@ class GameConstants {
     this.flag20241004 = 1,
     this.flag20250430 = 1,
     this.flag20250516 = 1,
+    this.flag20260802 = 1,
     this.flagCineraria4 = 0,
     this.followerListExpireAt = 3600,
     this.followerRefreshResetTime = 10,
@@ -895,7 +908,7 @@ class GameConstants {
     this.friendpointBoostItemEffectId = 3,
     this.friendGachaAddLimit = 100,
     this.friendGachaCommandCodeAddLimit = 100,
-    this.friendNum = 43,
+    this.friendNum = 46,
     this.friendOfferedNum = 20,
     this.friendPoint = 25,
     this.fullTdPoint = 10000,
@@ -909,20 +922,19 @@ class GameConstants {
     this.grandFriendshipEquipSkillId = 994725,
     this.grandSvtSupportFriendPoint = 100,
     this.heroineChangecardvoice = 800104,
-    this.hydeSvtId = 600710,
+    this.ignoreResumePauseOnStop = 0,
     this.individualityIsPlayer = 7001,
     this.individualityIsSupport = 7000,
     this.isEventPointMenu = 1,
     this.isIosExamination = 0,
     this.itemIdQp = 1,
-    this.jekyllSvtId = 600700,
     this.largeSuccessMultExp = 2000,
     this.largeSuccessRate = 100,
     this.lastAttackToSelfIndividuality = 6045,
-    this.lastWarId = 500,
+    this.lastWarId = 501,
     this.limitedPeriodVoiceChangeType = 0,
     this.limitedShopRemainDays = 1000,
-    this.loginDay = 1459436400,
+    this.loginDay = 1774969200,
     this.loginResetAt = 4,
     this.mashuChangeQuestId = 1000501,
     this.mashuChangeWarId = 105,
@@ -956,12 +968,12 @@ class GameConstants {
     this.maxRarePri = 999999999,
     this.maxRp = 8,
     this.maxStone = 999999999,
-    this.maxUserCommandCode = 1000,
+    this.maxUserCommandCode = 1100,
     this.maxUserEquipExpUpRatio = 3000,
     this.maxUserItem = 999999999,
     this.maxUserLv = 200,
-    this.maxUserSvt = 1000,
-    this.maxUserSvtEquip = 1000,
+    this.maxUserSvt = 1100,
+    this.maxUserSvtEquip = 1100,
     this.maxUserSvtEquipStorage = 100,
     this.maxUserSvtStorage = 100,
     this.memoryDeckLimitByQuest = 100,
@@ -972,7 +984,6 @@ class GameConstants {
     this.mstBuffIndvAddBuffActive = 1,
     this.needRebootTime = 86400,
     this.nothinkAiactid = 1002,
-    this.notChangeBehaviorTransformSvtId = 600700,
     this.notFriendPoint = 10,
     this.noNoblePhantasmIndividuality = 7030,
     this.npcFriendPoint = 200,
@@ -989,6 +1000,8 @@ class GameConstants {
     this.overKillStarRate = 1000,
     this.part2FinalChapterCommonReleaseId = 20151711,
     this.perSameCommand = 0,
+    this.photoStandFigureZoomRateMax = 2000,
+    this.photoStandFigureZoomRateMin = 500,
     this.presentValidTime = 31536000,
     this.prologueQuestId = 1000000,
     this.qp = 0,
@@ -1013,6 +1026,7 @@ class GameConstants {
     this.shopSpecialItemEnable = 1,
     this.startingMemberFriendshipRate = 1200,
     this.startDashSummon2PrivilegeId = 300,
+    this.startDashSummon3PrivilegeId = 400,
     this.startDashSummonPrivilegeId = 200,
     this.starRateMax = 3000,
     this.statusUpAdjustAtk = 10,
@@ -1161,6 +1175,7 @@ class GameConstantStr {
   final List<int> allowBuffTypesOfJudgeUseEveryTime; // [167, 175]
   final List<int> enableOverwriteClassIds; // [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 23, 25, 28]
   final List<int> extendTurnBuffType; // [1, 9, 11, 13, 15, 18, 25, 50, 51, 52, 70, 72, 89, 90, 110, 112, 116, 121, 137, 144, 148, 160, 162]
+  final List<int> exRoomWarIds; // [1007]
   final List<int> functionTypeNotNpDamage; // [3, 34, 122, 137]
   final List<int> ignoreResistFuncIndividuality; // [3098]
   final List<int> invalidSacrificeIndiv; // [3076]
@@ -1181,6 +1196,7 @@ class GameConstantStr {
     this.allowBuffTypesOfJudgeUseEveryTime = const [167, 175],
     this.enableOverwriteClassIds = const [1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 23, 25, 28],
     this.extendTurnBuffType = const [1, 9, 11, 13, 15, 18, 25, 50, 51, 52, 70, 72, 89, 90, 110, 112, 116, 121, 137, 144, 148, 160, 162],
+    this.exRoomWarIds = const [1007],
     this.functionTypeNotNpDamage = const [3, 34, 122, 137],
     this.ignoreResistFuncIndividuality = const [3098],
     this.invalidSacrificeIndiv = const [3076],

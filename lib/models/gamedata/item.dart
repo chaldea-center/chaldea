@@ -355,6 +355,7 @@ class Items {
   static const int torchNovaId = 51;
   static const int torchMorningStarId = 52;
   static const int torchPolarStarId = 53;
+  static const int exRoomItemId = 80;
   static const int summonTicketId = 4001;
   static const int goldAppleId = 100;
   static const int silverAppleId = 101;
@@ -386,6 +387,8 @@ class Items {
 
   static Item? get rarePrism => _items[rarePrismId];
 
+  static Item? get exRoomItem => _items[exRoomItemId];
+
   static Item? get revivalItem => _items[revivalItemId];
 
   static Item? get summonTicket => _items[summonTicketId];
@@ -410,7 +413,7 @@ class Items {
     qpId, stoneId, quartzFragmentId, manaPrismId, purePrismId, rarePrismId,
     revivalItemId, stellarSandId, torchNovaId, torchMorningStarId, torchPolarStarId,
     summonTicketId, goldAppleId, silverAppleId, bronzeAppleId, blueSaplingId,
-    blueAppleId, grailFragId, grailId, grailToCrystalId, lanternId, greatLanternId,
+    blueAppleId, grailFragId, grailId, grailToCrystalId, lanternId, greatLanternId, exRoomItemId,
   ];
   static const List<int> specialSvtMat = [...fous, ...embers];
   static const apples = [goldAppleId, silverAppleId, blueAppleId, bronzeAppleId];
