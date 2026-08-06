@@ -1321,7 +1321,9 @@ class BattleServantData {
       return;
     }
 
-    gainHp(heal);
+    if (heal >= 0) {
+      gainHp(heal);
+    }
   }
 
   void setHp(final int newHp) {
