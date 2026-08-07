@@ -423,33 +423,46 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData, ServantFilt
                   }
                   return Text(text);
                 },
-                onFilterChanged: (v, _) async {
-                  setState(() {
-                    update();
-                  });
-                  if (v.radioValue == -1) {
-                    if (!mounted) return;
-                    final int? selectedBond = await router.showDialog(
-                      builder: (context) => SimpleDialog(
-                        title: Text(S.current.general_custom),
-                        children: [
-                          for (final bond in range(5, kBondLvMax + 1))
-                            SimpleDialogOption(
-                              child: Text('${S.current.bond} $bond'),
-                              onPressed: () {
-                                Navigator.pop(context, bond);
-                              },
-                            ),
-                        ],
-                      ),
-                    );
-                    if (selectedBond != null) {
-                      filterData.customBondValue = selectedBond;
-                    } else {
-                      filterData.bondValue.reset();
+                onFilterChanged: (_, lastChanged) async {
+                  if (lastChanged != -1) {
+                    setState(() {
                       filterData.customBondValue = -1;
-                    }
-                    if (mounted) setState(() {});
+                      update();
+                    });
+                    return;
+                  }
+                  if (!mounted) return;
+                  final int? selectedBond = await router.showDialog(
+                    builder: (context) => SimpleDialog(
+                      title: Text(S.current.general_custom),
+                      children: [
+                        SimpleDialogOption(
+                          child: Text(S.current.reset),
+                          onPressed: () {
+                            Navigator.pop(context, null);
+                          },
+                        ),
+                        for (final bond in range(5, kBondLvMax + 1))
+                          SimpleDialogOption(
+                            child: Text('${S.current.bond} $bond'),
+                            onPressed: () {
+                              Navigator.pop(context, bond);
+                            },
+                          ),
+                      ],
+                    ),
+                  );
+                  if (selectedBond != null) {
+                    filterData.bondValue.set(-1);
+                    filterData.customBondValue = selectedBond;
+                  } else {
+                    filterData.bondValue.reset();
+                    filterData.customBondValue = -1;
+                  }
+                  if (mounted) {
+                    setState(() {
+                      update();
+                    });
                   }
                 },
               ),
