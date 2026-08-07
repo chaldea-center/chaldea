@@ -401,7 +401,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           minVal: 0,
           maxVal: 10,
           labelFormatter: (v) => (v * 100).toString(),
-          trailingLabelFormatter: (a, b) => '${curVal.fouAtk4 * 100}→${targetVal.fouAtk5 * 100}',
+          trailingLabelFormatter: (a, b) => '${curVal.fouAtk5 * 100}→${targetVal.fouAtk5 * 100}',
           onValueChanged: (_start, _end) {
             status.cur.favorite = true;
             curVal.fouAtk5 = _start;
