@@ -153,6 +153,8 @@ abstract final class AppTheme {
 
   static ThemeData light() => _build(Brightness.light);
   static ThemeData dark() => _build(Brightness.dark);
+  static const _darkGray = Color(0xFF303030);
+  static const _lightGray = Color(0xFF424242);
 
   /// Retrieves the [ExtraThemeData] extension from the nearest [Theme].
   /// Falls back to [AppThemeData.forBrightness] if no extension is registered
@@ -182,13 +184,32 @@ abstract final class AppTheme {
     );
     final cs = themeData.colorScheme;
     themeData = themeData.copyWith(
+      scaffoldBackgroundColor: isDark ? AppTheme._darkGray : null,
+      bottomNavigationBarTheme: isDark
+          ? themeData.bottomNavigationBarTheme.copyWith(backgroundColor: AppTheme._darkGray)
+          : themeData.bottomNavigationBarTheme,
+      canvasColor: isDark ? AppTheme._darkGray : null,
       tooltipTheme: themeData.tooltipTheme.copyWith(waitDuration: const Duration(milliseconds: 500)),
       appBarTheme: themeData.appBarTheme.copyWith(
+        backgroundColor: isDark ? AppTheme._lightGray : null,
         titleSpacing: 0,
         toolbarHeight: 48, // kToolbarHeight=56,
       ),
+      switchTheme: themeData.switchTheme.copyWith(
+        trackColor: WidgetStateProperty.resolveWith(
+          (states) => isDark && !states.contains(WidgetState.selected) ? AppTheme._darkGray : null,
+        ),
+      ),
+      elevatedButtonTheme: isDark
+          ? ElevatedButtonThemeData(
+              style: (themeData.elevatedButtonTheme.style ?? const ButtonStyle()).copyWith(
+                backgroundColor: const WidgetStatePropertyAll(AppTheme._lightGray),
+              ),
+            )
+          : themeData.elevatedButtonTheme,
       listTileTheme: themeData.listTileTheme.copyWith(minLeadingWidth: 24),
-      cardTheme: themeData.cardTheme.copyWith(color: cs.surfaceContainer, elevation: 0),
+      cardTheme: themeData.cardTheme.copyWith(color: isDark ? AppTheme._lightGray : cs.surfaceContainer, elevation: 0),
+      cardColor: isDark ? AppTheme._lightGray : cs.surfaceContainer,
     );
     return themeData;
 
