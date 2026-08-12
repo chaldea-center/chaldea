@@ -394,6 +394,7 @@ class GameDataLoader {
   }
 
   Future<void> _fixGameData(GameData gamedata) async {
+    await _fixRegionSpecificCraftEssenceSkills(gamedata);
     const eventsToRemove = [71543, 71558];
     for (final eventId in eventsToRemove) {
       if (gamedata.events.containsKey(eventId)) {
@@ -405,6 +406,35 @@ class GameDataLoader {
     }
 
     if (!kDebugMode) return;
+  }
+
+  Future<void> _fixRegionSpecificCraftEssenceSkills(GameData gamedata) async {
+    // Only one CE has same skill but different details in different region, which is 90086001
+    const skillId = 90086001;
+    const ceRegions = <int, Region>{102022: Region.cn, 302023: Region.tw};
+    final wasTempDataEnabled = tmp._enabled;
+    tmp._enabled = false;
+    try {
+      for (final entry in ceRegions.entries) {
+        final ce = gamedata.craftEssences[entry.key];
+        if (ce == null || ce.id != skillId) continue;
+        NiceSkill? skill;
+        try {
+          skill = await AtlasApi.skill(skillId, region: entry.value);
+        } catch (_) {
+          continue;
+        }
+        if (skill == null) continue;
+        final index = ce.skills.indexWhere((e) => e.id == skillId);
+        if (index < 0) {
+          ce.skills = [...ce.skills, skill];
+        } else {
+          ce.skills[index] = skill;
+        }
+      }
+    } finally {
+      tmp._enabled = wasTempDataEnabled;
+    }
   }
 
   static bool checkHash(List<int> bytes, String hash) {
