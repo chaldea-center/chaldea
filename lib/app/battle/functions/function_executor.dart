@@ -498,6 +498,9 @@ class FunctionExecutor {
         case FuncType.addBattlePoint:
           AddBattlePoint.addBattlePoint(battleData, dataVals, targets, overchargeState, ignoreBattlePoints);
           break;
+        case FuncType.subBattlePoint:
+          // TODO: subBattlePoint
+          break;
         case FuncType.gainNpFromOtherUsedNpValue:
           GainNp.gainNpFromConsumed(battleData, dataVals, consumedNp ?? 0, targets);
           break;
@@ -579,6 +582,10 @@ class FunctionExecutor {
         case FuncType.setBattleMissionValue:
         case FuncType.changeEnemyStatusUiType:
         case FuncType.setBattleMissionValueAsMax:
+          break;
+        case FuncType.addStateFuncType169:
+        case FuncType.addStateFuncType170:
+          // TODO: new addStateXX FuncType
           break;
       }
 

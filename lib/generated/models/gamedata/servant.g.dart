@@ -1300,6 +1300,7 @@ const _$BattlePointFlagEnumMap = {
   BattlePointFlag.hideUiGaugeAllTime: 'hideUiGaugeAllTime',
   BattlePointFlag.hideUiGaugeWhenCantAddPoint: 'hideUiGaugeWhenCantAddPoint',
   BattlePointFlag.hideUiGaugeWhenCantAddPointAndFollowerSupport: 'hideUiGaugeWhenCantAddPointAndFollowerSupport',
+  BattlePointFlag.battlePointCheckAsPercentage: 'battlePointCheckAsPercentage',
 };
 
 BattlePointPhase _$BattlePointPhaseFromJson(Map json) => BattlePointPhase(

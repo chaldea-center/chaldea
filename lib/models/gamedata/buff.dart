@@ -557,6 +557,9 @@ enum BuffType {
   limitMaxNp(246),
   limitMinNp(247),
   lastSelfturnprogressFunction(248),
+  addMaxBattlePoint(249),
+  subMaxBattlePoint(250),
+  selfturnprogressFunction(251),
 
   toFieldChangeField(10001),
   toFieldAvoidBuff(10002),
@@ -642,6 +645,7 @@ final Map<BuffType, List<BuffValueTriggerType Function(DataVals)>> kBuffValueTri
     BuffType.multiGutsFunction,
     BuffType.multiGutsBeforeFunction,
     BuffType.lastSelfturnprogressFunction,
+    BuffType.selfturnprogressFunction,
     BuffType.classboardCommandSpellAfterFunction,
   };
 
@@ -713,7 +717,8 @@ enum BuffConditionTargetType {
   enemyFull(5),
   ptOtherAll(6),
   ptOtherFull(7),
-  fieldOtherAll(8);
+  fieldOtherAll(8),
+  relativePositionPt(9);
 
   const BuffConditionTargetType(this.value);
   final int value;
@@ -736,6 +741,7 @@ enum BuffConditionTargetType {
       ptOtherAll => null,
       ptOtherFull => FuncTargetType.ptOtherFull,
       fieldOtherAll => null,
+      relativePositionPt => null,
     };
   }
 

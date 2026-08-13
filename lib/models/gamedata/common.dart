@@ -1413,7 +1413,8 @@ enum CondType {
   jobMaxLevelNumBelow(287),
   jobMaxLevelNumEqual(288),
   svtHpReachNum(289),
-  svtAtkReachNum(290);
+  svtAtkReachNum(290),
+  favoriteSvtIdEqual(291);
 
   const CondType(this.value);
   final int value;

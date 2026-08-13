@@ -1495,6 +1495,8 @@ enum BuffAction {
   functionMultiGutsBefore(171),
   limitMaxNp(172),
   limitMinNp(173),
+  maxBattlePoint(174),
+  functionSelfturnprogress(175),
   // custom
   functionClassboardCommandSpellAfter(301);
 

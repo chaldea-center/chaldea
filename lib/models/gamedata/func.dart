@@ -652,7 +652,10 @@ enum FuncType {
   hastenNpturnFromOtherUsedNpturn(163),
   damageFuncType164(164),
   damageFuncType165(165),
-  setBattleMissionValueAsMax(168);
+  subBattlePoint(166),
+  setBattleMissionValueAsMax(168),
+  addStateFuncType169(169),
+  addStateFuncType170(170);
 
   final int value;
   const FuncType(this.value);

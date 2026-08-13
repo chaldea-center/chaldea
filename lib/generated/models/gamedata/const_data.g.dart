@@ -1339,5 +1339,7 @@ const _$BuffActionEnumMap = {
   BuffAction.functionMultiGutsBefore: 'functionMultiGutsBefore',
   BuffAction.limitMaxNp: 'limitMaxNp',
   BuffAction.limitMinNp: 'limitMinNp',
+  BuffAction.maxBattlePoint: 'maxBattlePoint',
+  BuffAction.functionSelfturnprogress: 'functionSelfturnprogress',
   BuffAction.functionClassboardCommandSpellAfter: 'functionClassboardCommandSpellAfter',
 };

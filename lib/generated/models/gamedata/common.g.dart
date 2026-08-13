@@ -510,4 +510,5 @@ const _$CondTypeEnumMap = {
   CondType.jobMaxLevelNumEqual: 'jobMaxLevelNumEqual',
   CondType.svtHpReachNum: 'svtHpReachNum',
   CondType.svtAtkReachNum: 'svtAtkReachNum',
+  CondType.favoriteSvtIdEqual: 'favoriteSvtIdEqual',
 };
