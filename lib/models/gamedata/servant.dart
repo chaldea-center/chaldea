@@ -11,6 +11,7 @@ import '_helper.dart';
 import 'common.dart';
 import 'const_data.dart';
 import 'game_card.dart';
+import 'individuality.dart';
 import 'item.dart';
 import 'mappings.dart';
 import 'quest.dart' show Gift;
@@ -206,7 +207,6 @@ class Servant extends BasicServant {
   ServantCoin? coin;
   ServantScript? script;
   List<SvtScript> charaScripts;
-  List<BattlePoint> battlePoints;
   List<NiceSkill> skills;
   List<NiceSkill> classPassive;
   List<NiceSkill> extraPassive;
@@ -317,7 +317,6 @@ class Servant extends BasicServant {
     this.coin,
     this.script,
     this.charaScripts = const [],
-    this.battlePoints = const [],
     this.skills = const [],
     this.classPassive = const [],
     this.extraPassive = const [],
@@ -388,7 +387,6 @@ class Servant extends BasicServant {
       costumeMaterials: costumeMaterials,
       coin: coin,
       script: script,
-      battlePoints: battlePoints,
       skills: skills,
       classPassive: classPassive,
       extraPassive: extraPassive,
@@ -847,6 +845,25 @@ class Servant extends BasicServant {
       curTotal: curTotal,
       nextTotal: nextTotal,
     );
+  }
+
+  // read-only, don't use for battle
+  List<BattlePoint> get battlePoints {
+    List<BattlePoint> bps = [];
+    for (final bp in ConstData.battlePoints.values) {
+      for (final bpSvt in bp.svts) {
+        if (bpSvt.svtId == id ||
+            (bpSvt.individuality != null &&
+                Individuality.checkSignedMultiIndividuality(
+                  selfArray: traitsAll.toList(),
+                  signedTargetsArray: bpSvt.individuality!,
+                ))) {
+          bps.add(bp);
+          break;
+        }
+      }
+    }
+    return bps;
   }
 }
 
@@ -1979,9 +1996,17 @@ class BattlePoint {
   String name;
   List<BattlePointFlag> flags;
   List<BattlePointPhase> phases;
-  // script;
+  List<SvtBattlePoint> svts;
+  BattlePointScript? script;
 
-  BattlePoint({required this.id, this.name = '', this.flags = const [], this.phases = const []});
+  BattlePoint({
+    required this.id,
+    this.name = '',
+    this.flags = const [],
+    this.phases = const [],
+    this.svts = const [],
+    this.script,
+  });
   factory BattlePoint.fromJson(Map<String, dynamic> json) => _$BattlePointFromJson(json);
 
   Map<String, dynamic> toJson() => _$BattlePointToJson(this);
@@ -1997,6 +2022,45 @@ class BattlePointPhase {
   factory BattlePointPhase.fromJson(Map<String, dynamic> json) => _$BattlePointPhaseFromJson(json);
 
   Map<String, dynamic> toJson() => _$BattlePointPhaseToJson(this);
+}
+
+@JsonSerializable()
+class SvtBattlePoint {
+  int svtId; // -1 if not svt id
+  @Trait2dListConverter()
+  List<List<int>>? individuality;
+
+  SvtBattlePoint({this.svtId = -1, this.individuality});
+
+  factory SvtBattlePoint.fromJson(Map<String, dynamic> json) => _$SvtBattlePointFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SvtBattlePointToJson(this);
+}
+
+@JsonSerializable()
+class BattlePointScript {
+  List<BattlePointScriptMaxChange>? maxChange;
+  int? maxLimit;
+  int? defaultMax; // 0
+
+  BattlePointScript({this.maxChange, this.maxLimit, this.defaultMax});
+
+  factory BattlePointScript.fromJson(Map<String, dynamic> json) => _$BattlePointScriptFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BattlePointScriptToJson(this);
+}
+
+@JsonSerializable()
+class BattlePointScriptMaxChange {
+  @TraitListConverter()
+  List<int>? individuality;
+  int? value; // 0
+
+  BattlePointScriptMaxChange({this.individuality, this.value});
+
+  factory BattlePointScriptMaxChange.fromJson(Map<String, dynamic> json) => _$BattlePointScriptMaxChangeFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BattlePointScriptMaxChangeToJson(this);
 }
 
 enum SvtType {
