@@ -148,7 +148,7 @@ class NetworkManagerJP extends NetworkManagerBase<FRequestJP, AutoLoginDataJP> {
       updateCookies(headers);
       headers[HttpHeaders.contentTypeHeader] ??= Headers.formUrlEncodedContentType;
       if (user.region.isJP) {
-        headers['X-Unity-Version'] = '2022.3.28f1'; // 2020.3.34f1
+        headers['X-Unity-Version'] = '6000.0.68f1';
       }
     }
     headers[HttpHeaders.userAgentHeader] ??= user.userAgent.isEmpty ? FakerUA.fallback : user.userAgent;

@@ -15,6 +15,10 @@ class FakerRuntimeCombine extends FakerRuntimeBase {
     if (target == null) {
       throw SilentException('Unknown target CE userSvtId: $targetUserSvtId');
     }
+    final maxLv = target.maxLv;
+    if (maxLv != null && target.lv >= maxLv) {
+      throw SilentException('Already max lv $maxLv');
+    }
     if (targetCE == null) {
       throw SilentException('Unknown target CE: $targetUserSvtId');
     }

@@ -48,7 +48,7 @@ class NetworkManagerCN extends NetworkManagerBase<FRequestCN, AutoLoginDataCN> {
   @override
   Future<Response> requestStartImpl(FRequestCN request) async {
     assert(request.path.startsWith('https://'));
-    final String unityVersion = gameTop.unityVer ?? '2022.3.28f1';
+    final String unityVersion = gameTop.unityVer ?? '2022.3.62f2';
     final form = request.form;
     final Map<String, dynamic> headers;
     if (request.headers != null) {
@@ -66,7 +66,7 @@ class NetworkManagerCN extends NetworkManagerBase<FRequestCN, AutoLoginDataCN> {
     }
     headers[HttpHeaders.userAgentHeader] ??= user.userAgent.isEmpty
         ? (user.isAndroidDevice
-              ? "UnityPlayer/$unityVersion (UnityWebRequest/1.0, libcurl/8.4.0-DEV)"
+              ? "UnityPlayer/$unityVersion (UnityWebRequest/1.0, libcurl/8.10.1-DEV)"
               : "fatego/20 CFNetwork/1327.0.4 Darwin/21.2.0")
         : user.userAgent;
 

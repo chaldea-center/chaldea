@@ -34,6 +34,7 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
   @override
   AutoLoginDataCN get user => network.user;
 
+  DateTime _appStartTime = DateTime.now();
   String rguid = '';
   String usk = '';
   String sguid = '';
@@ -180,7 +181,12 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
 
   Future<FResponse> _member() async {
     network.cookies.clear();
-    final request = FRequestCN(network: network, path: '$host/rongame_beta/rgfate/60_member/member.php', key: 'member');
+    _appStartTime = DateTime.now().subtract(Duration(seconds: 30));
+    final request = FRequestCN(
+      network: network,
+      path: '$host//rongame_beta/rgfate/60_member/member.php',
+      key: 'member',
+    );
     final params = <String, Object>{
       "deviceid": "",
       "t": "22360",
@@ -311,10 +317,13 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
     Map<String, Object>? params4,
     Duration? sendDelay,
   }) async {
+    // _clientLocalTime added in 2.129.0
+    double _clientLocalTime = DateTime.now().difference(_appStartTime).inMicroseconds / 1000_000;
     // has Set-Cookie
     final request = FRequestCN(
       network: network,
-      path: '$host/rongame_beta/rgfate/60_1001/ac.php?_userId=$sguid&_key=$key',
+      path:
+          '$host/rongame_beta/rgfate/60_1001/ac.php?_userId=$sguid&_key=$key&_clientLocalTime=${_clientLocalTime.toStringAsFixed(5)}',
       key: key,
     );
     if (sendDelay != null) request.sendDelay = sendDelay;

@@ -232,6 +232,7 @@ class _SvtEquipCombinePageState extends State<SvtEquipCombinePage> with FakerRun
       ),
       Wrap(
         spacing: 8,
+        runSpacing: 6,
         alignment: WrapAlignment.center,
         children: [
           FilledButton(
@@ -245,7 +246,17 @@ class _SvtEquipCombinePageState extends State<SvtEquipCombinePage> with FakerRun
                         return;
                       }
                     }
-                    if (options.combineUserSvtIds.any((e) => (mstData.userSvt[e]?.lv ?? 0) > 1)) {
+                    if (options.combineUserSvtIds.any((e) {
+                      final _userCe = mstData.userSvt[e];
+                      final _ce = _userCe?.dbCE;
+                      if ((_userCe?.lv ?? 0) > 1) {
+                        if (_ce != null && _ce.flags.contains(SvtFlag.svtEquipChocolate)) {
+                          return false;
+                        }
+                        return true;
+                      }
+                      return false;
+                    })) {
                       final confirm = await const SimpleConfirmDialog(
                         title: Text('Some card Lv>1!'),
                       ).showDialog(context);
@@ -296,6 +307,7 @@ class _SvtEquipCombinePageState extends State<SvtEquipCombinePage> with FakerRun
                   },
             child: Text('AutoFill'),
           ),
+          FilledButton(onPressed: baseUserSvt == null ? null : _autofillChoco, child: Text('AutoFill Choco')),
           // FilledButton(
           //   onPressed: baseUserSvt == null
           //       ? null
@@ -355,5 +367,20 @@ class _SvtEquipCombinePageState extends State<SvtEquipCombinePage> with FakerRun
     if (baseUserSvt == null || ce == null) return false;
     if (baseUserSvt.lv != baseUserSvt.maxLv) return false;
     return true;
+  }
+
+  void _autofillChoco() {
+    const int kMaxMaterialCount = 5;
+    options.combineUserSvtIds.clear();
+    for (final userSvt in mstData.userSvt) {
+      if (options.combineUserSvtIds.length >= kMaxMaterialCount) continue;
+      if (userSvt.isChoice() || userSvt.isWithdraw()) continue;
+      final ce = userSvt.dbCE;
+      if (ce == null || ce.collectionNo <= 0 || !ce.flags.contains(SvtFlag.svtEquipChocolate)) continue;
+      final owner = db.gameData.servantsById[ce.valentineEquipOwner];
+      if (owner == null || owner.type == .heroine) continue;
+      options.combineUserSvtIds.add(userSvt.id);
+    }
+    if (mounted) setState(() {});
   }
 }
