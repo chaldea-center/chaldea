@@ -46,7 +46,12 @@ class _FeedbackPageState extends State<FeedbackPage> {
     super.initState();
     // Pre-fill body with UUID when entering from the password recovery flow.
     if (widget.prefilledContext?['source'] == 'forgot_password') {
-      bodyController.text = '${S.current.auth_contact_device_uuid_hint}: ${AppInfo.uuid}\n\n';
+      subjectController.text = '[${Language.isZH ? '忘记密码' : 'Forgot Password'}]';
+      bodyController.text =
+          '${S.current.login_username}:<${S.current.login_username}>\n'
+          '${S.current.auth_device_id}: ${AppInfo.uuid}\n'
+          '${S.current.email}: <email>\n\n'
+          '${S.current.general_others}...';
     }
     contactController.addListener(_onTextFieldChanged);
     subjectController.addListener(_onTextFieldChanged);

@@ -475,18 +475,15 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.error),
           ),
         ),
-        Row(
-          children: [
-            Flexible(child: Text(S.current.auth_contact_device_uuid_hint)),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(AppInfo.uuid, style: const TextStyle(fontFamily: 'monospace', fontSize: 12)),
-            ),
-            IconButton(
-              icon: const Icon(Icons.copy, size: 18),
-              onPressed: () => copyToClipboard(AppInfo.uuid, toast: true),
-            ),
-          ],
+        ListTile(
+          dense: true,
+          contentPadding: .zero,
+          title: Text(S.current.auth_contact_device_uuid_hint),
+          subtitle: Text(AppInfo.uuid, style: const TextStyle(fontFamily: 'monospace', fontSize: 12)),
+          trailing: IconButton(
+            icon: const Icon(Icons.copy, size: 18),
+            onPressed: () => copyToClipboard(AppInfo.uuid, toast: true),
+          ),
         ),
         const SizedBox(height: 8),
         SecondaryButton(

@@ -176,14 +176,14 @@ class _FakerMenuDialogState extends State<FakerMenuDialog> with FakerRuntimeStat
                   router.pushPage(ShopEventListPage(runtime: runtime));
                 },
               ),
-              _ButtonData(
-                icon: Icons.currency_exchange,
-                name: Transl.enums(ShopType.exRoomShop, (e) => e.shopType).l,
-                enabled: isLoggedIn && (mstData.mstShopDaily.isNotEmpty || mstData.userShopDaily.isNotEmpty),
-                onTap: () {
-                  router.pushPage(ExRoomShopPage(runtime: runtime));
-                },
-              ),
+              if (isLoggedIn && (mstData.mstShopDaily.isNotEmpty || mstData.userShopDaily.isNotEmpty))
+                _ButtonData(
+                  icon: Icons.currency_exchange,
+                  name: Transl.enums(ShopType.exRoomShop, (e) => e.shopType).l,
+                  onTap: () {
+                    router.pushPage(ExRoomShopPage(runtime: runtime));
+                  },
+                ),
               if (mstData.userEventTrade.isNotEmpty)
                 _ButtonData(
                   icon: Icons.event,

@@ -8,11 +8,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/chaldea_server.dart';
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/auth/validators.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/modern/modern.dart';
+import 'forgot_password_page.dart';
 
 class ChangePasswordPage extends StatefulWidget {
   const ChangePasswordPage({super.key});
@@ -141,6 +143,16 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
             ),
             const SizedBox(height: 24),
             PrimaryButton(label: S.current.auth_confirm_change, onPressed: _isAvailable ? _submit : null),
+            const SizedBox(height: 24),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                TextButton(
+                  onPressed: () => router.push(child: const ForgotPasswordPage()),
+                  child: Text(S.current.auth_forgot_password_title),
+                ),
+              ],
+            ),
           ],
         ),
       ),
