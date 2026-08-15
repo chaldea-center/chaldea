@@ -534,8 +534,8 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
               ? '${S.current.info_charge}: ${svt.npLineCount}/${svt.niceEnemy!.chargeTurn}'
               : '${S.current.info_charge}: -',
           // Summer Ereshkigal
-          if (svt.curBattlePoints.keys.contains(3300200))
-            '♡: ${BattlePointCalc.determineBattlePointPhase(svt, 3300200)} (${svt.curBattlePoints[3300200]!.current})',
+          if (svt.svtId == 3300200)
+            '\u2764: ${BattlePointCalc.determineBattlePointPhase(svt, 3300200)} (${svt.curBattlePoints[3300200]?.current ?? 0})',
           // Summer Beni-Enma
           if (svt.getTraits().contains(10042))
             '\u{1F35A}: ${svt.curBattlePoints[705300]?.current ?? 0} / '
