@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:chaldea/app/battle/functions/battle_point_calc.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -157,8 +158,9 @@ class Damage {
           final damageNpSEDecision = battleData.delegate?.damageNpSE?.call(activator, damageFunction, dataVals);
 
           final battlePointId = dataVals.Target!;
-          int curPhase = damageNpSEDecision?.indivSumCount ?? activator.determineBattlePointPhase(battlePointId);
-          curPhase = curPhase.clamp(0, activator.getMaxBattlePointPhase(battlePointId));
+          int curPhase =
+              damageNpSEDecision?.indivSumCount ?? BattlePointCalc.determineBattlePointPhase(activator, battlePointId);
+          curPhase = curPhase.clamp(0, BattlePointCalc.getMaxBattlePointPhase(activator, battlePointId));
           final specifiedPhase = dataVals.DamageRateBattlePointPhase?.firstWhereOrNull(
             (phase) => phase.battlePointPhase == curPhase,
           );

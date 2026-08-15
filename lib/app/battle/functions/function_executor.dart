@@ -1,9 +1,8 @@
 import 'dart:math' show min;
 
-import 'package:chaldea/app/battle/functions/add_battle_point.dart';
-import 'package:chaldea/app/battle/functions/sub_battle_point.dart';
 import 'package:chaldea/app/battle/functions/add_field_change_to_field.dart';
 import 'package:chaldea/app/battle/functions/add_state.dart';
+import 'package:chaldea/app/battle/functions/battle_point_calc.dart';
 import 'package:chaldea/app/battle/functions/break_gauge_up.dart';
 import 'package:chaldea/app/battle/functions/damage.dart';
 import 'package:chaldea/app/battle/functions/damage_np_counter.dart';
@@ -497,10 +496,10 @@ class FunctionExecutor {
           DamageNpCounter.damageNpCounter(battleData, dataVals, activator, targets);
           break;
         case FuncType.addBattlePoint:
-          AddBattlePoint.addBattlePoint(battleData, dataVals, targets, overchargeState, ignoreBattlePoints);
+          BattlePointCalc.addBattlePoint(battleData, dataVals, targets, overchargeState, ignoreBattlePoints);
           break;
         case FuncType.subBattlePoint:
-          SubBattlePoint.subBattlePoint(battleData, dataVals, targets, overchargeState, ignoreBattlePoints);
+          BattlePointCalc.subBattlePoint(battleData, dataVals, targets, overchargeState, ignoreBattlePoints);
           break;
         case FuncType.gainNpFromOtherUsedNpValue:
           GainNp.gainNpFromConsumed(battleData, dataVals, consumedNp ?? 0, targets);
@@ -1181,7 +1180,7 @@ class FunctionExecutor {
   static bool battlePointCheck(final DataVals dataVals, final BattleServantData target) {
     final checkBattlePointPhaseRanges = dataVals.CheckBattlePointPhaseRange ?? [];
     for (final phaseRange in checkBattlePointPhaseRanges) {
-      final curPhase = target.determineBattlePointPhase(phaseRange.battlePointId);
+      final curPhase = BattlePointCalc.determineBattlePointPhase(target, phaseRange.battlePointId);
       if (!DataVals.isSatisfyRangeText(curPhase, ranges: phaseRange.range)) {
         return false;
       }
@@ -1192,7 +1191,7 @@ class FunctionExecutor {
   static bool battlePointRateCheck(final DataVals dataVals, final BattleServantData target) {
     final checkBattlePointRateRanges = dataVals.TriggeredTargetBattlePointRateRange ?? [];
     for (final rateRange in checkBattlePointRateRanges) {
-      final curRate = target.getBattlePointRate(rateRange.battlePointId);
+      final curRate = BattlePointCalc.getBattlePointRate(target, rateRange.battlePointId);
       if (!DataVals.isSatisfyRangeText(curRate, ranges: rateRange.range)) {
         return false;
       }

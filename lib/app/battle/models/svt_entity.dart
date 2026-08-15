@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:chaldea/app/api/atlas.dart';
+import 'package:chaldea/app/battle/functions/battle_point_calc.dart';
 import 'package:chaldea/app/battle/functions/function_executor.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/utils/battle_exception.dart';
@@ -95,95 +96,14 @@ class BattleServantData {
   int startingPosition = 0;
   Map<int, BattlePointState> curBattlePoints = {};
 
-  int? getBattlePointMax(final int battlePointId) {
-    final battlePoint = getBattlePointDefinition(battlePointId);
-    if (battlePoint == null) return null;
-
-    final script = battlePoint.script;
-    int? maxValue = script?.defaultMax;
-    for (final change in script?.maxChange ?? const <BattlePointScriptMaxChange>[]) {
-      if (Individuality.checkSignedIndivPartialMatch(self: getTraits(), signedTarget: change.individuality)) {
-        maxValue = change.value;
-      }
-    }
-
-    if (maxValue == null && battlePoint.phases.length >= 2) {
-      final phases = battlePoint.phases.where((phase) => phase.value >= 0).toList();
-      if (phases.length >= 2) {
-        final step = phases.last.value - phases[phases.length - 2].value;
-        maxValue = phases.last.value + step;
-      }
-    }
-
-    for (final buff in battleBuff.validBuffs.where((buff) => buff.buff.type == BuffType.addMaxBattlePoint)) {
-      if (buff.vals.BattlePointId == null || buff.vals.BattlePointId == battlePointId) {
-        maxValue = (maxValue ?? 0) + buff.param;
-      }
-    }
-
-    return script?.maxLimit == null || maxValue == null ? maxValue : maxValue.clamp(0, script!.maxLimit!);
-  }
-
-  BattlePoint? getBattlePointDefinition(final int battlePointId) {
-    return niceSvt?.battlePoints.firstWhereOrNull((e) => e.id == battlePointId) ??
-        ConstData.battlePoints[battlePointId];
-  }
-
-  bool canReceiveBattlePoint(final int battlePointId) {
-    final battlePoint = getBattlePointDefinition(battlePointId);
-    return battlePoint?.flags.contains(BattlePointFlag.notTargetOtherPlayer) != true ||
-        playerSvtData?.supportType != SupportSvtType.friend;
-  }
-
-  BattlePointState getOrCreateBattlePoint(final int battlePointId) {
-    final existing = curBattlePoints[battlePointId];
-    if (existing != null) return existing;
-
-    return curBattlePoints[battlePointId] = BattlePointState(current: 0, max: getBattlePointMax(battlePointId));
-  }
-
   void refreshBattlePointMax() {
     for (final entry in curBattlePoints.entries) {
-      final maxValue = getBattlePointMax(entry.key);
+      final maxValue = BattlePointCalc.getBattlePointMax(this, entry.key);
       entry.value.max = maxValue;
       if (maxValue != null) {
         entry.value.current = entry.value.current.clamp(0, maxValue);
       }
     }
-  }
-
-  int determineBattlePointPhase(final int battlePointId) {
-    final battlePoint = getBattlePointDefinition(battlePointId);
-    final state = curBattlePoints[battlePointId];
-    final curBattlePoint = state?.current;
-    if (curBattlePoint == null) {
-      return 0;
-    }
-
-    if (battlePoint?.flags.contains(BattlePointFlag.battlePointCheckAsPercentage) == true && state!.max != null) {
-      final percentage = state.max == 0 ? 0 : curBattlePoint * 1000 ~/ state.max!;
-      return [0, 500, 750, 1000].lastIndexWhere((value) => value <= percentage);
-    }
-    if (battlePoint == null) return 0;
-
-    int phase = 0;
-    for (final battlePointPhase in battlePoint.phases) {
-      if (battlePointPhase.value <= curBattlePoint) {
-        phase = max(phase, battlePointPhase.phase);
-      }
-    }
-    return phase;
-  }
-
-  int getMaxBattlePointPhase(int battlePointId) {
-    final battlePoint = getBattlePointDefinition(battlePointId);
-    return Maths.max(battlePoint?.phases.map((e) => e.phase) ?? <int>[], 0);
-  }
-
-  int getBattlePointRate(final int battlePointId) {
-    final maxValue = getBattlePointMax(battlePointId);
-    if (maxValue == null || maxValue <= 0) return 0;
-    return ((curBattlePoints[battlePointId]?.current ?? 0) * 1000 ~/ maxValue).clamp(0, 1000);
   }
 
   int np = 0; // player, np/100
@@ -1795,7 +1715,8 @@ class BattleServantData {
     NiceTd? td = getBaseTD();
     final tdChangeByBattlePoint = td?.script?.tdChangeByBattlePoint?.firstOrNull;
     if (tdChangeByBattlePoint != null &&
-        tdChangeByBattlePoint.phase <= determineBattlePointPhase(tdChangeByBattlePoint.battlePointId)) {
+        tdChangeByBattlePoint.phase <=
+            BattlePointCalc.determineBattlePointPhase(this, tdChangeByBattlePoint.battlePointId)) {
       return niceSvt?.noblePhantasms.firstWhereOrNull((niceTd) => niceTd.id == tdChangeByBattlePoint.noblePhantasmId) ??
           td;
     }
@@ -2621,6 +2542,8 @@ class BattleServantData {
     for (final skill in skillInfoList) {
       skill.setRankUp(rankUps);
     }
+
+    refreshBattlePointMax();
   }
 
   void useBuffOnce() {
