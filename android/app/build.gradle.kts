@@ -38,9 +38,12 @@ android {
 
     flavorDimensions += "app"
     productFlavors {
-        create("play") {
+        create("github") {
             dimension = "app"
             isDefault = true
+        }
+        create("play") {
+            dimension = "app"
         }
         create("fdroid") {
             dimension = "app"
@@ -99,6 +102,36 @@ android {
     }
     lint {
         checkReleaseBuilds = false
+    }
+}
+
+afterEvaluate {
+    // Fix command without flavor
+    listOf("debug", "release", "profile").forEach { buildType ->
+        val taskName = "assemble${buildType.replaceFirstChar { it.uppercase() }}"
+
+        tasks.matching { it.name == taskName }.configureEach {
+            doLast {
+                // default flavor (github) APK path
+                val sourceApk = layout.buildDirectory
+                    .file("outputs/apk/github/$buildType/app-github-$buildType.apk")
+                    .get().asFile
+
+                if (sourceApk.exists()) {
+                    // copy to Flutter CLI required path
+                    val targetDir = layout.buildDirectory
+                        .dir("outputs/flutter-apk")
+                        .get().asFile
+                    targetDir.mkdirs()
+
+                    sourceApk.copyTo(
+                        target = File(targetDir, "app-$buildType.apk"),
+                        overwrite = true
+                    )
+                    println("✅ Copied app-github-$buildType.apk → app-$buildType.apk")
+                }
+            }
+        }
     }
 }
 

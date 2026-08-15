@@ -392,6 +392,7 @@ class DataVals {
   List<List<int>>? get ApplyBuffIndividuality => _2dList('ApplyBuffIndividuality');
   int? get ExecWhenCanNotAttack => _get('ExecWhenCanNotAttack');
   int? get ExecEvenCardSelectState => _get('ExecEvenCardSelectState');
+  int? get IgnoredCheckBuffType => _get('IgnoredCheckBuffType');
   int? get OverwriteShift => _get('OverwriteShift');
   int? get IgnoreShiftWhiteFade => _get('IgnoreShiftWhiteFade');
   List<int>? get BackStepTargets => _list('BackStepTargets');
@@ -436,6 +437,12 @@ class DataVals {
   int? get ResultAggregateGroupId => _get('ResultAggregateGroupId');
   int? get SelfTurnProgressGroup => _get('SelfTurnProgressGroup');
   int? get EnemyCountWaitTimeAfterEffect => _get('EnemyCountWaitTimeAfterEffect');
+  List<ValTriggeredTargetBattlePointRateRange>? get TriggeredTargetBattlePointRateRange =>
+      _parseObjList('TriggeredTargetBattlePointRateRange', ValTriggeredTargetBattlePointRateRange.fromJson);
+  int? get OnlyAvailableSkill => _get('OnlyAvailableSkill');
+  int? get UserEquipSkillMaxTargetNum => _get('UserEquipSkillMaxTargetNum');
+  int? get ShowMasterPopupDuringNoblePhantasm => _get('ShowMasterPopupDuringNoblePhantasm');
+  int? get TypeIndividualityEachFunc => _get('TypeIndividualityEachFunc');
 
   //
   int? get Individuality => _get('Individuality');
@@ -513,6 +520,19 @@ class ValCheckBattlePointPhaseRange {
       _$ValCheckBattlePointPhaseRangeFromJson(json);
 
   Map<String, dynamic> toJson() => _$ValCheckBattlePointPhaseRangeToJson(this);
+}
+
+@JsonSerializable()
+class ValTriggeredTargetBattlePointRateRange {
+  int battlePointId;
+  List<String> range;
+
+  ValTriggeredTargetBattlePointRateRange({required this.battlePointId, this.range = const []});
+
+  factory ValTriggeredTargetBattlePointRateRange.fromJson(Map<String, dynamic> json) =>
+      _$ValTriggeredTargetBattlePointRateRangeFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ValTriggeredTargetBattlePointRateRangeToJson(this);
 }
 
 @JsonSerializable()

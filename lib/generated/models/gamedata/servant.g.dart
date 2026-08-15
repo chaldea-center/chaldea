@@ -197,11 +197,6 @@ Servant _$ServantFromJson(Map json) => Servant(
           ?.map((e) => SvtScript.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList() ??
       const [],
-  battlePoints:
-      (json['battlePoints'] as List<dynamic>?)
-          ?.map((e) => BattlePoint.fromJson(Map<String, dynamic>.from(e as Map)))
-          .toList() ??
-      const [],
   skills:
       (json['skills'] as List<dynamic>?)
           ?.map((e) => NiceSkill.fromJson(Map<String, dynamic>.from(e as Map)))
@@ -288,7 +283,6 @@ Map<String, dynamic> _$ServantToJson(Servant instance) => <String, dynamic>{
   'coin': instance.coin?.toJson(),
   'script': instance.script?.toJson(),
   'charaScripts': instance.charaScripts.map((e) => e.toJson()).toList(),
-  'battlePoints': instance.battlePoints.map((e) => e.toJson()).toList(),
   'skills': instance.skills.map((e) => e.toJson()).toList(),
   'classPassive': instance.classPassive.map((e) => e.toJson()).toList(),
   'extraPassive': instance.extraPassive.map((e) => e.toJson()).toList(),
@@ -1285,6 +1279,12 @@ BattlePoint _$BattlePointFromJson(Map json) => BattlePoint(
           ?.map((e) => BattlePointPhase.fromJson(Map<String, dynamic>.from(e as Map)))
           .toList() ??
       const [],
+  svts:
+      (json['svts'] as List<dynamic>?)
+          ?.map((e) => SvtBattlePoint.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList() ??
+      const [],
+  script: json['script'] == null ? null : BattlePointScript.fromJson(Map<String, dynamic>.from(json['script'] as Map)),
 );
 
 Map<String, dynamic> _$BattlePointToJson(BattlePoint instance) => <String, dynamic>{
@@ -1292,6 +1292,8 @@ Map<String, dynamic> _$BattlePointToJson(BattlePoint instance) => <String, dynam
   'name': instance.name,
   'flags': instance.flags.map((e) => _$BattlePointFlagEnumMap[e]!).toList(),
   'phases': instance.phases.map((e) => e.toJson()).toList(),
+  'svts': instance.svts.map((e) => e.toJson()).toList(),
+  'script': instance.script?.toJson(),
 };
 
 const _$BattlePointFlagEnumMap = {
@@ -1300,6 +1302,7 @@ const _$BattlePointFlagEnumMap = {
   BattlePointFlag.hideUiGaugeAllTime: 'hideUiGaugeAllTime',
   BattlePointFlag.hideUiGaugeWhenCantAddPoint: 'hideUiGaugeWhenCantAddPoint',
   BattlePointFlag.hideUiGaugeWhenCantAddPointAndFollowerSupport: 'hideUiGaugeWhenCantAddPointAndFollowerSupport',
+  BattlePointFlag.battlePointCheckAsPercentage: 'battlePointCheckAsPercentage',
 };
 
 BattlePointPhase _$BattlePointPhaseFromJson(Map json) => BattlePointPhase(
@@ -1314,4 +1317,50 @@ Map<String, dynamic> _$BattlePointPhaseToJson(BattlePointPhase instance) => <Str
   'value': instance.value,
   'name': instance.name,
   'effectId': instance.effectId,
+};
+
+SvtBattlePoint _$SvtBattlePointFromJson(Map json) => SvtBattlePoint(
+  svtId: (json['svtId'] as num?)?.toInt() ?? -1,
+  individuality: _$JsonConverterFromJson<List<dynamic>, List<List<int>>>(
+    json['individuality'],
+    const Trait2dListConverter().fromJson,
+  ),
+);
+
+Map<String, dynamic> _$SvtBattlePointToJson(SvtBattlePoint instance) => <String, dynamic>{
+  'svtId': instance.svtId,
+  'individuality': _$JsonConverterToJson<List<dynamic>, List<List<int>>>(
+    instance.individuality,
+    const Trait2dListConverter().toJson,
+  ),
+};
+
+Value? _$JsonConverterFromJson<Json, Value>(Object? json, Value? Function(Json json) fromJson) =>
+    json == null ? null : fromJson(json as Json);
+
+Json? _$JsonConverterToJson<Json, Value>(Value? value, Json? Function(Value value) toJson) =>
+    value == null ? null : toJson(value);
+
+BattlePointScript _$BattlePointScriptFromJson(Map json) => BattlePointScript(
+  maxChange: (json['maxChange'] as List<dynamic>?)
+      ?.map((e) => BattlePointScriptMaxChange.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
+  maxLimit: (json['maxLimit'] as num?)?.toInt(),
+  defaultMax: (json['defaultMax'] as num?)?.toInt(),
+);
+
+Map<String, dynamic> _$BattlePointScriptToJson(BattlePointScript instance) => <String, dynamic>{
+  'maxChange': instance.maxChange?.map((e) => e.toJson()).toList(),
+  'maxLimit': instance.maxLimit,
+  'defaultMax': instance.defaultMax,
+};
+
+BattlePointScriptMaxChange _$BattlePointScriptMaxChangeFromJson(Map json) => BattlePointScriptMaxChange(
+  individuality: _$JsonConverterFromJson<Object, List<int>>(json['individuality'], const TraitListConverter().fromJson),
+  value: (json['value'] as num?)?.toInt(),
+);
+
+Map<String, dynamic> _$BattlePointScriptMaxChangeToJson(BattlePointScriptMaxChange instance) => <String, dynamic>{
+  'individuality': _$JsonConverterToJson<Object, List<int>>(instance.individuality, const TraitListConverter().toJson),
+  'value': instance.value,
 };

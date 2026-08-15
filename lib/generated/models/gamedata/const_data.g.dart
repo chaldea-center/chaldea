@@ -140,6 +140,11 @@ ConstGameData _$ConstGameDataFromJson(Map json) => ConstGameData(
   shopDailyTargets:
       (json['shopDailyTargets'] as Map?)?.map((k, e) => MapEntry(int.parse(k as String), (e as num).toInt())) ??
       const {},
+  battlePoints:
+      (json['battlePoints'] as Map?)?.map(
+        (k, e) => MapEntry(int.parse(k as String), BattlePoint.fromJson(Map<String, dynamic>.from(e as Map))),
+      ) ??
+      const {},
 );
 
 Map<String, dynamic> _$ConstGameDataToJson(ConstGameData instance) => <String, dynamic>{
@@ -182,6 +187,7 @@ Map<String, dynamic> _$ConstGameDataToJson(ConstGameData instance) => <String, d
   'subEvents': instance.subEvents.map((k, e) => MapEntry(k.toString(), e)),
   'routeSelects': instance.routeSelects,
   'shopDailyTargets': instance.shopDailyTargets.map((k, e) => MapEntry(k.toString(), e)),
+  'battlePoints': instance.battlePoints.map((k, e) => MapEntry(k.toString(), e.toJson())),
   'config': instance.config.toJson(),
 };
 
@@ -1339,5 +1345,7 @@ const _$BuffActionEnumMap = {
   BuffAction.functionMultiGutsBefore: 'functionMultiGutsBefore',
   BuffAction.limitMaxNp: 'limitMaxNp',
   BuffAction.limitMinNp: 'limitMinNp',
+  BuffAction.maxBattlePoint: 'maxBattlePoint',
+  BuffAction.functionSelfturnprogress: 'functionSelfturnprogress',
   BuffAction.functionClassboardCommandSpellAfter: 'functionClassboardCommandSpellAfter',
 };

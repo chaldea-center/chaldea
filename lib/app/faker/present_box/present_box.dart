@@ -398,6 +398,7 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> wit
       builder: (context) {
         return SimpleConfirmDialog(
           title: Text('Receive ${presentIds.length} presents'),
+          scrollable: true,
           content: Wrap(
             children: [
               for (final (giftType, gifts) in total.items)

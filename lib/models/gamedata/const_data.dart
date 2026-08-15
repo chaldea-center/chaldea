@@ -28,7 +28,14 @@ class ConstGameData {
   final Map<int, BuffTypeDetail> buffTypeDetail;
   final Map<String, List<int>> destinyOrderClasses;
 
-  final Map<int, int> bondLimitQp = {10: 10000000, 11: 12000000, 12: 14000000, 13: 16000000, 14: 18000000};
+  final Map<int, int> bondLimitQp = {
+    10: 10000000,
+    11: 12000000,
+    12: 14000000,
+    13: 16000000,
+    14: 18000000,
+    15: 50000000,
+  };
   final Map<BuffType, List<BuffAction>> buffTypeActionMap;
 
   final Map<int, int> svtClassCardImageIdRemap = {285: 123, 351: 223};
@@ -55,6 +62,7 @@ class ConstGameData {
   final Map<int, List<int>> subEvents;
   final Map<String, List<String>> routeSelects;
   final Map<int, int> shopDailyTargets;
+  final Map<int, BattlePoint> battlePoints;
   final ConstDataConfig config;
 
   static Map<String, Map<String, int>> deprecatedEnums = {};
@@ -94,6 +102,7 @@ class ConstGameData {
     this.subEvents = const {},
     this.routeSelects = const {},
     this.shopDailyTargets = const {},
+    this.battlePoints = const {},
   }) : buffTypeActionMap = {} {
     _fixBuffActions();
   }
@@ -1495,6 +1504,8 @@ enum BuffAction {
   functionMultiGutsBefore(171),
   limitMaxNp(172),
   limitMinNp(173),
+  maxBattlePoint(174),
+  functionSelfturnprogress(175),
   // custom
   functionClassboardCommandSpellAfter(301);
 

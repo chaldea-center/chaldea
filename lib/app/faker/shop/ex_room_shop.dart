@@ -67,18 +67,20 @@ class _ExRoomShopPageState extends State<ExRoomShopPage> with FakerRuntimeStateM
           ),
           const Divider(height: 8),
           Expanded(child: ListView(children: [for (final shop in shownDailyShops) buildShop(shop)])),
-          OverflowBar(
-            spacing: 8,
-            children: [
-              runtime.buildCircularProgress(context: context),
-              buildCompactButton(
-                text: 'home',
-                onPressed: () async {
-                  await agent.homeTop();
-                  if (mounted) setState(() {});
-                },
-              ),
-            ],
+          SafeArea(
+            child: OverflowBar(
+              spacing: 8,
+              children: [
+                runtime.buildCircularProgress(context: context),
+                buildCompactButton(
+                  text: 'home',
+                  onPressed: () async {
+                    await agent.homeTop();
+                    if (mounted) setState(() {});
+                  },
+                ),
+              ],
+            ),
           ),
         ],
       ),

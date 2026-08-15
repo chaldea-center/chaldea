@@ -16,6 +16,15 @@ Map<String, dynamic> _$ValCheckBattlePointPhaseRangeToJson(ValCheckBattlePointPh
   'range': instance.range,
 };
 
+ValTriggeredTargetBattlePointRateRange _$ValTriggeredTargetBattlePointRateRangeFromJson(Map json) =>
+    ValTriggeredTargetBattlePointRateRange(
+      battlePointId: (json['battlePointId'] as num).toInt(),
+      range: (json['range'] as List<dynamic>?)?.map((e) => e as String).toList() ?? const [],
+    );
+
+Map<String, dynamic> _$ValTriggeredTargetBattlePointRateRangeToJson(ValTriggeredTargetBattlePointRateRange instance) =>
+    <String, dynamic>{'battlePointId': instance.battlePointId, 'range': instance.range};
+
 ValDamageRateBattlePointPhase _$ValDamageRateBattlePointPhaseFromJson(Map json) => ValDamageRateBattlePointPhase(
   battlePointPhase: (json['battlePointPhase'] as num).toInt(),
   value: (json['value'] as num).toInt(),

@@ -135,7 +135,7 @@ class _FormInputState extends State<FormInput> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final baseDecoration = (widget.decoration ?? const InputDecoration()).copyWith(
+    final baseDecoration = (widget.decoration ?? const InputDecoration(border: OutlineInputBorder())).copyWith(
       hintText: widget.hint,
       helperText: widget.helperText,
       errorText: _error,

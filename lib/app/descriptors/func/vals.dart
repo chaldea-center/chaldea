@@ -285,8 +285,10 @@ class ValDsc extends StatelessWidget {
             }
             break;
           case FuncType.damageNpBattlePointPhase:
-            int value2 = originVals?.Value2 ?? vals.Value2 ?? 0, correction = vals.Correction ?? 0;
-            parts.add('${_toPercent(value2, 10)}%+N×${_toPercent(correction, 10)}%');
+            if (vals.Value2 != null || vals.Correction != null) {
+              int value2 = originVals?.Value2 ?? vals.Value2 ?? 0, correction = vals.Correction ?? 0;
+              parts.add('${_toPercent(value2, 10)}%+N×${_toPercent(correction, 10)}%');
+            }
             break;
           default:
             parts.add(vals.Correction.toString());
@@ -311,7 +313,12 @@ class ValDsc extends StatelessWidget {
         }
       }
       if (vals.BattlePointValue != null) {
-        _addInt(parts, vals.BattlePointValue, post: (v) => '+$v');
+        String op = switch (func.funcType) {
+          .addBattlePoint => '+',
+          .subBattlePoint => '-',
+          _ => '',
+        };
+        _addInt(parts, vals.BattlePointValue, post: (v) => '$op$v');
       }
       if (!ignoreCount && vals.Count != null && vals.Count! > 0) {
         _addInt(parts, vals.Count, post: (v) => Transl.special.funcValCountTimes(vals.Count!));

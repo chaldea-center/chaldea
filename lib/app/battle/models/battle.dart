@@ -1669,6 +1669,9 @@ class BattleData {
         targets.addAll(aliveEnemies);
         targets.remove(self);
         break;
+      case BuffConditionTargetType.relativePositionPt:
+        // TODO: BuffConditionTargetType.relativePositionPt
+        break;
     }
 
     return targets;
