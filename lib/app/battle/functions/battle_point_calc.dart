@@ -1,6 +1,7 @@
 import 'dart:math' show max;
 
 import 'package:chaldea/app/battle/models/battle.dart';
+import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/models/gamedata/individuality.dart';
@@ -125,28 +126,27 @@ class BattlePointCalc {
     if (battlePoint == null) return null;
 
     final script = battlePoint.script;
-    int? maxValue = script?.defaultMax;
-    for (final change in script?.maxChange ?? const <BattlePointScriptMaxChange>[]) {
+    if (script == null ||
+        (script.defaultMax == null &&
+            script.maxLimit == null &&
+            (script.maxChange == null || script.maxChange!.isEmpty))) {
+      return null;
+    }
+
+    int? maxValue = script.defaultMax;
+    for (final change in script.maxChange ?? const <BattlePointScriptMaxChange>[]) {
       if (Individuality.checkSignedIndivPartialMatch(self: target.getTraits(), signedTarget: change.individuality)) {
         maxValue = change.value;
       }
     }
 
-    if (maxValue == null && battlePoint.phases.length >= 2) {
-      final phases = battlePoint.phases.where((phase) => phase.value >= 0).toList();
-      if (phases.length >= 2) {
-        final step = phases.last.value - phases[phases.length - 2].value;
-        maxValue = phases.last.value + step;
-      }
-    }
-
-    for (final buff in target.battleBuff.validBuffs.where((buff) => buff.buff.type == BuffType.addMaxBattlePoint)) {
+    for (final buff in collectBuffsPerAction(target.battleBuff.validBuffs, BuffAction.maxBattlePoint)) {
       if (buff.vals.BattlePointId == null || buff.vals.BattlePointId == battlePointId) {
         maxValue = (maxValue ?? 0) + buff.param;
       }
     }
 
-    return script?.maxLimit == null || maxValue == null ? maxValue : maxValue.clamp(0, script!.maxLimit!);
+    return script.maxLimit == null || maxValue == null ? maxValue : maxValue.clamp(0, script.maxLimit!);
   }
 
   static BattlePoint? getBattlePointDefinition(final BattleServantData target, final int battlePointId) {

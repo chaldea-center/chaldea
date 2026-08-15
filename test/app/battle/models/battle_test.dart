@@ -1647,7 +1647,7 @@ void main() async {
 
       final eresh = battle.onFieldAllyServants[0]!;
       expect(eresh.curBattlePoints[bpId]?.current, 10);
-      expect(eresh.curBattlePoints[bpId]?.max, 100);
+      expect(eresh.curBattlePoints[bpId]?.max, isNull);
       expect(BattlePointCalc.determineBattlePointPhase(eresh, bpId), 2);
 
       expect(battle.isFirstSkillInTurn, true);
@@ -1700,7 +1700,7 @@ void main() async {
         CombatAction(eresh, eresh.getCards()[1]),
         CombatAction(eresh, eresh.getCards()[2]),
       ]);
-      expect(eresh.curBattlePoints[3300200]?.current, 100); // full brave chain + 15, capped at max
+      expect(eresh.curBattlePoints[3300200]?.current, 107); // full brave chain + 15, without a maximum cap
       expect(BattlePointCalc.determineBattlePointPhase(eresh, bpId), 10);
     });
 
