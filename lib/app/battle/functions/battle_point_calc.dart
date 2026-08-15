@@ -180,7 +180,13 @@ class BattlePointCalc {
 
     if (battlePoint?.flags.contains(BattlePointFlag.battlePointCheckAsPercentage) == true && state!.max != null) {
       final percentage = state.max == 0 ? 0 : curBattlePoint * 1000 ~/ state.max!;
-      return [0, 500, 750, 1000].lastIndexWhere((value) => value <= percentage);
+      int phase = 0;
+      for (final battlePointPhase in battlePoint!.phases) {
+        if (battlePointPhase.value <= percentage) {
+          phase = max(phase, battlePointPhase.phase);
+        }
+      }
+      return phase;
     }
     if (battlePoint == null) return 0;
 
