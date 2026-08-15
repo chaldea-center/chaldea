@@ -442,7 +442,7 @@ class DataVals {
   int? get OnlyAvailableSkill => _get('OnlyAvailableSkill');
   int? get UserEquipSkillMaxTargetNum => _get('UserEquipSkillMaxTargetNum');
   int? get ShowMasterPopupDuringNoblePhantasm => _get('ShowMasterPopupDuringNoblePhantasm');
-  int? get TypeIndividualityEachFunc => _get('TypeIndividualityEachFunc');
+  List<List<int>>? get TypeIndividualityEachFunc => _2dList('TypeIndividualityEachFunc');
 
   //
   int? get Individuality => _get('Individuality');

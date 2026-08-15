@@ -177,10 +177,15 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
     return ListView.builder(itemCount: children.length, itemBuilder: (context, index) => children[index]);
   }
 
+  bool _checkHasCond(NiceSkill skill) {
+    return skill.svt.condQuestId > 0 || SvtSkillTab.hasUnusualLimitCond(skill);
+  }
+
   Widget _buildSkill(List<NiceSkill> skills, int? level) {
     if (skills.length == 1 && skills.first.svt.condQuestId <= 0) {
       return SkillDescriptor(skill: skills.first, level: level, showEnemy: !svt.isUserSvt);
     }
+    final hasAnyCond = skills.any(_checkHasCond);
     NiceSkill initSkill = svt.getDefaultSkill(skills, db.curUser.region) ?? skills.last;
     return ValueStatefulBuilder<NiceSkill>(
       initValue: initSkill,
@@ -206,14 +211,23 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
                 },
               ),
             ),
-            if (skill.svt.condQuestId > 0 || SvtSkillTab.hasUnusualLimitCond(skill))
-              InkWell(
-                onTap: () => showDialog(
-                  context: context,
-                  useRootNavigator: false,
-                  builder: (_) => SvtSkillTab.releaseCondition(skill),
+            if (hasAnyCond)
+              Visibility(
+                visible: _checkHasCond(skill),
+                maintainSize: true,
+                maintainAnimation: true,
+                maintainState: true,
+                child: InkWell(
+                  onTap: () => showDialog(
+                    context: context,
+                    useRootNavigator: false,
+                    builder: (_) => SvtSkillTab.releaseCondition(skill),
+                  ),
+                  child: const Padding(
+                    padding: .symmetric(vertical: 2, horizontal: 8),
+                    child: Icon(Icons.info_outline),
+                  ),
                 ),
-                child: const Padding(padding: .symmetric(vertical: 2, horizontal: 8), child: Icon(Icons.info_outline)),
               ),
           ],
         );

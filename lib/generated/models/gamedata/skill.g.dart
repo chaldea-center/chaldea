@@ -14,6 +14,7 @@ BaseSkill _$BaseSkillFromJson(Map json) => BaseSkill(
   type: $enumDecodeNullable(_$SkillTypeEnumMap, json['type']) ?? SkillType.active,
   icon: json['icon'] as String?,
   coolDown: (json['coolDown'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [0],
+  individuality: _$JsonConverterFromJson<Object, List<int>>(json['individuality'], const TraitListConverter().fromJson),
   actIndividuality: json['actIndividuality'] == null
       ? const []
       : const TraitListConverter().fromJson(json['actIndividuality'] as Object),
@@ -49,6 +50,7 @@ Map<String, dynamic> _$BaseSkillToJson(BaseSkill instance) => <String, dynamic>{
   'type': _$SkillTypeEnumMap[instance.type]!,
   'icon': instance.icon,
   'coolDown': instance.coolDown,
+  'individuality': _$JsonConverterToJson<Object, List<int>>(instance.individuality, const TraitListConverter().toJson),
   'actIndividuality': const TraitListConverter().toJson(instance.actIndividuality),
   'script': instance.script?.toJson(),
   'skillAdd': instance.skillAdd.map((e) => e.toJson()).toList(),
@@ -60,7 +62,13 @@ Map<String, dynamic> _$BaseSkillToJson(BaseSkill instance) => <String, dynamic>{
 
 const _$SkillTypeEnumMap = {SkillType.active: 'active', SkillType.passive: 'passive'};
 
+Value? _$JsonConverterFromJson<Json, Value>(Object? json, Value? Function(Json json) fromJson) =>
+    json == null ? null : fromJson(json as Json);
+
 const _$AiTypeEnumMap = {AiType.svt: 'svt', AiType.field: 'field'};
+
+Json? _$JsonConverterToJson<Json, Value>(Value? value, Json? Function(Value value) toJson) =>
+    value == null ? null : toJson(value);
 
 NiceSkill _$NiceSkillFromJson(Map json) => NiceSkill(
   id: (json['id'] as num).toInt(),
@@ -70,6 +78,7 @@ NiceSkill _$NiceSkillFromJson(Map json) => NiceSkill(
   type: $enumDecodeNullable(_$SkillTypeEnumMap, json['type']) ?? SkillType.active,
   icon: json['icon'] as String?,
   coolDown: (json['coolDown'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList() ?? const [0],
+  individuality: _$JsonConverterFromJson<Object, List<int>>(json['individuality'], const TraitListConverter().fromJson),
   actIndividuality: json['actIndividuality'] == null
       ? const []
       : const TraitListConverter().fromJson(json['actIndividuality'] as Object),
@@ -127,6 +136,7 @@ Map<String, dynamic> _$NiceSkillToJson(NiceSkill instance) => <String, dynamic>{
   'type': _$SkillTypeEnumMap[instance.type]!,
   'icon': instance.icon,
   'coolDown': instance.coolDown,
+  'individuality': _$JsonConverterToJson<Object, List<int>>(instance.individuality, const TraitListConverter().toJson),
   'actIndividuality': const TraitListConverter().toJson(instance.actIndividuality),
   'script': instance.script?.toJson(),
   'skillAdd': instance.skillAdd.map((e) => e.toJson()).toList(),

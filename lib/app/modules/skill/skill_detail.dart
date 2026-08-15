@@ -156,9 +156,19 @@ class _SkillDetailPageState extends State<SkillDetailPage> with RegionBasedState
             CustomTableRow(
               children: [
                 TableCellData(text: S.current.general_type, isHeader: true),
-                TableCellData(flex: 2, text: skill.type.name),
+                TableCellData(flex: 3, text: skill.type.name),
               ],
             ),
+            if (skill.individuality != null)
+              CustomTableRow(
+                children: [
+                  TableCellData(text: S.current.trait, isHeader: true),
+                  TableCellData(
+                    flex: 3,
+                    child: SharedBuilder.traitList(context: context, traits: skill.individuality!),
+                  ),
+                ],
+              ),
             CustomTableRow.fromTexts(
               texts: [
                 'num ${skill.svt.num} / priority ${skill.svt.priority} / strengthStatus ${skill.svt.strengthStatus}',

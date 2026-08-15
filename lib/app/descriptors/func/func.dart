@@ -1047,7 +1047,7 @@ class FuncDescriptor extends StatelessWidget {
               int? guessTrait;
               if (indiv == 0 || indiv == 9999) {
                 bool _isGuessTrait(int v) =>
-                    (v >= 2000 && v < 3000) || (v >= 3050 && v < 4000) || (v >= 6000 && v < 7000);
+                    (v >= 2000 && v < 3000) || (v >= 3050 && v < 4000) || (v >= 6000 && v < 7000) || v >= 10000;
                 final guessTraits = buff.vals.where((e) => _isGuessTrait(e)).toList();
                 if (guessTraits.length == 1) guessTrait = guessTraits.first;
                 for (final v in vals?.getAddIndividuality() ?? <int>[]) {
@@ -1224,20 +1224,6 @@ class FuncDescriptor extends StatelessWidget {
 
     List<List<InlineSpan>> _condSpans = [];
 
-    int? paramAddMaxCount = vals?.ParamAddMaxCount;
-    int? paramAddValue = vals?.ParamAdd ?? vals?.ParamAddValue;
-    int? paramAddMaxValue = vals?.ParamMax ?? vals?.ParamAddMaxValue;
-    if (paramAddValue != null && paramAddMaxValue != null && paramAddMaxValue % paramAddValue == 0) {
-      paramAddMaxCount ??= paramAddMaxValue ~/ paramAddValue;
-    }
-    if (paramAddMaxCount != null) {
-      _condSpans.add(
-        SharedBuilder.replaceSpan(Transl.miscFunction('ParamAddMaxCount'), '{0}', [
-          TextSpan(text: '$paramAddMaxCount'),
-        ]),
-      );
-    }
-
     // ParamAddIndiv
     final _addedParamAddTexts = <String>{};
     void _addParamAddIndiv(
@@ -1312,6 +1298,7 @@ class FuncDescriptor extends StatelessWidget {
       andCheckTraitIds: vals?.SnapShotParamAddFieldIndividualityAndCheck,
       isSnapShot: true,
     );
+    _addParamAddIndiv("${S.current.mystic_code} ${S.current.skill}", andCheckTraitIds: vals?.TypeIndividualityEachFunc);
 
     // CondParamAdd
     final condParamType = vals?.CondParamRangeType ?? vals?.CondParamAddType ?? 0;
@@ -1344,6 +1331,20 @@ class FuncDescriptor extends StatelessWidget {
           '{maxCount}': (_) => [TextSpan(text: condParamMaxCount?.format())],
           '{type}': (_) => [TextSpan(text: '$condParamType')],
         }),
+      );
+    }
+
+    int? paramAddMaxCount = vals?.ParamAddMaxCount ?? vals?.SnapShotParamAddMaxCount;
+    int? paramAddValue = vals?.ParamAdd ?? vals?.ParamAddValue;
+    int? paramAddMaxValue = vals?.ParamMax ?? vals?.ParamAddMaxValue;
+    if (paramAddValue != null && paramAddMaxValue != null && paramAddMaxValue % paramAddValue == 0) {
+      paramAddMaxCount ??= paramAddMaxValue ~/ paramAddValue;
+    }
+    if (paramAddMaxCount != null) {
+      _condSpans.add(
+        SharedBuilder.replaceSpan(Transl.miscFunction('ParamAddMaxCount'), '{0}', [
+          TextSpan(text: '$paramAddMaxCount'),
+        ]),
       );
     }
 

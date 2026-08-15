@@ -383,12 +383,19 @@ class ValDsc extends StatelessWidget {
         vals.SnapShotParamAddValue ??
         vals.CondParamAddValue ??
         vals.CondParamRangeMaxValue;
+    int? b = k != null ? originalVals?.Value ?? vals.Value : vals.Value;
+
+    if (vals.TypeIndividualityEachFunc?.isNotEmpty == true) {
+      k ??= vals.Value;
+      b = null;
+    }
+
     bool isPercentK = (vals.CondParamRangeMaxValue ?? 0) != 0;
 
     if (base != null) {
       if (k != null) {
         parts.add(
-          "${_toPercent(originalVals?.Value ?? vals.Value, base)}%+${_toPercent(k, base)}%×${isPercentK ? 'p' : 'N'}",
+          [if (b != null) "${_toPercent(b, base)}%", "${_toPercent(k, base)}%×${isPercentK ? 'p' : 'N'}"].join('+'),
         );
       } else {
         _addPercent(parts, vals.Value, base);
@@ -444,7 +451,7 @@ class ValDsc extends StatelessWidget {
       return;
     } else {
       if (k != null) {
-        parts.add("${originalVals?.Value ?? vals.Value}+$k×${isPercentK ? 'p' : 'N'}");
+        parts.add([if (b != null) "$b", "$k×${isPercentK ? 'p' : 'N'}"].join('+'));
       } else {
         _addInt(parts, vals.Value);
       }

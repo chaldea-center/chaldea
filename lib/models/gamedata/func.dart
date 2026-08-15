@@ -666,11 +666,15 @@ enum FuncType {
     addFieldChangeToField,
     addStateToField,
     addStateShortToField,
+    addStateFuncType169,
+    addStateFuncType170,
   ];
   static const kValsNotBuffOrTraitFuncTypes = [
     FuncType.addBattleValue,
     FuncType.setBattleValue,
+    FuncType.addBattleMissionValue,
     FuncType.setBattleMissionValue,
+    FuncType.setBattleMissionValueAsMax,
   ];
 
   bool get isDamageNp =>

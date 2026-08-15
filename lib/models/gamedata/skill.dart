@@ -82,6 +82,8 @@ class BaseSkill extends SkillOrTd {
   String? icon;
   List<int> coolDown;
   @TraitListConverter()
+  List<int>? individuality;
+  @TraitListConverter()
   List<int> actIndividuality;
   @override
   SkillScript? script;
@@ -101,6 +103,7 @@ class BaseSkill extends SkillOrTd {
     this.type = SkillType.active,
     this.icon,
     this.coolDown = const [0],
+    this.individuality,
     this.actIndividuality = const [],
     this.script,
     this.skillAdd = const [],
@@ -196,6 +199,7 @@ class NiceSkill extends SkillOrTd implements BaseSkill {
     SkillType type = SkillType.active,
     String? icon,
     List<int> coolDown = const [0],
+    List<int>? individuality,
     List<int> actIndividuality = const [],
     SkillScript? script,
     List<SkillAdd> skillAdd = const [],
@@ -227,6 +231,7 @@ class NiceSkill extends SkillOrTd implements BaseSkill {
            type: type,
            icon: icon,
            coolDown: coolDown,
+           individuality: individuality,
            actIndividuality: actIndividuality,
            script: script,
            skillAdd: skillAdd,
@@ -355,6 +360,11 @@ class NiceSkill extends SkillOrTd implements BaseSkill {
   List<int> get coolDown => _base.coolDown;
   @override
   set coolDown(List<int> v) => _base.coolDown = v;
+  @override
+  @TraitListConverter()
+  List<int>? get individuality => _base.individuality;
+  @override
+  set individuality(List<int>? v) => _base.individuality = v;
   @override
   @TraitListConverter()
   List<int> get actIndividuality => _base.actIndividuality;
