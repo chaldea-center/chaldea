@@ -129,6 +129,12 @@ class BattleServantData {
         ConstData.battlePoints[battlePointId];
   }
 
+  bool canReceiveBattlePoint(final int battlePointId) {
+    final battlePoint = getBattlePointDefinition(battlePointId);
+    return battlePoint?.flags.contains(BattlePointFlag.notTargetOtherPlayer) != true ||
+        playerSvtData?.supportType != SupportSvtType.friend;
+  }
+
   BattlePointState getOrCreateBattlePoint(final int battlePointId) {
     final existing = curBattlePoints[battlePointId];
     if (existing != null) return existing;

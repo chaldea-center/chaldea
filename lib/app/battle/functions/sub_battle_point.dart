@@ -2,7 +2,6 @@ import 'dart:math' show max;
 
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
-import 'package:chaldea/models/userdata/battle.dart';
 
 class SubBattlePoint {
   SubBattlePoint._();
@@ -30,10 +29,7 @@ class SubBattlePoint {
     }
 
     for (final target in targets) {
-      // 3300200 is the battle point for Space Ereshkigal, which should not be applied to friend support servants.
-      if (battlePointId == 3300200 && target.playerSvtData?.supportType == SupportSvtType.friend) {
-        continue;
-      }
+      if (!target.canReceiveBattlePoint(battlePointId)) continue;
 
       final friendShipAbove = dataVals.FriendShipAbove ?? 0;
       if (friendShipAbove > target.bondLv) {

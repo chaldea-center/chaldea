@@ -1607,6 +1607,7 @@ void main() async {
       expect(eresh1.curBattlePoints[3300200]?.current, 10);
       expect(eresh2.curBattlePoints[3300200]?.current, null);
       expect(eresh3.curBattlePoints[3300200]?.current, 5);
+      expect(eresh2.canReceiveBattlePoint(3300200), false);
 
       eresh1.np = 10000;
       eresh2.np = 10000;
