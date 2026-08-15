@@ -394,7 +394,7 @@ class GameDataLoader {
   }
 
   Future<void> _fixGameData(GameData gamedata) async {
-    await _fixRegionSpecificCraftEssenceSkills(gamedata);
+    // await _fixRegionSpecificCraftEssenceSkills(gamedata);
     const eventsToRemove = [71543, 71558];
     for (final eventId in eventsToRemove) {
       if (gamedata.events.containsKey(eventId)) {
