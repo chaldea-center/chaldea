@@ -93,15 +93,72 @@ class BattleServantData {
 
   int bondLv = 5;
   int startingPosition = 0;
-  // initScript will set initial value
-  Map<int, int> curBattlePoints = {};
+  Map<int, BattlePointState> curBattlePoints = {};
+
+  int? getBattlePointMax(final int battlePointId) {
+    final battlePoint = getBattlePointDefinition(battlePointId);
+    if (battlePoint == null) return null;
+
+    final script = battlePoint.script;
+    int? maxValue = script?.defaultMax;
+    for (final change in script?.maxChange ?? const <BattlePointScriptMaxChange>[]) {
+      if (Individuality.checkSignedIndivPartialMatch(self: getTraits(), signedTarget: change.individuality)) {
+        maxValue = change.value;
+      }
+    }
+
+    if (maxValue == null && battlePoint.phases.length >= 2) {
+      final phases = battlePoint.phases.where((phase) => phase.value >= 0).toList();
+      if (phases.length >= 2) {
+        final step = phases.last.value - phases[phases.length - 2].value;
+        maxValue = phases.last.value + step;
+      }
+    }
+
+    for (final buff in battleBuff.validBuffs.where((buff) => buff.buff.type == BuffType.addMaxBattlePoint)) {
+      if (buff.vals.BattlePointId == null || buff.vals.BattlePointId == battlePointId) {
+        maxValue = (maxValue ?? 0) + buff.param;
+      }
+    }
+
+    return script?.maxLimit == null || maxValue == null ? maxValue : maxValue.clamp(0, script!.maxLimit!);
+  }
+
+  BattlePoint? getBattlePointDefinition(final int battlePointId) {
+    return niceSvt?.battlePoints.firstWhereOrNull((e) => e.id == battlePointId) ??
+        ConstData.battlePoints[battlePointId];
+  }
+
+  BattlePointState getOrCreateBattlePoint(final int battlePointId) {
+    final existing = curBattlePoints[battlePointId];
+    if (existing != null) return existing;
+
+    return curBattlePoints[battlePointId] = BattlePointState(current: 0, max: getBattlePointMax(battlePointId));
+  }
+
+  void refreshBattlePointMax() {
+    for (final entry in curBattlePoints.entries) {
+      final maxValue = getBattlePointMax(entry.key);
+      entry.value.max = maxValue;
+      if (maxValue != null) {
+        entry.value.current = entry.value.current.clamp(0, maxValue);
+      }
+    }
+  }
 
   int determineBattlePointPhase(final int battlePointId) {
-    final battlePoint = niceSvt?.battlePoints.firstWhereOrNull((battlePoint) => battlePoint.id == battlePointId);
-    final curBattlePoint = curBattlePoints[battlePointId];
-    if (battlePoint == null || curBattlePoint == null) {
+    final battlePoint = getBattlePointDefinition(battlePointId);
+    final state = curBattlePoints[battlePointId];
+    final curBattlePoint = state?.current;
+    if (curBattlePoint == null) {
       return 0;
     }
+
+    if (battlePoint?.flags.contains(BattlePointFlag.battlePointCheckAsPercentage) == true && state!.max != null) {
+      final percentage = state.max == 0 ? 0 : curBattlePoint * 1000 ~/ state.max!;
+      return [0, 500, 750, 1000].lastIndexWhere((value) => value <= percentage);
+    }
+    if (battlePoint == null) return 0;
 
     int phase = 0;
     for (final battlePointPhase in battlePoint.phases) {
@@ -113,7 +170,14 @@ class BattleServantData {
   }
 
   int getMaxBattlePointPhase(int battlePointId) {
-    return Maths.max(niceSvt?.battlePoints.expand((e) => e.phases).map((e) => e.phase) ?? <int>[], 0);
+    final battlePoint = getBattlePointDefinition(battlePointId);
+    return Maths.max(battlePoint?.phases.map((e) => e.phase) ?? <int>[], 0);
+  }
+
+  int getBattlePointRate(final int battlePointId) {
+    final maxValue = getBattlePointMax(battlePointId);
+    if (maxValue == null || maxValue <= 0) return 0;
+    return ((curBattlePoints[battlePointId]?.current ?? 0) * 1000 ~/ maxValue).clamp(0, 1000);
   }
 
   int np = 0; // player, np/100
@@ -436,15 +500,6 @@ class BattleServantData {
         if (shouldShift) {
           shiftDeckIndex -= 1; // go to previous shift to shift to desired shift
           await shift(battleData);
-        }
-      }
-    }
-
-    if (niceSvt != null && playerSvtData?.supportType != SupportSvtType.friend) {
-      final questBlockList = battleData.niceQuest?.extraDetail?.IgnoreBattlePointUp;
-      for (final battlePoint in niceSvt!.battlePoints) {
-        if (questBlockList == null || !questBlockList.contains(battlePoint.id)) {
-          curBattlePoints[battlePoint.id] = 0;
         }
       }
     }
@@ -2570,6 +2625,7 @@ class BattleServantData {
     });
     battleBuff.checkUsedBuff();
     battleBuff.commandCodeList.removeWhere((buff) => buff.checkBuffClear());
+    refreshBattlePointMax();
   }
 
   Future<void> enterField(final BattleData battleData) async {
@@ -2821,7 +2877,7 @@ class BattleServantData {
       ..level = level
       ..bondLv = bondLv
       ..startingPosition = startingPosition
-      ..curBattlePoints = curBattlePoints.deepCopy()
+      ..curBattlePoints = {for (final entry in curBattlePoints.entries) entry.key: entry.value.copy()}
       ..baseAtk = baseAtk
       ..hp = hp
       .._maxHp = _maxHp
@@ -2845,6 +2901,15 @@ class BattleServantData {
       ..changeIndex = changeIndex
       ..actionHistory = actionHistory.toList(); //copy
   }
+}
+
+class BattlePointState {
+  int current;
+  int? max;
+
+  BattlePointState({required this.current, required this.max});
+
+  BattlePointState copy() => BattlePointState(current: current, max: max);
 }
 
 class BattleServantActionHistory {

@@ -1,11 +1,13 @@
+import 'dart:math' show max;
+
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/models/userdata/battle.dart';
 
-class AddBattlePoint {
-  AddBattlePoint._();
+class SubBattlePoint {
+  SubBattlePoint._();
 
-  static void addBattlePoint(
+  static void subBattlePoint(
     final BattleData battleData,
     final DataVals dataVals,
     final List<BattleServantData> targets,
@@ -52,11 +54,13 @@ class AddBattlePoint {
       final battlePoint = target.getOrCreateBattlePoint(battlePointId);
       battlePoint.max = target.getBattlePointMax(battlePointId);
       final curBattlePoint = battlePoint.current;
-      final nextBattlePoint = curBattlePoint + dataVals.BattlePointValue!;
-      battlePoint.current = battlePoint.max == null ? nextBattlePoint : nextBattlePoint.clamp(0, battlePoint.max!);
+      final nextBattlePoint = curBattlePoint - dataVals.BattlePointValue!;
+      battlePoint.current = battlePoint.max == null
+          ? max(nextBattlePoint, 0)
+          : nextBattlePoint.clamp(0, battlePoint.max!);
       battleData.setFuncResult(target.uniqueId, true);
       battleData.battleLogger.debug(
-        "AddBattlePoint ($battlePointId): $curBattlePoint => "
+        "SubBattlePoint ($battlePointId): $curBattlePoint => "
         "${battlePoint.current}",
       );
     }

@@ -533,9 +533,13 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                             (svt.niceEnemy?.noblePhantasm.noblePhantasm?.functions.length ?? 0) > 0
                       ? '${S.current.info_charge}: ${svt.npLineCount}/${svt.niceEnemy!.chargeTurn}'
                       : '${S.current.info_charge}: -',
-                  if (svt.curBattlePoints.isNotEmpty)
-                    '♡: ${svt.curBattlePoints.entries.map((entry) => '${svt.determineBattlePointPhase(entry.key)} '
-                        '(${entry.value})').join(",")}',
+                  // Summer Ereshkigal
+                  if (svt.curBattlePoints.keys.contains(3300200))
+                    '♡: ${svt.determineBattlePointPhase(3300200)} (${svt.curBattlePoints[3300200]!.current})',
+                  // Summer Beni-Enma
+                  if (svt.getTraits().contains(10042))
+                    '\u{1F35A}: ${svt.curBattlePoints[705300]?.current ?? 0} / '
+                    '${svt.curBattlePoints[705300]?.max ?? svt.getBattlePointMax(705300)}',
                 ]
                 .map((e) => AutoSizeText(e, maxLines: 1, minFontSize: 6, style: Theme.of(context).textTheme.bodySmall))
                 .toList(),

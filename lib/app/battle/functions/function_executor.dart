@@ -1,6 +1,7 @@
 import 'dart:math' show min;
 
 import 'package:chaldea/app/battle/functions/add_battle_point.dart';
+import 'package:chaldea/app/battle/functions/sub_battle_point.dart';
 import 'package:chaldea/app/battle/functions/add_field_change_to_field.dart';
 import 'package:chaldea/app/battle/functions/add_state.dart';
 import 'package:chaldea/app/battle/functions/break_gauge_up.dart';
@@ -499,7 +500,7 @@ class FunctionExecutor {
           AddBattlePoint.addBattlePoint(battleData, dataVals, targets, overchargeState, ignoreBattlePoints);
           break;
         case FuncType.subBattlePoint:
-          // TODO: subBattlePoint
+          SubBattlePoint.subBattlePoint(battleData, dataVals, targets, overchargeState, ignoreBattlePoints);
           break;
         case FuncType.gainNpFromOtherUsedNpValue:
           GainNp.gainNpFromConsumed(battleData, dataVals, consumedNp ?? 0, targets);
@@ -1161,6 +1162,7 @@ class FunctionExecutor {
     targets.retainWhere((target) => triggeredPositionTargetCheck(battleData, dataVals, target));
 
     targets.retainWhere((target) => battlePointCheck(dataVals, target));
+    targets.retainWhere((target) => battlePointRateCheck(dataVals, target));
 
     if (dataVals.CheckDuplicate == 1) {
       final Map<int, bool>? previousExecutionResults = battleData.checkDuplicateFuncData[funcIndex]?[function.funcId];
@@ -1181,6 +1183,17 @@ class FunctionExecutor {
     for (final phaseRange in checkBattlePointPhaseRanges) {
       final curPhase = target.determineBattlePointPhase(phaseRange.battlePointId);
       if (!DataVals.isSatisfyRangeText(curPhase, ranges: phaseRange.range)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  static bool battlePointRateCheck(final DataVals dataVals, final BattleServantData target) {
+    final checkBattlePointRateRanges = dataVals.TriggeredTargetBattlePointRateRange ?? [];
+    for (final rateRange in checkBattlePointRateRanges) {
+      final curRate = target.getBattlePointRate(rateRange.battlePointId);
+      if (!DataVals.isSatisfyRangeText(curRate, ranges: rateRange.range)) {
         return false;
       }
     }

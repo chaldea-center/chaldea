@@ -84,6 +84,9 @@ class SubState {
 
       target.battleBuff.setActiveList(removeFromStart ? listToInspect.reversed.toList() : listToInspect.toList());
       target.postSubStateProcessing(removedBuffs);
+      if (removedBuffs.any((buff) => buff.buff.type == BuffType.addMaxBattlePoint)) {
+        target.refreshBattlePointMax();
+      }
 
       if (removeCount > 0) {
         battleData.setFuncResult(target.uniqueId, true);

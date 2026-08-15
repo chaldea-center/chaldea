@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:tuple/tuple.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
+import 'package:chaldea/app/battle/functions/function_executor.dart';
 import 'package:chaldea/app/battle/interactions/_delegate.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
@@ -1603,9 +1604,9 @@ void main() async {
       final eresh2 = battle.onFieldAllyServants[1]!;
       final eresh3 = battle.onFieldAllyServants[2]!;
 
-      expect(eresh1.curBattlePoints[3300200], 10);
-      expect(eresh2.curBattlePoints[3300200], null);
-      expect(eresh3.curBattlePoints[3300200], 5);
+      expect(eresh1.curBattlePoints[3300200]?.current, 10);
+      expect(eresh2.curBattlePoints[3300200]?.current, null);
+      expect(eresh3.curBattlePoints[3300200]?.current, 5);
 
       eresh1.np = 10000;
       eresh2.np = 10000;
@@ -1643,16 +1644,17 @@ void main() async {
       const bpId = 3300200;
 
       final eresh = battle.onFieldAllyServants[0]!;
-      expect(eresh.curBattlePoints[bpId], 10);
+      expect(eresh.curBattlePoints[bpId]?.current, 10);
+      expect(eresh.curBattlePoints[bpId]?.max, 100);
       expect(eresh.determineBattlePointPhase(bpId), 2);
 
       expect(battle.isFirstSkillInTurn, true);
       await battle.activateSvtSkill(0, 0);
-      expect(eresh.curBattlePoints[3300200], 15); // + 3 (skill) + 2 (first use this turn)
+      expect(eresh.curBattlePoints[3300200]?.current, 15); // + 3 (skill) + 2 (first use this turn)
       expect(eresh.determineBattlePointPhase(bpId), 2);
 
       await battle.activateSvtSkill(2, 1); // add shoreline
-      expect(eresh.curBattlePoints[3300200], 25); // + 10 shoreline
+      expect(eresh.curBattlePoints[3300200]?.current, 25); // + 10 shoreline
       expect(eresh.determineBattlePointPhase(bpId), 3);
 
       eresh.np = 10000;
@@ -1661,11 +1663,11 @@ void main() async {
         CombatAction(eresh, eresh.getCards()[0]),
         CombatAction(eresh, eresh.getCards()[1]),
       ]);
-      expect(eresh.curBattlePoints[3300200], 37); // brave chain + 3 + 3 + 6
+      expect(eresh.curBattlePoints[3300200]?.current, 37); // brave chain + 3 + 3 + 6
       expect(eresh.determineBattlePointPhase(bpId), 4);
 
       await battle.activateSvtSkill(0, 1);
-      expect(eresh.curBattlePoints[3300200], 42); // + 3 (skill) + 2 (first use this turn)
+      expect(eresh.curBattlePoints[3300200]?.current, 42); // + 3 (skill) + 2 (first use this turn)
       expect(eresh.determineBattlePointPhase(bpId), 5);
 
       await battle.activateSvtSkill(1, 1); // add OC 2
@@ -1675,12 +1677,12 @@ void main() async {
         CombatAction(eresh, eresh.getCards()[0]),
         CombatAction(eresh, eresh.getCards()[1]),
       ]);
-      expect(eresh.curBattlePoints[3300200], 74); // OC5 + 20 brave chain + 3 + 3 + 6
+      expect(eresh.curBattlePoints[3300200]?.current, 74); // OC5 + 20 brave chain + 3 + 3 + 6
       expect(eresh.determineBattlePointPhase(bpId), 8);
 
       await battle.activateSvtSkill(1, 0); // skill before summer eresh
       await battle.activateSvtSkill(0, 2);
-      expect(eresh.curBattlePoints[3300200], 77); // + 3 skill
+      expect(eresh.curBattlePoints[3300200]?.current, 77); // + 3 skill
       expect(eresh.determineBattlePointPhase(bpId), 8);
 
       await battle.playerTurn([
@@ -1688,7 +1690,7 @@ void main() async {
         CombatAction(eresh, eresh.getCards()[1]),
         CombatAction(eresh, eresh.getCards()[2]),
       ]);
-      expect(eresh.curBattlePoints[3300200], 92); // full brave chain + 15
+      expect(eresh.curBattlePoints[3300200]?.current, 92); // full brave chain + 15
       expect(eresh.determineBattlePointPhase(bpId), 10);
 
       await battle.playerTurn([
@@ -1696,7 +1698,7 @@ void main() async {
         CombatAction(eresh, eresh.getCards()[1]),
         CombatAction(eresh, eresh.getCards()[2]),
       ]);
-      expect(eresh.curBattlePoints[3300200], 107); // full brave chain + 15
+      expect(eresh.curBattlePoints[3300200]?.current, 100); // full brave chain + 15, capped at max
       expect(eresh.determineBattlePointPhase(bpId), 10);
     });
 
@@ -1711,7 +1713,7 @@ void main() async {
       const bpId = 3300200;
 
       final eresh = battle.onFieldAllyServants[0]!;
-      expect(eresh.curBattlePoints[bpId], 10);
+      expect(eresh.curBattlePoints[bpId]?.current, 10);
       expect(eresh.determineBattlePointPhase(bpId), 2);
 
       final cnoc = battle.onFieldAllyServants[1]!;
@@ -1728,7 +1730,7 @@ void main() async {
         CombatAction(eresh, eresh.getCards()[0]),
         CombatAction(eresh, eresh.getCards()[1]),
       ]);
-      expect(eresh.curBattlePoints[3300200], 13); // attempt N Q A Ex, only Q valid
+      expect(eresh.curBattlePoints[3300200]?.current, 13); // attempt N Q A Ex, only Q valid
       expect(eresh.determineBattlePointPhase(bpId), 2);
     });
 
@@ -1745,27 +1747,27 @@ void main() async {
       const bpId = 3300200;
 
       final eresh = battle.onFieldAllyServants[0]!;
-      expect(eresh.curBattlePoints[bpId], 10);
+      expect(eresh.curBattlePoints[bpId]?.current, 10);
       expect(eresh.determineBattlePointPhase(bpId), 2);
 
       await battle.activateSvtSkill(1, 1); // other's skills do not affect Eresh
-      expect(eresh.curBattlePoints[bpId], 10);
+      expect(eresh.curBattlePoints[bpId]?.current, 10);
       expect(eresh.determineBattlePointPhase(bpId), 2);
 
       await battle.activateSvtSkill(1, 2); // other's skills do not affect Eresh
-      expect(eresh.curBattlePoints[bpId], 10);
+      expect(eresh.curBattlePoints[bpId]?.current, 10);
       expect(eresh.determineBattlePointPhase(bpId), 2);
 
       await battle.activateMysticCodeSkill(0); // mystic add 5 points even for ptAll buffs
-      expect(eresh.curBattlePoints[bpId], 15);
+      expect(eresh.curBattlePoints[bpId]?.current, 15);
       expect(eresh.determineBattlePointPhase(bpId), 2);
 
       await battle.commandSpellReleaseNP(); // command spell add 10 points
-      expect(eresh.curBattlePoints[bpId], 25);
+      expect(eresh.curBattlePoints[bpId]?.current, 25);
       expect(eresh.determineBattlePointPhase(bpId), 3);
 
       await battle.commandSpellRepairHp(); // command spell add 10 points
-      expect(eresh.curBattlePoints[bpId], 35);
+      expect(eresh.curBattlePoints[bpId]?.current, 35);
       expect(eresh.determineBattlePointPhase(bpId), 4);
 
       // just realized this test is useless since current implementation doesn't select any svts as actual targets
@@ -1775,7 +1777,7 @@ void main() async {
         return Tuple2(onFieldSvts[0]!, backupSvts[0]!);
       };
       await battle.activateMysticCodeSkill(2);
-      expect(eresh.curBattlePoints[bpId], 35);
+      expect(eresh.curBattlePoints[bpId]?.current, 35);
       expect(eresh.determineBattlePointPhase(bpId), 4);
     });
 
@@ -1787,16 +1789,16 @@ void main() async {
       const bpId = 3300200;
 
       final eresh = battle.onFieldAllyServants[0]!;
-      expect(eresh.curBattlePoints[bpId], 10);
+      expect(eresh.curBattlePoints[bpId]?.current, 10);
       expect(eresh.determineBattlePointPhase(bpId), 2);
 
       await battle.activateMysticCodeSkill(2); // mystic code +5
-      expect(eresh.curBattlePoints[bpId], 15);
+      expect(eresh.curBattlePoints[bpId]?.current, 15);
       expect(eresh.determineBattlePointPhase(bpId), 2);
 
       battle.playerTargetIndex = 1; // not eresh
       await battle.activateMysticCodeSkill(1); // gainStar on party, so still add points
-      expect(eresh.curBattlePoints[bpId], 20);
+      expect(eresh.curBattlePoints[bpId]?.current, 20);
       expect(eresh.determineBattlePointPhase(bpId), 3);
     });
 
@@ -1813,16 +1815,16 @@ void main() async {
 
       final eresh1 = battle.onFieldAllyServants[0]!;
       final eresh2 = battle.onFieldAllyServants[1]!;
-      expect(eresh1.curBattlePoints[bpId], 10);
+      expect(eresh1.curBattlePoints[bpId]?.current, 10);
       expect(eresh1.determineBattlePointPhase(bpId), 2);
-      expect(eresh2.curBattlePoints[bpId], 10);
+      expect(eresh2.curBattlePoints[bpId]?.current, 10);
       expect(eresh2.determineBattlePointPhase(bpId), 2);
 
       battle.playerTargetIndex = 1; // not eresh
       await battle.activateMysticCodeSkill(2); // mystic code +5 only for first alive ally
-      expect(eresh1.curBattlePoints[bpId], 15);
+      expect(eresh1.curBattlePoints[bpId]?.current, 15);
       expect(eresh1.determineBattlePointPhase(bpId), 2);
-      expect(eresh2.curBattlePoints[bpId], 10);
+      expect(eresh2.curBattlePoints[bpId]?.current, 10);
       expect(eresh2.determineBattlePointPhase(bpId), 2);
 
       await battle.resetPlayerSkillCD(isMysticCode: true, svt: null);
@@ -1830,10 +1832,10 @@ void main() async {
       chenGong.np = 10000;
       await battle.playerTurn([CombatAction(chenGong, chenGong.getNPCard()!)]); // kill first eresh
 
-      expect(eresh2.curBattlePoints[bpId], 10);
+      expect(eresh2.curBattlePoints[bpId]?.current, 10);
       expect(eresh2.determineBattlePointPhase(bpId), 2);
       await battle.activateMysticCodeSkill(2); // mystic code +5 only for first alive ally
-      expect(eresh2.curBattlePoints[bpId], 15);
+      expect(eresh2.curBattlePoints[bpId]?.current, 15);
       expect(eresh2.determineBattlePointPhase(bpId), 2);
     });
 
@@ -1852,6 +1854,133 @@ void main() async {
       final avoidStates = collectBuffsPerAction(eresh.battleBuff.validBuffs, BuffAction.avoidState);
       expect(avoidStates.length, 2);
       expect(avoidStates[0].count, 3);
+    });
+  });
+
+  group('Summer Beni-Enma related tests', () {
+    test('くらくらの膳 always grants stars but skips meals at full gauge', () async {
+      final battle = BattleData();
+      final quest = db.gameData.questPhases[9300040603]!;
+      await battle.init(quest, [
+        PlayerSvtData.id(705300)..skillLvs = [10, 10, 10],
+      ], null);
+
+      final benEnma = battle.onFieldAllyServants[0]!;
+      final battlePoint = benEnma.getOrCreateBattlePoint(705300);
+      expect(benEnma.skillInfoList[0].skill?.functions.any((func) => func.funcId == 477), isTrue);
+      expect(battlePoint.max, 4);
+
+      battle.delegate = BattleDelegate()..actWeight = (_) async => 1;
+      battle.criticalStars = 0;
+      await battle.activateSvtSkill(0, 0);
+      expect(battle.criticalStars, 30);
+      expect(battlePoint.current, 2);
+
+      final fullBattle = BattleData();
+      await fullBattle.init(quest, [
+        PlayerSvtData.id(705300)..skillLvs = [10, 10, 10],
+      ], null);
+      final fullBenEnma = fullBattle.onFieldAllyServants[0]!;
+      final fullBattlePoint = fullBenEnma.getOrCreateBattlePoint(705300);
+      fullBattlePoint.current = fullBattlePoint.max!;
+      await fullBattle.activateSvtSkill(0, 0);
+      expect(fullBattle.criticalStars, 30);
+      expect(fullBattlePoint.current, fullBattlePoint.max);
+      expect(fullBenEnma.battleBuff.validBuffs.any((buff) => buff.buff.id == 4286), isFalse);
+    });
+
+    test('NP increases the gauge max for its owner and party', () async {
+      final battle = BattleData();
+      final quest = db.gameData.questPhases[9300040603]!;
+      await battle.init(quest, [PlayerSvtData.id(705300), PlayerSvtData.id(1101900)], null);
+
+      final benEnma = battle.onFieldAllyServants[0]!;
+      final ally = battle.onFieldAllyServants[1]!;
+      expect(benEnma.getOrCreateBattlePoint(705300).max, 4);
+      expect(ally.getOrCreateBattlePoint(705300).max, 4);
+
+      benEnma.np = 10000;
+      await battle.playerTurn([CombatAction(benEnma, benEnma.getNPCard()!)]);
+
+      expect(benEnma.curBattlePoints[705300]?.max, 8);
+      expect(ally.curBattlePoints[705300]?.max, 8);
+    });
+
+    test('subBattlePoint decreases the gauge without going below zero', () async {
+      final battle = BattleData();
+      final quest = db.gameData.questPhases[9300040603]!;
+      await battle.init(quest, [
+        PlayerSvtData.id(705300)..skillLvs = [10, 10, 10],
+      ], null);
+
+      final benEnma = battle.onFieldAllyServants[0]!;
+      final battlePoint = benEnma.getOrCreateBattlePoint(705300);
+      battlePoint.current = 2;
+
+      final subBattlePoint = NiceFunction(
+        funcId: 23460,
+        funcType: FuncType.subBattlePoint,
+        funcTargetType: FuncTargetType.self,
+        svals: [
+          DataVals({
+            'Rate': 1000,
+            'BattlePointId': 705300,
+            'BattlePointValue': 2,
+            'TriggeredTargetBattlePointRateRange': [
+              {
+                'battlePointId': 705300,
+                'range': ['1<='],
+              },
+            ],
+          }),
+        ],
+      );
+      await FunctionExecutor.executeFunctions(battle, [subBattlePoint], 1, activator: benEnma, targetedAlly: benEnma);
+      expect(battlePoint.current, 0);
+
+      await FunctionExecutor.executeFunctions(battle, [subBattlePoint], 1, activator: benEnma, targetedAlly: benEnma);
+      expect(battlePoint.current, 0);
+    });
+
+    test('雀の行水 reduces the gauge by two', () async {
+      final battle = BattleData();
+      final quest = db.gameData.questPhases[9300040603]!;
+      await battle.init(quest, [
+        PlayerSvtData.id(705300)..skillLvs = [10, 10, 10],
+      ], null);
+
+      final benEnma = battle.onFieldAllyServants[0]!;
+      final battlePoint = benEnma.getOrCreateBattlePoint(705300);
+      battlePoint.current = 2;
+      expect(benEnma.skillInfoList[1].skill?.functions.any((func) => func.funcType == FuncType.subBattlePoint), isTrue);
+
+      await battle.activateSvtSkill(0, 1);
+      expect(battlePoint.current, 0);
+    });
+
+    test('首取り翁の針山剣 adds extra NP damage buff only while hungry', () async {
+      final quest = db.gameData.questPhases[9300040603]!;
+
+      final hungryBattle = BattleData();
+      await hungryBattle.init(quest, [
+        PlayerSvtData.id(705300)..skillLvs = [10, 10, 10],
+      ], null);
+      final hungryBenEnma = hungryBattle.onFieldAllyServants[0]!;
+      expect(hungryBenEnma.skillInfoList[2].skill?.id, 2657650);
+      await hungryBattle.activateSvtSkill(0, 2);
+      final hungryNpDamage = await hungryBenEnma.getBuffValue(hungryBattle, BuffAction.npdamage);
+
+      final fedBattle = BattleData();
+      await fedBattle.init(quest, [
+        PlayerSvtData.id(705300)..skillLvs = [10, 10, 10],
+      ], null);
+      final fedBenEnma = fedBattle.onFieldAllyServants[0]!;
+      final fedBattlePoint = fedBenEnma.getOrCreateBattlePoint(705300);
+      fedBattlePoint.current = fedBattlePoint.max!;
+      await fedBattle.activateSvtSkill(0, 2);
+      final fedNpDamage = await fedBenEnma.getBuffValue(fedBattle, BuffAction.npdamage);
+
+      expect(hungryNpDamage, greaterThan(fedNpDamage));
     });
   });
 
