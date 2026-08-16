@@ -823,6 +823,27 @@ class BuffData {
       isAct &= match;
     }
 
+    if (buffScript.condGrantorRelativePosition != null) {
+      final condGrantorRelativePosition = buffScript.condGrantorRelativePosition!;
+      if (activatorUniqueId == null || ownerUniqueId == null) {
+        return false;
+      }
+
+      final activator = battleData.getServantData(activatorUniqueId!, onFieldOnly: true);
+      final owner = battleData.getServantData(ownerUniqueId!, onFieldOnly: true);
+      if (activator == null || owner == null || activator.isPlayer != owner.isPlayer) {
+        return false;
+      }
+
+      if (condGrantorRelativePosition == -1) {
+        if (activator.isPlayer && activator.fieldIndex + 1 != owner.fieldIndex) {
+          return false;
+        }
+        // TODO: unclear what enemy positions would do (when 6 enemies are one the field)
+      }
+      // TODO: unclear what other values mean
+    }
+
     isAct &= intervalTurn <= 0;
     return isAct;
   }
