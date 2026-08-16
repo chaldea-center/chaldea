@@ -2562,14 +2562,14 @@ class BattleServantData {
     }
   }
 
-  void useBuffOnce() {
+  void useBuffOnce(BattleData battleData) {
     battleBuff.getAllBuffs().forEach((buff) {
       if (buff.isUsed) {
         buff.useOnce();
       }
     });
-    battleBuff.checkUsedBuff();
-    battleBuff.commandCodeList.removeWhere((buff) => buff.checkBuffClear());
+    battleBuff.checkUsedBuff(battleData);
+    battleBuff.commandCodeList.removeWhere((buff) => buff.checkBuffClear(battleData));
   }
 
   Future<void> enterField(final BattleData battleData) async {

@@ -45,9 +45,9 @@ class BattleBuff {
     }
   }
 
-  void checkUsedBuff() {
-    _passiveList.removeWhere((buff) => buff.checkBuffClear());
-    _activeList.removeWhere((buff) => buff.checkBuffClear());
+  void checkUsedBuff(BattleData battleData) {
+    _passiveList.removeWhere((buff) => buff.checkBuffClear(battleData));
+    _activeList.removeWhere((buff) => buff.checkBuffClear(battleData));
   }
 
   List<BuffData> get shownBuffs => [
@@ -137,7 +137,17 @@ class BuffData {
   List<int>? shortenMaxCountEachSkill;
   int intervalTurn = -1;
 
-  bool checkBuffClear() => count == 0 || logicTurn == 0;
+  bool checkBuffClear(BattleData battleData) {
+    if (vals.SyncUsedSameIndivBuffActorOnField == 1 && vals.SameIndivBuffActorOnField != null) {
+      final sameIndivBuffActorOnField = vals.SameIndivBuffActorOnField!;
+      final sameIndivBuff = battleData.nonnullAllActors
+          .expand((svt) => svt.battleBuff.validBuffs)
+          .firstWhereOrNull((buff) => buff.getTraits().any((trait) => trait == sameIndivBuffActorOnField));
+      return sameIndivBuff == null || sameIndivBuff.count == 0 || sameIndivBuff.logicTurn == 0;
+    }
+
+    return count == 0 || logicTurn == 0;
+  }
 
   int? ownerUniqueId;
   int? activatorUniqueId;
@@ -567,8 +577,8 @@ class BuffData {
       final sameIndivBuffActorOnField = vals.SameIndivBuffActorOnField!;
       final sameIndivBuff = battleData.nonnullActors
           .expand((svt) => svt.battleBuff.validBuffs)
-          .firstWhere((buff) => buff.getTraits().any((trait) => trait == sameIndivBuffActorOnField));
-      sameIndivBuff.isUsed = true;
+          .firstWhereOrNull((buff) => buff.getTraits().any((trait) => trait == sameIndivBuffActorOnField));
+      sameIndivBuff?.isUsed = true;
     }
   }
 

@@ -765,7 +765,7 @@ class BattleData {
 
   void _useBuffOnce() {
     for (final svt in [...nonnullActors, ...nonnullBackupPlayers, ...nonnullBackupEnemies]) {
-      svt.useBuffOnce();
+      svt.useBuffOnce(this);
     }
   }
 
@@ -1356,7 +1356,7 @@ class BattleData {
       for (final buff in fieldBuffs) {
         buff.turnPass();
       }
-      fieldBuffs.removeWhere((buff) => buff.checkBuffClear());
+      fieldBuffs.removeWhere((buff) => buff.checkBuffClear(this));
 
       isFirstSkillInTurn = true;
     });
@@ -1401,7 +1401,7 @@ class BattleData {
       for (final buff in fieldBuffs) {
         buff.turnPass();
       }
-      fieldBuffs.removeWhere((buff) => buff.checkBuffClear());
+      fieldBuffs.removeWhere((buff) => buff.checkBuffClear(this));
     });
     isFirstSkillInTurn = true;
     isPlayerTurn = true;
