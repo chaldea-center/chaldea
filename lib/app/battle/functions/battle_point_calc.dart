@@ -106,8 +106,12 @@ class BattlePointCalc {
 
   static bool canReceiveBattlePoint(final BattleServantData target, final int battlePointId) {
     final battlePoint = getBattlePointDefinition(target, battlePointId);
-    return battlePoint?.flags.contains(BattlePointFlag.notTargetOtherPlayer) != true ||
-        target.playerSvtData?.supportType != SupportSvtType.friend;
+
+    final hasFlagNotTargetOtherPlayer = battlePoint?.flags.contains(BattlePointFlag.notTargetOtherPlayer) == true;
+    if (!hasFlagNotTargetOtherPlayer) return true;
+
+    final isFriendSupport = target.playerSvtData?.supportType == SupportSvtType.friend;
+    return !isFriendSupport;
   }
 
   static BattlePointState getOrCreateBattlePoint(final BattleServantData target, final int battlePointId) {
@@ -122,23 +126,22 @@ class BattlePointCalc {
 
   static int determineBattlePointPhase(final BattleServantData target, final int battlePointId) {
     final battlePoint = BattlePointCalc.getBattlePointDefinition(target, battlePointId);
+    if (battlePoint == null) return 0;
+
     final state = target.curBattlePoints[battlePointId];
     final curBattlePoint = state?.current;
-    if (curBattlePoint == null) {
-      return 0;
-    }
+    if (curBattlePoint == null) return 0;
 
-    if (battlePoint?.flags.contains(BattlePointFlag.battlePointCheckAsPercentage) == true && state!.max != null) {
+    if (battlePoint.flags.contains(BattlePointFlag.battlePointCheckAsPercentage) == true && state!.max != null) {
       final percentage = state.max == 0 ? 0 : curBattlePoint * 1000 ~/ state.max!;
       int phase = 0;
-      for (final battlePointPhase in battlePoint!.phases) {
+      for (final battlePointPhase in battlePoint.phases) {
         if (battlePointPhase.value <= percentage) {
           phase = max(phase, battlePointPhase.phase);
         }
       }
       return phase;
     }
-    if (battlePoint == null) return 0;
 
     int phase = 0;
     for (final battlePointPhase in battlePoint.phases) {
