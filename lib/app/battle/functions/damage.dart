@@ -411,8 +411,9 @@ class Damage {
         multiAttack,
       );
 
-      final absorbDamage = await target.hasBuff(battleData, BuffAction.reactiveDamageGainHp);
-      if (!skipDamage && !absorbDamage) {
+      var absorbDamage = false;
+      if (!skipDamage) {
+        absorbDamage = await target.hasBuff(battleData, BuffAction.reactiveDamageGainHp);
         totalDamage = overwriteFixedDefenceDamage(battleData, target, totalDamage);
       }
       if (funcType == FuncType.damageNpSafe && target.hp > 0 && totalDamage >= target.hp) {
