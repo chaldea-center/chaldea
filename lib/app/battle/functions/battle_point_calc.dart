@@ -23,7 +23,10 @@ class BattlePointCalc {
       return;
     }
 
-    final battlePointId = dataVals.BattlePointId!;
+    final battlePointId = dataVals.BattlePointId;
+    if (battlePointId == null) {
+      return;
+    }
     final questBlockList = battleData.niceQuest?.extraDetail?.IgnoreBattlePointUp;
     if (questBlockList != null && questBlockList.contains(battlePointId)) {
       return;
@@ -77,7 +80,10 @@ class BattlePointCalc {
       return;
     }
 
-    final battlePointId = dataVals.BattlePointId!;
+    final battlePointId = dataVals.BattlePointId;
+    if (battlePointId == null) {
+      return;
+    }
     final questBlockList = battleData.niceQuest?.extraDetail?.IgnoreBattlePointUp;
     if (questBlockList != null && questBlockList.contains(battlePointId)) {
       return;
