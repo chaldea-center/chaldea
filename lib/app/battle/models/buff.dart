@@ -53,13 +53,13 @@ class BattleBuff {
   List<BuffData> get shownBuffs => [
     ..._passiveList.where((buff) {
       final showState = buff.vals.ShowState ?? 0;
-      if (showState == -1) return false;
+      if (showState == -1 || showState == -2) return false;
       if (buff.vals.SetPassiveFrame == 1 || showState >= 1) return true;
       return false;
     }),
     ..._activeList.where((buff) {
       final showState = buff.vals.ShowState ?? 0;
-      if (showState == -1) return false;
+      if (showState == -1 || showState == -2) return false;
       return true;
     }),
   ];
@@ -140,10 +140,15 @@ class BuffData {
   bool checkBuffClear(BattleData battleData) {
     if (vals.SyncUsedSameIndivBuffActorOnField == 1 && vals.SameIndivBuffActorOnField != null) {
       final sameIndivBuffActorOnField = vals.SameIndivBuffActorOnField!;
-      final sameIndivBuff = battleData.nonnullAllActors
+      final hasValidSameIndivBuff = battleData.nonnullAllActors
           .expand((svt) => svt.battleBuff.validBuffs)
-          .firstWhereOrNull((buff) => buff.getTraits().any((trait) => trait == sameIndivBuffActorOnField));
-      return sameIndivBuff == null || sameIndivBuff.count == 0 || sameIndivBuff.logicTurn == 0;
+          .any(
+            (buff) =>
+                buff.getTraits().any((trait) => trait == sameIndivBuffActorOnField) &&
+                buff.count != 0 &&
+                buff.logicTurn != 0,
+          );
+      return !hasValidSameIndivBuff;
     }
 
     return count == 0 || logicTurn == 0;

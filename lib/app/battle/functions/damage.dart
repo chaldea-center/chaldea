@@ -410,11 +410,14 @@ class Damage {
         currentCard,
         multiAttack,
       );
-      totalDamage = overwriteFixedDefenceDamage(battleData, target, totalDamage);
+
+      final absorbDamage = await target.hasBuff(battleData, BuffAction.reactiveDamageGainHp);
+      if (!skipDamage && !absorbDamage) {
+        totalDamage = overwriteFixedDefenceDamage(battleData, target, totalDamage);
+      }
       if (funcType == FuncType.damageNpSafe && target.hp > 0 && totalDamage >= target.hp) {
         totalDamage = target.hp - 1;
       }
-      final absorbDamage = await target.hasBuff(battleData, BuffAction.reactiveDamageGainHp);
 
       // calc min/max first, since it doesn't change original target/activator
       final minResult = await _calc(
