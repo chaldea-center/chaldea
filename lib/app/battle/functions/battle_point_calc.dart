@@ -11,13 +11,14 @@ import 'package:chaldea/utils/utils.dart';
 class BattlePointCalc {
   BattlePointCalc._();
 
-  static void addBattlePoint(
+  static void changeBattlePoint(
     final BattleData battleData,
     final DataVals dataVals,
     final List<BattleServantData> targets,
     final int? overchargeState,
-    final List<int>? ignoreBattlePoints,
-  ) {
+    final List<int>? ignoreBattlePoints, {
+    required final bool isAddition,
+  }) {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.threshold) {
       return;
@@ -58,70 +59,13 @@ class BattlePointCalc {
       final battlePoint = getOrCreateBattlePoint(target, battlePointId);
       battlePoint.max = getBattlePointMax(target, battlePointId);
       final curBattlePoint = battlePoint.current;
-      final nextBattlePoint = curBattlePoint + dataVals.BattlePointValue!;
-      battlePoint.current = battlePoint.max == null ? nextBattlePoint : nextBattlePoint.clamp(0, battlePoint.max!);
-      battleData.setFuncResult(target.uniqueId, true);
-      battleData.battleLogger.debug(
-        "AddBattlePoint ($battlePointId): $curBattlePoint => "
-        "${battlePoint.current}",
-      );
-    }
-  }
-
-  static void subBattlePoint(
-    final BattleData battleData,
-    final DataVals dataVals,
-    final List<BattleServantData> targets,
-    final int? overchargeState,
-    final List<int>? ignoreBattlePoints,
-  ) {
-    final functionRate = dataVals.Rate ?? 1000;
-    if (functionRate < battleData.options.threshold) {
-      return;
-    }
-
-    final battlePointId = dataVals.BattlePointId;
-    if (battlePointId == null) {
-      return;
-    }
-    final questBlockList = battleData.niceQuest?.extraDetail?.IgnoreBattlePointUp;
-    if (questBlockList != null && questBlockList.contains(battlePointId)) {
-      return;
-    }
-
-    if (ignoreBattlePoints != null && ignoreBattlePoints.contains(battlePointId)) {
-      return;
-    }
-
-    for (final target in targets) {
-      if (!canReceiveBattlePoint(target, battlePointId)) continue;
-
-      final friendShipAbove = dataVals.FriendShipAbove ?? 0;
-      if (friendShipAbove > target.bondLv) {
-        continue;
-      }
-
-      final startingPosition = dataVals.StartingPosition;
-      if (startingPosition != null && !startingPosition.contains(target.startingPosition)) {
-        continue;
-      }
-
-      final ocStateRange = dataVals.CheckOverChargeStageRange;
-      if (ocStateRange != null &&
-          (overchargeState == null || !DataVals.isSatisfyRangeText(overchargeState, ranges: ocStateRange))) {
-        continue;
-      }
-
-      final battlePoint = getOrCreateBattlePoint(target, battlePointId);
-      battlePoint.max = getBattlePointMax(target, battlePointId);
-      final curBattlePoint = battlePoint.current;
-      final nextBattlePoint = curBattlePoint - dataVals.BattlePointValue!;
+      final nextBattlePoint = curBattlePoint + (isAddition ? 1 : -1) * dataVals.BattlePointValue!;
       battlePoint.current = battlePoint.max == null
-          ? max(nextBattlePoint, 0)
+          ? (isAddition ? nextBattlePoint : max(nextBattlePoint, 0))
           : nextBattlePoint.clamp(0, battlePoint.max!);
       battleData.setFuncResult(target.uniqueId, true);
       battleData.battleLogger.debug(
-        "SubBattlePoint ($battlePointId): $curBattlePoint => "
+        "${isAddition ? 'Add' : 'Sub'}BattlePoint ($battlePointId): $curBattlePoint => "
         "${battlePoint.current}",
       );
     }

@@ -496,10 +496,24 @@ class FunctionExecutor {
           DamageNpCounter.damageNpCounter(battleData, dataVals, activator, targets);
           break;
         case FuncType.addBattlePoint:
-          BattlePointCalc.addBattlePoint(battleData, dataVals, targets, overchargeState, ignoreBattlePoints);
+          BattlePointCalc.changeBattlePoint(
+            battleData,
+            dataVals,
+            targets,
+            overchargeState,
+            ignoreBattlePoints,
+            isAddition: true,
+          );
           break;
         case FuncType.subBattlePoint:
-          BattlePointCalc.subBattlePoint(battleData, dataVals, targets, overchargeState, ignoreBattlePoints);
+          BattlePointCalc.changeBattlePoint(
+            battleData,
+            dataVals,
+            targets,
+            overchargeState,
+            ignoreBattlePoints,
+            isAddition: false,
+          );
           break;
         case FuncType.gainNpFromOtherUsedNpValue:
           GainNp.gainNpFromConsumed(battleData, dataVals, consumedNp ?? 0, targets);
