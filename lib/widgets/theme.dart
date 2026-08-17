@@ -173,14 +173,21 @@ abstract final class AppTheme {
     final isDark = brightness == Brightness.dark;
     ThemeData themeData = (isDark ? FlexThemeData.dark : FlexThemeData.light)(
       scheme: db.settings.resolvedFlexScheme,
+      // surfaceMode: db.settings.flexSurfaceMode,
+      // variant: db.settings.flexSchemeVariant,
+      blendLevel: (db.settings.flexBlendLevel ?? 0).clamp(0, 40),
+      appBarStyle: .scaffoldBackground,
       subThemesData: FlexSubThemesData(
-        //
         inputDecoratorBorderType: .underline,
         useInputDecoratorThemeInDialogs: true,
+        // appBarBackgroundSchemeColor: .surfaceContainer,
+        scaffoldBackgroundBaseColor: .surfaceContainerHigh,
+        bottomNavigationBarBackgroundSchemeColor: .surfaceContainerHigh,
+        cardBackgroundSchemeColor: isDark ? .surfaceBright : .surfaceContainerLow,
+        // elevatedButtonSecondarySchemeColor: .surfaceContainerHigh,
       ),
       extensions: {ExtraThemeData.forBrightness(brightness)},
     );
-    final cs = themeData.colorScheme;
     themeData = themeData.copyWith(
       tooltipTheme: themeData.tooltipTheme.copyWith(waitDuration: const Duration(milliseconds: 500)),
       appBarTheme: themeData.appBarTheme.copyWith(
@@ -188,7 +195,8 @@ abstract final class AppTheme {
         toolbarHeight: 48, // kToolbarHeight=56,
       ),
       listTileTheme: themeData.listTileTheme.copyWith(minLeadingWidth: 24),
-      cardTheme: themeData.cardTheme.copyWith(color: cs.surfaceContainer, elevation: 0),
+      cardTheme: themeData.cardTheme.copyWith(elevation: 0),
+      cardColor: themeData.cardTheme.color,
     );
     return themeData;
 

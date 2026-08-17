@@ -93,6 +93,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
     return Column(
       children: <Widget>[
         Material(
+          color: Theme.of(context).cardColor,
           elevation: 1,
           child: ListTile(
             title: Text(S.current.item),

@@ -43,6 +43,9 @@ class LocalSettings {
   bool useMaterial3;
   FlexScheme? flexScheme;
   FlexScheme get resolvedFlexScheme => flexScheme ?? .tealM3;
+  FlexSurfaceMode? flexSurfaceMode;
+  int? flexBlendLevel;
+  FlexSchemeVariant? flexSchemeVariant;
   int? colorSeedInt;
   bool enableMouseDrag;
   bool globalSelection;
@@ -108,6 +111,9 @@ class LocalSettings {
     this.themeMode = ThemeMode.system,
     this.useMaterial3 = false,
     this.flexScheme,
+    this.flexSurfaceMode,
+    this.flexBlendLevel,
+    this.flexSchemeVariant,
     this.colorSeedInt,
     this.enableMouseDrag = true,
     this.globalSelection = false,

@@ -22,6 +22,9 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate('LocalSettings
     themeMode: $checkedConvert('themeMode', (v) => $enumDecodeNullable(_$ThemeModeEnumMap, v) ?? ThemeMode.system),
     useMaterial3: $checkedConvert('useMaterial3', (v) => v as bool? ?? false),
     flexScheme: $checkedConvert('flexScheme', (v) => $enumDecodeNullable(_$FlexSchemeEnumMap, v)),
+    flexSurfaceMode: $checkedConvert('flexSurfaceMode', (v) => $enumDecodeNullable(_$FlexSurfaceModeEnumMap, v)),
+    flexBlendLevel: $checkedConvert('flexBlendLevel', (v) => (v as num?)?.toInt()),
+    flexSchemeVariant: $checkedConvert('flexSchemeVariant', (v) => $enumDecodeNullable(_$FlexSchemeVariantEnumMap, v)),
     colorSeedInt: $checkedConvert('colorSeedInt', (v) => (v as num?)?.toInt()),
     enableMouseDrag: $checkedConvert('enableMouseDrag', (v) => v as bool? ?? true),
     globalSelection: $checkedConvert('globalSelection', (v) => v as bool? ?? false),
@@ -140,6 +143,9 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) => <String, d
   'themeMode': _$ThemeModeEnumMap[instance.themeMode]!,
   'useMaterial3': instance.useMaterial3,
   'flexScheme': _$FlexSchemeEnumMap[instance.flexScheme],
+  'flexSurfaceMode': _$FlexSurfaceModeEnumMap[instance.flexSurfaceMode],
+  'flexBlendLevel': instance.flexBlendLevel,
+  'flexSchemeVariant': _$FlexSchemeVariantEnumMap[instance.flexSchemeVariant],
   'colorSeedInt': instance.colorSeedInt,
   'enableMouseDrag': instance.enableMouseDrag,
   'globalSelection': instance.globalSelection,
@@ -259,6 +265,43 @@ const _$FlexSchemeEnumMap = {
   FlexScheme.shadYellow: 'shadYellow',
   FlexScheme.shadZinc: 'shadZinc',
   FlexScheme.custom: 'custom',
+};
+
+const _$FlexSurfaceModeEnumMap = {
+  FlexSurfaceMode.level: 'level',
+  FlexSurfaceMode.highBackgroundLowScaffold: 'highBackgroundLowScaffold',
+  FlexSurfaceMode.highSurfaceLowScaffold: 'highSurfaceLowScaffold',
+  FlexSurfaceMode.highScaffoldLowSurface: 'highScaffoldLowSurface',
+  FlexSurfaceMode.highScaffoldLevelSurface: 'highScaffoldLevelSurface',
+  FlexSurfaceMode.levelSurfacesLowScaffold: 'levelSurfacesLowScaffold',
+  FlexSurfaceMode.highScaffoldLowSurfaces: 'highScaffoldLowSurfaces',
+  FlexSurfaceMode.levelSurfacesLowScaffoldVariantDialog: 'levelSurfacesLowScaffoldVariantDialog',
+  FlexSurfaceMode.highScaffoldLowSurfacesVariantDialog: 'highScaffoldLowSurfacesVariantDialog',
+  FlexSurfaceMode.custom: 'custom',
+};
+
+const _$FlexSchemeVariantEnumMap = {
+  FlexSchemeVariant.tonalSpot: 'tonalSpot',
+  FlexSchemeVariant.fidelity: 'fidelity',
+  FlexSchemeVariant.monochrome: 'monochrome',
+  FlexSchemeVariant.neutral: 'neutral',
+  FlexSchemeVariant.vibrant: 'vibrant',
+  FlexSchemeVariant.expressive: 'expressive',
+  FlexSchemeVariant.content: 'content',
+  FlexSchemeVariant.rainbow: 'rainbow',
+  FlexSchemeVariant.fruitSalad: 'fruitSalad',
+  FlexSchemeVariant.material: 'material',
+  FlexSchemeVariant.material3Legacy: 'material3Legacy',
+  FlexSchemeVariant.soft: 'soft',
+  FlexSchemeVariant.vivid: 'vivid',
+  FlexSchemeVariant.vividSurfaces: 'vividSurfaces',
+  FlexSchemeVariant.highContrast: 'highContrast',
+  FlexSchemeVariant.ultraContrast: 'ultraContrast',
+  FlexSchemeVariant.jolly: 'jolly',
+  FlexSchemeVariant.vividBackground: 'vividBackground',
+  FlexSchemeVariant.oneHue: 'oneHue',
+  FlexSchemeVariant.candyPop: 'candyPop',
+  FlexSchemeVariant.chroma: 'chroma',
 };
 
 const _$FavoriteStateEnumMap = {FavoriteState.all: 'all', FavoriteState.owned: 'owned', FavoriteState.other: 'other'};
