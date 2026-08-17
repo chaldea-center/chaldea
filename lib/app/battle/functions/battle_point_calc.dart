@@ -85,7 +85,10 @@ class BattlePointCalc {
 
     int? maxValue = script.defaultMax;
     for (final change in script.maxChange ?? const <BattlePointScriptMaxChange>[]) {
-      if (Individuality.checkSignedIndivPartialMatch(self: target.getTraits(), signedTarget: change.individuality)) {
+      if (Individuality.checkSignedIndivPartialMatch(
+        self: target.getTraits(isIncludeNpEffectIndiv: false),
+        signedTarget: change.individuality,
+      )) {
         maxValue = change.value;
       }
     }
@@ -100,8 +103,20 @@ class BattlePointCalc {
   }
 
   static BattlePoint? getBattlePointDefinition(final BattleServantData target, final int battlePointId) {
-    return target.niceSvt?.battlePoints.firstWhereOrNull((e) => e.id == battlePointId) ??
-        ConstData.battlePoints[battlePointId];
+    final battlePoint = ConstData.battlePoints[battlePointId];
+    if (battlePoint == null) return null;
+
+    final targetTraits = target.getTraits(isIncludeNpEffectIndiv: false);
+    final isTargetSvt = battlePoint.svts.any(
+      (svt) =>
+          svt.svtId == target.svtId ||
+          (svt.individuality != null &&
+              Individuality.checkSignedMultiIndividuality(
+                selfArray: targetTraits,
+                signedTargetsArray: svt.individuality,
+              )),
+    );
+    return isTargetSvt ? battlePoint : null;
   }
 
   static bool canReceiveBattlePoint(final BattleServantData target, final int battlePointId) {
