@@ -1,6 +1,5 @@
 // ignore_for_file: constant_identifier_names, non_constant_identifier_names
 
-import 'dart:collection';
 import 'dart:convert';
 
 import 'package:archive/archive.dart';
@@ -8,7 +7,7 @@ import 'package:archive/archive.dart';
 import 'package:chaldea/utils/basic.dart';
 import 'package:chaldea/utils/constants.dart';
 import 'package:chaldea/utils/extension.dart';
-import '../db.dart';
+import '../db.dart' show ConstData;
 import '../userdata/version.dart';
 import '_helper.dart';
 import 'class_board.dart';
@@ -101,7 +100,6 @@ class GameData with _GameDataExtra {
   Map<int, Servant> servantsById;
   @JsonKey(includeFromJson: false, includeToJson: false)
   Map<int, CraftEssence> craftEssencesById;
-  late final Map<int, CraftEssence> _craftEssencesByIdRaw;
   @JsonKey(includeFromJson: false, includeToJson: false)
   List<CraftEssence> allCraftEssences;
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -151,7 +149,7 @@ class GameData with _GameDataExtra {
            if (svt.collectionNo > 0) svt.collectionNo: svt,
        },
        allCraftEssences = _sortCards(craftEssences),
-       craftEssencesById = {},
+       craftEssencesById = {for (final ce in _sortCards(craftEssences)) ce.id: ce},
        craftEssences = {
          for (final ce in _sortCards(craftEssences))
            if (ce.collectionNo > 0) ce.collectionNo: ce,
@@ -187,8 +185,6 @@ class GameData with _GameDataExtra {
        baseTds = baseTds ?? {},
        baseSkills = baseSkills ?? {},
        baseFunctions = baseFunctions ?? {} {
-    _craftEssencesByIdRaw = {for (final ce in allCraftEssences) ce.id: ce};
-    craftEssencesById = _RegionAwareCraftEssenceMap(_craftEssencesByIdRaw, this.craftEssences);
     if (removeOldDataRegion != null) {
       bool _shouldRemove(int jpTime, MappingBase<int>? regionTimes, int latest, int? inferLatest) {
         final t = removeOldDataRegion == Region.jp ? jpTime : regionTimes?.ofRegion(removeOldDataRegion);
@@ -395,46 +391,6 @@ class GameData with _GameDataExtra {
   }
 
   factory GameData.fromJson(Map<String, dynamic> json) => _$GameDataFromJson(json);
-}
-
-class _RegionAwareCraftEssenceMap extends MapBase<int, CraftEssence> {
-  // Only one CE has same id but different collectionNo in different region, which is 90086001
-  static const Map<int, Map<Region, int>> _regionCraftEssenceCollectionNos = {
-    90086001: {Region.cn: 102022, Region.tw: 302023},
-  };
-
-  final Map<int, CraftEssence> _raw;
-  final Map<int, CraftEssence> _byCollectionNo;
-
-  _RegionAwareCraftEssenceMap(this._raw, this._byCollectionNo);
-
-  CraftEssence? _craftEssenceOfRegion(int id, Region region) {
-    final collectionNo = _regionCraftEssenceCollectionNos[id]?[region];
-    return collectionNo == null ? _raw[id] : _byCollectionNo[collectionNo];
-  }
-
-  @override
-  CraftEssence? operator [](Object? key) {
-    if (key is int && _regionCraftEssenceCollectionNos.containsKey(key)) {
-      return _craftEssenceOfRegion(key, db.curUser.region);
-    }
-    return _raw[key];
-  }
-
-  @override
-  Iterable<int> get keys => _raw.keys;
-
-  @override
-  Iterable<CraftEssence> get values => keys.map((key) => this[key]).whereType<CraftEssence>();
-
-  @override
-  void operator []=(int key, CraftEssence value) => _raw[key] = value;
-
-  @override
-  CraftEssence? remove(Object? key) => _raw.remove(key);
-
-  @override
-  void clear() => _raw.clear();
 }
 
 @JsonSerializable(createToJson: false)
