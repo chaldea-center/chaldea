@@ -94,14 +94,14 @@ class BattleServantData {
 
   int bondLv = 5;
   int startingPosition = 0;
-  Map<int, BattlePointState> curBattlePoints = {};
+  Map<int, BattlePointData> curBattlePoints = {};
 
   void refreshBattlePointMax() {
     for (final entry in curBattlePoints.entries) {
       final maxValue = BattlePointCalc.getBattlePointMax(this, entry.key);
-      entry.value.max = maxValue;
+      entry.value.maxValue = maxValue;
       if (maxValue != null) {
-        entry.value.current = entry.value.current.clamp(0, maxValue);
+        entry.value.value = entry.value.value.clamp(0, maxValue);
       }
     }
   }
@@ -2831,13 +2831,13 @@ class BattleServantData {
   }
 }
 
-class BattlePointState {
-  int current;
-  int? max;
+class BattlePointData {
+  int value;
+  int? maxValue;
 
-  BattlePointState({required this.current, required this.max});
+  BattlePointData({required this.value, required this.maxValue});
 
-  BattlePointState copy() => BattlePointState(current: current, max: max);
+  BattlePointData copy() => BattlePointData(value: value, maxValue: maxValue);
 }
 
 class BattleServantActionHistory {

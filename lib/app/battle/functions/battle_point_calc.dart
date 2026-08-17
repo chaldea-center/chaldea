@@ -1,11 +1,10 @@
-import 'dart:math' show max;
+import 'dart:math' show max, min;
 
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/models/gamedata/individuality.dart';
-import 'package:chaldea/models/userdata/battle.dart';
 import 'package:chaldea/utils/utils.dart';
 
 class BattlePointCalc {
@@ -24,8 +23,8 @@ class BattlePointCalc {
       return;
     }
 
-    final battlePointId = dataVals.BattlePointId;
-    if (battlePointId == null) {
+    final battlePointId = dataVals.BattlePointId ?? 0;
+    if (battlePointId == 0) {
       return;
     }
     final questBlockList = battleData.niceQuest?.extraDetail?.IgnoreBattlePointUp;
@@ -57,39 +56,36 @@ class BattlePointCalc {
       }
 
       final battlePoint = getOrCreateBattlePoint(target, battlePointId);
-      battlePoint.max = getBattlePointMax(target, battlePointId);
-      final curBattlePoint = battlePoint.current;
+      battlePoint.maxValue = getBattlePointMax(target, battlePointId);
+      final curBattlePoint = battlePoint.value;
       final nextBattlePoint = curBattlePoint + (isAddition ? 1 : -1) * dataVals.BattlePointValue!;
-      battlePoint.current = battlePoint.max == null
+      battlePoint.value = battlePoint.maxValue == null
           ? (isAddition ? nextBattlePoint : max(nextBattlePoint, 0))
-          : nextBattlePoint.clamp(0, battlePoint.max!);
+          : nextBattlePoint.clamp(0, battlePoint.maxValue!);
       battleData.setFuncResult(target.uniqueId, true);
       battleData.battleLogger.debug(
         "${isAddition ? 'Add' : 'Sub'}BattlePoint ($battlePointId): $curBattlePoint => "
-        "${battlePoint.current}",
+        "${battlePoint.value}",
       );
     }
   }
 
   static int? getBattlePointMax(final BattleServantData target, final int battlePointId) {
     final battlePoint = getBattlePointDefinition(target, battlePointId);
-    if (battlePoint == null) return null;
-
-    final script = battlePoint.script;
-    if (script == null ||
-        (script.defaultMax == null &&
-            script.maxLimit == null &&
-            (script.maxChange == null || script.maxChange!.isEmpty))) {
-      return null;
-    }
+    final script = battlePoint?.script;
+    if (script == null) return null;
 
     int? maxValue = script.defaultMax;
-    for (final change in script.maxChange ?? const <BattlePointScriptMaxChange>[]) {
+    final maxChanges = script.maxChange ?? [], maxLimit = script.maxLimit;
+
+    for (final change in maxChanges) {
       if (Individuality.checkSignedIndivPartialMatch(
-        self: target.getTraits(isIncludeNpEffectIndiv: false),
-        signedTarget: change.individuality,
-      )) {
+            self: target.getTraits(isIncludeNpEffectIndiv: false),
+            signedTarget: change.individuality,
+          ) &&
+          change.value != null) {
         maxValue = change.value;
+        break; // first match
       }
     }
 
@@ -99,7 +95,11 @@ class BattlePointCalc {
       }
     }
 
-    return script.maxLimit == null || maxValue == null ? maxValue : maxValue.clamp(0, script.maxLimit!);
+    if (maxValue != null && maxLimit != null && maxLimit != 0) {
+      maxValue = min(maxValue, maxLimit);
+    }
+
+    return maxValue;
   }
 
   static BattlePoint? getBattlePointDefinition(final BattleServantData target, final int battlePointId) {
@@ -116,26 +116,24 @@ class BattlePointCalc {
                 signedTargetsArray: svt.individuality,
               )),
     );
-    return isTargetSvt ? battlePoint : null;
+    if (!isTargetSvt) return null;
+    return battlePoint;
   }
 
   static bool canReceiveBattlePoint(final BattleServantData target, final int battlePointId) {
     final battlePoint = getBattlePointDefinition(target, battlePointId);
-
-    final hasFlagNotTargetOtherPlayer = battlePoint?.flags.contains(BattlePointFlag.notTargetOtherPlayer) == true;
-    if (!hasFlagNotTargetOtherPlayer) return true;
-
-    final isFriendSupport = target.playerSvtData?.supportType == SupportSvtType.friend;
-    return !isFriendSupport;
+    if (battlePoint == null) return false;
+    if (battlePoint.flags.contains(BattlePointFlag.notTargetOtherPlayer) &&
+        target.playerSvtData?.supportType == .friend) {
+      return false;
+    }
+    return true;
   }
 
-  static BattlePointState getOrCreateBattlePoint(final BattleServantData target, final int battlePointId) {
-    final existing = target.curBattlePoints[battlePointId];
-    if (existing != null) return existing;
-
-    return target.curBattlePoints[battlePointId] = BattlePointState(
-      current: 0,
-      max: getBattlePointMax(target, battlePointId),
+  static BattlePointData getOrCreateBattlePoint(final BattleServantData target, final int battlePointId) {
+    return target.curBattlePoints[battlePointId] ??= BattlePointData(
+      value: 0,
+      maxValue: getBattlePointMax(target, battlePointId),
     );
   }
 
@@ -144,11 +142,13 @@ class BattlePointCalc {
     if (battlePoint == null) return 0;
 
     final state = target.curBattlePoints[battlePointId];
-    final curBattlePoint = state?.current;
-    if (curBattlePoint == null) return 0;
+    if (state == null) return 0;
+    final curBattlePoint = state.value;
 
-    if (battlePoint.flags.contains(BattlePointFlag.battlePointCheckAsPercentage) == true && state!.max != null) {
-      final percentage = state.max == 0 ? 0 : curBattlePoint * 1000 ~/ state.max!;
+    if (battlePoint.flags.contains(BattlePointFlag.battlePointCheckAsPercentage) == true) {
+      assert(state.maxValue != null);
+      final maxValue = state.maxValue ?? 0;
+      final percentage = maxValue == 0 ? 0 : curBattlePoint * 1000 ~/ maxValue;
       int phase = 0;
       for (final battlePointPhase in battlePoint.phases) {
         if (battlePointPhase.value <= percentage) {
@@ -156,15 +156,15 @@ class BattlePointCalc {
         }
       }
       return phase;
-    }
-
-    int phase = 0;
-    for (final battlePointPhase in battlePoint.phases) {
-      if (battlePointPhase.value <= curBattlePoint) {
-        phase = max(phase, battlePointPhase.phase);
+    } else {
+      int phase = 0;
+      for (final battlePointPhase in battlePoint.phases) {
+        if (battlePointPhase.value <= curBattlePoint) {
+          phase = max(phase, battlePointPhase.phase);
+        }
       }
+      return phase;
     }
-    return phase;
   }
 
   static int getMaxBattlePointPhase(final BattleServantData target, int battlePointId) {
@@ -175,6 +175,6 @@ class BattlePointCalc {
   static int getBattlePointRate(final BattleServantData target, final int battlePointId) {
     final maxValue = BattlePointCalc.getBattlePointMax(target, battlePointId);
     if (maxValue == null || maxValue <= 0) return 0;
-    return ((target.curBattlePoints[battlePointId]?.current ?? 0) * 1000 ~/ maxValue).clamp(0, 1000);
+    return ((target.curBattlePoints[battlePointId]?.value ?? 0) * 1000 ~/ maxValue).clamp(0, 1000);
   }
 }

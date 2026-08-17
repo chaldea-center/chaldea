@@ -535,11 +535,11 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
               : '${S.current.info_charge}: -',
           // Summer Ereshkigal, \u2764 is ❤
           if (svt.svtId == 3300200)
-            '\u2764: ${BattlePointCalc.determineBattlePointPhase(svt, 3300200)} (${svt.curBattlePoints[3300200]?.current ?? 0})',
+            '\u2764: ${BattlePointCalc.determineBattlePointPhase(svt, 3300200)} (${svt.curBattlePoints[3300200]?.value ?? 0})',
           // Summer Beni-Enma， \u{1F35A} is 🍚
           if (svt.getTraits().contains(10042))
-            '\u{1F35A}: ${svt.curBattlePoints[705300]?.current ?? 0} / '
-                '${svt.curBattlePoints[705300]?.max ?? BattlePointCalc.getBattlePointMax(svt, 705300)}',
+            '\u{1F35A}: ${svt.curBattlePoints[705300]?.value ?? 0} / '
+                '${svt.curBattlePoints[705300]?.maxValue ?? BattlePointCalc.getBattlePointMax(svt, 705300)}',
         ].map((e) => AutoSizeText(e, maxLines: 1, minFontSize: 6, style: Theme.of(context).textTheme.bodySmall)).toList(),
       ),
     );
