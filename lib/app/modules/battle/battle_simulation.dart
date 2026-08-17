@@ -6,6 +6,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/chaldea_server.dart';
 import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/battle/functions/battle_point_calc.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/utils/battle_logger.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
@@ -516,29 +517,30 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
     children.add(
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children:
-            <String>[
-                  if (svt.isPlayer) 'ATK: ${svt.atk}',
-                  'HP: ${svt.hp.format(compact: false, groupSeparator: ",")}',
-                  if (svt.isEnemy && svt.shiftNpcIds.isNotEmpty)
-                    List.generate(
-                      svt.shiftCounts,
-                      (index) => svt.shiftNpcIds.length - index > svt.shiftDeckIndex + 1 ? '◆' : '◇',
-                    ).join(),
-                  svt.isPlayer
-                      ? svt.playerSvtData!.td == null
-                            ? 'NP: -'
-                            : 'NP: ${(svt.np / 100).toStringAsFixed(2)}'
-                      : svt.niceEnemy!.chargeTurn != 0 &&
-                            (svt.niceEnemy?.noblePhantasm.noblePhantasm?.functions.length ?? 0) > 0
-                      ? '${S.current.info_charge}: ${svt.npLineCount}/${svt.niceEnemy!.chargeTurn}'
-                      : '${S.current.info_charge}: -',
-                  if (svt.curBattlePoints.isNotEmpty)
-                    '♡: ${svt.curBattlePoints.entries.map((entry) => '${svt.determineBattlePointPhase(entry.key)} '
-                        '(${entry.value})').join(",")}',
-                ]
-                .map((e) => AutoSizeText(e, maxLines: 1, minFontSize: 6, style: Theme.of(context).textTheme.bodySmall))
-                .toList(),
+        children: <String>[
+          if (svt.isPlayer) 'ATK: ${svt.atk}',
+          'HP: ${svt.hp.format(compact: false, groupSeparator: ",")}',
+          if (svt.isEnemy && svt.shiftNpcIds.isNotEmpty)
+            List.generate(
+              svt.shiftCounts,
+              (index) => svt.shiftNpcIds.length - index > svt.shiftDeckIndex + 1 ? '◆' : '◇',
+            ).join(),
+          svt.isPlayer
+              ? svt.playerSvtData!.td == null
+                    ? 'NP: -'
+                    : 'NP: ${(svt.np / 100).toStringAsFixed(2)}'
+              : svt.niceEnemy!.chargeTurn != 0 &&
+                    (svt.niceEnemy?.noblePhantasm.noblePhantasm?.functions.length ?? 0) > 0
+              ? '${S.current.info_charge}: ${svt.npLineCount}/${svt.niceEnemy!.chargeTurn}'
+              : '${S.current.info_charge}: -',
+          // Summer Ereshkigal, \u2764 is ❤
+          if (svt.svtId == 3300200)
+            '\u2764: ${BattlePointCalc.determineBattlePointPhase(svt, 3300200)} (${svt.curBattlePoints[3300200]?.value ?? 0})',
+          // Summer Beni-Enma， \u{1F35A} is 🍚
+          if (svt.getTraits().contains(10042))
+            '\u{1F35A}: ${svt.curBattlePoints[705300]?.value ?? 0} / '
+                '${svt.curBattlePoints[705300]?.maxValue ?? BattlePointCalc.getBattlePointMax(svt, 705300)}',
+        ].map((e) => AutoSizeText(e, maxLines: 1, minFontSize: 6, style: Theme.of(context).textTheme.bodySmall)).toList(),
       ),
     );
 

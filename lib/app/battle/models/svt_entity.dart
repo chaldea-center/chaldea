@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:chaldea/app/api/atlas.dart';
+import 'package:chaldea/app/battle/functions/battle_point_calc.dart';
 import 'package:chaldea/app/battle/functions/function_executor.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/utils/battle_exception.dart';
@@ -93,27 +94,16 @@ class BattleServantData {
 
   int bondLv = 5;
   int startingPosition = 0;
-  // initScript will set initial value
-  Map<int, int> curBattlePoints = {};
+  Map<int, BattlePointData> curBattlePoints = {};
 
-  int determineBattlePointPhase(final int battlePointId) {
-    final battlePoint = niceSvt?.battlePoints.firstWhereOrNull((battlePoint) => battlePoint.id == battlePointId);
-    final curBattlePoint = curBattlePoints[battlePointId];
-    if (battlePoint == null || curBattlePoint == null) {
-      return 0;
-    }
-
-    int phase = 0;
-    for (final battlePointPhase in battlePoint.phases) {
-      if (battlePointPhase.value <= curBattlePoint) {
-        phase = max(phase, battlePointPhase.phase);
+  void refreshBattlePointMax() {
+    for (final entry in curBattlePoints.entries) {
+      final maxValue = BattlePointCalc.getBattlePointMax(this, entry.key);
+      entry.value.maxValue = maxValue;
+      if (maxValue != null) {
+        entry.value.value = entry.value.value.clamp(0, maxValue);
       }
     }
-    return phase;
-  }
-
-  int getMaxBattlePointPhase(int battlePointId) {
-    return Maths.max(niceSvt?.battlePoints.expand((e) => e.phases).map((e) => e.phase) ?? <int>[], 0);
   }
 
   int np = 0; // player, np/100
@@ -436,15 +426,6 @@ class BattleServantData {
         if (shouldShift) {
           shiftDeckIndex -= 1; // go to previous shift to shift to desired shift
           await shift(battleData);
-        }
-      }
-    }
-
-    if (niceSvt != null && playerSvtData?.supportType != SupportSvtType.friend) {
-      final questBlockList = battleData.niceQuest?.extraDetail?.IgnoreBattlePointUp;
-      for (final battlePoint in niceSvt!.battlePoints) {
-        if (questBlockList == null || !questBlockList.contains(battlePoint.id)) {
-          curBattlePoints[battlePoint.id] = 0;
         }
       }
     }
@@ -1734,7 +1715,8 @@ class BattleServantData {
     NiceTd? td = getBaseTD();
     final tdChangeByBattlePoint = td?.script?.tdChangeByBattlePoint?.firstOrNull;
     if (tdChangeByBattlePoint != null &&
-        tdChangeByBattlePoint.phase <= determineBattlePointPhase(tdChangeByBattlePoint.battlePointId)) {
+        tdChangeByBattlePoint.phase <=
+            BattlePointCalc.determineBattlePointPhase(this, tdChangeByBattlePoint.battlePointId)) {
       return niceSvt?.noblePhantasms.firstWhereOrNull((niceTd) => niceTd.id == tdChangeByBattlePoint.noblePhantasmId) ??
           td;
     }
@@ -2560,6 +2542,8 @@ class BattleServantData {
     for (final skill in skillInfoList) {
       skill.setRankUp(rankUps);
     }
+
+    refreshBattlePointMax();
   }
 
   void useBuffOnce(BattleData battleData) {
@@ -2821,7 +2805,7 @@ class BattleServantData {
       ..level = level
       ..bondLv = bondLv
       ..startingPosition = startingPosition
-      ..curBattlePoints = curBattlePoints.deepCopy()
+      ..curBattlePoints = {for (final entry in curBattlePoints.entries) entry.key: entry.value.copy()}
       ..baseAtk = baseAtk
       ..hp = hp
       .._maxHp = _maxHp
@@ -2845,6 +2829,15 @@ class BattleServantData {
       ..changeIndex = changeIndex
       ..actionHistory = actionHistory.toList(); //copy
   }
+}
+
+class BattlePointData {
+  int value;
+  int? maxValue;
+
+  BattlePointData({required this.value, required this.maxValue});
+
+  BattlePointData copy() => BattlePointData(value: value, maxValue: maxValue);
 }
 
 class BattleServantActionHistory {
