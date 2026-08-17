@@ -179,6 +179,7 @@ class BuffScript with DataScriptBase {
   List<int>? get ckOpCountIndividuality => toList('ckOpCountIndividuality');
   int? get ckIndvCountAbove => toInt('ckIndvCountAbove');
   int? get ckIndvCountBelow => toInt('ckIndvCountBelow');
+  int? get condGrantorRelativePosition => toInt('condGrantorRelativePosition');
 
   List<List<int>>? get NotPierceIndividuality =>
       const Trait2dListConverter().fromJsonNull(source["NotPierceIndividuality"]);

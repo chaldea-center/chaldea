@@ -45,21 +45,21 @@ class BattleBuff {
     }
   }
 
-  void checkUsedBuff() {
-    _passiveList.removeWhere((buff) => buff.checkBuffClear());
-    _activeList.removeWhere((buff) => buff.checkBuffClear());
+  void checkUsedBuff(BattleData battleData) {
+    _passiveList.removeWhere((buff) => buff.checkBuffClear(battleData));
+    _activeList.removeWhere((buff) => buff.checkBuffClear(battleData));
   }
 
   List<BuffData> get shownBuffs => [
     ..._passiveList.where((buff) {
       final showState = buff.vals.ShowState ?? 0;
-      if (showState == -1) return false;
+      if (showState == -1 || showState == -2) return false;
       if (buff.vals.SetPassiveFrame == 1 || showState >= 1) return true;
       return false;
     }),
     ..._activeList.where((buff) {
       final showState = buff.vals.ShowState ?? 0;
-      if (showState == -1) return false;
+      if (showState == -1 || showState == -2) return false;
       return true;
     }),
   ];
@@ -137,7 +137,22 @@ class BuffData {
   List<int>? shortenMaxCountEachSkill;
   int intervalTurn = -1;
 
-  bool checkBuffClear() => count == 0 || logicTurn == 0;
+  bool checkBuffClear(BattleData battleData) {
+    if (vals.SyncUsedSameIndivBuffActorOnField == 1 && vals.SameIndivBuffActorOnField != null) {
+      final sameIndivBuffActorOnField = vals.SameIndivBuffActorOnField!;
+      final hasValidSameIndivBuff = battleData.nonnullAllActors
+          .expand((svt) => svt.battleBuff.validBuffs)
+          .any(
+            (buff) =>
+                buff.getTraits().any((trait) => trait == sameIndivBuffActorOnField) &&
+                buff.count != 0 &&
+                buff.logicTurn != 0,
+          );
+      return !hasValidSameIndivBuff;
+    }
+
+    return count == 0 || logicTurn == 0;
+  }
 
   int? ownerUniqueId;
   int? activatorUniqueId;
@@ -567,8 +582,8 @@ class BuffData {
       final sameIndivBuffActorOnField = vals.SameIndivBuffActorOnField!;
       final sameIndivBuff = battleData.nonnullActors
           .expand((svt) => svt.battleBuff.validBuffs)
-          .firstWhere((buff) => buff.getTraits().any((trait) => trait == sameIndivBuffActorOnField));
-      sameIndivBuff.isUsed = true;
+          .firstWhereOrNull((buff) => buff.getTraits().any((trait) => trait == sameIndivBuffActorOnField));
+      sameIndivBuff?.isUsed = true;
     }
   }
 
@@ -821,6 +836,27 @@ class BuffData {
         }
       }
       isAct &= match;
+    }
+
+    if (buffScript.condGrantorRelativePosition != null) {
+      final condGrantorRelativePosition = buffScript.condGrantorRelativePosition!;
+      if (activatorUniqueId == null || ownerUniqueId == null) {
+        return false;
+      }
+
+      final activator = battleData.getServantData(activatorUniqueId!, onFieldOnly: true);
+      final owner = battleData.getServantData(ownerUniqueId!, onFieldOnly: true);
+      if (activator == null || owner == null || activator.isPlayer != owner.isPlayer) {
+        return false;
+      }
+
+      if (condGrantorRelativePosition == -1) {
+        if (activator.isPlayer && activator.fieldIndex + 1 != owner.fieldIndex) {
+          return false;
+        }
+        // TODO: unclear what enemy positions would do (when 6 enemies are one the field)
+      }
+      // TODO: unclear what other values mean
     }
 
     isAct &= intervalTurn <= 0;
