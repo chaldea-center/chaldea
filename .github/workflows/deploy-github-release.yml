@@ -120,7 +120,7 @@ jobs:
       - name: Build release (Android APK+AAB)
         if: matrix.target == 'android'
         run: |
-          flutter build ${{ matrix.build_target }} -v --release --github
+          flutter build ${{ matrix.build_target }} -v --release --flavor=github
           flutter build appbundle -v --release --flavor=play
 
       # Package the build.
