@@ -533,10 +533,10 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                     (svt.niceEnemy?.noblePhantasm.noblePhantasm?.functions.length ?? 0) > 0
               ? '${S.current.info_charge}: ${svt.npLineCount}/${svt.niceEnemy!.chargeTurn}'
               : '${S.current.info_charge}: -',
-          // Summer Ereshkigal
+          // Summer Ereshkigal, \u2764 is ❤
           if (svt.svtId == 3300200)
             '\u2764: ${BattlePointCalc.determineBattlePointPhase(svt, 3300200)} (${svt.curBattlePoints[3300200]?.current ?? 0})',
-          // Summer Beni-Enma
+          // Summer Beni-Enma， \u{1F35A} is 🍚
           if (svt.getTraits().contains(10042))
             '\u{1F35A}: ${svt.curBattlePoints[705300]?.current ?? 0} / '
                 '${svt.curBattlePoints[705300]?.max ?? BattlePointCalc.getBattlePointMax(svt, 705300)}',
