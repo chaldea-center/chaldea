@@ -140,9 +140,6 @@ class AddState {
           await shouldAddState(battleData, dataVals, activator, target, buffData, isCommandCode, isPassiveSkillInfo)) {
         target.addBuff(buffData, isPassive: isPassiveSkill, isCommandCode: isCommandCode);
         buffData.updateActState(battleData, target);
-        if (buffData.buff.type == BuffType.addMaxBattlePoint) {
-          target.refreshBattlePointMax();
-        }
         battleData.setFuncResult(target.uniqueId, true);
 
         target.postAddStateProcessing(buffData, dataVals);

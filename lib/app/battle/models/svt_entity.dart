@@ -2554,7 +2554,6 @@ class BattleServantData {
     });
     battleBuff.checkUsedBuff();
     battleBuff.commandCodeList.removeWhere((buff) => buff.checkBuffClear());
-    refreshBattlePointMax();
   }
 
   Future<void> enterField(final BattleData battleData) async {
