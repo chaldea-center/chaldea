@@ -304,6 +304,7 @@ class AddState {
     final DataVals dataVals,
     final BattleServantData? activator,
     final List<BattleServantData> targets, {
+    final bool isShortBuff = false,
     final SkillType? skillType,
     final SkillInfoType? skillInfoType,
   }) async {
@@ -326,6 +327,7 @@ class AddState {
         dataVals,
         activator,
         targets,
+        isShortBuff: isShortBuff,
         skillInfoType: skillInfoType,
         skillType: skillType,
       );
