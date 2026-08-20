@@ -308,16 +308,17 @@ class AddState {
     final SkillType? skillType,
     final SkillInfoType? skillInfoType,
   }) async {
-    if (buff == null) return;
-    final indivs = dataVals.TypeIndividualityEachFunc;
-    if (indivs == null || indivs.isEmpty) return;
-
     final availableSkillCount = battleData.masterSkillInfo
-        .where((skillInfo) => _isMatchingAvailableMasterSkill(skillInfo, indivs))
+        .where((skillInfo) => _isMatchingAvailableMasterSkill(skillInfo, dataVals.TypeIndividualityEachFunc))
         .length;
     final maxTargetNum = dataVals.ParamAddMaxCount;
     final count = maxTargetNum == null ? availableSkillCount : min(availableSkillCount, maxTargetNum);
-    if (count <= 0 || dataVals.Value == null) return;
+    if (buff == null || count <= 0) {
+      for (final target in targets) {
+        battleData.setFuncResult(target.uniqueId, false);
+      }
+      return;
+    }
 
     for (int index = 0; index < count; index++) {
       await addState(
@@ -332,13 +333,20 @@ class AddState {
         skillType: skillType,
       );
     }
+    for (final target in targets) {
+      battleData.setFuncResult(target.uniqueId, battleData.getCurFuncResult(target.uniqueId));
+    }
   }
 
-  static bool _isMatchingAvailableMasterSkill(final BattleSkillInfoData skillInfo, final List<List<int>> targetIndivs) {
+  static bool _isMatchingAvailableMasterSkill(
+    final BattleSkillInfoData skillInfo,
+    final List<List<int>>? targetIndivs,
+  ) {
     if (skillInfo.chargeTurn > 0) return false;
+    if (targetIndivs == null || targetIndivs.isEmpty) return false;
 
     final skillIndiv = skillInfo.skill?.individuality;
-    if (skillIndiv == null) return false;
+    if (skillIndiv == null || skillIndiv.isEmpty) return true;
 
     for (final targetIndiv in targetIndivs) {
       if (targetIndiv.isEmpty) continue;
