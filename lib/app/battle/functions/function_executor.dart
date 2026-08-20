@@ -598,8 +598,19 @@ class FunctionExecutor {
         case FuncType.setBattleMissionValueAsMax:
           break;
         case FuncType.addStateFuncType169:
+          //TODO: unknown FuncType, need to implement
+          break;
         case FuncType.addStateFuncType170:
-          // TODO: new addStateXX FuncType
+          await AddState.addStateByAvailableMasterSkill(
+            battleData,
+            function.buff,
+            function.funcId,
+            dataVals,
+            activator,
+            targets,
+            skillInfoType: skillInfoType,
+            skillType: skillType,
+          );
           break;
       }
 

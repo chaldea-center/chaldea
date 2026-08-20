@@ -50,14 +50,20 @@ class SkillChargeTurn {
     }
 
     final turns = dataVals.Value ?? 0;
+    final onlyAvailableSkill = dataVals.OnlyAvailableSkill == 1;
+    final maxTargetNum = dataVals.UserEquipSkillMaxTargetNum;
+    int updatedSkillCount = 0;
 
     for (final (index, skill) in battleData.masterSkillInfo.indexed) {
       if (_ignoreSkill(dataVals, index)) continue;
+      if (onlyAvailableSkill && skill.chargeTurn > 0) continue;
+      if (maxTargetNum != null && updatedSkillCount >= maxTargetNum) break;
       if (isProgress) {
         skill.shortenSkill(turns);
       } else {
         skill.extendSkill(turns);
       }
+      updatedSkillCount += 1;
     }
     battleData.setFuncResult(-8888, true);
   }

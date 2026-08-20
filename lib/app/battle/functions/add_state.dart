@@ -1,8 +1,11 @@
+import 'dart:math' show min;
+
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
+import 'package:chaldea/models/gamedata/individuality.dart';
 import 'package:chaldea/utils/utils.dart';
 import '../interactions/td_type_change_selector.dart';
 
@@ -292,5 +295,55 @@ class AddState {
       targetTd ??= await showEasyLoading(() => AtlasApi.td(tdId, svtId: svt.svtId), mask: true);
     }
     return targetTd;
+  }
+
+  static Future<void> addStateByAvailableMasterSkill(
+    final BattleData battleData,
+    final Buff? buff,
+    final int funcId,
+    final DataVals dataVals,
+    final BattleServantData? activator,
+    final List<BattleServantData> targets, {
+    final SkillType? skillType,
+    final SkillInfoType? skillInfoType,
+  }) async {
+    if (buff == null) return;
+    final indivs = dataVals.TypeIndividualityEachFunc;
+    if (indivs == null || indivs.isEmpty) return;
+
+    final availableSkillCount = battleData.masterSkillInfo
+        .where((skillInfo) => _isMatchingAvailableMasterSkill(skillInfo, indivs))
+        .length;
+    final maxTargetNum = dataVals.ParamAddMaxCount;
+    final count = maxTargetNum == null ? availableSkillCount : min(availableSkillCount, maxTargetNum);
+    if (count <= 0 || dataVals.Value == null) return;
+
+    for (int index = 0; index < count; index++) {
+      await addState(
+        battleData,
+        buff,
+        funcId,
+        dataVals,
+        activator,
+        targets,
+        skillInfoType: skillInfoType,
+        skillType: skillType,
+      );
+    }
+  }
+
+  static bool _isMatchingAvailableMasterSkill(final BattleSkillInfoData skillInfo, final List<List<int>> targetIndivs) {
+    if (skillInfo.chargeTurn > 0) return false;
+
+    final skillIndiv = skillInfo.skill?.individuality;
+    if (skillIndiv == null) return false;
+
+    for (final targetIndiv in targetIndivs) {
+      if (targetIndiv.isEmpty) continue;
+      if (Individuality.checkSignedIndivAllMatch(self: skillIndiv, signedTarget: targetIndiv)) {
+        return true;
+      }
+    }
+    return false;
   }
 }
