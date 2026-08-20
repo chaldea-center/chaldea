@@ -968,8 +968,8 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     try {
       List<int>? bytes;
       if (fromFile == true) {
-        final result = await FilePickerU.pickFiles(clearCache: true);
-        bytes = result?.files.first.bytes;
+        final file = await FilePickerU.pickFile(clearCache: true);
+        bytes = await file?.readAsBytes();
       } else if (fromFile == false) {
         String? text = (await Clipboard.getData(Clipboard.kTextPlain))?.text;
         if (text != null && text.isNotEmpty) {

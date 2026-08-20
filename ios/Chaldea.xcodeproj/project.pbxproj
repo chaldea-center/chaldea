@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
-		4E11842A1DD432B3E48EC3C4 /* Pods_Chaldea.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D30B104DD7C40F69D9D35AD /* Pods_Chaldea.framework */; };
+		5F7E5D9CFB76C6A119CC916D /* Pods_Chaldea.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F80F63FEA2311F8C65EE0BA2 /* Pods_Chaldea.framework */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
 		78A318202AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 78A3181F2AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage */; };
 		931401532D8EEE4600D2A0B5 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 931401522D8EEE4600D2A0B5 /* WidgetKit.framework */; };
@@ -55,10 +55,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0E714CC901EB461B6EE85BC5 /* Pods-Chaldea.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Chaldea.debug.xcconfig"; path = "Target Support Files/Pods-Chaldea/Pods-Chaldea.debug.xcconfig"; sourceTree = "<group>"; };
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
-		4D30B104DD7C40F69D9D35AD /* Pods_Chaldea.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Chaldea.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		534F2FFB52B7316FF6E70B3F /* Pods-Chaldea.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Chaldea.profile.xcconfig"; path = "Target Support Files/Pods-Chaldea/Pods-Chaldea.profile.xcconfig"; sourceTree = "<group>"; };
 		74858FAD1ED2DC5600515810 /* Chaldea-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Chaldea-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		78E0A7A72DC9AD7400C4905E /* FlutterGeneratedPluginSwiftPackage */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FlutterGeneratedPluginSwiftPackage; path = Flutter/ephemeral/Packages/FlutterGeneratedPluginSwiftPackage; sourceTree = "<group>"; };
@@ -85,9 +86,8 @@
 		97C146FB1CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		97C146FD1CF9000F007C117D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		B1C73EB2D57C2F82A8A69ED5 /* Pods-Chaldea.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Chaldea.profile.xcconfig"; path = "Target Support Files/Pods-Chaldea/Pods-Chaldea.profile.xcconfig"; sourceTree = "<group>"; };
-		B3354AB92F9504BAAF375D2E /* Pods-Chaldea.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Chaldea.release.xcconfig"; path = "Target Support Files/Pods-Chaldea/Pods-Chaldea.release.xcconfig"; sourceTree = "<group>"; };
-		B6B4143D5EC921366B0CF5A6 /* Pods-Chaldea.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Chaldea.debug.xcconfig"; path = "Target Support Files/Pods-Chaldea/Pods-Chaldea.debug.xcconfig"; sourceTree = "<group>"; };
+		9B6453481EDEA7AE9ACFC8E8 /* Pods-Chaldea.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Chaldea.release.xcconfig"; path = "Target Support Files/Pods-Chaldea/Pods-Chaldea.release.xcconfig"; sourceTree = "<group>"; };
+		F80F63FEA2311F8C65EE0BA2 /* Pods_Chaldea.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Chaldea.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -126,7 +126,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				78A318202AECB46A00862997 /* FlutterGeneratedPluginSwiftPackage in Frameworks */,
-				4E11842A1DD432B3E48EC3C4 /* Pods_Chaldea.framework in Frameworks */,
+				5F7E5D9CFB76C6A119CC916D /* Pods_Chaldea.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -136,9 +136,9 @@
 		614024170E1F63B1CF1D8863 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				B6B4143D5EC921366B0CF5A6 /* Pods-Chaldea.debug.xcconfig */,
-				B3354AB92F9504BAAF375D2E /* Pods-Chaldea.release.xcconfig */,
-				B1C73EB2D57C2F82A8A69ED5 /* Pods-Chaldea.profile.xcconfig */,
+				0E714CC901EB461B6EE85BC5 /* Pods-Chaldea.debug.xcconfig */,
+				9B6453481EDEA7AE9ACFC8E8 /* Pods-Chaldea.release.xcconfig */,
+				534F2FFB52B7316FF6E70B3F /* Pods-Chaldea.profile.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -206,9 +206,9 @@
 		EB5BCC9D20ABAE5A322762E6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				4D30B104DD7C40F69D9D35AD /* Pods_Chaldea.framework */,
 				931401522D8EEE4600D2A0B5 /* WidgetKit.framework */,
 				931401542D8EEE4600D2A0B5 /* SwiftUI.framework */,
+				F80F63FEA2311F8C65EE0BA2 /* Pods_Chaldea.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -240,7 +240,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 97C147051CF9000F007C117D /* Build configuration list for PBXNativeTarget "Chaldea" */;
 			buildPhases = (
-				8DEE1C958864B16B46ED3501 /* [CP] Check Pods Manifest.lock */,
+				894EC37AA3874D12AD9F879F /* [CP] Check Pods Manifest.lock */,
 				931401652D8EEE4800D2A0B5 /* Embed Foundation Extensions */,
 				9740EEB61CF901F6004384FC /* Run Script */,
 				97C146EA1CF9000F007C117D /* Sources */,
@@ -248,9 +248,9 @@
 				97C146EC1CF9000F007C117D /* Resources */,
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
-				BCE107502259B1D67AA3C231 /* [CP] Embed Pods Frameworks */,
 				938129CE2DC76AA8009DF462 /* ShellScript */,
-				424D3362725B4100A58467F7 /* [CP] Copy Pods Resources */,
+				DCB77B87CCAE3D4830CEDE90 /* [CP] Embed Pods Frameworks */,
+				4EF57F17A84897978F6D831A /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -349,7 +349,7 @@
 			shellPath = /bin/sh;
 			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" embed_and_thin";
 		};
-		424D3362725B4100A58467F7 /* [CP] Copy Pods Resources */ = {
+		4EF57F17A84897978F6D831A /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -366,7 +366,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Chaldea/Pods-Chaldea-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		8DEE1C958864B16B46ED3501 /* [CP] Check Pods Manifest.lock */ = {
+		894EC37AA3874D12AD9F879F /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -420,7 +420,7 @@
 			shellPath = /bin/sh;
 			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build\n";
 		};
-		BCE107502259B1D67AA3C231 /* [CP] Embed Pods Frameworks */ = {
+		DCB77B87CCAE3D4830CEDE90 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (

@@ -43,6 +43,7 @@ class ShareX {
 
   static Future<ShareResult> shareFile(
     String fp, {
+    XFile? xfile,
     String? subject,
     String? text,
     Rect? sharePositionOrigin,
@@ -52,19 +53,21 @@ class ShareX {
       sharePositionOrigin = getSharePosOrigin(context);
     }
     subject ??= pathlib.basename(fp);
-    XFile file;
-    if (kIsWeb) {
+    XFile _xfile;
+    if (xfile != null) {
+      _xfile = xfile;
+    } else if (kIsWeb) {
       try {
-        file = XFile.fromData(await FilePlus(fp).readAsBytes());
+        _xfile = XFile.fromData(await FilePlus(fp).readAsBytes());
       } catch (e) {
         EasyLoading.showError(e.toString());
         return ShareResult('read file failed ($fp): $e', ShareResultStatus.unavailable);
       }
     } else {
-      file = XFile(fp);
+      _xfile = XFile(fp);
     }
     return SharePlus.instance.share(
-      ShareParams(files: [file], subject: subject, text: text, sharePositionOrigin: sharePositionOrigin),
+      ShareParams(files: [_xfile], subject: subject, text: text, sharePositionOrigin: sharePositionOrigin),
     );
   }
 

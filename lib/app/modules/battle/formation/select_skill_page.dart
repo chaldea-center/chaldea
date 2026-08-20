@@ -118,12 +118,12 @@ class _SkillSelectPageState extends State<SkillSelectPage> {
                   tileColor: Theme.of(context).cardColor,
                   onTap: () async {
                     try {
-                      final result = await FilePickerU.pickFiles(
+                      final file = await FilePickerU.pickFile(
                         type: FileType.custom,
                         allowedExtensions: ['json'],
                         clearCache: true,
                       );
-                      final bytes = result?.files.firstOrNull?.bytes;
+                      final bytes = await file?.readAsBytes();
                       if (bytes == null) return;
                       final skill = NiceSkill.fromJson(Map.from(jsonDecode(utf8.decode(bytes))));
                       if (skill.id > 0) skill.id = -skill.id;

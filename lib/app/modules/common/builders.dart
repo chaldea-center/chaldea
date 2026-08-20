@@ -451,11 +451,7 @@ class SharedBuilder {
     );
   }
 
-  static Future<FilePickerResult?> pickImageOrFiles({
-    required BuildContext context,
-    bool allowMultiple = true,
-    bool withData = true,
-  }) async {
+  static Future<List<PlatformFile>> pickImageOrFiles({required BuildContext context}) async {
     FileType? fileType;
     await showDialog(
       context: context,
@@ -487,8 +483,8 @@ class SharedBuilder {
         ],
       ),
     );
-    if (fileType == null) return null;
-    return FilePickerU.pickFiles(type: fileType!, allowMultiple: allowMultiple, withData: withData);
+    if (fileType == null) return [];
+    return FilePickerU.pickFiles(type: fileType!);
   }
 
   static Widget topSvtClassFilter({

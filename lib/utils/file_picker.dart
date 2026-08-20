@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 
 import 'package:file_picker/file_picker.dart';
@@ -20,7 +18,8 @@ class FilePickerU {
 
   static Future<bool?> clearTemporaryFiles() async {
     if (PlatformU.isAndroid || PlatformU.isIOS) {
-      return FilePicker.clearTemporaryFiles();
+      await FilePicker.clearTemporaryFiles();
+      return true;
     }
     return false;
   }
@@ -42,23 +41,41 @@ class FilePickerU {
     return null;
   }
 
-  static Future<FilePickerResult?> pickFiles({
+  static Future<PlatformFile?> pickFile({
     String? dialogTitle,
     String? initialDirectory,
     FileType type = FileType.any,
     List<String>? allowedExtensions,
-    Function(FilePickerStatus)? onFileLoading,
-    int compressionQuality = 0,
-    bool allowMultiple = false,
-    // web always have to [withData]
-    bool withData = true,
-    bool withReadStream = false,
-    bool lockParentWindow = false,
     // extra
     bool clearCache = false,
     bool showError = true,
   }) async {
-    return await _withPicking<FilePickerResult?>(
+    return await _withPicking<PlatformFile?>(
+      showError: showError,
+      task: () async {
+        if (clearCache) {
+          await clearTemporaryFiles();
+        }
+        return await FilePicker.pickFile(
+          dialogTitle: dialogTitle,
+          initialDirectory: initialDirectory,
+          type: allowedExtensions != null && allowedExtensions.isNotEmpty ? FileType.custom : type,
+          allowedExtensions: allowedExtensions,
+        );
+      },
+    );
+  }
+
+  static Future<List<PlatformFile>> pickFiles({
+    String? dialogTitle,
+    String? initialDirectory,
+    FileType type = FileType.any,
+    List<String>? allowedExtensions,
+    // extra
+    bool clearCache = false,
+    bool showError = true,
+  }) async {
+    final files = await _withPicking<List<PlatformFile>>(
       showError: showError,
       task: () async {
         if (clearCache) {
@@ -67,42 +84,29 @@ class FilePickerU {
         return await FilePicker.pickFiles(
           dialogTitle: dialogTitle,
           initialDirectory: initialDirectory,
-          type: type,
+          type: allowedExtensions != null && allowedExtensions.isNotEmpty ? FileType.custom : type,
           allowedExtensions: allowedExtensions,
-          onFileLoading: onFileLoading,
-          compressionQuality: compressionQuality,
-          allowMultiple: allowMultiple,
-          withData: withData,
-          withReadStream: withReadStream,
-          lockParentWindow: lockParentWindow,
         );
       },
     );
+    return files ?? [];
   }
 
   static Future<void> saveFile({
     required List<int> data,
-    required String? filename,
+    required String filename,
     String? saveFolder,
     BuildContext? dialogContext,
   }) async {
     if (kIsWeb) {
-      return kPlatformMethods.downloadFile(data, filename ?? "unknown_format_file.bin");
+      return kPlatformMethods.downloadFile(data, filename);
     }
-    String? fp;
-    fp = await _withPicking<String?>(
+    final Uri? fp = await _withPicking<Uri?>(
       showError: true,
       task: () =>
           FilePicker.saveFile(fileName: filename, initialDirectory: saveFolder, bytes: Uint8List.fromList(data)),
     );
     if (fp == null) return;
-    final file = File(fp);
-
-    if (PlatformU.isDesktop) {
-      // plugin didn't write file on desktop
-      file.parent.createSync(recursive: true);
-      await file.writeAsBytes(data);
-    }
 
     if (dialogContext != null && dialogContext.mounted) {
       showDialog(
@@ -110,14 +114,14 @@ class FilePickerU {
         builder: (context) {
           return SimpleConfirmDialog(
             title: Text(S.current.saved),
-            content: Text(db.paths.convertIosPath(file.path).breakWord),
+            content: Text(db.paths.convertIosPath(fp.toString()).breakWord),
             showCancel: false,
             actions: [
               if (PlatformU.isDesktop)
                 TextButton(
                   child: Text(S.current.open),
                   onPressed: () {
-                    openFile(file.parent.path);
+                    openFileUri(fp);
                   },
                 ),
               if (PlatformU.isMobile)
@@ -125,7 +129,7 @@ class FilePickerU {
                   child: Text(S.current.share),
                   onPressed: () {
                     Navigator.of(context).pop();
-                    ShareX.shareFile(file.path, context: context);
+                    ShareX.shareFile(fp.path, context: context);
                   },
                 ),
             ],

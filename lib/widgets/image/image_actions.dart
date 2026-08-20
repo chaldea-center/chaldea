@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:flutter/foundation.dart';
@@ -188,23 +189,47 @@ class ImageActions {
           );
         }
         if ((data != null || srcFp != null) && !kIsWeb) {
-          if (defaultFilename == null) {
-            if (url != null) {
-              final urlfn = Uri.tryParse(url)?.pathSegments.lastOrNull;
-              if (urlfn != null && urlfn.isNotEmpty) {
-                defaultFilename = urlfn;
-              }
-            }
-            if (srcFp != null) {
-              defaultFilename ??= basename(srcFp);
-            }
-          }
           children.add(
             ListTile(
               leading: const Icon(Icons.save),
               title: Text(S.current.save_as),
               onTap: () {
-                FilePickerU.saveFile(data: data ?? File(srcFp!).readAsBytesSync(), filename: defaultFilename);
+                String? filename = defaultFilename;
+                if (filename == null) {
+                  if (url != null) {
+                    final urlfn = Uri.tryParse(url)?.pathSegments.lastOrNull;
+                    if (urlfn != null && urlfn.isNotEmpty) {
+                      filename = urlfn;
+                    }
+                  }
+                  if (srcFp != null) {
+                    filename ??= basename(srcFp);
+                  }
+                }
+                if (filename == null) {
+                  final now = DateTime.now();
+                  final random = Random();
+
+                  final datePart = [
+                    now.year.toString().padLeft(4, '0'),
+                    now.month.toString().padLeft(2, '0'),
+                    now.day.toString().padLeft(2, '0'),
+                  ].join('');
+
+                  final timePart = [
+                    now.hour.toString().padLeft(2, '0'),
+                    now.minute.toString().padLeft(2, '0'),
+                    now.second.toString().padLeft(2, '0'),
+                  ].join('');
+
+                  final msPart = now.millisecond.toString().padLeft(3, '0');
+
+                  final hexChars = '0123456789abcdef';
+                  final randPart = List.generate(6, (_) => hexChars[random.nextInt(16)]).join('');
+
+                  filename = 'IMG_${datePart}_${timePart}_${msPart}_$randPart.png';
+                }
+                FilePickerU.saveFile(data: data ?? File(srcFp!).readAsBytesSync(), filename: filename);
               },
             ),
           );

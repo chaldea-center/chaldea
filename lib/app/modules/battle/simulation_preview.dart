@@ -421,12 +421,12 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                 trailing: const Icon(Icons.file_open),
                 onTap: () async {
                   try {
-                    final result = await FilePickerU.pickFiles(
+                    final file = await FilePickerU.pickFile(
                       type: FileType.custom,
                       allowedExtensions: ['json'],
                       clearCache: true,
                     );
-                    final bytes = result?.files.firstOrNull?.bytes;
+                    final bytes = await file?.readAsBytes();
                     if (bytes == null) return;
                     final phaseData = QuestPhase.fromJson(Map.from(jsonDecode(utf8.decode(bytes))));
                     if (phaseData.id > 0) phaseData.id = -phaseData.id;

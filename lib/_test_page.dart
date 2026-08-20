@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:cross_file/cross_file.dart';
 import 'package:file_picker/file_picker.dart';
 
 import 'package:chaldea/utils/utils.dart';
@@ -18,12 +19,12 @@ void testFunction([BuildContext? context]) async {
 }
 
 void loadSvtIconRemap() async {
-  Set<String> _openedFiles = {};
-  final result = await FilePicker.pickFiles(allowMultiple: true);
-  _openedFiles.addAll(result?.paths.whereType<String>() ?? []);
+  Set<XFile> _openedFiles = {};
+  final files = await FilePicker.pickFiles();
+  _openedFiles.addAll(files.map((e) => e.xFile));
   Map<int, List<int>> mapping = {};
   for (final fp in _openedFiles) {
-    final html = File(fp).readAsStringSync();
+    final html = await fp.readAsString();
     for (final reg in [RegExp(r'JP/Faces/f_(\d+).png'), RegExp(r'JP/Enemys/(\d+).png')]) {
       for (final match in reg.allMatches(html)) {
         final iconId = int.parse(match.group(1)!);

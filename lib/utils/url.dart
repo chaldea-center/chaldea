@@ -103,6 +103,13 @@ Future<bool> launch(String url, {bool? external}) {
   return launcher.launchUrl(Uri.parse(url), mode: mode);
 }
 
+Future<bool> launchUri(Uri uri, {bool? external}) {
+  final mode = external ?? PlatformU.isAndroid
+      ? launcher.LaunchMode.externalApplication
+      : launcher.LaunchMode.platformDefault;
+  return launcher.launchUrl(uri, mode: mode);
+}
+
 Future<bool> canLaunch(String url) {
   return launcher.canLaunchUrl(Uri.parse(url));
 }
@@ -115,6 +122,16 @@ Future<bool> openFile(String fp) {
     return launcher_string.launchUrlString('file:///${uri.toFilePath()}');
   } else if (PlatformU.isDesktop) {
     return launcher.launchUrl(uri);
+  } else {
+    return Future.value(false);
+  }
+}
+
+Future<bool> openFileUri(Uri fp) {
+  if (PlatformU.isWindows && fp.scheme == 'file') {
+    return launcher_string.launchUrlString('file:///${fp.toFilePath()}');
+  } else if (PlatformU.isDesktop) {
+    return launcher.launchUrl(fp);
   } else {
     return Future.value(false);
   }

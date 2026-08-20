@@ -95,14 +95,9 @@ class _ScreenshotsTabState extends State<ScreenshotsTab> with ScrollControllerMi
 
   void importImages() {
     SharedBuilder.pickImageOrFiles(context: context)
-        .then((result) {
-          final files = result?.files;
-          if (files != null) {
-            for (final file in files) {
-              if (file.bytes != null) {
-                widget.images.add(file.bytes!);
-              }
-            }
+        .then((files) async {
+          for (final file in files) {
+            widget.images.add(await file.readAsBytes());
           }
           if (mounted) {
             setState(() {});

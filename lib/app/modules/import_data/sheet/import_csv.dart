@@ -49,8 +49,8 @@ class _ImportCSVPageState extends State<ImportCSVPage> {
       children: [
         ElevatedButton(
           onPressed: () async {
-            final result = await FilePickerU.pickFiles(clearCache: true);
-            final bytes = result?.files.getOrNull(0)?.bytes;
+            final file = await FilePickerU.pickFile(clearCache: true);
+            final bytes = await file?.readAsBytes();
             if (bytes == null) return;
             try {
               final rawData = Csv(dynamicTyping: false).decode(utf8.decode(bytes));

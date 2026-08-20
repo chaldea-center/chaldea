@@ -288,18 +288,10 @@ class _FeedbackPageState extends State<FeedbackPage> {
   Map<String, Uint8List> attachFiles = {};
 
   void _addAttachments() async {
-    final result = await SharedBuilder.pickImageOrFiles(context: context, allowMultiple: true).catchError((e, s) async {
-      logger.e('pick attachment failed', e, s);
-      EasyLoading.showError(e.toString());
-      return null;
-    });
+    final files = await SharedBuilder.pickImageOrFiles(context: context);
 
-    if (result != null) {
-      for (final file in result.files) {
-        if (file.bytes != null) {
-          attachFiles[file.name] = file.bytes!;
-        }
-      }
+    for (final file in files) {
+      attachFiles[file.name] = await file.readAsBytes();
     }
     if (mounted) {
       setState(() {});
