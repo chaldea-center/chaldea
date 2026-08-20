@@ -59,15 +59,14 @@ class FieldAiManager with _AiManagerBase {
   }
 
   Future<bool> isAllowedCommonRelease(List<int> commonReleaseId) async {
-    if (commonReleaseId.isEmpty) return false;
     List<CommonRelease> allCommonRelease = [];
     for (final id in commonReleaseId) {
       final crs = await showEasyLoading(() => AtlasApi.commonRelease(id), mask: true);
-      if (crs == null) return false;
+      if (crs == null) continue;
       allCommonRelease.addAll(crs);
     }
     // Check if allowed commonRelease is only CondType.questClearPhase
-    return allCommonRelease.isNotEmpty && allCommonRelease.every((cr) => cr.condType == CondType.questClearPhase);
+    return CommonRelease.check(allCommonRelease, (cr) => cr.condType == CondType.questClearPhase) ?? true;
   }
 
   Future<void> actWaveStart(BattleData battleData) async {

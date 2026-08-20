@@ -310,6 +310,30 @@ class FunctionExecutor {
       updateTargets(battleData, function, funcIndex, dataVals, targets);
 
       battleData.curFunc = function;
+      final commonReleaseId = dataVals.CommonReleaseId;
+      if (commonReleaseId != null) {
+        final commonReleases = await showEasyLoading(() => AtlasApi.commonRelease(commonReleaseId), mask: true);
+        if (commonReleases?.isNotEmpty == true &&
+            CommonRelease.check(commonReleases!, (cr) {
+                  switch (cr.condType) {
+                    case CondType.questClearPhase:
+                      return true;
+                    case CondType.selfIndividuality:
+                      return activator != null &&
+                          Individuality.checkSignedIndivPartialMatch(
+                            self: activator.getTraits(),
+                            signedTarget: [cr.condId],
+                          );
+                    default:
+                      return null;
+                  }
+                }) ==
+                false) {
+          battleData.updateLastFuncResults(function.funcId, funcIndex);
+          return true;
+        }
+      }
+
       switch (function.funcType) {
         case FuncType.absorbNpturn:
         case FuncType.gainNpFromTargets:
