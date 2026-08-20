@@ -342,9 +342,6 @@ class Event with RouteInfo {
   Map<int, int> itemWarBoard = {};
   @JsonKey(includeFromJson: false, includeToJson: false)
   Map<int, Map<int, int>> itemTreasureBox = {}; //treasureBox.id
-  @protected
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  Map<int, int> itemDigging = {};
   @JsonKey(includeFromJson: false, includeToJson: false)
   Map<int, int> itemWarReward = {};
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -490,17 +487,18 @@ class Event with RouteInfo {
       }
     }
 
-    itemDigging.clear();
-    if (digging != null) {
-      for (final reward in digging!.rewards) {
-        for (final gift in reward.gifts) {
-          if (gift.isStatItem) {
-            itemDigging.addNum(gift.objectId, gift.num);
-            statItemExtra.add(gift.objectId);
-          }
+    void _addStatItemExtra(Iterable<Gift>? gifts) {
+      if (gifts == null) return;
+      for (final gift in gifts) {
+        if (gift.isStatItem) {
+          statItemExtra.add(gift.objectId);
         }
       }
     }
+
+    _addStatItemExtra(digging?.rewards.expand((e) => e.gifts));
+    _addStatItemExtra(recipes.expand((e) => e.recipeGifts).expand((e) => e.gifts));
+
     if (extra != null) {
       for (final e in extra.extraFixedItems) {
         statItemFixed.addDict(e.items);
@@ -1712,6 +1710,7 @@ class EventCooltime {
 class EventRecipeGift {
   int idx;
   int displayOrder;
+  @protected
   int topIconId;
   @GiftsConverter()
   List<Gift> gifts;
@@ -1721,6 +1720,8 @@ class EventRecipeGift {
   factory EventRecipeGift.fromJson(Map<String, dynamic> json) => _$EventRecipeGiftFromJson(json);
 
   Map<String, dynamic> toJson() => _$EventRecipeGiftToJson(this);
+
+  bool get isRateUp => topIconId == 1;
 }
 
 @JsonSerializable()

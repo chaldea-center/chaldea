@@ -51,7 +51,7 @@ class EventRecipePage extends HookWidget {
                 for (final gift in recipeGift.gifts)
                   DecoratedBox(
                     decoration: BoxDecoration(
-                      border: Border.all(color: recipeGift.topIconId == 1 ? Colors.red : Colors.transparent),
+                      border: Border.all(color: recipeGift.isRateUp ? Colors.red : Colors.transparent),
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Padding(
@@ -87,7 +87,7 @@ class EventRecipePage extends HookWidget {
                     TextSpan(text: '${recipe.name}\n'),
                     const TextSpan(text: 'Rate Up: '),
                     for (final recipeGift in recipe.recipeGifts)
-                      if (recipeGift.topIconId == 1)
+                      if (recipeGift.isRateUp)
                         for (final gift in recipeGift.gifts)
                           CenterWidgetSpan(child: gift.iconBuilder(context: context, width: 28, showOne: false)),
                     const TextSpan(text: '\nCost: '),
