@@ -185,9 +185,12 @@ abstract final class AppTheme {
         bottomNavigationBarBackgroundSchemeColor: .surfaceContainerHigh,
         cardBackgroundSchemeColor: isDark ? .surfaceBright : .surfaceContainerLow,
         // elevatedButtonSecondarySchemeColor: .surfaceContainerHigh,
+        // switchThumbSchemeColor: .white,
+        // switchSchemeColor: .error,
       ),
       extensions: {ExtraThemeData.forBrightness(brightness)},
     );
+    final thumbColor = themeData.switchTheme.thumbColor;
     themeData = themeData.copyWith(
       tooltipTheme: themeData.tooltipTheme.copyWith(waitDuration: const Duration(milliseconds: 500)),
       appBarTheme: themeData.appBarTheme.copyWith(
@@ -197,6 +200,17 @@ abstract final class AppTheme {
       listTileTheme: themeData.listTileTheme.copyWith(minLeadingWidth: 24),
       cardTheme: themeData.cardTheme.copyWith(elevation: 0),
       cardColor: themeData.cardTheme.color,
+      switchTheme: themeData.switchTheme.copyWith(
+        thumbColor: .resolveWith((states) {
+          final color = thumbColor?.resolve(states);
+          if (color != null &&
+              states.contains(WidgetState.selected) &&
+              const <WidgetState>{.disabled, .hovered, .pressed, .focused}.intersection(states).isEmpty) {
+            return Color.lerp(color, Colors.grey, 0.3);
+          }
+          return null;
+        }),
+      ),
     );
     return themeData;
 

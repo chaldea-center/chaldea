@@ -53,7 +53,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
 
   @override
   Widget build(BuildContext context) {
-    final sliderMode = db.settings.display.svtPlanInputMode == SvtPlanInputMode.slider;
+    final inputMode = db.settings.display.svtPlanInputMode;
     if (svt.skills.isEmpty) {
       return Center(child: Text('${svt.lName.l} has no skills'));
     }
@@ -70,7 +70,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           header: S.current.ascension_up,
           children: <Widget>[
             buildPlanRow(
-              useSlider: sliderMode,
+              inputMode: inputMode,
               leading: const SizedBox(
                 width: 33,
                 height: 33,
@@ -109,7 +109,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
         final skill = svt.getDefaultSkill(skills, db.curUser.region) ?? skills.last;
         skillWidgets.add(
           buildPlanRow(
-            useSlider: sliderMode,
+            inputMode: inputMode,
             leading: db.getIconImage(skill.icon, width: 33, onTap: skill.routeTo),
             title: Transl.skillNames(skill.name).l,
             start: curVal.skills[index],
@@ -142,7 +142,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
         if (skill == null) continue;
         appendSkillWidgets.add(
           buildPlanRow(
-            useSlider: sliderMode,
+            inputMode: inputMode,
             leading: db.getIconImage(skill.icon, width: 33, onTap: skill.routeTo),
             title: Transl.skillNames(skill.name).l,
             start: curVal.appendSkills[index],
@@ -177,7 +177,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
       for (final costume in svt.costumesForPlan.values) {
         dressWidgets.add(
           buildPlanRow(
-            useSlider: false,
+            inputMode: costume.costumeCollectionNo > 0 ? .dropdown : null,
             leading: InkWell(
               child: db.getIconImage(
                 svt.extraAssets.faces.costume?[costume.battleCharaId] ??
@@ -250,7 +250,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
         ),
       if (showDetail(SvtPlanDetail.grail))
         buildPlanRow(
-          useSlider: sliderMode,
+          inputMode: inputMode,
           leading: Item.iconBuilder(context: context, item: null, itemId: Items.grailId, width: 33),
           title: S.current.grail_up,
           start: curVal.grail,
@@ -278,7 +278,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
         ),
       if (showDetail(SvtPlanDetail.noblePhantasm))
         buildPlanRow(
-          useSlider: sliderMode,
+          inputMode: inputMode,
           leading: db.getIconImage(Atlas.assetItem(Items.npRankUpIconId), width: 33),
           title: S.current.noble_phantasm_level,
           start: curVal.npLv,
@@ -295,7 +295,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
         ),
       if (showDetail(SvtPlanDetail.bondLimit))
         buildPlanRow(
-          useSlider: sliderMode,
+          inputMode: inputMode,
           leading: db.getIconImage(
             "https://static.atlasacademy.io/JP/Terminal/Info/CommonUIAtlas/img_bond_category.png",
             width: 33,
@@ -375,7 +375,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
     final extraParts2 = <Widget>[
       if (showDetail(SvtPlanDetail.fou5)) ...[
         buildPlanRow(
-          useSlider: sliderMode,
+          inputMode: inputMode,
           leading: Item.iconBuilder(context: context, item: null, itemId: Items.hpFou5b, width: 33),
           title: '${kStarChar}5 HP ${S.current.foukun}',
           start: curVal.fouHp5,
@@ -393,7 +393,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           detailPageBuilder: null,
         ),
         buildPlanRow(
-          useSlider: sliderMode,
+          inputMode: inputMode,
           leading: Item.iconBuilder(context: context, item: null, itemId: Items.atkFou5b, width: 33),
           title: '${kStarChar}5 ATK ${S.current.foukun}',
           start: curVal.fouAtk5,
@@ -413,7 +413,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
       ],
       if (showDetail(SvtPlanDetail.fou4)) ...[
         buildPlanRow(
-          useSlider: sliderMode,
+          inputMode: inputMode,
           leading: Item.iconBuilder(context: context, item: null, itemId: Items.hpFou4, width: 33),
           title: '${kStarChar}4 HP ${S.current.foukun}',
           start: curVal.fouHp4,
@@ -431,7 +431,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           detailPageBuilder: null,
         ),
         buildPlanRow(
-          useSlider: sliderMode,
+          inputMode: inputMode,
           leading: Item.iconBuilder(context: context, item: null, itemId: Items.atkFou4, width: 33),
           title: '${kStarChar}4 ATK ${S.current.foukun}',
           start: curVal.fouAtk4,
@@ -451,7 +451,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
       ],
       if (showDetail(SvtPlanDetail.fou3)) ...[
         buildPlanRow(
-          useSlider: sliderMode,
+          inputMode: inputMode,
           leading: Item.iconBuilder(context: context, item: null, itemId: Items.hpFou3, width: 33),
           title: '${kStarChar}3 HP ${S.current.foukun}',
           start: curVal.fouHp3,
@@ -469,7 +469,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
           detailPageBuilder: null,
         ),
         buildPlanRow(
-          useSlider: sliderMode,
+          inputMode: inputMode,
           leading: Item.iconBuilder(context: context, item: null, itemId: Items.atkFou3, width: 33),
           title: '${kStarChar}3 ATK ${S.current.foukun}',
           start: curVal.fouAtk3,
@@ -542,7 +542,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
     String Function(int v)? labelFormatter,
     String Function(int a, int? b)? trailingLabelFormatter,
     required void Function(int start, int end) onValueChanged,
-    bool useSlider = false,
+    SvtPlanInputMode? inputMode = .dropdown, // null: hidden input
     WidgetBuilder? detailPageBuilder,
     String? separator,
   }) {
@@ -571,7 +571,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
     } else {
       trailingIcon = const SizedBox(width: 16);
     }
-    if (useSlider) {
+    if (inputMode == .slider) {
       Widget slider;
       if (end == null) {
         slider = Slider(
@@ -624,7 +624,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
         trailing: Text(trailingLabelFormatter(start, end), style: kMonoStyle),
         trailingIcon: trailingIcon,
       );
-    } else {
+    } else if (inputMode == .dropdown) {
       Widget selector;
       if (end == null) {
         selector = DropdownButton<int>(
@@ -663,10 +663,20 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
       }
       return CustomTile(
         contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 0, 0, 0),
+        // titlePadding: .zero,
         leading: leading,
         title: titleWidget,
         subtitle: subtitle == null ? null : AutoSizeText(subtitle, maxLines: 1, minFontSize: 10),
         trailing: Row(mainAxisSize: MainAxisSize.min, children: <Widget>[selector, trailingIcon]),
+      );
+    } else {
+      return CustomTile(
+        contentPadding: const EdgeInsetsDirectional.only(start: 16),
+        // titlePadding: .zero,
+        leading: leading,
+        title: titleWidget,
+        subtitle: subtitle == null ? null : AutoSizeText(subtitle, maxLines: 1, minFontSize: 10),
+        trailing: Row(mainAxisSize: MainAxisSize.min, children: <Widget>[trailingIcon]),
       );
     }
   }

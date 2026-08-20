@@ -2,7 +2,6 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/utils/debounce.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 class ThemeColorPage extends StatefulWidget {
@@ -109,18 +108,22 @@ class _ThemeColorPageState extends State<ThemeColorPage> {
           TileGroup(
             header: 'Blend Level: ${db.settings.flexBlendLevel ?? 0}',
             children: [
-              Slider(
-                value: db.settings.flexBlendLevel?.toDouble() ?? 0,
-                min: 0,
-                max: 40,
-                onChanged: (v) {
-                  setState(() {
-                    db.settings.flexBlendLevel = v.round().clamp(0, 40);
-                  });
-                  EasyDebounce.debounce('flex-blend-level', Duration(milliseconds: 500), () {
-                    db.notifyAppUpdate();
-                  });
-                },
+              Padding(
+                padding: .symmetric(horizontal: 8),
+                child: Slider(
+                  value: db.settings.flexBlendLevel?.toDouble() ?? 0,
+                  min: 0,
+                  max: 40,
+                  divisions: 40,
+                  onChanged: (value) {
+                    setState(() {
+                      db.settings.flexBlendLevel = value.round().clamp(0, 40);
+                    });
+                  },
+                  onChangeEnd: (value) {
+                    Future.delayed(Duration(milliseconds: 100), db.notifyAppUpdate);
+                  },
+                ),
               ),
             ],
           ),

@@ -70,6 +70,10 @@ String? validateEmail(String? email) {
   if (!RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(email)) {
     return S.current.validation_email_invalid;
   }
+  email = email.toLowerCase();
+  if (email.contains('@qq.c') && !email.endsWith('@qq.com')) {
+    return 'qq.com?';
+  }
   return null;
 }
 

@@ -309,7 +309,7 @@ class BattleData {
     final overwriteEquip = quest.extraDetail?.getMergedOverwriteEquipSkills();
     if (overwriteEquip != null && overwriteEquip.skills.isNotEmpty) {
       mysticCode = await overwriteEquip.toMysticCode();
-      mysticCodeLv = overwriteEquip.skillLv;
+      mysticCodeLv = overwriteEquip.skillLv; // should for every one
     } else {
       if (mysticCodeData != null && mysticCodeData.enabled) {
         mysticCode = mysticCodeData.mysticCode;
@@ -320,10 +320,11 @@ class BattleData {
       }
     }
     if (mysticCode != null) {
+      final skillLvs = overwriteEquip?.skillLvs;
       masterSkillInfo = [
-        for (int index = 0; index < mysticCode!.skills.length; index++)
-          BattleSkillInfoData(mysticCode!.skills[index], skillNum: index + 1, type: SkillInfoType.masterEquip)
-            ..skillLv = mysticCodeLv,
+        for (final (index, skill) in mysticCode!.skills.indexed)
+          BattleSkillInfoData(skill, skillNum: index + 1, type: SkillInfoType.masterEquip)
+            ..skillLv = skillLvs?[skill.id] ?? mysticCodeLv,
       ];
     }
 

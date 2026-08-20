@@ -1001,7 +1001,7 @@ class CraftEssence extends BasicCraftEssence {
 
   bool get isRegionSpecific => collectionNo > 100000 && (sortId ?? collectionNo) < 0;
 
-  ({List<List<int>> traits, int rateCount})? getBondBonusData() {
+  ({List<List<int>> traits, int rateCount})? getBondBonusData({bool includeNoTraitLimit = false}) {
     if (collectionNo <= 0 || isRegionSpecific) return null;
     List<NiceSkill> _skills;
     if (rarity < 5) return null;
@@ -1013,7 +1013,7 @@ class CraftEssence extends BasicCraftEssence {
         for (final func in skill.functions)
           if (func.funcType == FuncType.servantFriendshipUp &&
               (func.svals.firstOrNull?.EventId ?? 0) == 0 &&
-              (func.functvals.isNotEmpty || func.overWriteTvalsList.isNotEmpty))
+              ((func.functvals.isNotEmpty || func.overWriteTvalsList.isNotEmpty) || includeNoTraitLimit))
             (rateCount: func.svals.firstOrNull?.RateCount ?? 0, traits: func.getResultTvalsList()),
     ];
     if (results.isEmpty) return null;

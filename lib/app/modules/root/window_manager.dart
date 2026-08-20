@@ -125,11 +125,17 @@ class WrapSideBar extends StatelessWidget {
     final mqData = MediaQuery.of(
       context,
     ).removePadding(removeLeft: ltr == TextDirection.ltr, removeRight: ltr == TextDirection.rtl);
-    final headerIcon = Container(
-      color: Theme.of(context).primaryColorDark,
-      height: kToolbarHeight,
-      padding: const EdgeInsets.all(6),
-      child: Icon(Icons.menu, color: Theme.of(context).colorScheme.onPrimary.withAlpha(204)),
+    final headerIcon = SafeArea(
+      top: true,
+      left: false,
+      right: false,
+      bottom: false,
+      child: Container(
+        color: Theme.of(context).primaryColorDark,
+        height: kToolbarHeight,
+        padding: const EdgeInsets.all(6),
+        child: Icon(Icons.menu, color: Theme.of(context).colorScheme.onPrimary.withAlpha(204)),
+      ),
     );
     return Row(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -157,11 +163,17 @@ class WrapSideBar extends StatelessWidget {
                   icon: const Icon(Icons.add),
                   iconSize: 18,
                 ),
-                IconButton(
-                  onPressed: () {
-                    root.appState.windowState = WindowStateEnum.windowManager;
-                  },
-                  icon: const Icon(Icons.grid_view),
+                SafeArea(
+                  top: false,
+                  left: false,
+                  right: false,
+                  bottom: true,
+                  child: IconButton(
+                    onPressed: () {
+                      root.appState.windowState = WindowStateEnum.windowManager;
+                    },
+                    icon: const Icon(Icons.grid_view),
+                  ),
                 ),
               ],
             ),

@@ -131,7 +131,7 @@ class _SummonListPageState extends State<SummonListPage>
       child: OverflowBar(
         alignment: MainAxisAlignment.center,
         children: [
-          ElevatedButton(
+          FilledButton(
             onPressed: () {
               router.pushPage(const GachaProbCalcPage());
             },

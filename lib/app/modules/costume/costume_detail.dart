@@ -70,7 +70,18 @@ class CostumeDetailPage extends StatelessWidget {
           style: kTextButtonDenseStyle,
           child: Text(svt?.lName.l ?? '-'),
         ),
-        CustomTableRow(children: [TableCellData(text: S.current.item, isHeader: true)]),
+        CustomTableRow(
+          children: [
+            TableCellData(
+              text: [
+                S.current.item,
+                if (svt != null && svt.status.favorite && costume.costumeCollectionNo > 0)
+                  '(${svt.status.cur.costumes[costume.battleCharaId] == 1 ? '✅' : '🔒️'})',
+              ].join(' '),
+              isHeader: true,
+            ),
+          ],
+        ),
         CustomTableRow(
           children: [
             TableCellData(

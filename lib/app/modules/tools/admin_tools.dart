@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:dio/dio.dart';
 
@@ -47,31 +48,18 @@ class _AdminToolsPageState extends State<AdminToolsPage> {
               ListTile(
                 dense: true,
                 title: Text('Reload api server'),
-                subtitle: Text.rich(
-                  TextSpan(
-                    text: db.settings.secrets.atlasReloadKey.isEmpty
-                        ? "Reload key not set"
-                        : db.settings.secrets.atlasReloadKey,
-                    children: [
-                      CenterWidgetSpan(
-                        child: IconButton(
-                          onPressed: () {
-                            InputCancelOkDialog(
-                              title: 'Reload Key',
-                              validate: (s) => s.length == 36 || s.isEmpty,
-                              onSubmit: (s) {
-                                db.settings.secrets.atlasReloadKey = s.trim();
-                                if (mounted) setState(() {});
-                              },
-                            ).showDialog(context);
-                          },
-                          icon: Icon(Icons.edit),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                subtitle: Text(_maskSecret(db.settings.secrets.atlasReloadKey, 'Reload key not set')),
                 enabled: db.settings.secrets.atlasReloadKey.isNotEmpty,
+                onTap: () {
+                  InputCancelOkDialog(
+                    title: 'Reload Key',
+                    validate: (s) => s.length == 36 || s.isEmpty,
+                    onSubmit: (s) {
+                      db.settings.secrets.atlasReloadKey = s.trim();
+                      if (mounted) setState(() {});
+                    },
+                  ).showDialog(context);
+                },
                 trailing: IconButton(
                   onPressed: () {
                     final reloadKey = db.settings.secrets.atlasReloadKey;
@@ -84,31 +72,18 @@ class _AdminToolsPageState extends State<AdminToolsPage> {
               ListTile(
                 dense: true,
                 title: Text('Update exports'),
-                subtitle: Text.rich(
-                  TextSpan(
-                    text: db.settings.secrets.atlasExportKey.isEmpty
-                        ? "Export key not set"
-                        : db.settings.secrets.atlasExportKey,
-                    children: [
-                      CenterWidgetSpan(
-                        child: IconButton(
-                          onPressed: () {
-                            InputCancelOkDialog(
-                              title: 'Export Key',
-                              validate: (s) => s.length == 36 || s.isEmpty,
-                              onSubmit: (s) {
-                                db.settings.secrets.atlasExportKey = s.trim();
-                                if (mounted) setState(() {});
-                              },
-                            ).showDialog(context);
-                          },
-                          icon: Icon(Icons.edit),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                subtitle: Text(_maskSecret(db.settings.secrets.atlasExportKey, 'Export key not set')),
                 enabled: db.settings.secrets.atlasExportKey.isNotEmpty,
+                onTap: () {
+                  InputCancelOkDialog(
+                    title: 'Export Key',
+                    validate: (s) => s.length == 36 || s.isEmpty,
+                    onSubmit: (s) {
+                      db.settings.secrets.atlasExportKey = s.trim();
+                      if (mounted) setState(() {});
+                    },
+                  ).showDialog(context);
+                },
                 trailing: IconButton(
                   onPressed: () {
                     final exportKey = db.settings.secrets.atlasExportKey;
@@ -130,10 +105,12 @@ class _AdminToolsPageState extends State<AdminToolsPage> {
                   icon: Icon(Icons.send),
                 ),
               ),
+              const Divider(indent: 16, endIndent: 16),
               Center(
                 child: Wrap(
                   alignment: .center,
-                  spacing: 8,
+                  spacing: 4,
+                  runSpacing: 4,
                   children: [
                     FilledButton(
                       onPressed: () {
@@ -181,7 +158,7 @@ class _AdminToolsPageState extends State<AdminToolsPage> {
                           },
                         ).showDialog(context);
                       },
-                      child: Text('raw.info'),
+                      child: Text('raw'),
                     ),
                     FilledButton(
                       onPressed: () {
@@ -201,7 +178,7 @@ class _AdminToolsPageState extends State<AdminToolsPage> {
                           },
                         ).showDialog(context);
                       },
-                      child: Text('export.info'),
+                      child: Text('export'),
                     ),
                   ],
                 ),
@@ -271,6 +248,18 @@ class _AdminToolsPageState extends State<AdminToolsPage> {
       }
     }
     return result;
+  }
+
+  String _maskSecret(String? secret, String emptyHint) {
+    if (secret == null || secret.isEmpty) return emptyHint;
+    int shownLength = secret.length ~/ 4;
+    if (shownLength == 0) return secret;
+    final masked = secret.replaceRange(
+      shownLength,
+      secret.length - shownLength,
+      '*' * min(8, (secret.length - shownLength * 2)),
+    );
+    return '[${secret.length}] $masked';
   }
 }
 

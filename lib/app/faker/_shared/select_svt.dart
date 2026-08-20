@@ -129,7 +129,7 @@ class _SelectUserSvtPageState extends State<SelectUserSvtPage> {
             final collection = mstData.userSvtCollection[userSvt.svtId];
             return collection != null && collection.friendshipRank < kBondLvDefaultMax;
           case _CombineType.ccUnlock:
-            return mstData.userSvtCommandCard[userSvt.svtId]?.commandCardParam.any((e) => e == -1) ?? true;
+            return mstData.userSvtCommandCode[userSvt.svtId]?.userCommandCodeIds.any((e) => e == -1) ?? true;
         }
       }).toList();
       if (!userSvtFilterData.availableCombines.matchAny(combineTypes)) return false;

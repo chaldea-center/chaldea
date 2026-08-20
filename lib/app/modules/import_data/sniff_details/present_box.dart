@@ -15,10 +15,16 @@ class SniffPresentBoxDetailPage extends StatelessWidget {
     // present box
     final presents = mstData.userPresentBox.toList();
     presents.sort2((e) => -e.createdAt);
+    int? chocoSvtEquipId;
     for (final present in presents) {
-      //  // servant/item
-      if (present.giftType == 1 || present.giftType == 2) {
-        presentItems.addNum(present.objectId, present.num);
+      if (present.giftType == GiftType.servant.value || present.giftType == GiftType.item.value) {
+        int objectId = present.objectId;
+        // in case hundreds of choco ces shown together
+        if (db.gameData.craftEssencesById[objectId]?.flags.contains(SvtFlag.svtEquipChocolate) == true) {
+          chocoSvtEquipId ??= objectId;
+          objectId = chocoSvtEquipId;
+        }
+        presentItems.addNum(objectId, present.num);
       }
     }
 

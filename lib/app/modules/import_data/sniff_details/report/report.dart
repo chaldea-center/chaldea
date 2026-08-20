@@ -13,6 +13,7 @@ import 'package:chaldea/app/modules/quest/quest_list.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/mst_data.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -1674,7 +1675,7 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
         spacing: 2,
         children: [
           Text(
-            'by Chaldea App',
+            'by Chaldea App v${AppInfo.versionString}',
             style: const TextStyle(color: Colors.white60, fontSize: 14, fontWeight: FontWeight.w500),
             textAlign: .center,
           ),

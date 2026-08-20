@@ -1447,7 +1447,8 @@ class FuncDescriptor extends StatelessWidget {
     }
 
     if (buff != null) {
-      _addTraits(Transl.special.buffCheckSelf, buff.ckSelfIndv, useAnd: buff.script.checkIndvTypeAnd == true);
+      final script = buff.script;
+      _addTraits(Transl.special.buffCheckSelf, buff.ckSelfIndv, useAnd: script.checkIndvTypeAnd == true);
       if (buff.type == BuffType.upToleranceSubstate &&
           buff.ckOpIndv.toSet().equalTo(Trait.upToleranceSubstateBuffTraits.map((e) => e.value).toSet())) {
         _condSpans.add([
@@ -1460,9 +1461,8 @@ class FuncDescriptor extends StatelessWidget {
           buff.ckOpIndv.first == -Trait.ignoreGuts.value) {
         //
       } else {
-        _addTraits(Transl.special.buffCheckOpposite, buff.ckOpIndv, useAnd: buff.script.checkIndvTypeAnd == true);
+        _addTraits(Transl.special.buffCheckOpposite, buff.ckOpIndv, useAnd: script.checkIndvTypeAnd == true);
       }
-      final script = buff.script;
       if (script.TargetIndiv != null) {
         _addTraits('Target Indiv: ', [script.TargetIndiv!]);
       }
@@ -1470,16 +1470,16 @@ class FuncDescriptor extends StatelessWidget {
       _condSpans.addAll(_buildOwnerIndiv(context, buff, script));
 
       for (final (target, ckCountIndiv) in [
-        (Transl.special.buffCheckSelf, buff.script.ckSelfCountIndividuality),
-        (Transl.special.buffCheckOpposite, buff.script.ckOpCountIndividuality),
+        (Transl.special.buffCheckSelf, script.ckSelfCountIndividuality),
+        (Transl.special.buffCheckOpposite, script.ckOpCountIndividuality),
       ]) {
         if (ckCountIndiv == null || ckCountIndiv.isEmpty) continue;
         _condSpans.add([
           TextSpan(text: target),
           ...SharedBuilder.replaceSpan(Transl.special.buffOwnerIndiv, '{0}', [
             ...SharedBuilder.traitSpans(context: context, traits: ckCountIndiv, useAndJoin: false),
-            if (buff.script.ckIndvCountBelow != null) TextSpan(text: '≤${buff.script.ckIndvCountBelow}'),
-            if (buff.script.ckIndvCountAbove != null) TextSpan(text: '≥${buff.script.ckIndvCountAbove}'),
+            if (script.ckIndvCountBelow != null) TextSpan(text: '≤${script.ckIndvCountBelow}'),
+            if (script.ckIndvCountAbove != null) TextSpan(text: '≥${script.ckIndvCountAbove}'),
           ]),
         ]);
       }
@@ -1501,11 +1501,20 @@ class FuncDescriptor extends StatelessWidget {
       if (script.fromCommandSpell == 1) {
         _condSpans.add([TextSpan(text: Transl.miscFunction('fromCommandSpell'))]);
       }
+      if (script.condGrantorRelativePosition != null) {
+        _condSpans.add([
+          TextSpan(
+            text: Transl.miscFunction(
+              'condGrantorRelativePosition_${script.condGrantorRelativePosition! > 0 ? 'positive' : 'negative'}',
+            ).replaceFirst('{0}', script.condGrantorRelativePosition!.abs().toString()),
+          ),
+        ]);
+      }
       if (buff.type == BuffType.npattackPrevBuff) {
         _condSpans.add([TextSpan(text: '替换宝具效果中的第${(vals?.Value ?? 0) + 1}个效果(包含敌方效果)')]);
       }
 
-      final condBuffValues = buff.script.condBuffValue ?? [];
+      final condBuffValues = script.condBuffValue ?? [];
       for (final condBuffValue in condBuffValues) {
         final buffType = BuffType.fromId(condBuffValue.buffType ?? -1);
         final buffIndivs = condBuffValue.buffIndividualitie ?? [];

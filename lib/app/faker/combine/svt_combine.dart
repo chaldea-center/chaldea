@@ -203,6 +203,7 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
           trailing: TextButton(
             onPressed: baseUserSvt.adjustHp < 100 || baseUserSvt.adjustAtk < 100
                 ? () {
+                    if (runtime.runningTask.value) return;
                     runtime.runTask(runtime.combine.svtStatusUp);
                   }
                 : null,
@@ -474,7 +475,7 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
                         ).showDialog(context);
                       },
                       child: Opacity(
-                        opacity: combineDisabled ? 0.3 : 1,
+                        opacity: combineDisabled ? 0.5 : 1,
                         child: ImageWithText(
                           image: db.getIconImage(skill.skill.icon, width: 48, height: 48),
                           text: 'Lv.$curLv',
@@ -591,7 +592,7 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
                         ).showDialog(context);
                       },
                       child: Opacity(
-                        opacity: combineDisabled ? 0.3 : 1,
+                        opacity: combineDisabled ? 0.5 : 1,
                         child: ImageWithText(
                           image: db.getIconImage(skill.icon, width: 48, height: 48),
                           text: 'Lv.$curLv',
@@ -623,37 +624,55 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
       final userSvtCmdCode = mstData.userSvtCommandCode[baseUserSvt.svtId];
       children.addAll([
         DividerWithTitle(title: '${S.current.command_code} ${S.current.unlock}'),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+        Wrap(
+          alignment: .center,
+          crossAxisAlignment: .center,
           children: [
-            ...List.generate(5, (index) {
-              final cardType = svt.cards.getOrNull(index);
-              final status = userSvtCmdCode?.userCommandCodeIds.getOrNull(index) ?? -1;
-              Widget child;
-              if (cardType == null) {
-                child = Text('$index:UnknownCard');
-              } else {
-                child = CommandCardWidget(card: cardType, width: 42);
-                child = ImageWithText(
-                  image: child,
-                  text: (mstData.userItem[_getCommandCodeUnlockKey(cardType)]?.num ?? 0).toString(),
-                  option: ImageWithTextOption(fontSize: 12),
+            ...List.generate(svt.cards.length, (index) {
+              final cardType = svt.cards[index];
+              final userCCId = userSvtCmdCode?.userCommandCodeIds.getOrNull(index) ?? -1;
+              final keyNum = mstData.userItem[_getCommandCodeUnlockKey(cardType)]?.num ?? 0;
+              Widget cardWidget = ImageWithText(
+                image: Opacity(opacity: 0.8, child: CommandCardWidget(card: cardType, width: 42)),
+                text: keyNum.toString(),
+                option: ImageWithTextOption(fontSize: 12),
+              );
+              Widget? btn;
+              if (userCCId == -1) {
+                btn = InkWell(
+                  child: Icon(Icons.lock, color: Theme.of(context).colorScheme.surfaceTint),
+                  onTap: () {
+                    runtime.runTask(() => unlockIndex(svt.id, [index]));
+                  },
                 );
-                if (status == -1) {
-                  child = InkWell(
-                    onTap: () async {
-                      await runtime.runTask(() => unlockIndex(svt.id, [index]));
-                    },
-                    child: Opacity(opacity: 0.5, child: child),
-                  );
-                }
+              } else if (userCCId == 0) {
+                btn = Icon(Icons.lock_open, color: Theme.of(context).disabledColor);
+              } else if (userCCId > 0) {
+                final cc = db.gameData.commandCodesById[mstData.userCommandCode[userCCId]?.commandCodeId];
+                btn = cc?.iconBuilder(context: context) ?? Text(userCCId.toString());
               }
-              return Flexible(child: child);
+
+              return Column(
+                mainAxisSize: .min,
+                spacing: 2,
+                children: [
+                  cardWidget,
+                  SizedBox.square(dimension: 36, child: Center(child: btn ?? const SizedBox.shrink())),
+                ],
+              );
             }),
+            const SizedBox(width: 8),
             IconButton(
-              onPressed: () {
-                runtime.runTask(() => unlockIndex(svt.id, List.generate(5, (i) => i)));
-              },
+              onPressed: userSvtCmdCode?.userCommandCodeIds.every((e) => e >= 0) == true
+                  ? null
+                  : () {
+                      SimpleConfirmDialog(
+                        title: Text('Unlock All'),
+                        onTapOk: () {
+                          runtime.runTask(() => unlockIndex(svt.id, List.generate(svt.cards.length, (i) => i)));
+                        },
+                      ).showDialog(context);
+                    },
               icon: Icon(Icons.done_all),
             ),
           ],
@@ -781,12 +800,12 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
   Future<void> unlockIndex(int svtId, List<int> indexes) async {
     for (final index in indexes) {
       final svt = db.gameData.servantsById[svtId];
-      final status = mstData.userSvtCommandCode[svtId]?.userCommandCodeIds.getOrNull(index) ?? -1;
+      final userCCId = mstData.userSvtCommandCode[svtId]?.userCommandCodeIds.getOrNull(index) ?? -1;
       final cardType = svt?.cards.getOrNull(index);
       if (cardType == null) {
         throw SilentException('Unknown Svt or index');
       }
-      if (status >= 0) continue;
+      if (userCCId >= 0) continue;
       final itemNum = mstData.userItem[_getCommandCodeUnlockKey(cardType)]?.num ?? 0;
       if (itemNum <= 0) continue;
       await runtime.agent.commandCodeUnlock(servantId: svtId, idx: index);

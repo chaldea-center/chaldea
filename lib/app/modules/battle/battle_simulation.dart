@@ -581,7 +581,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
   Widget buildMiscRow() {
     Widget? mysticCodeWidget;
     if (battleData.mysticCode != null) {
-      final rowCount = max(1, battleData.mysticCode!.skills.length ~/ 3);
+      final rowCount = max(1, battleData.mysticCode!.skills.length / 3).ceil();
       mysticCodeWidget = Padding(
         padding: const EdgeInsetsDirectional.only(end: 8),
         child: Column(
@@ -597,7 +597,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
                   if (skillInfo == null) {
                     return db.getIconImage(
                       Atlas.common.emptySkillIcon,
-                      width: 24,
+                      width: 32,
                       aspectRatio: 1,
                       padding: const EdgeInsets.all(2),
                     );

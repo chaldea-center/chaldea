@@ -1853,7 +1853,7 @@ class QuestPhaseExtraDetail with DataScriptBase {
     if (overwriteEquipSkills?.skills.isNotEmpty == true || addEquipSkills?.skills.isNotEmpty == true) {
       return OverwriteEquipSkills(
         iconId: overwriteEquipSkills?.iconId ?? addEquipSkills?.iconId,
-        skills: [...?overwriteEquipSkills?.skills, ...?addEquipSkills?.skills],
+        skills: [...?addEquipSkills?.skills.reversed, ...?overwriteEquipSkills?.skills],
       );
     }
     return null;
@@ -1871,6 +1871,9 @@ class OverwriteEquipSkills {
 
   String get icon {
     final iconId = this.iconId ?? 0;
+    if (iconId <= 0) {
+      return 'https://static.atlasacademy.io/file/aa-fgo-extract-jp/Battle/Common/BattleUIAtlas/btn_master_skill_disable.png';
+    }
     String url = "https://static.atlasacademy.io/file/aa-fgo-extract-jp/Battle/Common/";
     if ((iconId) > 2) {
       url += 'BattleAssetUIAtlas/';
@@ -1884,6 +1887,8 @@ class OverwriteEquipSkills {
   List<int> get skillIds => skills.map((e) => e.id).toList();
 
   int get skillLv => skills.firstOrNull?.lv ?? 1;
+
+  Map<int, int> get skillLvs => {for (final skill in skills) skill.id: skill.lv};
 
   Future<MysticCode> toMysticCode() async {
     final icon = this.icon;

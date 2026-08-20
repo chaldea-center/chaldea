@@ -122,7 +122,7 @@ class FgoAnnualReportData {
       report.errors.add(
         ErrorDetail(
           .gameData,
-          '${S.current.gamedata} ${S.current.outdated}: ${S.current.settings_general}->${S.current.gamedata}->${S.current.update}',
+          '${S.current.gamedata}(${db.gameData.version.dateTime.toDateString()}) ${S.current.outdated}: ${S.current.settings_general}->${S.current.gamedata}->${S.current.update}',
         ),
       );
     }

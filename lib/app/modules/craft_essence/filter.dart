@@ -28,7 +28,7 @@ class CraftFilterPage extends FilterPage<CraftFilterData> {
     if (!filterData.obtain.matchAny([
       ce.obtain,
       if (ce.isRegionSpecific) CEObtain.regionSpecific,
-      if (ce.getBondBonusData() != null) CEObtain.davinciBondBonus,
+      if (ce.getBondBonusData(includeNoTraitLimit: false) != null) CEObtain.davinciBondBonus,
     ])) {
       return false;
     }
