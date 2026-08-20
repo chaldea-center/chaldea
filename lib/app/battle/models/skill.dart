@@ -57,6 +57,8 @@ class BattleSkillInfoData {
     return _skillLv.clamp(1, maxLv);
   }
 
+  List<int> getIndividualiyArray() => skill?.individuality ?? [];
+
   void setRankUp(final int newRank) {
     rankUp = newRank;
     skillScript = skill?.script;

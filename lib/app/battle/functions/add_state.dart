@@ -340,20 +340,14 @@ class AddState {
 
   static bool _isMatchingAvailableMasterSkill(
     final BattleSkillInfoData skillInfo,
-    final List<List<int>>? targetIndivs,
+    final List<List<int>>? targetSkillIndivArray,
   ) {
     if (skillInfo.chargeTurn > 0) return false;
-    if (targetIndivs == null || targetIndivs.isEmpty) return false;
+    if (targetSkillIndivArray == null || targetSkillIndivArray.isEmpty) return true;
 
-    final skillIndiv = skillInfo.skill?.individuality;
-    if (skillIndiv == null || skillIndiv.isEmpty) return true;
-
-    for (final targetIndiv in targetIndivs) {
-      if (targetIndiv.isEmpty) continue;
-      if (Individuality.checkSignedIndivAllMatch(self: skillIndiv, signedTarget: targetIndiv)) {
-        return true;
-      }
-    }
-    return false;
+    return Individuality.checkSignedMultiIndividualityAllowEmptySelf(
+      skillInfo.getIndividualiyArray(),
+      targetSkillIndivArray,
+    );
   }
 }
