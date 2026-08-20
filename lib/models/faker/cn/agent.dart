@@ -874,9 +874,17 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
     int32_t followerRandomLimitCount = 0, //?
     String choiceRandomLimitCounts = "{}",
     int32_t followerSpoilerProtectionLimitCount = 4, //?
+    int32_t followerDispLimitCount = 0,
+    int32_t followerIconLimitCount = 0,
+    int32_t followerPortraitLimitCount = 0,
+    int32_t followerCommandCardLimitCount = 0,
     int32_t followerTransformRandomLimitCount = 0,
     String choiceTransformRandomLimitCounts = "{}",
     int32_t followerTransformSpoilerProtectionLimitCount = 0,
+    int32_t followerTransformDispLimitCount = 0,
+    int32_t followerTransformIconLimitCount = 0,
+    int32_t followerTransformPortraitLimitCount = 0,
+    int32_t followerTransformCommandCardLimitCount = 0,
     int32_t recommendSupportIdx = 0,
     required int32_t followerSupportDeckId,
     int32_t campaignItemId = 0,
@@ -905,11 +913,23 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
         "followerType": followerType,
         "followerRandomLimitCount": followerRandomLimitCount,
         "followerSpoilerProtectionLimitCount": followerSpoilerProtectionLimitCount,
-        "followerSupportDeckId": followerSupportDeckId,
+        // TODO_CN 20270417
+        // "followerDispLimitCount": followerDispLimitCount,
+        // "followerIconLimitCount": followerIconLimitCount,
+        // "followerPortraitLimitCount": followerPortraitLimitCount,
+        // "followerCommandCardLimitCount": followerCommandCardLimitCount,
+        // "followerSupportDeckId": followerSupportDeckId,
+
         // TODO_CN 20270401 Francesca
         // "choiceTransformRandomLimitCounts": choiceTransformRandomLimitCounts,
         // "followerTransformRandomLimitCount": followerTransformRandomLimitCount,
         // "followerTransformSpoilerProtectionLimitCount": followerTransformSpoilerProtectionLimitCount,
+
+        // TODO_CN 20270417
+        // "followerTransformDispLimitCount": followerTransformDispLimitCount,
+        // "followerTransformIconLimitCount": followerTransformIconLimitCount,
+        // "followerTransformPortraitLimitCount": followerTransformPortraitLimitCount,
+        // "followerTransformCommandCardLimitCount": followerTransformCommandCardLimitCount,
         "recommendSupportIdx": 0,
         "campaignItemId": campaignItemId,
         "restartWave": restartWave,
