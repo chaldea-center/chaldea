@@ -569,6 +569,22 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
           na: () => rich('Unlocked $value Class Score Signs'),
           kr: null,
         );
+      case CondType.selfIndividuality:
+        return localized(
+          jp: () => rich('特性', traits(context), 'を持つ'),
+          cn: () => rich('持有特性', traits(context)),
+          tw: null,
+          na: () => rich('Have trait', traits(context)),
+          kr: null,
+        );
+      case CondType.notSelfIndividuality:
+        return localized(
+          jp: () => rich('特性', traits(context), 'を持たない'),
+          cn: () => rich('不持有特性', traits(context)),
+          tw: null,
+          na: () => rich('Do not have trait', traits(context)),
+          kr: null,
+        );
       default:
         break;
     }
