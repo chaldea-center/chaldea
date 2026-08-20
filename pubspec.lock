@@ -181,10 +181,10 @@ packages:
     dependency: "direct main"
     description:
       name: catcher_2
-      sha256: c0e21edc0fdb2fd91644ec8bb6870db5823ae2a6fed2cc8cf3f3500e5b295d4e
+      sha256: "56f681cb9ef9ea7341a13508f06aabf900cda8e800310b7be130518812a88c0c"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.11"
+    version: "2.1.12"
   characters:
     dependency: transitive
     description:
@@ -522,10 +522,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_easyloading
-      sha256: ba21a3c883544e582f9cc455a4a0907556714e1e9cf0eababfcb600da191d17c
+      sha256: "764e83a3537c8bf00353750ec90cf42967949c47225d222277c218ca5f200ae8"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.5"
+    version: "4.0.2"
   flutter_fgbg:
     dependency: transitive
     description:

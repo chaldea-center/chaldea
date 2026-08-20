@@ -77,6 +77,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WindowListener
         supportedLocales: Language.getSortedSupportedLanguage(db.settings.language).map((e) => e.locale),
         builder: (context, widget) {
           ErrorWidget.builder = _ErrorWidget.errorWidgetBuilder;
+          isEasyLoadingAttached = true;
           return FlutterEasyLoading(child: widget);
         },
       ),

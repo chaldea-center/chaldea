@@ -54,7 +54,7 @@ class ChaldeaWorkerApi {
       }
     }
     error2 ??= error;
-    if (EasyLoading.instance.overlayEntry?.mounted != true) return;
+    if (!isEasyLoadingAttached) return;
     String msg = error2.toString();
     if (response?.statusCode == 500 && msg.contains('D1_ERROR: Error 9000: something went wrong')) {
       msg += Language.isZH ? '\n目前服务器不稳定，请稍后重试s' : '\nThe server is currently unstable, please try again later';

@@ -14,6 +14,8 @@ import '../packages/app_info.dart';
 import '../packages/platform/platform.dart';
 import 'constants.dart';
 
+import 'package:flutter_easyloading/src/runtime.dart'; // ignore: implementation_imports
+
 // ignore: camel_case_types
 typedef int32_t = int;
 // ignore: camel_case_types
@@ -641,27 +643,29 @@ extension DioExceptionX on DioException {
   }
 }
 
+bool isEasyLoadingAttached = false;
+
 Future<T?> tryEasyLoading<T>(Future<T> Function() task) async {
-  final mounted = EasyLoading.instance.overlayEntry?.mounted == true;
-  if (mounted) return task();
+  if (isEasyLoadingAttached) return task();
   return null;
 }
 
 Future<T> showEasyLoading<T>(Future<T> Function() computation, {bool mask = false}) async {
-  final mounted = EasyLoading.instance.overlayEntry?.mounted == true;
-  if (!mounted) return computation();
-  Widget? widget;
+  if (!isEasyLoadingAttached) return computation();
+  int? sessionId;
+
   try {
     await EasyLoading.dismiss();
+    sessionId = easyLoadingRuntime.session?.id;
     EasyLoading.show(maskType: mask ? EasyLoadingMaskType.clear : null);
-    widget = EasyLoading.instance.w;
+    sessionId = easyLoadingRuntime.session?.id;
     return await computation();
   } finally {
-    final widget2 = EasyLoading.instance.w;
-    if (widget == null || widget == widget2) {
+    final sessionId2 = easyLoadingRuntime.session?.id;
+    if (sessionId == null || sessionId == sessionId2) {
       EasyLoading.dismiss();
     } else {
-      print(['easyloading container changed:', widget, widget2]);
+      print(['easyloading container changed:', sessionId, sessionId2]);
     }
   }
 }

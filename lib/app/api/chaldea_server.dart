@@ -85,7 +85,7 @@ class ChaldeaServerApi {
     }
 
     errorMessage ??= error?.toString();
-    if (EasyLoading.instance.overlayEntry?.mounted != true) return;
+    if (!isEasyLoadingAttached) return;
     EasyLoading.showError(errorMessage.toString());
   }
 
