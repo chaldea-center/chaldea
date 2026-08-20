@@ -17,6 +17,11 @@ class CatMouseGame {
   late final List<int> infoData = kAssetKey;
   List<int> infoTop = Uint8List(32);
 
+  late final List<int> stageTop = Uint8List(32);
+  late final List<int> stageData = Uint8List(32);
+  late final List<int> baseTop = Uint8List(32);
+  late final List<int> baseData = Uint8List(32);
+
   // SVEC+SKEY
   late final kBattleKey = utf8.encode(
     {
@@ -35,10 +40,48 @@ class CatMouseGame {
     }[region]!,
   );
 
+  // baseData/baseTop
+  late final kBaseKey = utf8.encode(
+    {
+      Region.jp: 'PFBs0eIuunoxKkCcLbqDVerU1rShhS276SAL3A8tFLUfGvtz3F3FFeKELIk3Nvi4',
+      Region.na: 'FEq45VzsnHv8ynuLIGGF9qRA2tJ6vJ61FkG6KliUnD77cN7pvveVAH5gcPeLEzOR',
+      Region.cn: '',
+    }[region]!,
+  );
+
   CatMouseGame([this.region = Region.jp]) {
     if (region != Region.jp && region != Region.na && region != Region.cn) {
       throw ArgumentError.value(region, 'region', 'Only JP/NA/CN supported');
     }
+
+    final stageBytes = kBattleKey;
+    for (var i = 0; i < stageBytes.length; i++) {
+      final dest = i >> 1;
+      if ((i & 1) != 0) {
+        stageTop[dest] = stageBytes[i];
+      } else {
+        stageData[dest] = stageBytes[i];
+      }
+    }
+
+    final baseBytes = kBaseKey;
+    final blockCount = baseBytes.length ~/ 4;
+    for (var b = 0; b < blockCount; b++) {
+      final src = b * 4;
+      final dst = (b ~/ 2) * 4;
+      if (b % 2 == 1) {
+        baseTop[dst] = baseBytes[src];
+        baseTop[dst + 1] = baseBytes[src + 1];
+        baseTop[dst + 2] = baseBytes[src + 2];
+        baseTop[dst + 3] = baseBytes[src + 3];
+      } else {
+        baseData[dst] = baseBytes[src];
+        baseData[dst + 1] = baseBytes[src + 1];
+        baseData[dst + 2] = baseBytes[src + 2];
+        baseData[dst + 3] = baseBytes[src + 3];
+      }
+    }
+
     thirdHomeBuilding();
   }
 
@@ -46,6 +89,56 @@ class CatMouseGame {
     final array = kBattleKey;
     battleKey = array.sublist(0, 32);
     battleIV = array.sublist(32);
+
+    for (var i = 0; i < array.length; i++) {
+      final destIndex = i >> 1;
+      if ((i & 1) != 0) {
+        stageTop[destIndex] = array[i];
+      } else {
+        stageData[destIndex] = array[i];
+      }
+    }
+  }
+
+  ({List<int> home, List<int> info}) otherHomeBuilding(String data) {
+    final bytes = utf8.encode(data);
+
+    final home = Uint8List(32);
+    final info = Uint8List(32);
+
+    for (var i = 0; i < bytes.length; i++) {
+      final mod = i & 0x1F; // i % 32
+      if (mod == 0) {
+        home[0] = bytes[i];
+      } else {
+        info[mod] = bytes[i];
+      }
+    }
+
+    return (home: home, info: info);
+  }
+
+  String catGame3(String str, String? key) {
+    if (key == null || key.isEmpty) {
+      return _catGame3Single(str);
+    }
+    return _catGame3WithKey(str, key);
+  }
+
+  String _catGame3Single(String str) {
+    final bytes = utf8.encode(str);
+
+    for (var i = 0; i < bytes.length; i++) {
+      bytes[i] = (~bytes[i]) & 0xFF;
+    }
+
+    return catHome(bytes, stageData, stageTop, true);
+  }
+
+  String _catGame3WithKey(String str, String key) {
+    final bytes = utf8.encode(str);
+    final (:home, :info) = otherHomeBuilding(key);
+    return catHome(bytes, home, info, true);
   }
 
   String catGame5(String str) {
@@ -66,6 +159,9 @@ class CatMouseGame {
   }
 
   List<int> catHomeMain(List<int> data, List<int> key, List<int> iv, bool isCompress /*= false*/) {
+    if (isCompress) {
+      data = BZip2Encoder().encode(data); // but needs level 1
+    }
     return encryptRijndael(data, key, iv);
   }
 

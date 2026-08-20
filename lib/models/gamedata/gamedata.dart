@@ -553,6 +553,7 @@ class GameTop extends GameAppVerCode {
   RegionAssetBundle? assetbundle;
   String get assetbundleFolder => assetbundle?.folderName ?? "";
   String? unityVer;
+  String? clientIdentityKey; // NA only
 
   GameTop({
     required this.region,
@@ -568,6 +569,7 @@ class GameTop extends GameAppVerCode {
     this.dateVer = 0, // CN has no dateVer
     this.assetbundle,
     this.unityVer,
+    this.clientIdentityKey,
   });
 
   String get host {

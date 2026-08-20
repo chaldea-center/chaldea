@@ -66,21 +66,25 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
 
   @override
   Future<FResponse> loginTop() async {
+    if (network.gameTop.assetbundleFolder.isEmpty) {
+      throw SilentException('Game info not loaded');
+    }
     network.agentData.raidRecords.clear();
     final request = FRequestJP(network: network, path: '/login/top');
     request.addBaseField();
-    if (network.gameTop.region == Region.jp) {
-      await request.addSignatureField();
-    }
+    await request.addSignatureField(); // NA use same key as JP
     request.addFieldStr('deviceInfo', network.user.deviceInfo ?? FakerUA.deviceinfo);
     final int lastAccessTime = int.parse(request.paramString['lastAccessTime']!);
-    final int userId = int.parse(network.user.auth!.userId);
-    int userState = (-lastAccessTime >> 2) ^ userId & network.gameTop.folderCrc;
+    final userId = network.user.auth!.userId;
+    final int userIdInt = int.parse(userId);
+    int userState = (-lastAccessTime >> 2) ^ userIdInt & network.gameTop.folderCrc;
     request.addFieldInt64('userState', userState);
     request.addFieldStr('assetbundleFolder', network.gameTop.assetbundleFolder);
     request.addFieldInt32('isTerminalLogin', 1);
     if (network.gameTop.region == Region.na) {
       request.addFieldInt32('country', network.user.country.countryId);
+      request.addFieldStr('clientIdentityKey', network.gameTop.clientIdentityKey ?? network.gameTop.appVer);
+      request.addFieldStr('countryCode2', network.catMouseGame.catGame3(userId, network.gameTop.assetbundleFolder));
     }
     return request.beginRequestAndCheckError('login', addBaseFields: false);
   }

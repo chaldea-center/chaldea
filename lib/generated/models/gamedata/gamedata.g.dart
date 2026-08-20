@@ -183,6 +183,7 @@ GameTop _$GameTopFromJson(Map json) => GameTop(
   dateVer: (json['dateVer'] as num?)?.toInt() ?? 0,
   assetbundle: json['assetbundle'] == null ? null : RegionAssetBundle.fromJson(json['assetbundle'] as Map),
   unityVer: json['unityVer'] as String?,
+  clientIdentityKey: json['clientIdentityKey'] as String?,
 );
 
 Map<String, dynamic> _$GameTopToJson(GameTop instance) => <String, dynamic>{
@@ -199,6 +200,7 @@ Map<String, dynamic> _$GameTopToJson(GameTop instance) => <String, dynamic>{
   'dateVer': instance.dateVer,
   'assetbundle': instance.assetbundle?.toJson(),
   'unityVer': instance.unityVer,
+  'clientIdentityKey': instance.clientIdentityKey,
 };
 
 AssetBundleDecrypt _$AssetBundleDecryptFromJson(Map json) => AssetBundleDecrypt(
