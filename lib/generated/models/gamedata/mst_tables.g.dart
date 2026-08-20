@@ -991,30 +991,6 @@ BattleResultData _$BattleResultDataFromJson(Map json) => BattleResultData(
       .toList(),
 );
 
-GachaInfos _$GachaInfosFromJson(Map json) => GachaInfos(
-  isNew: json['isNew'],
-  userSvtId: json['userSvtId'],
-  type: json['type'],
-  objectId: json['objectId'],
-  num: json['num'],
-  limitCount: json['limitCount'],
-  sellQp: json['sellQp'],
-  sellMana: json['sellMana'],
-  svtCoinNum: json['svtCoinNum'],
-);
-
-Map<String, dynamic> _$GachaInfosToJson(GachaInfos instance) => <String, dynamic>{
-  'type': instance.type,
-  'objectId': instance.objectId,
-  'num': instance.num,
-  'isNew': instance.isNew,
-  'userSvtId': instance.userSvtId,
-  'limitCount': instance.limitCount,
-  'sellQp': instance.sellQp,
-  'sellMana': instance.sellMana,
-  'svtCoinNum': instance.svtCoinNum,
-};
-
 LoginResultData _$LoginResultDataFromJson(Map json) => LoginResultData(
   totalLoginBonus: (json['totalLoginBonus'] as List<dynamic>?)?.map((e) => LoginBonusData.fromJson(e as Map)).toList(),
   seqLoginBonus: (json['seqLoginBonus'] as List<dynamic>?)?.map((e) => LoginBonusData.fromJson(e as Map)).toList(),
@@ -1053,3 +1029,35 @@ CampaignBonusData _$CampaignBonusDataFromJson(Map json) => CampaignBonusData(
 
 LoginBonusItemData _$LoginBonusItemDataFromJson(Map json) =>
     LoginBonusItemData(name: json['name'] as String? ?? '', num: json['num']);
+
+SummonControlResultData _$SummonControlResultDataFromJson(Map json) => SummonControlResultData(
+  gachaInfos:
+      (json['gachaInfos'] as List<dynamic>?)
+          ?.map((e) => GachaInfo.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList() ??
+      const [],
+);
+
+GachaInfo _$GachaInfoFromJson(Map json) => GachaInfo(
+  isNew: json['isNew'],
+  userSvtId: json['userSvtId'],
+  type: json['type'],
+  objectId: json['objectId'],
+  num: json['num'],
+  limitCount: json['limitCount'],
+  sellQp: json['sellQp'],
+  sellMana: json['sellMana'],
+  svtCoinNum: json['svtCoinNum'],
+);
+
+Map<String, dynamic> _$GachaInfoToJson(GachaInfo instance) => <String, dynamic>{
+  'type': instance.type,
+  'objectId': instance.objectId,
+  'num': instance.num,
+  'isNew': instance.isNew,
+  'userSvtId': instance.userSvtId,
+  'limitCount': instance.limitCount,
+  'sellQp': instance.sellQp,
+  'sellMana': instance.sellMana,
+  'svtCoinNum': instance.svtCoinNum,
+};

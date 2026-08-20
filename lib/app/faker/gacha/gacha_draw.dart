@@ -545,7 +545,7 @@ class _GachaDrawPageState extends State<GachaDrawPage> with FakerRuntimeStateMix
   }
 
   Widget buildLastResult() {
-    final cards = runtime.agentData.gachaResultStat.lastDrawResult.toList();
+    final cards = runtime.agentData.gachaResultStat.lastSummonResult?.gachaInfos.toList() ?? [];
     if (cards.length == 100) {
       cards.sortByList((info) {
         final entity = db.gameData.entities[info.objectId];

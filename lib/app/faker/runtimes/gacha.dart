@@ -163,12 +163,12 @@ class FakerRuntimeGacha extends FakerRuntimeBase {
     }
 
     try {
-      final infos = resp.data.getResponseNull('gacha_draw')?.success?['gachaInfos'];
-      if (infos != null) {
-        gachaStat.lastDrawResult = (infos as List).map((e) => GachaInfos.fromJson(e)).toList();
+      final gachaResult = SummonControlResultData.fromJson(resp.data.getResponse('gacha_draw').success!);
+      if (gachaResult.gachaInfos.isNotEmpty) {
+        gachaStat.lastSummonResult = gachaResult;
         if (gacha.isFpGacha) {
-          gachaStat.totalCount += gachaStat.lastDrawResult.length;
-          for (final info in gachaStat.lastDrawResult) {
+          gachaStat.totalCount += gachaResult.gachaInfos.length;
+          for (final info in gachaResult.gachaInfos) {
             gachaStat.servants.addNum(info.objectId, info.num);
             if (info.svtCoinNum > 0 && info.type == GiftType.servant.value) {
               gachaStat.coins.addNum(info.objectId, info.svtCoinNum);

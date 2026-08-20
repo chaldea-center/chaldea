@@ -168,7 +168,7 @@ class _GachaDrawStatData {
   int totalCount = 0;
   Map<int, int> servants = {};
   Map<int, int> coins = {}; //<svtId, num>
-  List<GachaInfos> lastDrawResult = [];
+  SummonControlResultData? lastSummonResult;
   UserServantEntity? lastEnhanceBaseCE;
   List<UserServantEntity> lastEnhanceMaterialCEs = [];
   List<UserServantEntity> lastSellServants = [];
@@ -177,7 +177,7 @@ class _GachaDrawStatData {
     totalCount = 0;
     servants.clear();
     coins.clear();
-    lastDrawResult = [];
+    lastSummonResult = null;
     lastEnhanceBaseCE = null;
     lastEnhanceMaterialCEs = [];
     lastSellServants = [];
