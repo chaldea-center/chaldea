@@ -885,6 +885,9 @@ class BattleServantData {
     if (playerSvtData?.supportType.isSupport == true) {
       traits.add(ConstData.constants.individualityIsSupport);
     }
+    if (isPlayer) {
+      traits.add(ConstData.constants.individualityIsPlayer);
+    }
     if (isPlayer && isGrandSvt) {
       traits.addAll(db.gameData.grandGraphDetails[originalClassId]?.adjustIndividuality ?? []);
     }

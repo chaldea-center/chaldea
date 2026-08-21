@@ -1446,6 +1446,20 @@ class FuncDescriptor extends StatelessWidget {
       ]);
     }
 
+    if (vals?.CommonReleaseId != null) {
+      final commonReleaseId = vals!.CommonReleaseId!;
+      _condSpans.add([
+        TextSpan(text: S.current.condition),
+        SharedBuilder.textButtonSpan(
+          context: context,
+          text: commonReleaseId.toString(),
+          onTap: () {
+            router.push(url: Routes.commonReleaseI(commonReleaseId));
+          },
+        ),
+      ]);
+    }
+
     if (buff != null) {
       final script = buff.script;
       _addTraits(Transl.special.buffCheckSelf, buff.ckSelfIndv, useAnd: script.checkIndvTypeAnd == true);

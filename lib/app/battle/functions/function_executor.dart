@@ -310,6 +310,12 @@ class FunctionExecutor {
       updateTargets(battleData, function, funcIndex, dataVals, targets);
 
       battleData.curFunc = function;
+
+      if (!await _checkCommonRelease(activator: activator, dataVals: dataVals)) {
+        battleData.updateLastFuncResults(function.funcId, funcIndex);
+        return true;
+      }
+
       switch (function.funcType) {
         case FuncType.absorbNpturn:
         case FuncType.gainNpFromTargets:
@@ -599,7 +605,17 @@ class FunctionExecutor {
           break;
         case FuncType.addStateFuncType169:
         case FuncType.addStateFuncType170:
-          // TODO: new addStateXX FuncType
+          await AddState.addStateByAvailableMasterSkill(
+            battleData,
+            function.buff,
+            function.funcId,
+            dataVals,
+            activator,
+            targets,
+            isShortBuff: function.funcType == FuncType.addStateFuncType170,
+            skillInfoType: skillInfoType,
+            skillType: skillType,
+          );
           break;
       }
 
@@ -910,6 +926,8 @@ class FunctionExecutor {
         targets.addAll(aliveAllies);
         targets.addAll(aliveEnemies);
         break;
+      case FuncTargetType.noTarget:
+        break;
       case FuncTargetType.ptAnother:
       case FuncTargetType.enemyAnother:
       case FuncTargetType.ptSelfBefore:
@@ -920,7 +938,6 @@ class FunctionExecutor {
       case FuncTargetType.enemyOneAnotherRandom:
       case FuncTargetType.enemyRange:
       case FuncTargetType.handCommandcardRandomOne:
-      case FuncTargetType.noTarget:
       case FuncTargetType.fieldRandom:
         battleData.battleLogger.error(
           '${S.current.not_implemented}: $funcTargetType, '
@@ -1227,5 +1244,38 @@ class FunctionExecutor {
       return true;
     }
     return false;
+  }
+
+  static Future<bool> _checkCommonRelease({required BattleServantData? activator, required DataVals dataVals}) async {
+    final commonReleaseId = dataVals.CommonReleaseId;
+    if (commonReleaseId == null || commonReleaseId == 0) return true;
+
+    final releases = await showEasyLoading(() => AtlasApi.commonRelease(commonReleaseId), mask: true);
+
+    if (releases == null || releases.isEmpty) return true;
+
+    bool? _checkOneRelease(CommonRelease release) {
+      switch (release.condType) {
+        case .questClearPhase || .questClear:
+          return true;
+        case .selfIndividuality:
+          if (activator == null) return false;
+          final targetIndiv = release.condId;
+          final hasIndiv = Individuality.checkIndividualities(
+            self: activator.getTraits(addTraits: activator.getBuffTraits()),
+            target: [targetIndiv.abs()],
+          );
+          return targetIndiv < 0 ? !hasIndiv : hasIndiv;
+        default:
+          // for battle, focus on FALSE, so regard unknown(null) as true
+          return true;
+      }
+    }
+
+    if (CommonRelease.check(releases, _checkOneRelease) == false) {
+      return false;
+    }
+
+    return true;
   }
 }

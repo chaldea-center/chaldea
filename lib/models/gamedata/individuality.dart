@@ -375,6 +375,40 @@ abstract class Individuality {
     });
   }
 
+  static bool checkSignedMultiIndividualityAllowEmptySelf(List<int>? selfArray, List<List<int>>? signedTargetsArray) {
+    if (signedTargetsArray == null || signedTargetsArray.isEmpty) {
+      return true;
+    }
+    return signedTargetsArray.any(
+      (signedTargetArray) => _checkSignedIndividualitiesAllowEmptySelf(selfArray, signedTargetArray),
+    );
+  }
+
+  static bool _checkSignedIndividualitiesAllowEmptySelf(List<int>? selfArray, List<int>? signedTargetArray) {
+    bool result = true;
+    if (selfArray != null && signedTargetArray != null && signedTargetArray.isNotEmpty) {
+      final (:unsignedArray, :signedArray) = divideUnsignedAndSignedArray(signedTargetArray);
+      bool _isMatchUnsigned;
+      if (unsignedArray.isEmpty) {
+        _isMatchUnsigned = true;
+      } else {
+        _isMatchUnsigned = isMatchArray(selfArray, unsignedArray);
+      }
+      bool _isMatchSigned;
+      if (signedArray.isEmpty) {
+        _isMatchSigned = true;
+      } else {
+        _isMatchSigned = !isPartialMatchArray(selfArray, signedArray);
+      }
+      return _isMatchSigned && _isMatchUnsigned;
+    }
+    return result;
+  }
+
+  // utils
+
+  static bool isNullOrEmpty(List<dynamic>? list) => list == null || list.isEmpty;
+
   static int getMatchedTotalCount({required List<int> selfs, required List<int> targets}) {
     List<int> matchedCountArray = Individuality._getMatchedCountArray(selfs: selfs, targets: targets);
 

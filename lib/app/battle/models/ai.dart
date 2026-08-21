@@ -58,16 +58,23 @@ class FieldAiManager with _AiManagerBase {
     }
   }
 
-  Future<bool> isAllowedCommonRelease(List<int> commonReleaseId) async {
-    if (commonReleaseId.isEmpty) return false;
-    List<CommonRelease> allCommonRelease = [];
-    for (final id in commonReleaseId) {
-      final crs = await showEasyLoading(() => AtlasApi.commonRelease(id), mask: true);
-      if (crs == null) return false;
-      allCommonRelease.addAll(crs);
+  Future<bool> isAllowedCommonRelease(List<int> aiVals) async {
+    if (aiVals.isEmpty) return true;
+    final commonReleaseId = aiVals.first;
+    assert(aiVals.where((e) => e > 10).length == 1, 'Ai contains multiple ids for common release cond: $aiVals');
+    final releases = await showEasyLoading(() => AtlasApi.commonRelease(commonReleaseId), mask: true);
+    if (releases == null) return true;
+    if (CommonRelease.check(releases, _checkOneRelease) == false) {
+      return false;
     }
-    // Check if allowed commonRelease is only CondType.questClearPhase
-    return allCommonRelease.isNotEmpty && allCommonRelease.every((cr) => cr.condType == CondType.questClearPhase);
+    return true;
+  }
+
+  bool? _checkOneRelease(CommonRelease release) {
+    if (const <CondType>{.questClearPhase, .questClear}.contains(release.condType)) {
+      return true;
+    }
+    return null;
   }
 
   Future<void> actWaveStart(BattleData battleData) async {

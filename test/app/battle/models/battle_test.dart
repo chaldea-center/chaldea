@@ -527,6 +527,112 @@ void main() async {
     expect(tezcatlipoca.hp, 15535 + 3600);
   });
 
+  test('Kingprotea Alter NP steals available mystic code skills', () async {
+    Future<BattleData> createBattle({int firstSkillCharge = 0}) async {
+      final battle = BattleData();
+      await battle.init(
+        db.gameData.questPhases[9300040603]!,
+        [
+          PlayerSvtData.id(1102300)
+            ..tdLv = 1
+            ..lv = 90,
+        ],
+        MysticCodeData()
+          ..mysticCode = db.gameData.mysticCodes[130]!
+          ..level = 10,
+      );
+      battle.masterSkillInfo.first.chargeTurn = firstSkillCharge;
+      return battle;
+    }
+
+    Future<void> executeNp(final BattleData battle) async {
+      final kingprotea = battle.targetedPlayer!..np = 10000;
+      final np = kingprotea.getCurrentNP()!;
+      final npCard = kingprotea.getNPCard()!;
+      await FunctionExecutor.executeFunctions(
+        battle,
+        np.functions,
+        kingprotea.tdLv,
+        script: np.script,
+        activator: kingprotea,
+        targetedAlly: kingprotea,
+        targetedEnemy: battle.targetedEnemy,
+        card: npCard,
+      );
+    }
+
+    final allAvailableNpBattle = await createBattle();
+    await executeNp(allAvailableNpBattle);
+    final allAvailableNpBuffs = collectBuffsPerAction(
+      allAvailableNpBattle.targetedPlayer!.battleBuff.validBuffs,
+      BuffAction.npdamage,
+    );
+    expect(allAvailableNpBuffs, hasLength(3));
+    expect(allAvailableNpBuffs.map((buff) => buff.vals.Value), everyElement(200));
+    expect(allAvailableNpBattle.masterSkillInfo.map((skill) => skill.chargeTurn), [2, 2, 2]);
+
+    final partiallyAvailableNpBattle = await createBattle(firstSkillCharge: 4);
+    await executeNp(partiallyAvailableNpBattle);
+    final partiallyAvailableNpBuffs = collectBuffsPerAction(
+      partiallyAvailableNpBattle.targetedPlayer!.battleBuff.validBuffs,
+      BuffAction.npdamage,
+    );
+    expect(partiallyAvailableNpBuffs, hasLength(2));
+    expect(partiallyAvailableNpBuffs.map((buff) => buff.vals.Value), everyElement(200));
+    expect(partiallyAvailableNpBattle.masterSkillInfo.map((skill) => skill.chargeTurn), [4, 2, 2]);
+
+    final allAvailableBattle = await createBattle();
+    final allAvailableKingprotea = allAvailableBattle.targetedPlayer!..np = 10000;
+    final allAvailableEnemy = allAvailableBattle.targetedEnemy!;
+    final allAvailableEnemyHp = allAvailableEnemy.hp;
+    await allAvailableBattle.playerTurn([CombatAction(allAvailableKingprotea, allAvailableKingprotea.getNPCard()!)]);
+
+    expect(allAvailableBattle.masterSkillInfo.map((skill) => skill.chargeTurn), [1, 1, 1]);
+
+    final partiallyAvailableBattle = await createBattle(firstSkillCharge: 4);
+    final partiallyAvailableKingprotea = partiallyAvailableBattle.targetedPlayer!..np = 10000;
+    final partiallyAvailableEnemy = partiallyAvailableBattle.targetedEnemy!;
+    final partiallyAvailableEnemyHp = partiallyAvailableEnemy.hp;
+    await partiallyAvailableBattle.playerTurn([
+      CombatAction(partiallyAvailableKingprotea, partiallyAvailableKingprotea.getNPCard()!),
+    ]);
+
+    expect(partiallyAvailableBattle.masterSkillInfo.map((skill) => skill.chargeTurn), [3, 1, 1]);
+    expect(
+      allAvailableEnemyHp - allAvailableEnemy.hp,
+      greaterThan(partiallyAvailableEnemyHp - partiallyAvailableEnemy.hp),
+    );
+
+    final mismatchedTraitBattle = await createBattle();
+    final mismatchedTraitSkill = mismatchedTraitBattle.masterSkillInfo.first.skill!;
+    final originalIndividuality = mismatchedTraitSkill.individuality;
+    try {
+      mismatchedTraitSkill.individuality = [99999];
+      await executeNp(mismatchedTraitBattle);
+
+      final mismatchedTraitNpBuffs = collectBuffsPerAction(
+        mismatchedTraitBattle.targetedPlayer!.battleBuff.validBuffs,
+        BuffAction.npdamage,
+      );
+      expect(mismatchedTraitNpBuffs, hasLength(2));
+      expect(mismatchedTraitNpBuffs.map((buff) => buff.vals.Value), everyElement(200));
+      expect(mismatchedTraitBattle.masterSkillInfo.map((skill) => skill.chargeTurn), [2, 2, 2]);
+    } finally {
+      mismatchedTraitSkill.individuality = originalIndividuality;
+    }
+
+    final unavailableSkillsBattle = await createBattle();
+    for (final skill in unavailableSkillsBattle.masterSkillInfo) {
+      skill.chargeTurn = 3;
+    }
+    await executeNp(unavailableSkillsBattle);
+    expect(
+      collectBuffsPerAction(unavailableSkillsBattle.targetedPlayer!.battleBuff.validBuffs, BuffAction.npdamage),
+      isEmpty,
+    );
+    expect(unavailableSkillsBattle.masterSkillInfo.map((skill) => skill.chargeTurn), [3, 3, 3]);
+  });
+
   test('deathEffect clear accumulation damage', () async {
     final List<PlayerSvtData> setting = [
       PlayerSvtData.id(702800)
