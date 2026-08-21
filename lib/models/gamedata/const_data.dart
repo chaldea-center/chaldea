@@ -74,6 +74,12 @@ class ConstGameData {
 
   final List<int> warIdsHasEpilogue = [108];
 
+  final Map<int, Map<Region, int>> svtIdToCollectionRemapByRegion = {
+    // KR has made 9310560's collectionNo from 2402 to 23970, but skip it
+    // it can be auto generated, but I believe only this one
+    90086001: {.cn: 102022, .tw: 302023},
+  };
+
   ConstGameData({
     this.cnReplace = const {},
     this.attributeRelation = const {},

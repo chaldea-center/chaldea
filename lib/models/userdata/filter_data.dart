@@ -496,7 +496,7 @@ class CraftFilterData with FilterDataMixin {
     }
     for (final (index, key) in keys.indexed) {
       int r = switch (key) {
-        CraftCompare.collectionNo => (a.sortId ?? a.collectionNo).compareTo((b.sortId ?? b.collectionNo)),
+        CraftCompare.collectionNo => a.sortId.compareTo(b.sortId),
         CraftCompare.rarity => a.rarity - b.rarity,
         CraftCompare.atk => a.atkMax - b.atkMax,
         CraftCompare.hp => a.hpMax - b.hpMax,

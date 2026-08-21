@@ -35,14 +35,24 @@ class _CraftDetailPageState extends State<CraftDetailPage> {
   @override
   void initState() {
     super.initState();
+    _ce = widget.ce ?? _getCraftByIdInDb(widget.id);
     fetchData();
-    _ce = widget.ce ?? db.gameData.craftEssences[widget.id] ?? db.gameData.craftEssencesById[widget.id];
+  }
+
+  CraftEssence? _getCraftByIdInDb(int? id) {
+    if (id == null) return null;
+    CraftEssence? result;
+    final remapCollectionNo = ConstData.svtIdToCollectionRemapByRegion[id]?[db.curUser.region];
+    if (remapCollectionNo != null) {
+      result = db.gameData.allCraftEssences.firstWhereOrNull((e) => e.id == id && e.collectionNo == remapCollectionNo);
+    }
+    return result ?? db.gameData.craftEssences[id] ?? db.gameData.craftEssencesById[id];
   }
 
   Future<void> fetchData() async {
     _loading = true;
     if (mounted) setState(() {});
-    _ce = widget.ce ?? db.gameData.craftEssences[widget.id] ?? db.gameData.craftEssencesById[widget.id];
+    _ce = widget.ce ?? _getCraftByIdInDb(widget.id);
     final id = widget.ce?.id ?? widget.id;
     if (id == null || _ce != null) return;
     _ce = await AtlasApi.ce(id);

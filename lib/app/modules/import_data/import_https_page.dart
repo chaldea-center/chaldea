@@ -1015,6 +1015,7 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     if (mstData == null) {
       throw Exception('mstData null!');
     }
+    final region = widget.region ?? db.curUser.region;
     // clear before import
     _validSvts.clear();
     cardCollections.clear();
@@ -1068,20 +1069,30 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     }
 
     // crafts
+    final allUserSvtEquips = <int, List<UserServantEntity>>{};
+    for (final userSvt in mstData.userSvtAndStorage) {
+      final ce = userSvt.dbCE;
+      if (ce != null) {
+        (allUserSvtEquips[ce.id] ??= []).add(userSvt);
+      }
+    }
     for (final card in cardCollections.values) {
       final ce = db.gameData.craftEssencesById[card.svtId];
       if (ce == null) continue;
-      crafts.putIfAbsent(ce.collectionNo, () => CraftStatus()).status = card.status;
-    }
-
-    for (final ce in [...mstData.userSvt, ...mstData.userSvtStorage]) {
-      if (ce.dbCE == null) continue;
-      final status = crafts.putIfAbsent(ce.dbCE!.collectionNo, () => CraftStatus());
-      if (status.lv < ce.lv || (status.lv == ce.lv && status.limitCount < ce.limitCount)) {
-        status.lv = ce.lv;
-        status.limitCount = ce.limitCount;
+      final status = crafts.putIfAbsent(ce.getCollectionNo(region), () => CraftStatus());
+      status.status = card.status;
+      final ownCes = allUserSvtEquips[card.svtId] ?? const [];
+      if (ownCes.isEmpty) {
+        if (card.status == CraftStatus.owned) {
+          status.lv = card.maxLv;
+          status.limitCount = card.maxLimitCount;
+        }
+      } else {
+        status.lv = Maths.max(ownCes.map((e) => e.lv));
+        status.limitCount = Maths.max(ownCes.map((e) => e.limitCount));
       }
     }
+
     for (final code in mstData.userCommandCodeCollection) {
       final cc = code.dbCC;
       if (cc == null) continue;

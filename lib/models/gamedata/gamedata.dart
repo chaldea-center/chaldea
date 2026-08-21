@@ -148,10 +148,10 @@ class GameData with _GameDataExtra {
          for (final svt in _sortCards(servants))
            if (svt.collectionNo > 0) svt.collectionNo: svt,
        },
-       allCraftEssences = _sortCards(craftEssences),
-       craftEssencesById = {for (final ce in _sortCards(craftEssences)) ce.id: ce},
+       allCraftEssences = _sortCrafts(craftEssences),
+       craftEssencesById = {for (final ce in _sortCrafts(craftEssences)) ce.id: ce},
        craftEssences = {
-         for (final ce in _sortCards(craftEssences))
+         for (final ce in _sortCrafts(craftEssences))
            if (ce.collectionNo > 0) ce.collectionNo: ce,
        },
        commandCodesById = {for (final cc in _sortCards(commandCodes)) cc.id: cc},
@@ -255,6 +255,13 @@ class GameData with _GameDataExtra {
 
   static List<T> _sortCards<T extends GameCardMixin>(List<T> cards) {
     return cards.toList()..sort2((e) => e.collectionNo);
+  }
+
+  static List<CraftEssence> _sortCrafts(List<CraftEssence> cards) {
+    return cards.toList()..sortByList((ce) {
+      Region? region = ce.region;
+      return <int>[region != null ? 10 - region.index : 0, ce.collectionNo];
+    });
   }
 
   void preprocess() {

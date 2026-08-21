@@ -11,6 +11,11 @@ mixin GameCardMixin implements RouteInfo {
 
   int get collectionNo;
 
+  int getCollectionNo(Region region) {
+    assert(this is BasicServant || this is BasicCraftEssence || this is CommandCode, runtimeType);
+    return ConstData.svtIdToCollectionRemapByRegion[id]?[region] ?? collectionNo;
+  }
+
   int get shownId => collectionNo > 0 ? collectionNo : id;
 
   String get name;

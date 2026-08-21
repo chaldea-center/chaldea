@@ -912,7 +912,8 @@ class BasicCraftEssence with GameCardMixin {
 
 @JsonSerializable()
 class CraftEssence extends BasicCraftEssence {
-  double? sortId; // for region specific CEs
+  @RegionConverter()
+  Region? region;
   String ruby;
   int cost;
   int lvMax;
@@ -953,8 +954,8 @@ class CraftEssence extends BasicCraftEssence {
   List<int> get expGrowth => curveData.exp;
 
   CraftEssence({
+    this.region,
     required super.id,
-    this.sortId,
     super.collectionNo = 0,
     required super.name,
     this.ruby = "",
@@ -987,6 +988,12 @@ class CraftEssence extends BasicCraftEssence {
   @override
   Map<String, dynamic> toJson() => _$CraftEssenceToJson(this);
 
+  double get sortId {
+    final region = this.region;
+    if (region == null) return collectionNo.toDouble();
+    return -region.index * 1000000.0 + collectionNo;
+  }
+
   @override
   String? get icon => extraAssets.faces.equip?[id];
 
@@ -999,7 +1006,7 @@ class CraftEssence extends BasicCraftEssence {
   CraftEssenceExtra get extra =>
       db.gameData.wiki.craftEssences[collectionNo] ??= CraftEssenceExtra(collectionNo: collectionNo);
 
-  bool get isRegionSpecific => collectionNo > 100000 && (sortId ?? collectionNo) < 0;
+  bool get isRegionSpecific => region != null;
 
   ({List<List<int>> traits, int rateCount})? getBondBonusData({bool includeNoTraitLimit = false}) {
     if (collectionNo <= 0 || isRegionSpecific) return null;

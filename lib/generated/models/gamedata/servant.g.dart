@@ -324,8 +324,8 @@ Map<String, dynamic> _$BasicCraftEssenceToJson(BasicCraftEssence instance) => <S
 };
 
 CraftEssence _$CraftEssenceFromJson(Map json) => CraftEssence(
+  region: _$JsonConverterFromJson<String, Region>(json['region'], const RegionConverter().fromJson),
   id: (json['id'] as num).toInt(),
-  sortId: (json['sortId'] as num?)?.toDouble(),
   collectionNo: (json['collectionNo'] as num?)?.toInt() ?? 0,
   name: json['name'] as String,
   ruby: json['ruby'] as String? ?? "",
@@ -376,7 +376,7 @@ Map<String, dynamic> _$CraftEssenceToJson(CraftEssence instance) => <String, dyn
   'rarity': instance.rarity,
   'atkMax': instance.atkMax,
   'hpMax': instance.hpMax,
-  'sortId': instance.sortId,
+  'region': _$JsonConverterToJson<String, Region>(instance.region, const RegionConverter().toJson),
   'ruby': instance.ruby,
   'cost': instance.cost,
   'lvMax': instance.lvMax,
@@ -394,6 +394,12 @@ Map<String, dynamic> _$CraftEssenceToJson(CraftEssence instance) => <String, dyn
   'profile': instance.profile.toJson(),
   'face': instance.face,
 };
+
+Value? _$JsonConverterFromJson<Json, Value>(Object? json, Value? Function(Json json) fromJson) =>
+    json == null ? null : fromJson(json as Json);
+
+Json? _$JsonConverterToJson<Json, Value>(Value? value, Json? Function(Value value) toJson) =>
+    value == null ? null : toJson(value);
 
 ExtraAssetsUrl _$ExtraAssetsUrlFromJson(Map json) => ExtraAssetsUrl(
   ascension: (json['ascension'] as Map?)?.map((k, e) => MapEntry(int.parse(k as String), e as String)),
@@ -1334,12 +1340,6 @@ Map<String, dynamic> _$SvtBattlePointToJson(SvtBattlePoint instance) => <String,
     const Trait2dListConverter().toJson,
   ),
 };
-
-Value? _$JsonConverterFromJson<Json, Value>(Object? json, Value? Function(Json json) fromJson) =>
-    json == null ? null : fromJson(json as Json);
-
-Json? _$JsonConverterToJson<Json, Value>(Value? value, Json? Function(Value value) toJson) =>
-    value == null ? null : toJson(value);
 
 BattlePointScript _$BattlePointScriptFromJson(Map json) => BattlePointScript(
   maxChange: (json['maxChange'] as List<dynamic>?)
