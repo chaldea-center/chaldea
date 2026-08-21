@@ -926,6 +926,8 @@ class FunctionExecutor {
         targets.addAll(aliveAllies);
         targets.addAll(aliveEnemies);
         break;
+      case FuncTargetType.noTarget:
+        break;
       case FuncTargetType.ptAnother:
       case FuncTargetType.enemyAnother:
       case FuncTargetType.ptSelfBefore:
@@ -936,7 +938,6 @@ class FunctionExecutor {
       case FuncTargetType.enemyOneAnotherRandom:
       case FuncTargetType.enemyRange:
       case FuncTargetType.handCommandcardRandomOne:
-      case FuncTargetType.noTarget:
       case FuncTargetType.fieldRandom:
         battleData.battleLogger.error(
           '${S.current.not_implemented}: $funcTargetType, '
