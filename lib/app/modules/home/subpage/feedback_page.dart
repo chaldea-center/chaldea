@@ -34,6 +34,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
   late final TextEditingController bodyController = TextEditingController();
 
   bool _changed = false;
+  final Set<int> _sentMailChecksums = {};
 
   void _onTextFieldChanged() {
     if (_changed) return;
@@ -68,11 +69,20 @@ class _FeedbackPageState extends State<FeedbackPage> {
 
   Future<bool> _alertPopPage() async {
     if (subjectController.text.trim().isNotEmpty || bodyController.text.trim().isNotEmpty) {
-      final r = await SimpleConfirmDialog(
-        title: Text(S.current.warning),
-        content: Text(S.current.feedback_form_alert),
-      ).showDialog(context);
-      return r == true;
+      if (!_sentMailChecksums.contains(
+        Object.hashAll(<String>[
+          subjectController.text.trim(),
+          bodyController.text.trim(),
+          contactController.text.trim(),
+          ...attachFiles.keys,
+        ]),
+      )) {
+        final r = await SimpleConfirmDialog(
+          title: Text(S.current.warning),
+          content: Text(S.current.feedback_form_alert),
+        ).showDialog(context);
+        return r == true;
+      }
     }
     return true;
   }
@@ -299,9 +309,9 @@ class _FeedbackPageState extends State<FeedbackPage> {
   }
 
   void sendEmail() async {
-    final bodyText = bodyController.text.trim(),
-        contact = contactController.text.trim(),
-        subject = subjectController.text.trim();
+    final subject = subjectController.text.trim(),
+        bodyText = bodyController.text.trim(),
+        contact = contactController.text.trim();
     if (bodyText.isEmpty) {
       EasyLoading.showInfo(S.current.add_feedback_details_warning);
       return;
@@ -321,7 +331,7 @@ class _FeedbackPageState extends State<FeedbackPage> {
     try {
       final handler = ServerFeedbackHandler(
         attachments: [db.paths.crashLog, db.paths.appLog, db.paths.userDataPath],
-        emailTitle: '[Feedback] $subject',
+        emailTitle: '[Feedback] $subject - v${AppInfo.versionString}',
         senderName: 'Chaldea Feedback',
         // screenshotController: db.runtimeData.screenshotController,
         extraAttachments: Map.of(attachFiles),
@@ -333,10 +343,26 @@ class _FeedbackPageState extends State<FeedbackPage> {
       }
       // subjectController.text = '[SENT] ${subjectController.text}';
       // bodyController.text = '';
-      EasyLoading.showSuccess(S.current.sent);
+      if (mounted) {
+        EasyLoading.dismiss();
+        SimpleConfirmDialog(title: Text(S.current.sent), showCancel: false).showDialog(context);
+        _sentMailChecksums.add(Object.hashAll(<String>[subject, bodyText, contact, ...attachFiles.keys]));
+      } else {
+        EasyLoading.showSuccess(S.current.sent);
+      }
     } catch (e, s) {
       logger.e('send feedback failed', e, s);
-      EasyLoading.showError(escapeDioException(e));
+      if (mounted) {
+        EasyLoading.dismiss();
+        SimpleConfirmDialog(
+          title: Text(S.current.error),
+          content: Text(escapeDioException(e)),
+          scrollable: true,
+          showCancel: false,
+        ).showDialog(context);
+      } else {
+        EasyLoading.showError(escapeDioException(e));
+      }
     }
   }
 }
