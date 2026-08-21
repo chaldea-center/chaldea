@@ -38,19 +38,23 @@ class _ProfilePageState extends State<ProfilePage> {
     _refresh();
   }
 
-  Future<void> _refresh() async {
+  Future<bool> _refresh([Duration interval = _kRefreshDuration]) async {
     if (lastRefresh != null) {
       final (:userId, :refreshTime) = lastRefresh!;
-      if (db.settings.secrets.user.id == userId && refreshTime.add(_kRefreshDuration).isAfter(DateTime.now())) {
-        return;
+      if (db.settings.secrets.user.id == userId && refreshTime.add(interval).isAfter(DateTime.now())) {
+        return false;
       }
     }
     final user = await ChaldeaServerApi.getMe();
-    if (user != null && mounted) {
+    if (user != null) {
       secrets.user.updateFromUserInfo(user);
-      setState(() {});
+      db.notifySettings();
+      if (mounted) {
+        setState(() {});
+      }
+      return true;
     }
-    db.notifySettings();
+    return false;
   }
 
   String _maskEmail(String email) {
@@ -96,14 +100,25 @@ class _ProfilePageState extends State<ProfilePage> {
 
     return Scaffold(
       appBar: AppBar(title: Text(S.current.auth_profile_title)),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        children: [
-          // ProfileCard(title: name, subtitle: '${S.current.auth_user_id}: $uid'),
-          _buildPersonalInfoSection(name, uid, email, isAdmin),
-          _buildAccountActionsSection(),
-          if (isAdmin) _buildAdminSection(),
-        ],
+      body: RefreshIndicator(
+        onRefresh: () async {
+          final result = await _refresh(Duration.zero);
+          if (result) {
+            EasyLoading.showSuccess(S.current.refresh);
+          } else {
+            EasyLoading.showError(S.current.failed);
+          }
+          if (mounted) setState(() {});
+        },
+        child: ListView(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          children: [
+            // ProfileCard(title: name, subtitle: '${S.current.auth_user_id}: $uid'),
+            _buildPersonalInfoSection(name, uid, email, isAdmin),
+            _buildAccountActionsSection(),
+            if (isAdmin) _buildAdminSection(),
+          ],
+        ),
       ),
     );
   }

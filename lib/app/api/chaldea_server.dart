@@ -437,6 +437,7 @@ class ChaldeaServerApi {
     String? username,
     int? ver,
     List<int> teamIds = const [],
+    TeamSortType? sort = .upvotes,
     int limit = 200,
     int offset = 0,
     Duration? expireAfter = const Duration(hours: 2),
@@ -452,6 +453,7 @@ class ChaldeaServerApi {
       'username': username,
       'ids': teamIds.toList()..sort(),
       'ver': ver,
+      'sort': ?sort?.value,
       'limit': limit,
       if (offset > 0) 'offset': offset,
     });
@@ -472,7 +474,7 @@ class ChaldeaServerApi {
   }) {
     if (username == null) userId ??= db.settings.secrets.user.id;
     if ((userId == null || userId == 0) && (username == null || username.isEmpty)) return Future.value();
-    return teams(userId: userId, username: username, limit: limit, offset: offset, expireAfter: expireAfter);
+    return teams(userId: userId, username: username, sort: .id, limit: limit, offset: offset, expireAfter: expireAfter);
   }
 
   static Future<TeamQueryResult?> teamsByQuest({
@@ -515,11 +517,12 @@ class ChaldeaServerApi {
   }
 
   static Future<TeamQueryResult?> teamsRanking({
+    TeamSortType sort = .downvotes,
     int limit = 200,
     int offset = 0,
     Duration? expireAfter = const Duration(hours: 2),
   }) {
-    final query = _encodeQuery({'limit': limit, if (offset > 0) 'offset': offset});
+    final query = _encodeQuery({'sort': sort.value, 'limit': limit, if (offset > 0) 'offset': offset});
     return cacheManager.getModel(
       "$apiV1/teams/ranking?$query",
       (data) => TeamQueryResult.fromJson(data),
@@ -724,4 +727,13 @@ String _encodeQuery(Map<String, dynamic> parameters) {
     }
   }
   return list.join('&');
+}
+
+enum TeamSortType {
+  id,
+  created,
+  upvotes,
+  downvotes;
+
+  String get value => name;
 }

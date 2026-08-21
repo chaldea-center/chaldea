@@ -913,12 +913,12 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
         "followerType": followerType,
         "followerRandomLimitCount": followerRandomLimitCount,
         "followerSpoilerProtectionLimitCount": followerSpoilerProtectionLimitCount,
+        "followerSupportDeckId": followerSupportDeckId,
         // TODO_CN 20270417
         // "followerDispLimitCount": followerDispLimitCount,
         // "followerIconLimitCount": followerIconLimitCount,
         // "followerPortraitLimitCount": followerPortraitLimitCount,
         // "followerCommandCardLimitCount": followerCommandCardLimitCount,
-        // "followerSupportDeckId": followerSupportDeckId,
 
         // TODO_CN 20270401 Francesca
         // "choiceTransformRandomLimitCounts": choiceTransformRandomLimitCounts,

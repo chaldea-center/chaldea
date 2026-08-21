@@ -43,12 +43,16 @@ class SvtBondBonusResult {
 
   int teapotTimes = 1;
 
+  int get totalAddRate => min(eventAddRate + equipAddRate + customAddRate, ConstData.constants.maxFriendShipUpRatio);
+
+  int get totalAddValue => equipAddValue + eventAddValue + customAddValue;
+
   // final result
   // （（礼装羁绊+活动羁绊）*首位羁绊+50羁绊礼装）*茶壶
   int get totalBond {
     int value = (baseValue * (1 + frontlineAddRate / 1000)).floor();
-    value = (value * (1 + (eventAddRate + equipAddRate + customAddRate) / 1000)).floor();
-    value += equipAddValue + eventAddValue + customAddValue;
+    value = (value * (1 + totalAddRate / 1000)).floor();
+    value += totalAddValue;
     value *= teapotTimes;
     return value;
   }
@@ -628,7 +632,13 @@ class _FormationBondTabState extends State<FormationBondTab> {
                   "customAddRate": _strRate(result.customAddRate),
                   "customAddValue": result.customAddValue.toString(),
                   "frontlineAddRate": _strRate(result.frontlineAddRate),
-                  "teapotTimes": result.teapotTimes.toString(),
+                }.items)
+                  _param(k, v),
+                kDefaultDivider,
+                for (final (k, v) in <String, String>{
+                  "totalAddRate": _strRate(result.totalAddRate),
+                  "totalAddValue": '+${result.totalAddValue}',
+                  "teapotTimes": '×${result.teapotTimes}',
                   "totalBond": result.totalBond.toString(),
                 }.items)
                   _param(k, v),

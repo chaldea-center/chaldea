@@ -11,7 +11,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/chaldea_server.dart';
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/auth/validators.dart';
+import 'package:chaldea/app/modules/battle/teams/teams_query_page.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/api/api.dart';
 import 'package:chaldea/models/models.dart';
@@ -163,33 +165,50 @@ class _AdminUserDetailPageState extends State<AdminUserDetailPage> {
     );
   }
 
-  Widget _buildStatistics(AdminUserDetail d) {
+  Widget _buildStatistics(AdminUserDetail detail) {
     return SectionCard(
       header: S.current.auth_admin_statistics,
       children: [
         InfoRow(
           leading: Icon(Icons.cloud_upload_outlined),
           title: S.current.auth_admin_backups_count,
-          value: d.backupsCount.toString(),
+          value: detail.backupsCount.toString(),
           valueMono: true,
         ),
         InfoRow(
           leading: Icon(Icons.groups_outlined),
           title: S.current.auth_admin_teams_count,
-          value: d.teamsCount.toString(),
+          value: detail.teamsCount.toString(),
           valueMono: true,
+          onTap: () {
+            router.pushPage(TeamsQueryPage(mode: .user, userId: detail.user.id));
+          },
         ),
         InfoRow(
           leading: Icon(Icons.devices_outlined),
           title: S.current.auth_admin_sessions,
-          value: '${d.sessions.length}',
+          value: '${detail.sessions.length}',
           valueMono: true,
+          onTap: () {
+            if (detail.sessions.isEmpty) return;
+            SimpleDialog(
+              title: Text(S.current.auth_admin_sessions),
+              children: [for (final session in detail.sessions) SimpleDialogOption(child: Text(session.device))],
+            ).showDialog(context);
+          },
         ),
         InfoRow(
           leading: Icon(Icons.history_outlined),
           title: S.current.auth_admin_recent_logins,
-          value: '${d.logins.length}',
+          value: '${detail.logins.length}',
           valueMono: true,
+          onTap: () {
+            if (detail.logins.isEmpty) return;
+            SimpleDialog(
+              title: Text(S.current.auth_admin_recent_logins),
+              children: [for (final login in detail.logins) SimpleDialogOption(child: Text(login.device))],
+            ).showDialog(context);
+          },
         ),
       ],
     );
