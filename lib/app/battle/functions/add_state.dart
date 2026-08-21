@@ -319,9 +319,8 @@ class AddState {
       }
       return;
     }
-
-    await battleData.withFunction(() async {
-      for (int index = 0; index < count; index++) {
+    for (int index = 0; index < count; index++) {
+      await battleData.withFunction(() async {
         await addState(
           battleData,
           buff,
@@ -333,8 +332,8 @@ class AddState {
           skillInfoType: skillInfoType,
           skillType: skillType,
         );
-      }
-    });
+      });
+    }
   }
 
   static bool _isMatchingAvailableMasterSkill(
