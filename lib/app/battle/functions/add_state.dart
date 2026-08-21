@@ -320,22 +320,21 @@ class AddState {
       return;
     }
 
-    for (int index = 0; index < count; index++) {
-      await addState(
-        battleData,
-        buff,
-        funcId,
-        dataVals,
-        activator,
-        targets,
-        isShortBuff: isShortBuff,
-        skillInfoType: skillInfoType,
-        skillType: skillType,
-      );
-    }
-    for (final target in targets) {
-      battleData.setFuncResult(target.uniqueId, battleData.getCurFuncResult(target.uniqueId));
-    }
+    await battleData.withFunction(() async {
+      for (int index = 0; index < count; index++) {
+        await addState(
+          battleData,
+          buff,
+          funcId,
+          dataVals,
+          activator,
+          targets,
+          isShortBuff: isShortBuff,
+          skillInfoType: skillInfoType,
+          skillType: skillType,
+        );
+      }
+    });
   }
 
   static bool _isMatchingAvailableMasterSkill(
