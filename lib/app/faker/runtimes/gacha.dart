@@ -95,6 +95,14 @@ class FakerRuntimeGacha extends FakerRuntimeBase {
       throw SilentException('Gacha ${option.gachaId} not found');
     }
 
+    final now = getNowTimestamp();
+    if (gacha.openedAt > now || gacha.closedAt <= now) {
+      throw SilentException('Gacha not open');
+    }
+    if (!gacha.releaseConditions.every(runtime.condCheck.isOpenForGacha)) {
+      throw SilentException('Gacha release cond not met');
+    }
+
     final bool hasFreeDraw = checkHasFreeGachaDraw(gacha);
 
     int drawNum;

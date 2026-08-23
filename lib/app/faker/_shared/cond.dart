@@ -195,6 +195,13 @@ class FakerCondCheck {
     }
   }
 
+  bool isOpenForGacha(GachaRelease release) {
+    if (release.type == .privilegeValid) {
+      return true;
+    }
+    return runtime.condCheck.isCondOpen(release.type, release.targetId, release.value) ?? true;
+  }
+
   bool _testSvtCollection(int svtId, bool Function(UserServantCollectionEntity collection) test) {
     final collection = mstData.userSvtCollection[svtId];
     return collection != null && test(collection);
@@ -249,7 +256,6 @@ class FakerCondCheck {
 
   MissionProgressType getEventMissionProgress(int eventMissionId) {
     final mission = runtime.gameData.timerData.eventMissions[eventMissionId];
-    // TODO: check daily updatedAt
     if (mission != null && mission.type == .daily) {
       for (final cond in mission.conds) {
         if (cond.missionProgressType != .clear || cond.targetIds.isEmpty) {

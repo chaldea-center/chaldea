@@ -163,9 +163,15 @@ class MstGacha with RouteInfo {
   @override
   void routeTo({Widget? child, bool popDetails = false, Region? region}) {
     return super.routeTo(
-      child: child ?? GachaDetailPage(gacha: NiceGacha.fromJson(toJson()), region: region ?? Region.jp),
+      child: child ?? GachaDetailPage(gacha: toNiceGacha(), region: region ?? Region.jp),
       popDetails: popDetails,
     );
+  }
+
+  NiceGacha toNiceGacha() {
+    final self = this;
+    if (self is NiceGacha) return self;
+    return NiceGacha.fromJson(self.toJson());
   }
 }
 

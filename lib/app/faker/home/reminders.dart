@@ -44,8 +44,10 @@ class FakerReminders extends StatelessWidget {
       [4, 5],
     ];
     for (final gacha in runtime.gameData.timerData.gachas.values) {
-      // TODO: gacha.releaseConditions;
       if (gacha.freeDrawFlag == 0 || gacha.openedAt > now || gacha.closedAt <= now) continue;
+      if (!gacha.releaseConditions.every(runtime.condCheck.isOpenForGacha)) {
+        continue;
+      }
       if (mstData.userGacha[gacha.id] == null &&
           conflictGachaGroups.any((group) {
             return group.contains(gacha.id) &&

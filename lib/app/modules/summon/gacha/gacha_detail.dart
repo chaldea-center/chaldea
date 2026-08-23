@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
+import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/descriptors/cond_target_value.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -12,6 +13,57 @@ import 'package:chaldea/widgets/widgets.dart';
 import '../summon_simulator_page.dart';
 import 'gacha_banner.dart';
 import 'gacha_parser.dart';
+
+class GachaDetailLoadPage extends StatefulWidget {
+  final int? id;
+  final MstGacha? gacha;
+  final Region? region;
+
+  const GachaDetailLoadPage({super.key, this.id, this.gacha, this.region});
+
+  @override
+  State<GachaDetailLoadPage> createState() => _GachaDetailLoadPageState();
+}
+
+class _GachaDetailLoadPageState extends State<GachaDetailLoadPage> {
+  Region get region => widget.region ?? Region.jp;
+  int get gachaId => widget.gacha?.id ?? widget.id ?? 0;
+
+  NiceGacha? gacha;
+  bool _loading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    loadData();
+  }
+
+  Future<void> loadData() async {
+    _loading = true;
+    if (mounted) setState(() {});
+    final initGacha = widget.gacha;
+    if (initGacha is NiceGacha) {
+      gacha = initGacha;
+    }
+    if (gachaId > 0) {
+      gacha = await AtlasApi.gacha(gachaId, region: region);
+    }
+    gacha ??= initGacha?.toNiceGacha();
+    _loading = false;
+    if (mounted) setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (gacha == null) {
+      return Scaffold(
+        appBar: AppBar(title: Text(widget.gacha?.lName ?? 'Gacha $gachaId')),
+        body: Center(child: _loading ? CircularProgressIndicator() : Text('Gacha not found')),
+      );
+    }
+    return GachaDetailPage(gacha: gacha!, region: region);
+  }
+}
 
 class GachaDetailPage extends StatefulWidget {
   final NiceGacha gacha;
@@ -125,6 +177,30 @@ class _GachaDetailPageState extends State<GachaDetailPage> {
                     ),
                   ],
                 ),
+              if (gacha.releaseConditions.isNotEmpty) ...[
+                CustomTableRow.fromTexts(texts: [S.current.open_condition], isHeader: true),
+                CustomTableRow(
+                  children: [
+                    TableCellData(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          for (final cond in gacha.releaseConditions) ...[
+                            CondTargetValueDescriptor(
+                              condType: cond.type,
+                              target: cond.targetId,
+                              value: cond.value,
+                              leading: const TextSpan(text: kULLeading),
+                            ),
+                          ],
+                        ],
+                      ),
+                      alignment: AlignmentDirectional.centerStart,
+                    ),
+                  ],
+                ),
+              ],
             ],
           ),
           for (final adjust in gacha.storyAdjusts) ...[

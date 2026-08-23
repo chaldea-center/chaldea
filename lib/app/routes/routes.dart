@@ -69,6 +69,7 @@ import '../modules/skill/skill_list.dart';
 import '../modules/skill/td_detail.dart';
 import '../modules/skill/td_list.dart';
 import '../modules/statistics/game_stat.dart';
+import '../modules/summon/gacha/gacha_detail.dart';
 import '../modules/summon/gacha/gacha_list.dart';
 import '../modules/summon/summon_detail_page.dart';
 import '../modules/summon/summon_list_page.dart';
@@ -397,8 +398,8 @@ class RouteConfiguration {
         return SummonDetailPage(id: second);
       case Routes.gachas:
         return GachaListPage(region: region ?? Region.jp);
-      // case Routes.gacha:
-      //   return GachaDetailPage(id: second);
+      case Routes.gacha:
+        return GachaDetailLoadPage(id: _secondInt, region: region);
       case Routes.costumes:
         return CostumeListPage();
       case Routes.costume:
