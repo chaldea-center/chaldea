@@ -654,7 +654,11 @@ class BuffData {
       final List<int> traitsToCheck;
       if (condTargetOverride != null) {
         traitsToCheck = [];
-        final List<BattleServantData> targetList = battleData.getBuffConditionTargets(condTargetOverride, owner);
+        final List<BattleServantData> targetList = battleData.getBuffConditionTargets(
+          condTargetOverride,
+          owner,
+          buffScript.condGrantorRelativePosition,
+        );
         for (final target in targetList) {
           final traits = target.getTraits(
             addTraits: target.getBuffTraits(
@@ -676,7 +680,11 @@ class BuffData {
     }
     if (buffScript.INDIVIDUALITIE_AND != null) {
       if (condTargetOverride != null) {
-        final List<BattleServantData> targetList = battleData.getBuffConditionTargets(condTargetOverride, owner);
+        final List<BattleServantData> targetList = battleData.getBuffConditionTargets(
+          condTargetOverride,
+          owner,
+          buffScript.condGrantorRelativePosition,
+        );
         bool anyMatch = false;
         for (final target in targetList) {
           final traits = target.getTraits(
@@ -709,7 +717,11 @@ class BuffData {
       List<int> signedTarget = [buffScript.INDIVIDUALITIE!];
 
       if (condTargetOverride != null) {
-        final List<BattleServantData> targetList = battleData.getBuffConditionTargets(condTargetOverride, owner);
+        final List<BattleServantData> targetList = battleData.getBuffConditionTargets(
+          condTargetOverride,
+          owner,
+          buffScript.condGrantorRelativePosition,
+        );
         bool anyMatch = false;
         for (final target in targetList) {
           final traits = target.getTraits(
@@ -803,7 +815,11 @@ class BuffData {
           continue;
         }
 
-        final List<BattleServantData> targetList = battleData.getBuffConditionTargets(condType, owner);
+        final List<BattleServantData> targetList = battleData.getBuffConditionTargets(
+          condType,
+          owner,
+          buffScript.condGrantorRelativePosition,
+        );
         int sumValue = 0;
         for (final target in targetList) {
           // not sure what cond.filterActivePassive && cond.filterSubStateEnable do exactly
@@ -839,24 +855,19 @@ class BuffData {
     }
 
     if (buffScript.condGrantorRelativePosition != null) {
+      bool _posAct;
       final condGrantorRelativePosition = buffScript.condGrantorRelativePosition!;
-      if (activatorUniqueId == null || ownerUniqueId == null) {
-        return false;
-      }
+      final activator = activatorUniqueId == null
+          ? null
+          : battleData.getServantData(activatorUniqueId!, onFieldOnly: true);
+      final owner = ownerUniqueId == null ? null : battleData.getServantData(ownerUniqueId!, onFieldOnly: true);
 
-      final activator = battleData.getServantData(activatorUniqueId!, onFieldOnly: true);
-      final owner = battleData.getServantData(ownerUniqueId!, onFieldOnly: true);
       if (activator == null || owner == null || activator.isPlayer != owner.isPlayer) {
-        return false;
+        _posAct = false;
+      } else {
+        _posAct = owner.fieldIndex + condGrantorRelativePosition == activator.fieldIndex;
       }
-
-      if (condGrantorRelativePosition == -1) {
-        if (activator.isPlayer && activator.fieldIndex + 1 != owner.fieldIndex) {
-          return false;
-        }
-        // TODO: unclear what enemy positions would do (when 6 enemies are one the field)
-      }
-      // TODO: unclear what other values mean
+      isAct &= _posAct;
     }
 
     isAct &= intervalTurn <= 0;

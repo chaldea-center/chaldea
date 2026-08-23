@@ -731,7 +731,8 @@ enum BuffConditionTargetType {
     return null;
   }
 
-  FuncTargetType? toFuncTarget() {
+  // display only, don't use for battle
+  FuncTargetType? toFuncTargetForDisplay() {
     return switch (this) {
       none => FuncTargetType.self,
       ptAll => FuncTargetType.ptAll,
@@ -747,7 +748,7 @@ enum BuffConditionTargetType {
   }
 
   String get dispName {
-    final funcTargetType = toFuncTarget();
+    final funcTargetType = toFuncTargetForDisplay();
     if (funcTargetType != null) return Transl.funcTargetType(funcTargetType).l;
     return name;
   }

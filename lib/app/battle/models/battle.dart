@@ -1625,7 +1625,11 @@ class BattleData {
     return -1;
   }
 
-  List<BattleServantData> getBuffConditionTargets(BuffConditionTargetType targetType, BattleServantData self) {
+  List<BattleServantData> getBuffConditionTargets(
+    BuffConditionTargetType targetType,
+    BattleServantData self,
+    int? relativePosition,
+  ) {
     final List<BattleServantData> targets = [];
 
     final isAlly = self.isPlayer;
@@ -1671,7 +1675,14 @@ class BattleData {
         targets.remove(self);
         break;
       case BuffConditionTargetType.relativePositionPt:
-        // TODO: BuffConditionTargetType.relativePositionPt
+        if (relativePosition != null) {
+          for (final ally in aliveAllies) {
+            if (self.fieldIndex + relativePosition == ally.fieldIndex) {
+              targets.add(ally);
+              break;
+            }
+          }
+        }
         break;
     }
 
