@@ -304,3 +304,34 @@ class ByteFormatDetector {
     return data.length > 2 && data[0] == 0x65 && data[1] == 0x79;
   }
 }
+
+String formatBytes(int sizeInByte, [int maxDigits = 1]) {
+  double size = sizeInByte.toDouble();
+  const int kStep = 1024;
+
+  String _trim(double v) {
+    String s = v.toStringAsFixed(maxDigits);
+    if (s.contains('.')) {
+      s = s.replaceFirst(RegExp(r'\.?0+$'), '');
+    }
+    return s;
+  }
+
+  if (size < kStep) {
+    return '${size.toInt()}B';
+  }
+  size /= kStep;
+  if (size < kStep) {
+    return '${_trim(size)}KB';
+  }
+  size /= kStep;
+  if (size < kStep) {
+    return '${_trim(size)}MB';
+  }
+  size /= kStep;
+  if (size < kStep) {
+    return '${_trim(size)}GB';
+  }
+  size /= kStep;
+  return '${_trim(size)}TB';
+}

@@ -28,6 +28,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '_shared/history.dart';
 import 'details/dialogs.dart';
+import 'details/dump_clean.dart';
 import 'details/login_result.dart';
 import 'event/raids.dart';
 import 'home/reminders.dart';
@@ -1946,36 +1947,9 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
             onPressed: runtime.runningTask.value
                 ? null
                 : () {
-                    InputCancelOkDialog.number(
-                      title: 'Clear dumps (from oldest)',
-                      initValue: 100,
-                      onSubmit: (deleteCount) async {
-                        if (deleteCount <= 0) return;
-                        try {
-                          EasyLoading.show(status: 'clearing');
-                          int deleted = 0;
-                          final folder = Directory(agent.network.fakerDir);
-                          if (!folder.existsSync()) {
-                            EasyLoading.showError('Directory not exist');
-                            return;
-                          }
-                          final fileStats = [
-                            for (final file in folder.listSync()) (file: file, stat: await file.stat()),
-                          ];
-                          fileStats.sort2((e) => e.stat.modified);
-                          final t = DateTime.now().subtract(const Duration(hours: 1));
-                          fileStats.retainWhere((e) => e.file is File && e.stat.modified.isBefore(t));
-                          for (final file in fileStats.take(deleteCount)) {
-                            await file.file.delete();
-                            deleted += 1;
-                          }
-                          EasyLoading.showInfo('$deleted deleted');
-                        } catch (e, s) {
-                          logger.e('clear dumps failed', e, s);
-                          EasyLoading.showError(e.toString());
-                        }
-                      },
-                    ).showDialog(context);
+                    router.pushPage(
+                      DumpRespCleanPage(fakerBaseDir: agent.network.fakerBaseDir, fakerDir: agent.network.fakerDir),
+                    );
                   },
             child: const Text('Clear dumps'),
           ),

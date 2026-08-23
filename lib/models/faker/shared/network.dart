@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 
@@ -169,7 +170,8 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
 
   TRequest createRequest({required String path, String? key});
 
-  late final String fakerDir = joinPaths(db.paths.tempFakerDir, gameTop.region.upper);
+  late final String fakerBaseDir = joinPaths(db.paths.tempFakerDir, gameTop.region.upper);
+  String get fakerDir => joinPaths(fakerBaseDir, user.userGame?.friendCode ?? 'Unknown');
 
   void updateCookies(Map<String, dynamic> headers) {
     if (cookies.isEmpty) return;
@@ -243,6 +245,7 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
           if (dumpResponse) {
             String fn = '${DateTime.now().toSafeFileName()}__${request.saveKey}';
             fn = fn.replaceAll(RegExp(r'[/:\s\\]+'), '_');
+            await Directory(fakerDir).create(recursive: true);
             await FilePlus(joinPaths(fakerDir, '$fn.json')).writeAsString(jsonEncode(_jsonData));
           }
           _nowTime = getNowTimestamp();

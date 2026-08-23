@@ -279,33 +279,7 @@ class MyFileStat implements FileStat {
   }
 
   String getPrettySize() {
-    double size = getSize().toDouble();
-    const int kStep = 1024;
-    if (size < kStep) {
-      return '${size.toInt()}B';
-    }
-    size /= kStep;
-    if (size < kStep) {
-      return '${_trim(size)}KB';
-    }
-    size /= kStep;
-    if (size < kStep) {
-      return '${_trim(size)}MB';
-    }
-    size /= kStep;
-    if (size < kStep) {
-      return '${_trim(size)}GB';
-    }
-    size /= kStep;
-    return '${_trim(size)}TB';
-  }
-
-  static String _trim(double v) {
-    String s = v.toStringAsFixed(1);
-    if (s.contains('.')) {
-      s = s.replaceFirst(RegExp(r'\.?0+$'), '');
-    }
-    return s;
+    return formatBytes(getSize());
   }
 
   @override
