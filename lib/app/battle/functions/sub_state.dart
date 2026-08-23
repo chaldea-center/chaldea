@@ -123,7 +123,6 @@ class SubState {
         ) ??
         0;
 
-    // TODO: double check substitute formula
     final substituteRate = substituteAddState?.vals.SubstituteRate ?? 0;
     final substituteResist = substituteAddState?.vals.SubstituteResist ?? 0;
     final functionRate = dataVals.Rate ?? 1000;

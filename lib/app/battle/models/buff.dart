@@ -26,7 +26,6 @@ class BattleBuff {
   List<BuffData> getAllBuffs() => [..._passiveList, ..._activeList, ...commandCodeList];
 
   // does any buffAction actually follow this passive first order?
-  // TODO: add field buff info
   List<BuffData> get validBuffs => [...getPassiveList(), ...getActiveList(), ...getCommandCodeList()];
   List<BuffData> get validBuffsActiveFirst => [...getActiveList(), ...getPassiveList(), ...getCommandCodeList()];
   List<BuffData> get validBuffsAddOrder => [

@@ -557,7 +557,7 @@ enum BuffType {
   multiGutsBeforeFunction(245),
   limitMaxNp(246),
   limitMinNp(247),
-  lastSelfturnprogressFunction(248),
+  lastSelfturnprogressFunction(248), // not BuffAction yet
   addMaxBattlePoint(249),
   subMaxBattlePoint(250),
   selfturnprogressFunction(251),

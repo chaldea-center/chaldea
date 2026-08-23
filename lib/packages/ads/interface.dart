@@ -113,7 +113,6 @@ class AdsConfig {
   AdsConfig._();
 
   /// GroMore app ID (apply on Pangle/GroMore platform)
-  /// TODO: Replace with actual app ID
   static const String appId = 'YOUR_GROMORE_APP_ID';
 }
 
@@ -179,7 +178,6 @@ class AdOptions {
   }
 
   /// Home page carousel banner ad slot
-  /// TODO: Replace posId with actual GroMore banner ad slot ID
   static const homeCarousel = AdOptions(
     name: "home-carousel",
     size: AppAdSize(300, 75),
@@ -188,7 +186,6 @@ class AdOptions {
   );
 
   /// App open ad slot
-  /// TODO: Replace posId with actual GroMore app open ad slot ID
   static const appOpen = AdOptions(name: 'app-open', size: AppAdSize(800, 800), posId: 'YOUR_GROMORE_SPLASH_POS_ID');
 }
 

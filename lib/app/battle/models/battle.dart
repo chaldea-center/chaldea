@@ -724,7 +724,7 @@ class BattleData {
       if (buff.buff.type == BuffType.toFieldChangeField) {
         traitsOnField.addAll(buff.vals.FieldIndividuality ?? []);
       } else if (buff.buff.type == BuffType.toFieldSubIndividualityField) {
-        // TODO: ???
+        // TODO_: toFieldSubIndividualityField, has one func but not used yet
       }
     }
     allTraits.addAll(traitsOnField);

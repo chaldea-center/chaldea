@@ -196,7 +196,7 @@ class AddState {
       }
     }
 
-    // TODO: isPassiveSkillInfo likely means always succeed, maybe generalize with isCommandCode
+    // isPassiveSkillInfo likely means always succeed, maybe generalize with isCommandCode
     // (or make isCommandCode par of isPassiveSkillInfo to actually check functionRate for command code based buffs)
     final buffReceiveChance = isPassiveSkillInfo
         ? 0

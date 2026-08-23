@@ -526,7 +526,7 @@ class BattleServantData {
 
   Future<void> activateExtraPassive(final BattleData battleData) async {
     if (isPlayer) {
-      // TODO: skill num check
+      // need skill num check, some may active duplicated skills
       final extraPassives = NiceSkill.getSvtEventSkills(
         eventSkills: playerSvtData!.extraPassives,
         eventId: battleData.niceQuest?.war?.eventId ?? 0,
@@ -996,6 +996,7 @@ class BattleServantData {
       case BuffAction.functionWavestart:
       case BuffAction.functionSelfturnstart:
       case BuffAction.functionSelfturnend:
+      case BuffAction.functionSelfturnprogress:
       case BuffAction.donotAct:
       case BuffAction.donotNoble:
       case BuffAction.donotSkill:
@@ -1129,6 +1130,7 @@ class BattleServantData {
       case BuffAction.functionWavestart:
       case BuffAction.functionSelfturnstart:
       case BuffAction.functionSelfturnend:
+      case BuffAction.functionSelfturnprogress:
       case BuffAction.avoidFunctionExecuteSelf:
       case BuffAction.donotAct:
       case BuffAction.donotActCommandtype:
