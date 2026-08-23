@@ -421,7 +421,8 @@ class BattleRecordManager {
       reasons2.setWarning('${S.current.laplace_upload_td_multi_dmg_func_hint}: ${multiDmgFuncSvts.join(" / ")}');
     }
 
-    List<String> unreleasedSvts = [];
+    List<String> unreleasedSvtsForWarning = [];
+    List<String> unreleasedSvtsForUpload = [];
     int r5td5 = 0;
     Set<int> classBoardClassIds = {};
 
@@ -429,8 +430,12 @@ class BattleRecordManager {
       final svt = svtData.svt;
       if (svt == null) continue;
       final releasedAt = svt.extra.getReleasedAt();
-      if (runtime.originalQuest.closedAt < releasedAt && releasedAt > 0) {
-        unreleasedSvts.add(svt.lName.l);
+      if (releasedAt > 0 && runtime.originalQuest.closedAt < releasedAt - kSecsPerDay) {
+        if (releasedAt > DateTime(2024, 1, 1).timestamp) {
+          unreleasedSvtsForUpload.add(svt.lName.l);
+        } else {
+          unreleasedSvtsForWarning.add(svt.lName.l);
+        }
       }
 
       if (svt.rarity == 5 && svtData.tdLv >= 5) {
@@ -441,9 +446,9 @@ class BattleRecordManager {
         classBoardClassIds.add(svt.classId);
       }
     }
-    if (unreleasedSvts.isNotEmpty) {
-      reasons2.setWarning(
-        '$kStarChar2 ${S.current.svt_not_release_hint} $kStarChar2:\n   $kStarChar2 ${unreleasedSvts.join(" / ")}',
+    if (unreleasedSvtsForWarning.isNotEmpty || unreleasedSvtsForUpload.isNotEmpty) {
+      (unreleasedSvtsForUpload.isNotEmpty ? reasons2.setUpload : reasons2.setWarning)(
+        '$kStarChar2 ${S.current.svt_not_release_hint} $kStarChar2:\n   $kStarChar2 ${unreleasedSvtsForWarning.join(" / ")}',
       );
     }
     if (r5td5 >= 2) {
