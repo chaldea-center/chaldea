@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.6.1
+
+- Support Bond 16, foukun 3000
+- Support summer svt
+- Bug fix
+
 ## 2.6.0
 
 BREAKING CHANGE!!!
