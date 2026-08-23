@@ -92,11 +92,50 @@ class FakerReminders extends StatelessWidget {
                   SimpleConfirmDialog(
                     title: Text('Free Draw'),
                     content: Text('[${gacha.id}] ${gacha.lName}'),
-                    onTapOk: () {
-                      runtime.runTask(() async {
+                    onTapOk: () async {
+                      final result = await runtime.runTask(() async {
                         runtime.agent.user.gacha.gachaId = gacha.id;
                         return runtime.gacha.gachaDraw(hundredDraw: false);
                       });
+                      if (result != null) {
+                        runtime.showLocalDialog(
+                          Builder(
+                            builder: (context) {
+                              return SimpleConfirmDialog(
+                                scrollable: true,
+                                showCancel: false,
+                                title: Text('${S.current.gacha} - ${gacha.lName}'),
+                                content: Wrap(
+                                  children: result.gachaInfos.map((card) {
+                                    Widget child = card.toGift().iconBuilder(
+                                      context: context,
+                                      width: 48,
+                                      text: card.userSvtId == 0 ? 'sold' : null,
+                                      showOne: false,
+                                    );
+                                    if (card.userSvtId == 0) {
+                                      child = Stack(
+                                        children: [
+                                          child,
+                                          Positioned.fill(
+                                            child: IgnorePointer(
+                                              child: Container(
+                                                color: Colors.grey.withAlpha(153),
+                                                margin: EdgeInsets.all(2),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    }
+                                    return child;
+                                  }).toList(),
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      }
                     },
                   ).showDialog(context);
                 }
@@ -486,6 +525,7 @@ class FakerReminders extends StatelessWidget {
   List<Widget> getOthers(BuildContext context, int now) {
     List<Widget> children = [];
 
+    // coin room
     final userCoinRoom = mstData.userCoinRoom.firstOrNull;
     const int maxCoinRoomNum = 2;
     if (userCoinRoom != null && userCoinRoom.num < maxCoinRoomNum) {
@@ -503,6 +543,24 @@ class FakerReminders extends StatelessWidget {
         ),
       );
     }
+
+    // EXP x3 x4
+    for (final event in runtime.gameData.timerData.events.values) {
+      if (event.startedAt > now || event.endedAt <= now) continue;
+      final hasSvtEquipExp3 = event.campaigns.any((e) => e.target == .svtequipSuperSuccess && e.value > 2000);
+      if (hasSvtEquipExp3) {
+        children.add(
+          ListTile(
+            dense: true,
+            title: Text(event.lName.l),
+            subtitle: Text(event.endedAt.sec2date().toCustomString(year: false, second: false)),
+            trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+            onTap: () => event.routeTo(region: runtime.region),
+          ),
+        );
+      }
+    }
+
     return children;
   }
 }

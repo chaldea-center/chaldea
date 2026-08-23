@@ -73,7 +73,7 @@ class FakerRuntimeGacha extends FakerRuntimeBase {
     }
   }
 
-  Future<void> gachaDraw({bool hundredDraw = false, bool skipSubIdCheck = false}) async {
+  Future<SummonControlResultData?> gachaDraw({bool hundredDraw = false, bool skipSubIdCheck = false}) async {
     final counts = mstData.countSvtKeep();
     final userGame = mstData.user!;
     if (counts.svtCount >= userGame.svtKeep + 100) {
@@ -184,9 +184,11 @@ class FakerRuntimeGacha extends FakerRuntimeBase {
           }
         }
       }
+      return gachaResult;
     } catch (e, s) {
       logger.e('parse gacha_infos failed', e, s);
     }
+    return null;
   }
 
   Future<void> sellServant({int limitGetDay = 2}) async {

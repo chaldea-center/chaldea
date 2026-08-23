@@ -229,7 +229,8 @@ class FakerRuntime {
     update();
   }
 
-  Future<void> runTask(Future Function() task, {bool check = true}) async {
+  Future<T?> runTask<T>(Future<T> Function() task, {bool check = true}) async {
+    T? result;
     if (check && runningTask.value) {
       showLocalDialog(
         SimpleConfirmDialog(
@@ -238,7 +239,7 @@ class FakerRuntime {
           showCancel: false,
         ),
       );
-      return;
+      return null;
     }
     try {
       if (isBuildingWidget) {
@@ -247,7 +248,7 @@ class FakerRuntime {
       if (check) runningTask.value = true;
       displayToast('running task...');
       update();
-      await task();
+      result = await task();
       dismissToast();
     } catch (e, s) {
       logger.e('task failed', e, s);
@@ -270,6 +271,7 @@ class FakerRuntime {
       if (check) runningTask.value = false;
     }
     update();
+    return result;
   }
 
   Future<T> withWakeLock<T>(Object tag, Future<T> Function() task) async {
