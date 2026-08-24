@@ -2685,6 +2685,7 @@ class BattleServantData {
 
     battleBuff.turnProgress();
     final allBuffs = getAllBuffs(battleData);
+    final lastSelfTurnEndFunctions = collectBuffsPerType(allBuffs, BuffType.lastSelfturnprogressFunction);
     final delayedFunctions = collectBuffsPerType(allBuffs, BuffType.delayFunction);
     await activateBuff(battleData, BuffAction.functionSelfturnend);
 
@@ -2700,6 +2701,7 @@ class BattleServantData {
       }
     }
 
+    await activateDelayFunction(battleData, lastSelfTurnEndFunctions.where((buff) => buff.logicTurn == 0));
     await activateDelayFunction(battleData, delayedFunctions.where((buff) => buff.logicTurn == 0));
 
     battleBuff.selfTurnPass();
