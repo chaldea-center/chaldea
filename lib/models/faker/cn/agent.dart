@@ -506,6 +506,15 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
   }
 
   @override
+  Future<FResponse> eventTreasureBoxDraw({required int32_t treasureBoxId, required int32_t drawNum}) {
+    return _acPhp(
+      key: 'treasureboxdraw',
+      nid: 'treasure_box_draw',
+      params2: {'treasureBoxId': treasureBoxId, 'num': drawNum},
+    );
+  }
+
+  @override
   Future<FResponse> userPresentReceive({
     required List<int64_t> presentIds,
     required int32_t itemSelectIdx,

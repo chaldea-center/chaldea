@@ -335,3 +335,8 @@ String formatBytes(int sizeInByte, [int maxDigits = 1]) {
   size /= kStep;
   return '${_trim(size)}TB';
 }
+
+bool isTimeOpen(int start, int end, int? now) {
+  now ??= DateTime.now().timestamp;
+  return now >= start && now < end;
+}

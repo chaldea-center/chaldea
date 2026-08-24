@@ -202,6 +202,14 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
   }
 
   @override
+  Future<FResponse> eventTreasureBoxDraw({required int32_t treasureBoxId, required int32_t drawNum}) {
+    final request = FRequestJP(network: network, path: '/treasureBox/draw');
+    request.addFieldInt32('treasureBoxId', treasureBoxId);
+    request.addFieldInt32('num', drawNum);
+    return request.beginRequestAndCheckError('treasure_box_draw');
+  }
+
+  @override
   Future<FResponse> userPresentReceive({
     required List<int64_t> presentIds,
     required int32_t itemSelectIdx,

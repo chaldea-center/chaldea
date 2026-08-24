@@ -17,6 +17,15 @@ import 'war.dart' show WarId;
 part '../../generated/models/gamedata/mst_tables.g.dart';
 part 'mst_result.dart';
 
+class MstValues {
+  const MstValues._();
+  static int toInt(dynamic value, [int? k]) => _toInt(value, k);
+  static int? toIntNull(dynamic value, [int? k]) => _toIntNull(value, k);
+  static List<int> toIntList(dynamic value, [int? k]) => _toIntList(value, k);
+  static bool toBool(dynamic value, [bool? k]) => _toBool(value, k);
+  static bool? toBoolNull(dynamic value, [bool? k]) => _toBoolNull(value, k);
+}
+
 // ignore: unused_element
 int _toInt(dynamic v, [int? k]) {
   if (v == null) {

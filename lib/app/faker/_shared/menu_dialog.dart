@@ -6,6 +6,7 @@ import 'package:chaldea/app/faker/present_box/present_box.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/language.dart';
+import 'package:chaldea/utils/basic.dart';
 import 'package:chaldea/utils/constants.dart';
 import 'package:chaldea/utils/extension.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -15,6 +16,7 @@ import '../combine/svt_equip_combine.dart';
 import '../event/box_gacha.dart';
 import '../event/random_mission_loop.dart';
 import '../event/trade.dart';
+import '../event/treasure_box.dart';
 import '../friend/friend_list.dart';
 import '../gacha/gacha_draw.dart';
 import '../mission/mission_receive.dart';
@@ -206,6 +208,17 @@ class _FakerMenuDialogState extends State<FakerMenuDialog> with FakerRuntimeStat
                   name: S.current.random_mission,
                   onTap: () {
                     router.pushPage(RandomMissionLoopPage(runtime: runtime));
+                  },
+                ),
+              if (isLoggedIn &&
+                  runtime.gameData.timerData.events.values.any(
+                    (e) => e.treasureBoxes.isNotEmpty && isTimeOpen(e.startedAt, e.shopClosedAt, null),
+                  ))
+                _ButtonData(
+                  icon: Icons.event,
+                  name: S.current.event_treasure_box,
+                  onTap: () {
+                    router.pushPage(TreasureBoxDrawPage(runtime: runtime));
                   },
                 ),
             ],
