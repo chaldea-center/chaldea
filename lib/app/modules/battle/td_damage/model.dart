@@ -468,6 +468,14 @@ class TdDmgSolver {
     final delegate = BattleDelegate();
     delegate.decideOC = (_actor, baseOC, upOC) => options.fixedOC ? options.oc : options.oc + upOC;
     delegate.whetherTd = (_actor) => true;
+    delegate.actWeight = (_actor) async {
+      // better to pass skill
+      // Summer Beni-Enma
+      if (_actor?.svtId == 705300) {
+        return 1;
+      }
+      return null;
+    };
     delegate.skillActSelect = (_actor) async {
       if (_actor?.svtId == 2501100) {
         return 1;

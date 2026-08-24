@@ -268,6 +268,7 @@ class BattleSkillInfoData {
       script: skillScript,
       skillType: curSkill.type,
       skillInfoType: type,
+      skillOrTd: curSkill,
       selectedActionIndex: selectedActionIndex,
       effectiveness: effectiveness,
       defaultToPlayer: defaultToPlayer,

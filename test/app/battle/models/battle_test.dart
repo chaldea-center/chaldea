@@ -555,6 +555,7 @@ void main() async {
         kingprotea.tdLv,
         script: np.script,
         activator: kingprotea,
+        skillOrTd: np,
         targetedAlly: kingprotea,
         targetedEnemy: battle.targetedEnemy,
         card: npCard,

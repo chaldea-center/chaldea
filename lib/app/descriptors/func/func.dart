@@ -1063,6 +1063,9 @@ class FuncDescriptor extends StatelessWidget {
                 }
               }
               spans.add(_replaceTrait(indiv, guessTrait: guessTrait));
+              if ((guessTrait ?? 0) == 0 && func.funcPopupText.isNotEmpty) {
+                spans.add(TextSpan(text: ' (${func.lPopupText.l})'));
+              }
               return;
             }
             break;

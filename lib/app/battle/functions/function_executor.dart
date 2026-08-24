@@ -78,6 +78,7 @@ class FunctionExecutor {
     final List<int>? ignoreBattlePoints,
     final SkillType? skillType,
     final SkillInfoType? skillInfoType,
+    final SkillOrTd? skillOrTd,
     final int? selectedActionIndex,
     final int? effectiveness,
     final bool defaultToPlayer = true,
@@ -103,7 +104,14 @@ class FunctionExecutor {
           selectedActSet = await FuncActSetSelector.show(battleData, actSets);
           battleData.replayDataRecord.actWeightSelections.add(selectedActSet);
           if (selectedActSet != null && selectedActSet > 0) {
-            battleData.recorder.reasons.setUpload("ActSetWeight: Must skip random effects");
+            final allowedActSets = ConstData.laplaceUploadActSetAllowedValues[skillOrTd?.id] ?? const [];
+            if (!allowedActSets.contains(selectedActSet)) {
+              battleData.recorder.reasons.setUpload(
+                allowedActSets.isEmpty
+                    ? "ActSetWeight: Must skip random effects"
+                    : 'ActSetWeight: Only ${Transl.miscScope('SelectAddInfo')('Option').l} ${allowedActSets.join("/")} allowed',
+              );
+            }
           }
         }
       }

@@ -1188,6 +1188,7 @@ class BattleData {
               buff.vals.CounterLv ?? 1,
               script: td.script,
               activator: svt,
+              skillOrTd: td,
               targetedAlly: targetedPlayer,
               targetedEnemy: targetedEnemy,
               card: action.cardData,
