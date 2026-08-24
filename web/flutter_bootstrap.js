@@ -14,16 +14,44 @@ window.isCNHost =
   -1 !== "narumi.cc".indexOf(_host) ||
   -1 !== ["localhost"].indexOf(_host);
 
-const userConfig = {
-  canvasKitBaseUrl: "/canvaskit/",
-  renderer: "canvaskit",
-};
+(async function () {
+  const officialFontBaseUrl = "https://fonts.gstatic.com/s/";
+  const proxyFontBaseUrl =
+      "https://worker.chaldea.center/proxy/raw/https/fonts.gstatic.com/s/";
 
-// if(window.isCNHost){
-//   userConfig.fontFallbackBaseUrl = "https://fonts.gstatic.font.im/s/"; // CERT Outdated frequently
-// }
-userConfig.fontFallbackBaseUrl = "https://worker.chaldea.center/proxy/raw/https/fonts.gstatic.com/s/";
+  let fontFallbackBaseUrl = proxyFontBaseUrl;
+  
+  if(window.isCNHost) {
+    fontFallbackBaseUrl = proxyFontBaseUrl
+  } else {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 500);
+   
+    try {
+      await fetch(officialFontBaseUrl, {
+        method: "HEAD",
+        mode: "no-cors",
+        signal: controller.signal,
+      });
+      fontFallbackBaseUrl = officialFontBaseUrl;
+      console.log("Use official Google Font url");
+    } catch (_) {
+      // Use the proxy when the primary host is unavailable or times out.
+      console.log("Use fallback Google Font url");
+    } finally {
+      clearTimeout(timeout);
+    }
+  }
 
-_flutter.loader.load({
-  config: userConfig,
-});
+  // console.log("Google font base url: "+ fontFallbackBaseUrl)
+
+  const userConfig = {
+    canvasKitBaseUrl: "/canvaskit/",
+    renderer: "canvaskit",
+    fontFallbackBaseUrl,
+  };
+
+  _flutter.loader.load({
+    config: userConfig,
+  });
+})();
