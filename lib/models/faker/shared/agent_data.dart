@@ -147,6 +147,7 @@ class FakerAgentData {
   final randomMissionStat = _RandomMissionLoopStat();
 
   final treasureBoxStat = _TreasureBoxDrawStat();
+  final recipeStat = _RecipeCreateStat();
 }
 
 class EventRaidInfoRecord {
@@ -233,5 +234,10 @@ class _RandomMissionLoopStat {
 
 class _TreasureBoxDrawStat {
   Map<int, int> treasureBoxDrawNums = {};
+  Map<int, int> giftCounts = {};
+}
+
+class _RecipeCreateStat {
+  Map<int, int> recipeCreateNums = {};
   Map<int, int> giftCounts = {};
 }

@@ -210,6 +210,14 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
   }
 
   @override
+  Future<FResponse> eventCreateRecipe({required int32_t recipeId, required int32_t createNum}) {
+    final request = FRequestJP(network: network, path: '/event/createRecipe');
+    request.addFieldInt32('recipeId', recipeId);
+    request.addFieldInt32('num', createNum);
+    return request.beginRequestAndCheckError('event_create_recipe');
+  }
+
+  @override
   Future<FResponse> userPresentReceive({
     required List<int64_t> presentIds,
     required int32_t itemSelectIdx,

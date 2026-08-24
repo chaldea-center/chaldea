@@ -15,6 +15,7 @@ import '../combine/svt_combine.dart';
 import '../combine/svt_equip_combine.dart';
 import '../event/box_gacha.dart';
 import '../event/random_mission_loop.dart';
+import '../event/recipe.dart';
 import '../event/trade.dart';
 import '../event/treasure_box.dart';
 import '../friend/friend_list.dart';
@@ -219,6 +220,17 @@ class _FakerMenuDialogState extends State<FakerMenuDialog> with FakerRuntimeStat
                   name: S.current.event_treasure_box,
                   onTap: () {
                     router.pushPage(TreasureBoxDrawPage(runtime: runtime));
+                  },
+                ),
+              if (isLoggedIn &&
+                  runtime.gameData.timerData.events.values.any(
+                    (e) => e.recipes.isNotEmpty && isTimeOpen(e.startedAt, e.shopClosedAt, null),
+                  ))
+                _ButtonData(
+                  icon: Icons.event,
+                  name: S.current.event_recipe,
+                  onTap: () {
+                    router.pushPage(CreateRecipePage(runtime: runtime));
                   },
                 ),
             ],

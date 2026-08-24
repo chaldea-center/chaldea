@@ -515,6 +515,15 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
   }
 
   @override
+  Future<FResponse> eventCreateRecipe({required int32_t recipeId, required int32_t createNum}) {
+    return _acPhp(
+      key: 'eventcreaterecipe',
+      nid: 'event_create_recipe',
+      params2: {'recipeId': recipeId, 'num': createNum},
+    );
+  }
+
+  @override
   Future<FResponse> userPresentReceive({
     required List<int64_t> presentIds,
     required int32_t itemSelectIdx,
