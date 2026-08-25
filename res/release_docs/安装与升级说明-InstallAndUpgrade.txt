@@ -1,0 +1,146 @@
+================================================================================
+              Chaldea 安装与升级说明 / Install & Upgrade Guide
+                     (Windows / Linux 桌面版绿色分发专用)
+================================================================================
+
+本文件说明如何安装、升级、回滚 Chaldea 桌面版，以及常见问题的处理。
+This file explains how to install, upgrade and roll back the Chaldea desktop
+app, and how to deal with common problems.
+
+--------------------------------------------------------------------------------
+1. 安装方式 / Installation
+--------------------------------------------------------------------------------
+
+【中文】
+1. 将下载的压缩包（Windows 为 .zip，Linux 为 .tar.gz）完整解压到一个【用户可写
+   目录】，例如 D:\chaldea 或 主目录（Home）下的文件夹。
+   - 不要解压到 C:\Program Files、C:\ 等系统目录：这些目录需要管理员权限，
+     会导致应用无法保存数据和自动升级。
+   - 不要直接在压缩包内双击运行，可能产生未知错误。
+2. 双击解压目录中的主程序（Windows: chaldea.exe / Linux: chaldea）即可运行。
+3. 用户数据保存在程序目录下的 userdata 文件夹中。升级、卸载都不会触碰该目录；
+   手动备份只需复制 userdata 文件夹。
+
+【English】
+1. Extract the downloaded archive (.zip on Windows, .tar.gz on Linux) into a
+   user-writable folder, e.g. D:\chaldea or a folder under your Home directory.
+   - Do NOT extract into C:\Program Files or C:\ — those folders require
+     administrator privileges, which breaks data saving and auto-upgrade.
+   - Do NOT run the app directly inside the archive; unknown errors may occur.
+2. Double-click the main executable (Windows: chaldea.exe / Linux: chaldea).
+3. User data lives in the "userdata" folder next to the executable. Upgrades
+   and uninstallation never touch it; to back up your data manually, just copy
+   the "userdata" folder.
+
+--------------------------------------------------------------------------------
+2. 自动升级（推荐）/ Auto Upgrade (Recommended)
+--------------------------------------------------------------------------------
+
+【中文】
+1. 应用启动后会自动检查新版本；也可以在「设置 → 关于 → 检查更新」手动检查。
+2. 弹出新版本提示后，点击「更新」，应用会自动完成：
+   下载 → 完整性校验 → 解压 → 备份旧版本 → 替换文件 → 自动重启新版本。
+   全程无需手动干预，用户数据不受影响。
+3. 升级前会自动保留旧版本：升级前的程序文件会被完整移动到程序目录下的
+   _backups\chaldea-backup-<版本号>-<时间戳>\ 文件夹中（默认保留最近 3 个）。
+
+【English】
+1. The app checks for new versions automatically on launch; you can also
+   check manually in Settings -> About -> Check Update.
+2. After the update dialog appears, click "Update" and the app will handle
+   everything: download -> integrity check -> extract -> back up the old
+   version -> replace files -> restart the new version. No manual steps,
+   user data is never touched.
+3. The previous version is preserved automatically: program files are moved
+   into _backups/chaldea-backup-<version>/ next to the executable (the most
+   recent 3 backups are kept by default).
+
+--------------------------------------------------------------------------------
+3. 手动升级 / Manual Upgrade
+--------------------------------------------------------------------------------
+
+【中文】
+1. 从发布页下载对应平台的新版压缩包。
+2. 将旧程序目录中除 userdata 和 _backups 外的全部文件删除（或先移动到别处）。
+3. 将新压缩包解压到同一程序目录。
+4. 运行主程序确认版本号已更新。
+
+【English】
+1. Download the new archive for your platform from the release page.
+2. Delete (or move away) everything in the app folder EXCEPT "userdata" and
+   "_backups".
+3. Extract the new archive into the same app folder.
+4. Run the app and confirm the version number has changed.
+
+--------------------------------------------------------------------------------
+4. 回滚 / Rollback
+--------------------------------------------------------------------------------
+
+【中文】
+- 自动回滚：若升级过程中断（断电、磁盘错误等），升级脚本会自动恢复旧版本并
+  重新启动旧版应用，无需人工处理。
+- 手动恢复：进入 _backups 文件夹，打开想要恢复的 chaldea-backup-<版本号> 文件夹：
+  * Windows：右键 restore.ps1，选择「使用 PowerShell 运行」；
+  * Linux：在终端执行  sh restore.sh
+  脚本会把该版本恢复到程序目录并自动启动。注意：恢复会覆盖当前程序文件
+  （userdata 不受影响）。
+
+【English】
+- Automatic rollback: if an upgrade is interrupted (power loss, disk error,
+  etc.), the updater script restores the previous version and relaunches it
+  automatically.
+- Manual restore: open _backups, enter the chaldea-backup-<version> folder you
+  want to restore:
+  * Windows: right-click restore.ps1 and choose "Run with PowerShell";
+  * Linux: run  sh restore.sh  in a terminal.
+  The script restores that version into the app folder and launches it. Note:
+  restoring overwrites current program files ("userdata" is not affected).
+
+--------------------------------------------------------------------------------
+5. 常见问题 / FAQ
+--------------------------------------------------------------------------------
+
+Q1: 提示「程序目录无写入权限」/ "No write permission to the app folder"
+【中文】程序被放在了需要管理员权限的目录（如 Program Files）。请关闭应用，将整个
+程序文件夹移动到用户可写目录（如 D:\ 或主目录），或右键以管理员身份运行。
+【English】The app is installed in a folder that requires admin rights (e.g.
+Program Files). Close the app, move the whole app folder to a user-writable
+location (e.g. D:\ or your Home), or run the app as administrator.
+
+Q2: 升级时 Windows 杀毒软件拦截了 PowerShell / Antivirus blocks PowerShell
+【中文】升级脚本通过系统自带的 PowerShell 执行文件替换，个别杀毒软件可能误报。
+请在杀毒软件中允许运行，或改用手动升级（见第 3 节）。
+【English】The upgrade uses the system-bundled PowerShell to replace files; some
+antivirus tools may flag it falsely. Allow it in your antivirus, or upgrade
+manually (see section 3).
+
+Q3: 升级失败 / 提示磁盘空间不足 / Upgrade failed / not enough disk space
+【中文】升级需要约为安装包 3 倍的临时空间。请清理磁盘后重试；旧版本在 _backups
+中，可随时按第 4 节恢复。
+【English】The upgrade needs roughly 3x the package size of temporary disk
+space. Free some space and retry; the old version is in _backups and can be
+restored anytime (see section 4).
+
+Q4: 升级后无法启动 / App fails to start after upgrading
+【中文】按第 4 节手动恢复上一个备份版本。若所有备份均无法启动，重新下载完整
+压缩包按第 1 节安装，userdata 中的数据不会丢失。升级日志见
+_backups\last-update.log。
+【English】Manually restore the previous backup (section 4). If no backup
+boots, download a full archive and install it as in section 1 — data in
+"userdata" survives. The updater log is at _backups/last-update.log.
+
+Q5: Linux 升级后提示权限错误 / Permission errors on Linux after upgrading
+【中文】升级流程会自动恢复可执行权限（chmod +x）。若手动升级后出现
+"Permission denied"，请在终端执行： chmod +x 程序目录/chaldea
+【English】The upgrade restores executable permissions (chmod +x)
+automatically. If you upgraded manually and get "Permission denied", run:
+chmod +x /path/to/app/chaldea
+
+Q6: Windows 启动报 VCRUNTIME140_1.dll 缺失 / VCRUNTIME140_1.dll missing
+【中文】请安装 Microsoft Visual C++ 运行库后重试（见官方文档安装页）。
+【English】Install the Microsoft Visual C++ redistributable package and try
+again (see the installation page in the official docs).
+
+================================================================================
+更多帮助 / More help: https://docs.chaldea.center  |  https://docs.chaldea.center/zh
+================================================================================

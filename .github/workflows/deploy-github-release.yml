@@ -141,6 +141,7 @@ jobs:
         if: matrix.target == 'linux'
         run: |
           cp $GITHUB_WORKSPACE/linux/README.md ./README.txt
+          cp "${GITHUB_WORKSPACE}/res/release_docs/安装与升级说明-InstallAndUpgrade.txt" .
           mv ../plugins/flutter_js/bundle/lib/libquickjs_c_bridge_plugin.so ./lib/libquickjs_c_bridge_plugin.so
           tar czf $GITHUB_WORKSPACE/chaldea-$VERSION-${{ matrix.target }}.tar.gz *
         working-directory: ${{ matrix.build_path }}
@@ -152,6 +153,7 @@ jobs:
         if: matrix.target == 'windows'
         run: |
           cp ${env:GITHUB_WORKSPACE}/windows/README.md ./README.txt
+          Copy-Item "${env:GITHUB_WORKSPACE}/res/release_docs/安装与升级说明-InstallAndUpgrade.txt" .
           compress-archive -Path * -DestinationPath ${env:GITHUB_WORKSPACE}\chaldea-${env:VERSION}-${{ matrix.target }}.zip
         working-directory: ${{ matrix.build_path }}
 

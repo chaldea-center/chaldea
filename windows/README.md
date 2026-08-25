@@ -15,7 +15,11 @@ If there is such an error message on startup, please install [Microsoft Visual C
 
 ## Upgrade
 
-Simply override old files with new extracted files.
+The app upgrades itself in one click (Settings → About → Check Update): it
+downloads, verifies, backs up the old version into `_backups/`, replaces the
+files and restarts automatically. To roll back manually, run `restore.ps1`
+inside any `_backups\chaldea-backup-<version>\` folder. See
+`安装与升级说明-InstallAndUpgrade.txt` for details.
 
 ## 安装与启动
 
@@ -32,4 +36,7 @@ Simply override old files with new extracted files.
 
 ## 升级
 
-直接解压并覆盖旧文件即可。
+支持应用内一键自动升级（设置 → 关于 → 检查更新）：自动下载、校验、备份旧版本到
+`_backups\`、替换文件并重启。如需手动回滚，运行任意
+`_backups\chaldea-backup-<版本号>\` 中的 `restore.ps1`。详见
+`安装与升级说明-InstallAndUpgrade.txt`。

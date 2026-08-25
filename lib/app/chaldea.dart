@@ -15,6 +15,7 @@ import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/app/api/chaldea_server.dart';
 import 'package:chaldea/app/api/jwt_utils.dart';
 import 'package:chaldea/app/tools/app_update.dart';
+import 'package:chaldea/app/tools/desktop_updater.dart';
 import 'package:chaldea/generated/intl/messages_all.dart';
 import 'package:chaldea/models/faker/shared/network.dart';
 import 'package:chaldea/packages/app_info.dart';
@@ -194,6 +195,10 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WindowListener
       }
     }
     db.settings.lastLaunchTime = DateTime.now().timestamp;
+
+    if (DesktopUpgrader.supported) {
+      unawaited(DesktopUpgrader.cleanupArtifacts());
+    }
 
     FilePickerU.clearTemporaryFiles();
     if (mounted) setState(() {});

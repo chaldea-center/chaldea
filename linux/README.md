@@ -17,7 +17,11 @@ The system tray may crash app. To reset it to disabled state, removing the `"sho
 
 ## Upgrade
 
-Simply override old files with new extracted files.
+The app upgrades itself in one click (Settings → About → Check Update): it
+downloads, verifies, backs up the old version into `_backups/`, replaces the
+files and restarts automatically. To roll back manually, run `sh restore.sh`
+inside any `_backups/chaldea-backup-<version>/` folder. See
+`安装与升级说明-InstallAndUpgrade.txt` for details.
 
 ## 安装
 
@@ -36,4 +40,7 @@ sudo apt-get install appindicator3-0.1 libappindicator3-dev
 
 ## 升级
 
-直接解压并覆盖旧文件即可。
+支持应用内一键自动升级（设置 → 关于 → 检查更新）：自动下载、校验、备份旧版本到
+`_backups/`、替换文件并重启。如需手动回滚，在任意
+`_backups/chaldea-backup-<版本号>/` 中执行 `sh restore.sh`。详见
+`安装与升级说明-InstallAndUpgrade.txt`。
