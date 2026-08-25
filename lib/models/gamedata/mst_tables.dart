@@ -2784,6 +2784,7 @@ enum FriendStatus {
   friendHistory(7),
   blacklist(8),
   follow(9);
+
   // sum(10);
 
   const FriendStatus(this.value);

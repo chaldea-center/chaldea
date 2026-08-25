@@ -182,7 +182,7 @@ class DesktopUpgrader {
     // 2. PowerShell availability (the replacement script host on Windows)
     if (PlatformU.isWindows) {
       try {
-        final r = Process.runSync('powershell.exe', ['-NoProfile', '-Command', 'exit 0']);
+        final r = Process.runSync(_powerShellExecutable, ['-NoProfile', '-Command', 'exit 0']);
         if (r.exitCode != 0) throw Exception('exit ${r.exitCode}');
       } catch (e) {
         throw DesktopUpgradeException(
@@ -319,7 +319,7 @@ class DesktopUpgrader {
     staging.createSync(recursive: true);
     ProcessResult result;
     if (PlatformU.isWindows) {
-      result = await Process.run('powershell.exe', [
+      result = await Process.run(_powerShellExecutable, [
         '-NoProfile',
         '-ExecutionPolicy',
         'Bypass',
@@ -358,6 +358,7 @@ class DesktopUpgrader {
     final backupDir = _uniqueBackupDir();
     final scriptPath = p.join(workspace, PlatformU.isWindows ? 'updater.ps1' : 'updater.sh');
     final logFile = p.join(workspace, 'update.log');
+    final startedFile = File('$logFile.started');
     final newExe = p.join(exeFolder, _exeName);
     final script = PlatformU.isWindows
         ? _buildPowerShellScript(
@@ -387,18 +388,40 @@ class DesktopUpgrader {
     }
     logger.i('desktop updater script written: $scriptPath');
     if (PlatformU.isWindows) {
-      await Process.start('powershell.exe', [
+      // Do not rely on PATH here: a GUI process can have a different PATH
+      // from an interactive terminal. Do not use a detached process either:
+      // on some Windows systems it can disappear before PowerShell evaluates
+      // the script. Process.exit below still leaves a normal child running.
+      // The script writes its startup receipt before waiting for this app to
+      // exit, so a failed launch remains visible instead of becoming a no-op.
+      if (startedFile.existsSync()) await startedFile.delete();
+      final process = await Process.start(_powerShellExecutable, [
         '-NoProfile',
         '-ExecutionPolicy',
         'Bypass',
         '-File',
         scriptPath,
-      ], mode: ProcessStartMode.detached);
+      ], workingDirectory: workspace);
+      // Process.start in normal mode opens pipes; drain them so an unexpected
+      // PowerShell error can never block the updater on a full pipe buffer.
+      process.stdout.listen((_) {});
+      process.stderr.listen((_) {});
+      logger.i('desktop updater script launched (pid=${process.pid}): $scriptPath');
+      for (var waited = 0; waited < 50; waited++) {
+        if (await startedFile.exists()) {
+          logger.i('desktop updater script acknowledged startup');
+          return;
+        }
+        await Future.delayed(const Duration(milliseconds: 100));
+      }
+      throw const DesktopUpgradeException(
+        'The updater script did not start within 5 seconds. Please check the security software log and retry.',
+      );
     } else {
       await Process.start('/bin/sh', [scriptPath], mode: ProcessStartMode.detached);
+      // give the detached process a moment to spawn before we exit
+      await Future.delayed(const Duration(seconds: 1));
     }
-    // give the detached process a moment to spawn before we exit
-    await Future.delayed(const Duration(seconds: 1));
   }
 
   static Future<void> _exitApp() async {
@@ -421,6 +444,15 @@ class DesktopUpgrader {
   // ---------------------------------------------------------------------------
 
   static String get _exeName => p.basename(PlatformU.resolvedExecutable);
+
+  /// Uses the system copy rather than resolving `powershell.exe` through PATH.
+  /// Flutter's packaged GUI process can inherit a different PATH from an
+  /// interactive shell, while SystemRoot is supplied by Windows itself.
+  static String get _powerShellExecutable {
+    final systemRoot = Platform.environment['SystemRoot'] ?? Platform.environment['WINDIR'];
+    if (systemRoot == null || systemRoot.isEmpty) return 'powershell.exe';
+    return p.join(systemRoot, 'System32', 'WindowsPowerShell', 'v1.0', 'powershell.exe');
+  }
 
   static String _uniqueBackupDir() {
     // the embedded timestamp makes the name self-describing and sortable;
@@ -555,6 +587,7 @@ class DesktopUpgrader {
 \$NewExe = ${_psQuote(newExe)}
 \$ExeName = ${_psQuote(exeName)}
 \$LogFile = ${_psQuote(logFile)}
+\$StartedFile = ${_psQuote('$logFile.started')}
 \$ParentPid = $parentPid
 \$Phase = 'backup'
 \$AppStillRunning = \$false
@@ -605,6 +638,7 @@ function Rollback {
 
 try {
   Log 'updater started'
+  try { Set-Content -LiteralPath \$StartedFile -Value \$PID -Encoding ASCII } catch { }
   \$ParentAlive = \$true
   for (\$Waited = 0; \$Waited -lt 60; \$Waited++) {
     if (-not (Get-Process -Id \$ParentPid -ErrorAction SilentlyContinue)) { \$ParentAlive = \$false; break }
