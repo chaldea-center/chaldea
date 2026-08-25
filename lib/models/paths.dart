@@ -123,6 +123,7 @@ class PathManager {
       _persistentPath!,
       appPath,
       gameDir,
+      gameCacheDir,
       userDir,
       tempDir,
       downloadDir,
@@ -158,6 +159,9 @@ class PathManager {
   String get appPath => _appPath!;
 
   String get gameDir => join(appPath, 'game');
+
+  /// staging area for in-flight game data updates, mirrors gameDir layout
+  String get gameCacheDir => join(appPath, 'cache', 'game');
 
   String get userDir => join(appPath, 'user');
 

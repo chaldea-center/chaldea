@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io' show SocketException;
 
 import 'package:flutter/foundation.dart';
 
@@ -152,37 +153,45 @@ class GameDataLoader {
       }
     }
     Map<String, dynamic> _gameJson = {};
-    Map<FilePlus, List<int>> _dataToWrite = {};
+    // files staged in gameCacheDir, to be committed into gameDir after all files pass
+    List<FileVersion> _stagedFiles = [];
     int finished = 0;
     Future<void> _downloadCheck(FileVersion fv, {String? l2mKey, dynamic Function(dynamic)? l2mFn}) async {
       final _file = FilePlus(joinPaths(db.paths.gameDir, fv.filename));
+      final _cacheFile = FilePlus(joinPaths(db.paths.gameCacheDir, fv.filename));
       Uint8List? bytes;
-      String? _localHash;
       if (_file.existsSync()) {
         bytes = await _file.readAsBytes();
       }
-      if (bytes != null) {
-        _localHash = md5.convert(bytes).toString().toLowerCase();
-      }
-      bool hashMismatch = _localHash == null || (db.settings.checkDataHash && !_localHash.startsWith(fv.hash));
-      if (hashMismatch) {
+      // tier 1: gameDir, either full or minified (size, hash) pair
+      bool valid = bytes != null && (!db.settings.checkDataHash || checkFileVersion(bytes, fv));
+      if (!valid) {
         if (offline) {
-          throw S.current.file_not_found_or_mismatched_hash(fv.filename, fv.hash, _localHash ?? '');
+          final _localHash = bytes == null ? '' : md5.convert(bytes).toString().toLowerCase();
+          throw S.current.file_not_found_or_mismatched_hash(fv.filename, fv.hash, _localHash);
         }
-        downloading.value += 1;
-        var resp = await _downFile(fv.filename, options: Options(responseType: ResponseType.bytes));
-        var _hash = md5.convert(List.from(resp.data)).toString().toLowerCase();
-        if (db.settings.checkDataHash && !_hash.startsWith(fv.hash)) {
-          resp = await _downFile(fv.filename, options: Options(responseType: ResponseType.bytes), t: true);
-          _hash = md5.convert(List.from(resp.data)).toString().toLowerCase();
-          if (!_hash.startsWith(fv.hash)) {
-            throw S.current.file_not_found_or_mismatched_hash(fv.filename, fv.hash, _hash);
+        // tier 2: staging cache, strict size+hash so interrupted updates can resume
+        final cached = await _readStagedFile(_cacheFile, fv);
+        if (cached != null) {
+          bytes = cached;
+          _stagedFiles.add(fv);
+        } else {
+          downloading.value += 1;
+          var resp = await _downFileWithRetry(fv.filename, options: Options(responseType: ResponseType.bytes));
+          if (db.settings.checkDataHash && !checkFileVersion(resp.data, fv)) {
+            resp = await _downFileWithRetry(fv.filename, options: Options(responseType: ResponseType.bytes), t: true);
+            if (!checkFileVersion(resp.data, fv)) {
+              final _hash = md5.convert(resp.data).toString().toLowerCase();
+              throw S.current.file_not_found_or_mismatched_hash(fv.filename, fv.hash, _hash);
+            }
           }
+          bytes = resp.data;
+          // persist to staging cache immediately, do NOT retain bytes in memory until commit
+          await _cacheFile.writeAsBytes(bytes!);
+          _stagedFiles.add(fv);
         }
-        _dataToWrite[_file] = List.from(resp.data);
-        bytes = resp.data;
       }
-      String text = utf8.decode(bytes!);
+      String text = utf8.decode(bytes);
       text = kReplaceDWChars(text);
       dynamic fileJson = await JsonHelper.decodeString(text);
       l2mFn ??= l2mKey == null ? null : (e) => e[l2mKey].toString();
@@ -297,15 +306,18 @@ class GameDataLoader {
     await _fixGameData(_gamedata);
     if (!offline) {
       logger.t(
-        '[${offline ? "offline" : "online"}]Updating dataset(${_gamedata.version.text(false)}): ${_dataToWrite.length} files updated',
+        '[${offline ? "offline" : "online"}]Updating dataset(${_gamedata.version.text(false)}): ${_stagedFiles.length} files updated',
       );
+      // commit staged files into gameDir, version.json last so an interrupted
+      // commit keeps the old committed version logically intact
+      for (final fv in _stagedFiles) {
+        if (kDebugMode) print('writing ${basename(fv.filename)}');
+        await _commitStagedFile(fv);
+      }
       if (newVersion != oldVersion) {
-        _dataToWrite[_versionFile] = utf8.encode(jsonEncode(newVersion));
+        await _versionFile.writeAsBytes(utf8.encode(jsonEncode(newVersion)));
       }
-      for (final entry in _dataToWrite.entries) {
-        if (kDebugMode) print('writing ${basename(entry.key.path)}');
-        await entry.key.writeAsBytes(entry.value);
-      }
+      await _clearGameCache(_stagedFiles);
     }
 
     db.runtimeData.upgradableDataVersion = newVersion;
@@ -409,6 +421,93 @@ class GameDataLoader {
 
   static bool checkHash(List<int> bytes, String hash) {
     return md5.convert(bytes).toString().toLowerCase().startsWith(hash.toLowerCase());
+  }
+
+  /// A file is valid if it matches either the full or the minified
+  /// (size, hash) pair: different data sources may serialize the same
+  /// JSON with different indentation.
+  static bool checkFileVersion(List<int> bytes, FileVersion fv) {
+    if (bytes.length == fv.size && checkHash(bytes, fv.hash)) return true;
+    return bytes.length == fv.minSize && checkHash(bytes, fv.minHash);
+  }
+
+  /// Read a staged file from gameCacheDir, strict size+hash verification
+  /// (either full or minified pair). Returns null when missing/invalid so
+  /// the caller falls through to download.
+  static Future<Uint8List?> _readStagedFile(FilePlus file, FileVersion fv) async {
+    if (!file.existsSync()) return null;
+    try {
+      final bytes = await file.readAsBytes();
+      if (!checkFileVersion(bytes, fv)) return null;
+      return bytes;
+    } catch (e, s) {
+      logger.e('read staged file failed: ${fv.filename}', e, s);
+      return null;
+    }
+  }
+
+  /// Copy a staged cache file into gameDir after re-verifying size+hash.
+  /// A corrupted staged file is removed so the next attempt re-downloads it.
+  static Future<void> _commitStagedFile(FileVersion fv) async {
+    final cacheFile = FilePlus(joinPaths(db.paths.gameCacheDir, fv.filename));
+    final bytes = await _readStagedFile(cacheFile, fv);
+    if (bytes == null) {
+      try {
+        await cacheFile.delete();
+      } catch (e, s) {
+        logger.e('delete corrupted staged file failed: ${fv.filename}', e, s);
+      }
+      throw UpdateError('Staged file corrupted: ${fv.filename}');
+    }
+    await FilePlus(joinPaths(db.paths.gameDir, fv.filename)).writeAsBytes(bytes);
+  }
+
+  /// Clear the staging cache after a successful commit.
+  /// Web has no directory listing at FS level, use Hive box keys instead.
+  static Future<void> _clearGameCache(List<FileVersion> files) async {
+    try {
+      for (final fv in files) {
+        final cacheFile = FilePlus(joinPaths(db.paths.gameCacheDir, fv.filename));
+        await cacheFile.deleteSafe();
+      }
+    } catch (e, s) {
+      logger.e('clear game cache failed', e, s);
+    }
+  }
+
+  static bool _isRetryableNetworkError(DioException e) {
+    switch (e.type) {
+      case DioExceptionType.connectionTimeout:
+      case DioExceptionType.sendTimeout:
+      case DioExceptionType.receiveTimeout:
+      case DioExceptionType.connectionError:
+        return true;
+      case DioExceptionType.badResponse:
+        final code = e.response?.statusCode;
+        return code != null && code >= 500 && code < 600;
+      case DioExceptionType.unknown:
+        // SocketException (e.g. network switched mid-download) is wrapped as unknown
+        return e.error is SocketException;
+      default:
+        return false;
+    }
+  }
+
+  /// Download a data file with up to 2 retries on expected network errors.
+  /// version.json intentionally uses _downFile directly: its bootstrap
+  /// connectTimeout must fail fast without retries to fall back to local data.
+  static Future<Response<T>> _downFileWithRetry<T>(String filename, {Options? options, bool t = false}) async {
+    int attempts = 0;
+    while (true) {
+      try {
+        return await _downFile<T>(filename, options: options, t: t);
+      } on DioException catch (e) {
+        attempts += 1;
+        if (attempts >= 2 || !_isRetryableNetworkError(e)) rethrow;
+        logger.w('download $filename failed (attempt $attempts/2), retrying: $e');
+        await Future.delayed(const Duration(seconds: 1));
+      }
+    }
   }
 
   static Future<Response<T>> _downFile<T>(String filename, {Options? options, bool t = false, Duration? timeout}) {
