@@ -11,7 +11,7 @@ import 'package:chaldea/packages/method_channel/method_channel_chaldea.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
 
-/// Android direct-install service (see docs/adr/0003 and
+/// Android direct-install service (see
 /// docs/context/android-install/CONTEXT.md).
 ///
 /// Capability gating: [isSupported] probes the manifest DECLARATION of

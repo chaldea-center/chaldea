@@ -70,7 +70,7 @@ class MethodChannelChaldea {
     return null;
   }
 
-  /// Silent probe of the Android install capability (see docs/adr/0003):
+  /// Silent probe of the Android install capability:
   /// [InstallCapability.declared] gates all direct-install UI;
   /// [InstallCapability.granted] is verified per flow.
   static Future<InstallCapability?> getInstallCapability() async {

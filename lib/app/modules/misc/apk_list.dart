@@ -50,7 +50,7 @@ class _ApkListPageState extends State<ApkListPage> {
 
   late final _hidden = db.settings.hideApple;
   late bool proxy = db.settings.proxy.worker;
-  // silent manifest-declaration probe (see docs/adr/0003)
+  // silent manifest-declaration probe
   bool canInstallApk = false;
   String get apkHost => proxy ? '${HostsX.worker.kCN}/proxy' : 'https://fgo.bigcereal.com';
 
@@ -369,7 +369,7 @@ class _ApkListPageState extends State<ApkListPage> {
 
   void _onInstallTap(BuildContext context, String url) {
     if (url.toLowerCase().endsWith('.xapk')) {
-      // reserved entry: XAPK direct install is future work (docs/adr/0003)
+      // reserved entry: XAPK direct install is future work
       ApkInstaller.showXapkReserved(context);
     } else {
       ApkInstaller.installFromUrl(context, url: url);

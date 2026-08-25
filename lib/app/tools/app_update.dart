@@ -103,7 +103,7 @@ class AppUpdater {
   }
 
   static Future showUpdateAlert(AppUpdateDetail detail) async {
-    // silent manifest-declaration probe (see docs/adr/0003): gates the
+    // silent manifest-declaration probe: gates the
     // in-app Install button; never shows a dialog by itself
     final canInstall = PlatformU.isAndroid && await ApkInstaller.isSupported();
     return showDialog(

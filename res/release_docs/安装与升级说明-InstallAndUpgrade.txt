@@ -39,21 +39,36 @@ app, and how to deal with common problems.
 【中文】
 1. 应用启动后会自动检查新版本；也可以在「设置 → 关于 → 检查更新」手动检查。
 2. 弹出新版本提示后，点击「更新」，应用会自动完成：
-   下载 → 完整性校验 → 解压 → 备份旧版本 → 替换文件 → 自动重启新版本。
-   全程无需手动干预，用户数据不受影响。
+   下载 → 完整性校验 → 确认安装 → 备份旧版本 → 替换文件 → 自动重启新版本。
+   下载完成后应用会暂停并请求确认安装：此时可点击「稍后」继续使用当前版本，
+   已下载的安装包会保留，稍后从「设置 → 关于 → 检查更新」继续升级时无需重新下载。
 3. 升级前会自动保留旧版本：升级前的程序文件会被完整移动到程序目录下的
    _backups\chaldea-backup-<版本号>-<时间戳>\ 文件夹中（默认保留最近 3 个）。
+4. 下载的安装包保存在 _backups\_cache 文件夹中（只保留最新一份），升级完成
+   后可手动删除以释放磁盘空间。
+5. 数据安全提示：自动升级机制不会触碰 userdata 中的用户数据，失败时也会
+   自动回滚；但为防极端意外（如突然断电、磁盘故障），建议在升级前手动
+   备份 userdata 文件夹（复制到其他位置）。
 
 【English】
 1. The app checks for new versions automatically on launch; you can also
    check manually in Settings -> About -> Check Update.
 2. After the update dialog appears, click "Update" and the app will handle
-   everything: download -> integrity check -> extract -> back up the old
-   version -> replace files -> restart the new version. No manual steps,
-   user data is never touched.
+   everything: download -> integrity check -> confirm -> back up the old
+   version -> replace files -> restart the new version. When the download
+   finishes, the app pauses and asks for confirmation: choose "Later" to
+   keep using the current version — the downloaded installer is kept, so
+   continuing the upgrade later via Settings -> About -> Check Update
+   won't download it again.
 3. The previous version is preserved automatically: program files are moved
    into _backups/chaldea-backup-<version>/ next to the executable (the most
    recent 3 backups are kept by default).
+4. The downloaded installer stays in _backups/_cache (only the newest one
+   is kept); you can delete it manually after upgrading to free disk space.
+5. Data safety note: the upgrade mechanism never touches the "userdata"
+   folder and rolls back automatically on failure; still, in case of
+   extreme accidents (power loss, disk failure), consider backing up the
+   "userdata" folder (copy it elsewhere) before upgrading.
 
 --------------------------------------------------------------------------------
 3. 手动升级 / Manual Upgrade
@@ -77,8 +92,8 @@ app, and how to deal with common problems.
 --------------------------------------------------------------------------------
 
 【中文】
-- 自动回滚：若升级过程中断（断电、磁盘错误等），升级脚本会自动恢复旧版本并
-  重新启动旧版应用，无需人工处理。
+- 自动回滚：若升级过程中断（断电、磁盘错误等），升级脚本会自动恢复旧版本、
+  弹出提示框说明失败原因，并重新启动旧版应用，无需人工处理。
 - 手动恢复：进入 _backups 文件夹，打开想要恢复的 chaldea-backup-<版本号> 文件夹：
   * Windows：右键 restore.ps1，选择「使用 PowerShell 运行」；
   * Linux：在终端执行  sh restore.sh
@@ -87,7 +102,8 @@ app, and how to deal with common problems.
 
 【English】
 - Automatic rollback: if an upgrade is interrupted (power loss, disk error,
-  etc.), the updater script restores the previous version and relaunches it
+  etc.), the updater script restores the previous version, shows a message
+  box explaining the failure, and relaunches the previous version
   automatically.
 - Manual restore: open _backups, enter the chaldea-backup-<version> folder you
   want to restore:

@@ -20,18 +20,26 @@ import 'package:chaldea/widgets/widgets.dart';
 
 /// One-click in-app upgrade for Windows/Linux green (zip/tar.gz) builds.
 ///
-/// Flow: precheck -> streaming download -> sha256 verify -> extract to
-/// staging -> generate an external updater script -> launch it detached ->
-/// exit the app. The script (see ADR 0002) waits for this process to die,
-/// moves program files (everything in exeFolder except `userdata/` and
-/// `_backups/`) into a versioned backup, moves staged files in, launches
-/// the new version, and self-cleans. Any mid-way failure rolls back.
+/// Flow: precheck -> download (or reuse the cached installer) -> sha256
+/// verify -> **user confirmation** -> extract to staging -> generate an
+/// external updater script -> launch it detached -> exit the app. The script
+/// waits for this process to die, moves program files
+/// (everything in exeFolder except `userdata/` and `_backups/`) into a
+/// versioned backup, moves staged files in, launches the new version, and
+/// self-cleans. Any mid-way failure rolls back.
+///
+/// The confirmation gate sits between the download and the install phases:
+/// replacing program files means exiting the app, so the user gets the final
+/// say (plus a conservative data-backup reminder) before anything
+/// irreversible starts. Deferring is always safe — the installer persists
+/// in the cache folder and validated staging does not exist yet.
 class DesktopUpgrader {
   DesktopUpgrader._();
 
   static const int keepBackups = 3;
   static const backupsRootName = '_backups';
   static const workspaceName = '_upgrade';
+  static const cacheName = '_cache';
 
   static bool get supported => !kIsWeb && (PlatformU.isWindows || PlatformU.isLinux);
 
@@ -39,6 +47,10 @@ class DesktopUpgrader {
   static String get backupsRoot => p.join(exeFolder, backupsRootName);
   static String get workspace => p.join(backupsRoot, workspaceName);
   static String get stagingDir => p.join(workspace, 'staging');
+  static String get cacheDir => p.join(backupsRoot, cacheName);
+
+  /// Persistent location of the downloaded installer for [detail].
+  static String cachePathOf(AppUpdateDetail detail) => p.join(cacheDir, detail.installer.name);
 
   /// Removes leftovers from a previous upgrade and prunes old backups.
   /// Called on every desktop launch — safe no-op when nothing is pending.
@@ -85,24 +97,41 @@ class DesktopUpgrader {
   }
 
   /// Runs the whole upgrade; never throws — failures are reported via [state].
+  ///
+  /// [confirmGate] pauses the flow after the installer is downloaded and
+  /// verified: `true` proceeds with the install, `false` defers it (the
+  /// installer stays cached; nothing irreversible has happened). When null,
+  /// the flow continues without pausing.
   static Future<void> upgrade(
     AppUpdateDetail detail, {
     required ValueNotifier<DesktopUpgradeState> state,
     CancelToken? cancelToken,
+    Completer<bool>? confirmGate,
   }) async {
     try {
       state.value = const DesktopUpgradeState(phase: DesktopUpgradePhase.precheck);
       await _precheck(detail);
 
-      final zipPath = p.join(workspace, detail.installer.name);
       state.value = const DesktopUpgradeState(phase: DesktopUpgradePhase.download);
-      await _download(detail, zipPath, state, cancelToken);
+      final fromCache = await _downloadOrReuse(detail, state, cancelToken);
+      final cachePath = cachePathOf(detail);
 
-      state.value = const DesktopUpgradeState(phase: DesktopUpgradePhase.verify);
-      await _verifyChecksum(detail, zipPath);
+      if (!fromCache) {
+        // a reused cache entry was hash-verified on hit; a fresh download is
+        // verified here
+        state.value = const DesktopUpgradeState(phase: DesktopUpgradePhase.verify);
+        await _verifyChecksum(detail, cachePath);
+      }
+
+      state.value = const DesktopUpgradeState(phase: DesktopUpgradePhase.confirm);
+      final proceed = confirmGate == null ? true : await confirmGate.future;
+      if (!proceed) {
+        state.value = const DesktopUpgradeState(phase: DesktopUpgradePhase.deferred);
+        return;
+      }
 
       state.value = const DesktopUpgradeState(phase: DesktopUpgradePhase.extract);
-      await _extractToStaging(detail, zipPath);
+      await _extractToStaging(detail, cachePath);
 
       state.value = const DesktopUpgradeState(phase: DesktopUpgradePhase.restart);
       await _launchUpdaterScript(detail);
@@ -163,8 +192,11 @@ class DesktopUpgrader {
       }
     }
     // 3. free disk space: zip + extracted copy + safety margin.
-    //    (the backup itself is a same-volume move and needs no extra space)
-    final required = detail.installer.size * 3;
+    //    (the backup itself is a same-volume move and needs no extra space;
+    //    a size-matching cached installer already covers the "zip" part)
+    final cachePath = cachePathOf(detail);
+    final cached = File(cachePath).existsSync() && File(cachePath).lengthSync() == detail.installer.size;
+    final required = detail.installer.size * (cached ? 2 : 3);
     final free = await _freeBytes(exeFolder);
     if (free != null && free < required) {
       throw DesktopUpgradeException(
@@ -174,15 +206,32 @@ class DesktopUpgrader {
     }
   }
 
-  static Future<void> _download(
+  /// Downloads the installer into the persistent cache folder, or reuses an
+  /// already cached copy when it is intact. Returns whether the cache was
+  /// hit (the cached file has already been hash-verified by then).
+  static Future<bool> _downloadOrReuse(
     AppUpdateDetail detail,
-    String savePath,
     ValueNotifier<DesktopUpgradeState> state,
     CancelToken? cancelToken,
   ) async {
+    final cachePath = cachePathOf(detail);
+    if (await _isCacheValid(detail, cachePath)) return true;
+
+    Directory(cacheDir).createSync(recursive: true);
+    // download to a temp name first so an interrupted download can never be
+    // mistaken for a valid cache entry
+    final partPath = '$cachePath.part';
+    final part = File(partPath);
+    if (part.existsSync()) {
+      try {
+        await part.delete();
+      } catch (e) {
+        logger.e('delete stale partial download failed', e);
+      }
+    }
     await DioE().download(
       detail.installer.downloadUrl,
-      savePath,
+      partPath,
       cancelToken: cancelToken,
       onReceiveProgress: (count, total) {
         state.value = DesktopUpgradeState(
@@ -192,25 +241,74 @@ class DesktopUpgrader {
         );
       },
     );
+    final target = File(cachePath);
+    if (target.existsSync()) {
+      try {
+        await target.delete();
+      } catch (e) {
+        logger.e('replace stale cache entry failed', e);
+      }
+    }
+    await part.rename(cachePath);
+    // keep only the newest installer in the cache folder
+    for (final entry in Directory(cacheDir).listSync()) {
+      if (entry is File && p.basename(entry.path) != detail.installer.name) {
+        try {
+          await entry.delete();
+        } catch (e) {
+          logger.e('prune old cache entry failed', e);
+        }
+      }
+    }
+    return false;
   }
 
-  static Future<void> _verifyChecksum(AppUpdateDetail detail, String zipPath) async {
-    final digest = detail.installer.digest;
-    if (!digest.startsWith('sha256:')) return;
-    final expected = digest.substring('sha256:'.length).toLowerCase();
-    final actual = (await sha256.bind(File(zipPath).openRead()).last).toString();
-    if (actual != expected) {
-      // a corrupt package must not be retried via cache
-      try {
-        await File(zipPath).delete();
-      } catch (e) {
-        logger.e('delete corrupt package failed', e);
+  /// Whether the cached installer matches the release asset (size + sha256).
+  /// A mismatched (stale/corrupt) entry is deleted so the caller downloads
+  /// a fresh copy.
+  static Future<bool> _isCacheValid(AppUpdateDetail detail, String cachePath) async {
+    final file = File(cachePath);
+    try {
+      if (!file.existsSync()) return false;
+      if (await file.length() != detail.installer.size) {
+        await file.delete();
+        return false;
       }
-      throw DesktopUpgradeException(
-        'Package checksum mismatch, the download is corrupted. Please retry.\n'
-        '安装包校验失败（文件损坏），请重试。',
-      );
+      if (!await _hashMatches(detail, cachePath)) {
+        try {
+          await file.delete();
+        } catch (e) {
+          logger.e('delete corrupt cache entry failed', e);
+        }
+        return false;
+      }
+      return true;
+    } catch (e) {
+      logger.e('check cached installer failed', e);
+      return false;
     }
+  }
+
+  static Future<bool> _hashMatches(AppUpdateDetail detail, String path) async {
+    final digest = detail.installer.digest;
+    if (!digest.startsWith('sha256:')) return true;
+    final expected = digest.substring('sha256:'.length).toLowerCase();
+    final actual = (await sha256.bind(File(path).openRead()).last).toString();
+    return actual == expected;
+  }
+
+  static Future<void> _verifyChecksum(AppUpdateDetail detail, String cachePath) async {
+    if (await _hashMatches(detail, cachePath)) return;
+    // a corrupt package must not be retried via cache
+    try {
+      await File(cachePath).delete();
+    } catch (e) {
+      logger.e('delete corrupt package failed', e);
+    }
+    throw DesktopUpgradeException(
+      'Package checksum mismatch, the download is corrupted. Please retry.\n'
+      '安装包校验失败（文件损坏），请重试。',
+    );
   }
 
   static Future<void> _extractToStaging(AppUpdateDetail detail, String zipPath) async {
@@ -429,8 +527,15 @@ class DesktopUpgrader {
   // updater scripts
   // ---------------------------------------------------------------------------
   //
-  // Scripts stay ASCII-only in their own text (log messages in English);
-  // embedded paths may be non-ASCII, hence the BOM/UTF-8 handling above.
+  // Script log messages stay English/ASCII, but the user-facing failure
+  // dialogs are bilingual (CJK allowed — the PS1 file is written with a UTF-8
+  // BOM, so Windows PowerShell parses non-ASCII text correctly).
+  //
+  // IMPORTANT: never use `Get-ChildItem -Exclude` here. On a literal path
+  // without a wildcard, -Exclude qualifies the path item itself and does NOT
+  // filter its children — userdata/_backups would be enumerated (and the
+  // install-phase rollback would `Remove-Item` them, destroying user data).
+  // Filter with `Where-Object` instead.
 
   static String _buildPowerShellScript({
     required String exeFolder,
@@ -452,6 +557,7 @@ class DesktopUpgrader {
 \$LogFile = ${_psQuote(logFile)}
 \$ParentPid = $parentPid
 \$Phase = 'backup'
+\$AppStillRunning = \$false
 
 function Log([string]\$Message) {
   try { Add-Content -LiteralPath \$LogFile -Value ("{0} {1}" -f (Get-Date -Format 'yyyy-MM-dd HH:mm:ss'), \$Message) } catch { }
@@ -469,23 +575,31 @@ function Move-WithRetry([string]\$Path, [string]\$Destination) {
   throw "move failed after 3 attempts: \$Path"
 }
 
+# The updater runs after the app exited, so the only channel left to tell the
+# user what happened is a top-most native message box (0x10 error icon |
+# 0x40000 topmost | 0x10000 set-foreground).
+function Show-Box([string]\$Text) {
+  try {
+    Add-Type -Namespace Chaldea -Name UpdaterBox -MemberDefinition '[DllImport("user32.dll", CharSet=CharSet.Unicode)] public static extern int MessageBox(IntPtr hWnd, string text, string caption, int type);'
+    [Chaldea.UpdaterBox]::MessageBox([IntPtr]::Zero, \$Text, 'Chaldea Update', 0x50010) | Out-Null
+  } catch {
+    Log ("message box failed: " + \$_.Exception.Message)
+  }
+}
+
 function Rollback {
   Log "rollback (phase=\$Phase)"
   if (\$Phase -eq 'install') {
     # the new files were (partially) moved in: drop them first
-    Get-ChildItem -LiteralPath \$ExeFolder -Exclude @('userdata', '_backups') -ErrorAction SilentlyContinue |
+    Get-ChildItem -LiteralPath \$ExeFolder -Force -ErrorAction SilentlyContinue |
+      Where-Object { \$_.Name -ne 'userdata' -and \$_.Name -ne '_backups' } |
       Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
   }
   if (Test-Path -LiteralPath \$BackupDir) {
-    Get-ChildItem -LiteralPath \$BackupDir -Exclude @('restore.ps1') | ForEach-Object {
+    Get-ChildItem -LiteralPath \$BackupDir -Force | Where-Object { \$_.Name -ne 'restore.ps1' } | ForEach-Object {
       try { Move-Item -LiteralPath \$_.FullName -Destination \$ExeFolder -Force -ErrorAction Stop }
       catch { Log ("rollback move failed: " + \$_.Name) }
     }
-  }
-  \$OldExe = Join-Path \$ExeFolder \$ExeName
-  if (Test-Path -LiteralPath \$OldExe) {
-    Log "restarting previous version"
-    Start-Process -FilePath \$OldExe -WorkingDirectory \$ExeFolder
   }
 }
 
@@ -496,11 +610,11 @@ try {
     if (-not (Get-Process -Id \$ParentPid -ErrorAction SilentlyContinue)) { \$ParentAlive = \$false; break }
     Start-Sleep -Seconds 1
   }
-  if (\$ParentAlive) { throw "app process (\$ParentPid) did not exit within 60s" }
+  if (\$ParentAlive) { \$AppStillRunning = \$true; throw "app process (\$ParentPid) did not exit within 60s" }
   Log 'app exited'
 
   New-Item -ItemType Directory -Path \$BackupDir -Force | Out-Null
-  Get-ChildItem -LiteralPath \$ExeFolder -Exclude @('userdata', '_backups') | ForEach-Object {
+  Get-ChildItem -LiteralPath \$ExeFolder -Force | Where-Object { \$_.Name -ne 'userdata' -and \$_.Name -ne '_backups' } | ForEach-Object {
     Log ("backup: " + \$_.Name)
     Move-WithRetry \$_.FullName \$BackupDir
   }
@@ -512,7 +626,7 @@ $restore
   Log 'restore script written'
 
   \$Phase = 'install'
-  Get-ChildItem -LiteralPath \$StagingDir | ForEach-Object {
+  Get-ChildItem -LiteralPath \$StagingDir -Force | ForEach-Object {
     Log ("install: " + \$_.Name)
     Move-WithRetry \$_.FullName \$ExeFolder
   }
@@ -527,7 +641,18 @@ $restore
   exit 0
 } catch {
   Log ("FAILED: " + \$_.Exception.Message)
-  Rollback
+  if (\$AppStillRunning) {
+    # nothing was changed; the original app instance is still alive
+    Show-Box ("Upgrade aborted because the app did not exit; nothing was changed. Please restart the app and retry.`n升级已中止：应用进程未退出，未做任何更改，请重启应用后重试。`n`n" + \$_.Exception.Message)
+  } else {
+    Rollback
+    Show-Box ("Upgrade failed; the previous version has been restored and will restart.`n升级失败，已恢复原来的版本并将重新启动。`n`n" + \$_.Exception.Message)
+    \$OldExe = Join-Path \$ExeFolder \$ExeName
+    if (Test-Path -LiteralPath \$OldExe) {
+      Log "restarting previous version"
+      Start-Process -FilePath \$OldExe -WorkingDirectory \$ExeFolder
+    }
+  }
   exit 1
 }
 ''';
@@ -540,9 +665,10 @@ $restore
 \$ExeName = ${_psQuote(exeName)}
 \$BackupDir = Split-Path -Parent \$MyInvocation.MyCommand.Path
 Write-Host ("Restoring backup to " + \$ExeFolder)
-Get-ChildItem -LiteralPath \$ExeFolder -Exclude @('userdata', '_backups') -ErrorAction SilentlyContinue |
+Get-ChildItem -LiteralPath \$ExeFolder -Force -ErrorAction SilentlyContinue |
+  Where-Object { \$_.Name -ne 'userdata' -and \$_.Name -ne '_backups' } |
   Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
-Get-ChildItem -LiteralPath \$BackupDir -Exclude @('restore.ps1') | ForEach-Object {
+Get-ChildItem -LiteralPath \$BackupDir -Force | Where-Object { \$_.Name -ne 'restore.ps1' } | ForEach-Object {
   Move-Item -LiteralPath \$_.FullName -Destination \$ExeFolder -Force
 }
 \$Exe = Join-Path \$ExeFolder \$ExeName
@@ -611,11 +737,37 @@ rollback() {
       fi
     done
   fi
+}
+
+# Best-effort user notification — the updater runs after the app exited,
+# so a GUI dialog is the only way to avoid a silent failure. zenity blocks
+# until acknowledged (matching the Windows MessageBox); notify-send is a
+# non-blocking fallback; silence (log only) is acceptable as last resort.
+notify_fail() {
+  _msg="\$1"
+  if command -v zenity >/dev/null 2>&1; then
+    zenity --error --title "Chaldea Update" --text "\$_msg" >/dev/null 2>&1 || true
+  elif command -v notify-send >/dev/null 2>&1; then
+    notify-send -u critical -i dialog-error "Chaldea Update" "\$_msg" 2>/dev/null || true
+  else
+    log "no notification tool available"
+  fi
+}
+
+relaunch_old() {
   if [ -f "\$EXE_FOLDER/\$EXE_NAME" ]; then
-    chmod +x "\$EXE_FOLDER/\$EXE_NAME"
+    chmod +x "\$EXE_FOLDER/\$EXE_NAME" 2>/dev/null
     log "restarting previous version"
     nohup "\$EXE_FOLDER/\$EXE_NAME" >/dev/null 2>&1 &
   fi
+}
+
+fail_and_rollback() {
+  rollback
+  notify_fail "Upgrade failed; the previous version has been restored and will restart.
+升级失败，已恢复原来的版本并将重新启动。"
+  relaunch_old
+  exit 1
 }
 
 log 'updater started'
@@ -624,6 +776,9 @@ while kill -0 "\$PARENT_PID" 2>/dev/null; do
   _waited=\$((_waited + 1))
   if [ "\$_waited" -ge 60 ]; then
     log "app process \$PARENT_PID did not exit within 60s"
+    # nothing was changed; the original app instance is still alive
+    notify_fail "Upgrade aborted because the app did not exit; nothing was changed. Please restart the app and retry.
+升级已中止：应用进程未退出，未做任何更改，请重启应用后重试。"
     exit 1
   fi
   sleep 1
@@ -632,6 +787,9 @@ log 'app exited'
 
 if ! mkdir -p "\$BACKUP_DIR" >> "\$LOG_FILE" 2>&1; then
   log "failed to create backup dir"
+  notify_fail "Upgrade failed; the app will restart.
+升级失败，应用将重新启动。"
+  relaunch_old
   exit 1
 fi
 
@@ -643,8 +801,7 @@ for _f in "\$EXE_FOLDER"/*; do
   log "backup: \$_b"
   if ! move_retry "\$_f" "\$BACKUP_DIR/"; then
     log "backup failed: \$_f"
-    rollback
-    exit 1
+    fail_and_rollback
   fi
 done
 log 'backup finished'
@@ -661,8 +818,7 @@ for _f in "\$STAGING_DIR"/*; do
   log "install: \$(basename "\$_f")"
   if ! move_retry "\$_f" "\$EXE_FOLDER/"; then
     log "install failed: \$_f"
-    rollback
-    exit 1
+    fail_and_rollback
   fi
 done
 chmod +x "\$NEW_EXE" 2>/dev/null
@@ -713,7 +869,7 @@ class DesktopUpgradeException implements Exception {
   String toString() => message;
 }
 
-enum DesktopUpgradePhase { precheck, download, verify, extract, restart, cancelled, error }
+enum DesktopUpgradePhase { precheck, download, verify, confirm, extract, restart, deferred, cancelled, error }
 
 class DesktopUpgradeState {
   final DesktopUpgradePhase phase;
@@ -724,11 +880,14 @@ class DesktopUpgradeState {
   const DesktopUpgradeState({required this.phase, this.received, this.total, this.error});
 }
 
-/// Stage-by-stage upgrade progress dialog (see ADR 0002 / decision #8).
+/// Stage-by-stage upgrade progress dialog.
 Future<void> showDesktopUpgradeDialog(BuildContext context, AppUpdateDetail detail) {
   final state = ValueNotifier(const DesktopUpgradeState(phase: DesktopUpgradePhase.precheck));
   final cancelToken = CancelToken();
-  Future<void>.microtask(() => DesktopUpgrader.upgrade(detail, state: state, cancelToken: cancelToken));
+  final confirmGate = Completer<bool>();
+  Future<void>.microtask(
+    () => DesktopUpgrader.upgrade(detail, state: state, cancelToken: cancelToken, confirmGate: confirmGate),
+  );
   return showDialog(
     context: context,
     useRootNavigator: false,
@@ -746,18 +905,39 @@ Future<void> showDesktopUpgradeDialog(BuildContext context, AppUpdateDetail deta
             ValueListenableBuilder<DesktopUpgradeState>(
               valueListenable: state,
               builder: (context, value, _) {
-                if (value.phase == DesktopUpgradePhase.download) {
-                  return TextButton(
-                    onPressed: () {
-                      cancelToken.cancel();
-                    },
-                    child: Text(S.current.cancel),
-                  );
+                switch (value.phase) {
+                  case DesktopUpgradePhase.download:
+                    return TextButton(
+                      onPressed: () {
+                        cancelToken.cancel();
+                      },
+                      child: Text(S.current.cancel),
+                    );
+                  case DesktopUpgradePhase.confirm:
+                    return Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            if (!confirmGate.isCompleted) confirmGate.complete(false);
+                          },
+                          child: const Text('稍后 Later'),
+                        ),
+                        FilledButton(
+                          onPressed: () {
+                            if (!confirmGate.isCompleted) confirmGate.complete(true);
+                          },
+                          child: const Text('立即安装 Install'),
+                        ),
+                      ],
+                    );
+                  case DesktopUpgradePhase.deferred:
+                  case DesktopUpgradePhase.cancelled:
+                  case DesktopUpgradePhase.error:
+                    return TextButton(onPressed: () => Navigator.pop(context), child: Text(S.current.confirm));
+                  default:
+                    return const SizedBox.shrink();
                 }
-                if (value.phase == DesktopUpgradePhase.cancelled || value.phase == DesktopUpgradePhase.error) {
-                  return TextButton(onPressed: () => Navigator.pop(context), child: Text(S.current.confirm));
-                }
-                return const SizedBox.shrink();
               },
             ),
           ],
@@ -791,6 +971,28 @@ Widget _buildUpgradeDialogContent(BuildContext context, DesktopUpgradeState stat
       break;
     case DesktopUpgradePhase.verify:
       text = 'Verifying integrity\n正在校验文件完整性…';
+      break;
+    case DesktopUpgradePhase.confirm:
+      progress = const SizedBox.shrink();
+      text =
+          'The installer is downloaded and verified. Click "Install" to exit the app and '
+          'finish the upgrade automatically (back up old version → replace files → restart '
+          'the new version; automatic rollback on failure).\n\n'
+          '升级包已下载并校验完成。点击「立即安装」后应用将退出并自动完成升级'
+          '（备份旧版本 → 替换文件 → 重启新版本；失败时自动回滚）。\n\n'
+          'Upgrades never touch the "userdata" folder, but in case of extreme accidents '
+          '(power loss, disk failure) consider backing it up beforehand.\n'
+          '升级不会触碰 userdata 中的用户数据，但为防极端意外（断电、磁盘故障），'
+          '建议提前备份该文件夹。\n\n'
+          'The installer stays in _backups/_cache and can be deleted manually after upgrading.\n'
+          '安装包保存在 _backups/_cache 中，升级后可手动删除以释放空间。';
+      break;
+    case DesktopUpgradePhase.deferred:
+      progress = const SizedBox.shrink();
+      text =
+          'The installer is kept; nothing was changed. You can continue the upgrade later '
+          'via Settings → About → Check Update.\n'
+          '升级包已保留，未做任何更改。可稍后在「设置 → 关于 → 检查更新」中继续升级。';
       break;
     case DesktopUpgradePhase.extract:
       text = 'Extracting package\n正在解压安装包…';
