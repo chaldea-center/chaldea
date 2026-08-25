@@ -2594,6 +2594,23 @@ class BattleServantData {
   }
 
   Future<void> endOfMyTurn(final BattleData battleData) async {
+    battleBuff.turnProgress();
+    final allBuffs = getAllBuffs(battleData);
+    final lastSelfTurnProgressFunctions = collectBuffsPerType(allBuffs, BuffType.lastSelfturnprogressFunction);
+    await activateDelayFunction(battleData, lastSelfTurnProgressFunctions.where((buff) => buff.logicTurn == 0));
+
+    // check guts after lastSelfturnprogressFunction
+    if (hp <= 0) {
+      if (hasNextShift(battleData)) {
+        hp = 1;
+      } else {
+        final gutsActivated = await activateGuts(battleData);
+        if (!gutsActivated) {
+          resetLastHits();
+        }
+      }
+    }
+
     String turnEndLog = '';
 
     if (isEnemy) {
@@ -2686,10 +2703,7 @@ class BattleServantData {
       battleData.battleLogger.debug('$lBattleName - ${S.current.battle_turn_end}$turnEndLog');
     }
 
-    battleBuff.turnProgress();
-    final allBuffs = getAllBuffs(battleData);
-    final lastSelfTurnEndFunctions = collectBuffsPerType(allBuffs, BuffType.lastSelfturnprogressFunction);
-    final delayedFunctions = collectBuffsPerType(allBuffs, BuffType.delayFunction);
+    final delayedFunctions = collectBuffsPerType(getAllBuffs(battleData), BuffType.delayFunction);
     await activateBuff(battleData, BuffAction.functionSelfturnend);
 
     // check guts after selfturnendFunction
@@ -2704,7 +2718,6 @@ class BattleServantData {
       }
     }
 
-    await activateDelayFunction(battleData, lastSelfTurnEndFunctions.where((buff) => buff.logicTurn == 0));
     await activateDelayFunction(battleData, delayedFunctions.where((buff) => buff.logicTurn == 0));
 
     battleBuff.selfTurnPass();
@@ -2719,9 +2732,7 @@ class BattleServantData {
     battleBuff.turnProgress();
 
     final allBuffs = getAllBuffs(battleData);
-    final lastSelfTurnEndFunctions = collectBuffsPerType(allBuffs, BuffType.lastSelfturnprogressFunction);
     final delayedFunctions = collectBuffsPerType(allBuffs, BuffType.delayFunction);
-    await activateDelayFunction(battleData, lastSelfTurnEndFunctions.where((buff) => buff.logicTurn == 0));
     await activateDelayFunction(battleData, delayedFunctions.where((buff) => buff.logicTurn == 0));
     await activateBuff(battleData, BuffAction.functionReflection);
     resetAccumulationDamage();
