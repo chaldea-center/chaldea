@@ -69,4 +69,49 @@ class MethodChannelChaldea {
     }
     return null;
   }
+
+  /// Silent probe of the Android install capability (see docs/adr/0003):
+  /// [InstallCapability.declared] gates all direct-install UI;
+  /// [InstallCapability.granted] is verified per flow.
+  static Future<InstallCapability?> getInstallCapability() async {
+    assert(PlatformU.isAndroid);
+    if (!PlatformU.isAndroid) return null;
+    try {
+      final result = await kMethodChannel.invokeMethod<Map>('installCapability');
+      if (result == null) return null;
+      return InstallCapability(declared: result['declared'] == true, granted: result['granted'] == true);
+    } on PlatformException {
+      return null;
+    }
+  }
+
+  /// Deep-link to this app's "install unknown apps" system settings page.
+  static Future<void> openInstallPermissionSettings() async {
+    assert(PlatformU.isAndroid);
+    if (PlatformU.isAndroid) {
+      await kMethodChannel.invokeMethod('openInstallPermissionSettings');
+    }
+  }
+
+  /// Hand a downloaded APK file to the system package installer.
+  static Future<bool> installApk(String path) async {
+    assert(PlatformU.isAndroid);
+    if (!PlatformU.isAndroid) return false;
+    try {
+      return await kMethodChannel.invokeMethod<bool>('installApk', path) ?? false;
+    } on PlatformException {
+      return false;
+    }
+  }
+}
+
+class InstallCapability {
+  /// The running build's manifest declares REQUEST_INSTALL_PACKAGES.
+  final bool declared;
+
+  /// The user allowed "install unknown apps" for this app
+  /// (always true on Android < 8, where the app-op does not exist).
+  final bool granted;
+
+  const InstallCapability({required this.declared, required this.granted});
 }

@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:chaldea/app/api/chaldea.dart';
+import 'package:chaldea/app/tools/apk_installer.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/language.dart';
@@ -49,11 +50,16 @@ class _ApkListPageState extends State<ApkListPage> {
 
   late final _hidden = db.settings.hideApple;
   late bool proxy = db.settings.proxy.worker;
+  // silent manifest-declaration probe (see docs/adr/0003)
+  bool canInstallApk = false;
   String get apkHost => proxy ? '${HostsX.worker.kCN}/proxy' : 'https://fgo.bigcereal.com';
 
   @override
   void initState() {
     super.initState();
+    ApkInstaller.isSupported().then((supported) {
+      if (mounted) setState(() => canInstallApk = supported);
+    });
     if (apks.any((e) => e.url == null)) {
       load();
     }
@@ -361,6 +367,15 @@ class _ApkListPageState extends State<ApkListPage> {
     );
   }
 
+  void _onInstallTap(BuildContext context, String url) {
+    if (url.toLowerCase().endsWith('.xapk')) {
+      // reserved entry: XAPK direct install is future work (docs/adr/0003)
+      ApkInstaller.showXapkReserved(context);
+    } else {
+      ApkInstaller.installFromUrl(context, url: url);
+    }
+  }
+
   Widget downloadTile(Region? region, String? ver, String url, bool is32) {
     List<String> titles = [
       region?.upper ?? 'Chaldea App',
@@ -377,13 +392,24 @@ class _ApkListPageState extends State<ApkListPage> {
       onTap: () {
         launch(url, external: true);
       },
-      trailing: IconButton(
-        onPressed: () {
-          copyToClipboard(url);
-          EasyLoading.showToast([S.current.copied, url].join('\n'));
-        },
-        icon: const Icon(Icons.copy, size: 18),
-        tooltip: S.current.copy,
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (canInstallApk)
+            IconButton(
+              onPressed: () => _onInstallTap(context, url),
+              icon: const Icon(Icons.install_mobile, size: 20),
+              tooltip: S.current.install,
+            ),
+          IconButton(
+            onPressed: () {
+              copyToClipboard(url);
+              EasyLoading.showToast([S.current.copied, url].join('\n'));
+            },
+            icon: const Icon(Icons.copy, size: 18),
+            tooltip: S.current.copy,
+          ),
+        ],
       ),
     );
   }
@@ -398,13 +424,24 @@ class _ApkListPageState extends State<ApkListPage> {
       onTap: () {
         launch(url, external: true);
       },
-      trailing: IconButton(
-        onPressed: () {
-          copyToClipboard(url);
-          EasyLoading.showToast([S.current.copied, url].join('\n'));
-        },
-        icon: const Icon(Icons.copy, size: 18),
-        tooltip: S.current.copy,
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (canInstallApk && platform == 'android')
+            IconButton(
+              onPressed: () => _onInstallTap(context, url),
+              icon: const Icon(Icons.install_mobile, size: 20),
+              tooltip: S.current.install,
+            ),
+          IconButton(
+            onPressed: () {
+              copyToClipboard(url);
+              EasyLoading.showToast([S.current.copied, url].join('\n'));
+            },
+            icon: const Icon(Icons.copy, size: 18),
+            tooltip: S.current.copy,
+          ),
+        ],
       ),
     );
   }

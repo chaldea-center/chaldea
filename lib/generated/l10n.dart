@@ -2445,6 +2445,11 @@ class S {
     return Intl.message('Download', name: 'download', desc: '', locale: localeName, args: []);
   }
 
+  /// `Download cancelled.`
+  String get download_cancelled {
+    return Intl.message('Download cancelled.', name: 'download_cancelled', desc: '', locale: localeName, args: []);
+  }
+
   /// `To ensure compatibility, please upgrade to the latest APP version before updating`
   String get download_latest_gamedata_hint {
     return Intl.message(
@@ -3928,6 +3933,28 @@ class S {
     return Intl.message('Install', name: 'install', desc: '', locale: localeName, args: []);
   }
 
+  /// `Failed to start the system installer.`
+  String get install_failed_to_start {
+    return Intl.message(
+      'Failed to start the system installer.',
+      name: 'install_failed_to_start',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Direct installs need a one-time system permission. Tap "Open Settings" and allow "Allow from this source" for Chaldea, then return and tap Install again.`
+  String get install_permission_hint {
+    return Intl.message(
+      'Direct installs need a one-time system permission. Tap "Open Settings" and allow "Allow from this source" for Chaldea, then return and tap Install again.',
+      name: 'install_permission_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Instant Death`
   String get instant_death {
     return Intl.message('Instant Death', name: 'instant_death', desc: '', locale: localeName, args: []);
@@ -4857,6 +4884,11 @@ class S {
       locale: localeName,
       args: [],
     );
+  }
+
+  /// `Open Settings`
+  String get open_settings {
+    return Intl.message('Open Settings', name: 'open_settings', desc: '', locale: localeName, args: []);
   }
 
   /// `Opening Time`

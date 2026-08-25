@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
 import 'package:path/path.dart' as p;
 
+import 'package:chaldea/app/tools/apk_installer.dart';
 import 'package:chaldea/app/tools/desktop_updater.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -30,13 +31,20 @@ class AppUpdater {
   /// than a source constant or env var) so it can be toggled on a
   /// GUI-launched app by dropping/removing a file, no rebuild needed.
   static bool get debugSameVersionUpgrade {
-    if (!PlatformU.isWindows && !PlatformU.isLinux) return false;
-    try {
-      final marker = File(p.join(DesktopUpgrader.exeFolder, debugUpgradeMarkerFile));
-      return marker.existsSync();
-    } catch (_) {
-      return false;
+    if (kIsWeb) return false;
+
+    if (DesktopUpgrader.supported || PlatformU.isAndroid) {
+      try {
+        final marker = File(p.join(DesktopUpgrader.exeFolder, debugUpgradeMarkerFile));
+        if (marker.existsSync()) {
+          return true;
+        }
+      } catch (_) {
+        return false;
+      }
     }
+    if (kDebugMode) return true;
+    return false;
   }
 
   static Completer<AppUpdateDetail?>? _checkCmpl;
@@ -49,7 +57,10 @@ class AppUpdater {
       return;
     }
     if (PlatformU.isAndroid) {
-      showUpdateAlert(detail);
+      final install = await showUpdateAlert(detail);
+      if (install == true && kAppKey.currentContext != null) {
+        await installUpdate(detail);
+      }
       return;
     }
     if (DesktopUpgrader.supported) {
@@ -91,7 +102,10 @@ class AppUpdater {
     }
   }
 
-  static Future showUpdateAlert(AppUpdateDetail detail) {
+  static Future showUpdateAlert(AppUpdateDetail detail) async {
+    // silent manifest-declaration probe (see docs/adr/0003): gates the
+    // in-app Install button; never shows a dialog by itself
+    final canInstall = PlatformU.isAndroid && await ApkInstaller.isSupported();
     return showDialog(
       context: kAppKey.currentContext!,
       useRootNavigator: false,
@@ -124,6 +138,13 @@ class AppUpdater {
                 },
                 child: const Text('Google Play'),
               ),
+            if (canInstall)
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context, true);
+                },
+                child: Text(S.current.install),
+              ),
           ],
         );
       },
@@ -149,6 +170,13 @@ class AppUpdater {
     await Future.delayed(const Duration(milliseconds: 500));
     if (PlatformU.isApple) {
       launch(kAppStoreLink);
+    } else if (PlatformU.isAndroid && await ApkInstaller.isSupported()) {
+      final context = kAppKey.currentContext;
+      if (context != null && context.mounted) {
+        var filename = detail.installer.name;
+        if (!filename.toLowerCase().endsWith('.apk')) filename = '$filename.apk';
+        await ApkInstaller.installFromUrl(context, url: detail.installer.downloadUrl, filename: filename);
+      }
     } else {
       launch(detail.installer.downloadUrl);
     }
@@ -233,12 +261,22 @@ class _Asset {
   late final _Release release;
   _Asset({required this.name, required this.size, required this.digest, required this.browserDownloadUrl});
 
-  String get downloadUrl {
-    return db.settings.proxy.worker ? proxyUrl : browserDownloadUrl;
-  }
+  String get downloadUrl => urls.first;
+
+  String get _proxyUrlGlobal =>
+      browserDownloadUrl.replaceFirst('https://github.com/', '${HostsX.worker.global}/proxy/github/github.com/');
+  String get _proxyUrlCN =>
+      browserDownloadUrl.replaceFirst('https://github.com/', '${HostsX.worker.cn}/proxy/github/github.com/');
 
   String get proxyUrl {
-    return browserDownloadUrl.replaceFirst('https://github.com/', '${HostsX.worker.cn}/proxy/github/github.com/');
+    return db.settings.proxy.worker ? _proxyUrlCN : _proxyUrlGlobal;
+  }
+
+  Set<String> get urls {
+    if (db.settings.proxy.worker) {
+      return {_proxyUrlCN, _proxyUrlGlobal};
+    }
+    return {browserDownloadUrl, _proxyUrlGlobal, _proxyUrlCN};
   }
 
   factory _Asset.fromJson(Map data) {

@@ -516,6 +516,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "display_show_window_fab": MessageLookupByLibrary.simpleMessage("Show Multi-Window Button"),
     "done": MessageLookupByLibrary.simpleMessage("DONE"),
     "download": MessageLookupByLibrary.simpleMessage("Download"),
+    "download_cancelled": MessageLookupByLibrary.simpleMessage("Download cancelled."),
     "download_latest_gamedata_hint": MessageLookupByLibrary.simpleMessage(
       "To ensure compatibility, please upgrade to the latest APP version before updating",
     ),
@@ -787,6 +788,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "info_value": MessageLookupByLibrary.simpleMessage("Value"),
     "input_invalid_hint": MessageLookupByLibrary.simpleMessage("Invalid inputs"),
     "install": MessageLookupByLibrary.simpleMessage("Install"),
+    "install_failed_to_start": MessageLookupByLibrary.simpleMessage("Failed to start the system installer."),
+    "install_permission_hint": MessageLookupByLibrary.simpleMessage(
+      "Direct installs need a one-time system permission. Tap \"Open Settings\" and allow \"Allow from this source\" for Chaldea, then return and tap Install again.",
+    ),
     "instant_death": MessageLookupByLibrary.simpleMessage("Instant Death"),
     "instant_death_params": MessageLookupByLibrary.simpleMessage("Instant Death Params"),
     "interlude": MessageLookupByLibrary.simpleMessage("Interlude"),
@@ -967,6 +972,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "open_condition": MessageLookupByLibrary.simpleMessage("Condition"),
     "open_in_browser": MessageLookupByLibrary.simpleMessage("Open In Browser"),
     "open_in_file_manager": MessageLookupByLibrary.simpleMessage("Please open with file manager"),
+    "open_settings": MessageLookupByLibrary.simpleMessage("Open Settings"),
     "opening_time": MessageLookupByLibrary.simpleMessage("Opening Time"),
     "optional_event_passive": MessageLookupByLibrary.simpleMessage("Optional Event Passive"),
     "options": MessageLookupByLibrary.simpleMessage("Options"),

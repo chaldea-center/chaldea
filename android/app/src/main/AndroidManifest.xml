@@ -50,6 +50,14 @@
 
             <data android:mimeType="*/*" />
         </intent>
+        <!-- in-app APK install (system package installer) -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+
+            <category android:name="android.intent.category.DEFAULT" />
+
+            <data android:mimeType="application/vnd.android.package-archive" />
+        </intent>
     </queries>
 
     <application

@@ -3,4 +3,8 @@
     <external-path
         name="external_files"
         path="." />
+    <!-- app-specific external files dir: where direct-install APKs are downloaded -->
+    <external-files-path
+        name="external_files_app"
+        path="." />
 </paths>
