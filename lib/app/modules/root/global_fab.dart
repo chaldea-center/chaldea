@@ -26,12 +26,14 @@ class WindowManagerFab extends StatefulWidget {
 
   static GlobalKey<_WindowManagerFabState> globalKey = GlobalKey();
   static OverlayEntry? _instance;
+  static bool _listenerAdded = false;
 
   static void createOverlay(BuildContext context) {
     context = router.navigatorKey.currentContext ?? context;
     _instance?.remove();
     _instance = OverlayEntry(builder: (context) => WindowManagerFab(key: globalKey));
     Overlay.maybeOf(context, rootOverlay: true)?.insert(_instance!);
+    _ensureInspectorListener();
   }
 
   static void removeOverlay() {
@@ -41,6 +43,26 @@ class WindowManagerFab extends StatefulWidget {
 
   static void markNeedRebuild() {
     _instance?.markNeedsBuild();
+  }
+
+  /// The DevTools Widget Inspector wraps the whole app in a Stack while active;
+  /// closing it can recreate the root Overlay, silently dropping manually
+  /// inserted [OverlayEntry]s like these FABs. Re-insert them once the
+  /// inspector is toggled.
+  static void _ensureInspectorListener() {
+    if (_listenerAdded) return;
+    _listenerAdded = true;
+    WidgetsBinding.instance.debugShowWidgetInspectorOverrideNotifier.addListener(_onInspectorModeChanged);
+  }
+
+  static void _onInspectorModeChanged() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_instance == null || _instance!.mounted) return;
+      final context = router.navigatorKey.currentContext;
+      if (context != null && context.mounted) {
+        createOverlay(context);
+      }
+    });
   }
 }
 
@@ -84,16 +106,37 @@ class DebugFab extends StatefulWidget {
 
   static GlobalKey<_DebugFabState> globalKey = GlobalKey();
   static OverlayEntry? _instance;
+  static bool _listenerAdded = false;
 
   static void createOverlay(BuildContext context) {
+    context = router.navigatorKey.currentContext ?? context;
     _instance?.remove();
     _instance = OverlayEntry(builder: (context) => DebugFab(key: globalKey));
     Overlay.maybeOf(context, rootOverlay: true)?.insert(_instance!);
+    _ensureInspectorListener();
   }
 
   static void removeOverlay() {
     _instance?.remove();
     _instance = null;
+  }
+
+  /// Same self-healing as [WindowManagerFab]: DevTools' Widget Inspector can
+  /// recreate the root Overlay on close, dropping this OverlayEntry.
+  static void _ensureInspectorListener() {
+    if (_listenerAdded) return;
+    _listenerAdded = true;
+    WidgetsBinding.instance.debugShowWidgetInspectorOverrideNotifier.addListener(_onInspectorModeChanged);
+  }
+
+  static void _onInspectorModeChanged() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_instance == null || _instance!.mounted) return;
+      final context = router.navigatorKey.currentContext;
+      if (context != null && context.mounted) {
+        createOverlay(context);
+      }
+    });
   }
 }
 
@@ -279,7 +322,7 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
               FrameRateLayer.showFps = !FrameRateLayer.showFps;
             });
             if (FrameRateLayer.showFps) {
-              FrameRateLayer.createOverlay(kAppKey.currentContext ?? context);
+              FrameRateLayer.createOverlay(context);
             } else {
               FrameRateLayer.removeOverlay();
             }

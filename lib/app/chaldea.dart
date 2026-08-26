@@ -50,6 +50,14 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WindowListener
   // app session after the user dismisses it once. Resets on cold restart.
   bool _emailBindingSkipped = false;
 
+  // Stable key so the FlutterEasyLoading State survives tree restructuring.
+  // In debug mode the framework wraps the MaterialApp.builder output in a
+  // WidgetInspector when DevTools' inspector is toggled; without a key the
+  // element is recreated and its initState attaches a second host while the
+  // old one is disposed only at end-of-frame, triggering
+  // "EasyLoading supports one active Host".
+  final GlobalKey _easyLoadingKey = GlobalKey(debugLabel: 'FlutterEasyLoading');
+
   @override
   void reassemble() {
     super.reassemble();
@@ -79,7 +87,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WindowListener
         builder: (context, widget) {
           ErrorWidget.builder = _ErrorWidget.errorWidgetBuilder;
           isEasyLoadingAttached = true;
-          return FlutterEasyLoading(child: widget);
+          return FlutterEasyLoading(key: _easyLoadingKey, child: widget);
         },
       ),
     );

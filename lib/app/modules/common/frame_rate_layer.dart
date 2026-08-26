@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
+import 'package:chaldea/app/app.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/constants.dart';
 
@@ -15,9 +16,13 @@ class FrameRateLayer extends StatefulWidget {
   static OverlayEntry? _instance;
 
   static void createOverlay(BuildContext context) {
+    // The root navigator context sits above its own Overlay, so
+    // `Overlay.maybeOf(rootCtx)` returns null. Use the active sub-navigator
+    // context and target the root overlay instead.
+    context = router.navigatorKey.currentContext ?? context;
     _instance?.remove();
     _instance = OverlayEntry(builder: (context) => FrameRateLayer(key: globalKey));
-    Overlay.maybeOf(context)?.insert(_instance!);
+    Overlay.maybeOf(context, rootOverlay: true)?.insert(_instance!);
   }
 
   static void removeOverlay() {
@@ -70,18 +75,29 @@ class _FrameRateLayerState extends State<FrameRateLayer> {
     return PositionedDirectional(
       start: 0,
       top: MediaQuery.of(context).padding.top,
-      child: IgnorePointer(
-        child: DecoratedBox(
-          decoration: const BoxDecoration(color: Colors.black26),
-          child: Text(
-            [
-              if (size != null && !PlatformU.isMobile) '${size.width.toInt()}×${size.height.toInt()}',
-              fps.toStringAsFixed(2).padLeft(6),
-            ].join(' '),
-            style: const TextStyle(
-              // backgroundColor: Colors.black26,
-              color: Colors.white70,
-              fontFamily: kMonoFont,
+      // Wrap in a Material so the Text inherits a sane DefaultTextStyle:
+      // entries in the root overlay sit above any Scaffold, and EasyLoading
+      // 4.x propagates MaterialApp's fallback _errorTextStyle (48px, yellow
+      // double underline) to everything below the root Navigator.
+      // The Material must be INSIDE the Positioned: Material introduces its
+      // own RenderObject, which would otherwise sit between the Overlay's
+      // Stack and the Positioned and break the ParentData chain.
+      child: Material(
+        type: MaterialType.transparency,
+        child: IgnorePointer(
+          child: DecoratedBox(
+            decoration: const BoxDecoration(color: Colors.black26),
+            child: Text(
+              [
+                if (size != null && !PlatformU.isMobile) '${size.width.toInt()}×${size.height.toInt()}',
+                fps.toStringAsFixed(2).padLeft(6),
+              ].join(' '),
+              style: const TextStyle(
+                // backgroundColor: Colors.black26,
+                color: Colors.white70,
+                fontFamily: kMonoFont,
+                fontSize: 14,
+              ),
             ),
           ),
         ),
