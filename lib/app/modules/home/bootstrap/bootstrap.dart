@@ -334,7 +334,7 @@ class _BootstrapPageState extends State<BootstrapPage> with SingleTickerProvider
         TextButton(
           child: Text(S.current.done),
           onPressed: () {
-            if (db.gameData.isValid) {
+            if (kDebugMode || db.gameData.isValid) {
               db.settings.tips.starter = false;
               rootRouter.appState.dataReady = true;
               db.saveSettings();

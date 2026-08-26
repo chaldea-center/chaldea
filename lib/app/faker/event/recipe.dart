@@ -61,7 +61,7 @@ class _CreateRecipePageState extends State<CreateRecipePage>
         title: Text(S.current.event_recipe),
         actions: [
           IconButton(onPressed: event?.routeTo, icon: Icon(Icons.flag), tooltip: S.current.event),
-          runtime.buildHistoryButton(context),
+          runtime.buildMenuButton(context),
         ],
       ),
       body: Column(

@@ -241,7 +241,7 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
             _jsonData = {"parseError": e.toString()};
           }
           bool dumpResponse = db.settings.fakerSettings.dumpResponse;
-          if (!kReleaseMode && request.normKey == 'followerlist') dumpResponse = false;
+          if (kReleaseMode && request.normKey == 'followerlist') dumpResponse = false;
           if (dumpResponse) {
             String fn = '${DateTime.now().toSafeFileName()}__${request.saveKey}';
             fn = fn.replaceAll(RegExp(r'[/:\s\\]+'), '_');

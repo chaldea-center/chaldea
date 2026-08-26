@@ -138,10 +138,7 @@ class _DumpRespCleanPageState extends State<DumpRespCleanPage> {
               trailing: Text(group.files.length.toString()),
               enabled: group.files.isNotEmpty,
               onTap: () async {
-                final deletedFiles = await router.pushPage(_DumpFileList(files: group.files));
-                if (deletedFiles is List<_FileInfo>) {
-                  group.files.removeWhere((e) => deletedFiles.contains(e));
-                }
+                await router.pushPage(_DumpFileList(files: group.files));
                 if (mounted) setState(() {});
               },
             ),
@@ -160,13 +157,13 @@ class _DumpFileList extends StatefulWidget {
 }
 
 class _DumpFileListState extends State<_DumpFileList> {
-  late final List<_FileInfo> files = widget.files.toList();
-  List<_FileInfo> deletedFiles = [];
+  late final List<_FileInfo> files = widget.files;
+  int deletedCount = 0;
 
   Future<void> delete(_FileInfo file) async {
     await file.file.delete();
     files.remove(file);
-    deletedFiles.add(file);
+    deletedCount += 1;
   }
 
   @override
@@ -174,7 +171,6 @@ class _DumpFileListState extends State<_DumpFileList> {
     return Scaffold(
       appBar: AppBar(
         title: Text('${files.length} files'),
-        leading: BackButton(onPressed: () => Navigator.pop(context, deletedFiles)),
         actions: [
           IconButton(
             onPressed: () async {
@@ -185,13 +181,19 @@ class _DumpFileListState extends State<_DumpFileList> {
                 onSubmit: (count) async {
                   try {
                     EasyLoading.show();
-                    int deletedCount = 0;
+                    deletedCount = 0;
                     for (final file in files.toList()) {
                       if (deletedCount >= count) break;
                       await delete(file);
-                      deletedCount += 1;
-                      if (mounted) setState(() {});
+                      if (mounted) {
+                        if (count < 100 || deletedCount % 10 == 0) {
+                          setState(() {});
+                        }
+                      } else {
+                        break;
+                      }
                     }
+                    if (mounted) setState(() {});
                     EasyLoading.showSuccess('Deleted $deletedCount files');
                   } catch (e, s) {
                     logger.e('batch delete dump file failed', e, s);

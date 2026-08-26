@@ -43,7 +43,7 @@ class _TreasureBoxDrawPageState extends State<TreasureBoxDrawPage> with FakerRun
         title: Text(S.current.event_treasure_box),
         actions: [
           IconButton(onPressed: event?.routeTo, icon: Icon(Icons.flag), tooltip: S.current.event),
-          runtime.buildHistoryButton(context),
+          runtime.buildMenuButton(context),
         ],
       ),
       body: ListView(
@@ -200,6 +200,7 @@ class _TreasureBoxDrawPageState extends State<TreasureBoxDrawPage> with FakerRun
       title: 'Draw Num',
       initValue: maxDrawNum,
       validate: (v) => v > 0 && v <= maxDrawNum,
+      autofocus: false,
       onSubmit: (v) {
         showEasyLoading(() => runtime.runTask(() => startDraw(box, v)));
       },
