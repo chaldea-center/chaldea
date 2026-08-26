@@ -6,6 +6,11 @@
 // This widget encapsulates the "touched" mechanism: error display is
 // controlled by [errorDisplayMode] and [forceShowError], so callers no
 // longer need to track focus/blur state manually.
+//
+// [onSubmit] is wired to the field's submit action (keyboard action button,
+// configured via [textInputAction]). It fires only when [validator] passes;
+// on failure the error is shown immediately and focus is kept. On success
+// the field unfocuses (keyboard dismissed) before the callback runs.
 
 import 'package:flutter/material.dart';
 
@@ -35,6 +40,8 @@ class FormInput extends StatefulWidget {
   final bool autocorrect;
   final FocusNode? focusNode;
   final ValueChanged<String>? onChanged;
+  final ValueChanged<String>? onSubmit;
+  final TextInputAction? textInputAction;
   final InputDecoration? decoration;
   final ErrorDisplayMode errorDisplayMode;
   final bool forceShowError;
@@ -54,6 +61,8 @@ class FormInput extends StatefulWidget {
     this.autocorrect = true,
     this.focusNode,
     this.onChanged,
+    this.onSubmit,
+    this.textInputAction,
     this.decoration,
     this.errorDisplayMode = ErrorDisplayMode.onBlur,
     this.forceShowError = false,
@@ -132,6 +141,21 @@ class _FormInputState extends State<FormInput> {
     widget.onChanged?.call(value);
   }
 
+  void _onFieldSubmitted(String value) {
+    final error = _computeError();
+    if (error != null) {
+      // Validation failed — show error immediately and keep focus so the
+      // user can fix the input; onSubmit is not called.
+      setState(() {
+        _touched = true;
+        _error = error;
+      });
+      return;
+    }
+    _focusNode.unfocus();
+    widget.onSubmit?.call(value);
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -158,11 +182,13 @@ class _FormInputState extends State<FormInput> {
         TextFormField(
           controller: widget.controller,
           keyboardType: widget.keyboardType,
+          textInputAction: widget.textInputAction,
           enabled: widget.enabled,
           obscureText: widget.obscure,
           autocorrect: widget.autocorrect,
           focusNode: _focusNode,
           onChanged: _onChanged,
+          onFieldSubmitted: _onFieldSubmitted,
           decoration: baseDecoration,
         ),
       ],

@@ -55,7 +55,6 @@
   "auth_admin_reset_password_confirm": "确认重置该用户密码？",
   "auth_admin_reset_password_prompt": "输入新密码",
   "auth_admin_send_recovery": "发送恢复邮件",
-  "auth_admin_send_recovery_confirm": "确认向该用户发送恢复邮件？",
   "auth_admin_sessions": "活跃会话",
   "auth_admin_statistics": "统计",
   "auth_admin_teams_count": "队伍数",

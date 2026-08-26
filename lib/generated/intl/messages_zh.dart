@@ -159,7 +159,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "auth_admin_reset_password_confirm": MessageLookupByLibrary.simpleMessage("确认重置该用户密码？"),
     "auth_admin_reset_password_prompt": MessageLookupByLibrary.simpleMessage("输入新密码"),
     "auth_admin_send_recovery": MessageLookupByLibrary.simpleMessage("发送恢复邮件"),
-    "auth_admin_send_recovery_confirm": MessageLookupByLibrary.simpleMessage("确认向该用户发送恢复邮件？"),
     "auth_admin_sessions": MessageLookupByLibrary.simpleMessage("活跃会话"),
     "auth_admin_statistics": MessageLookupByLibrary.simpleMessage("统计"),
     "auth_admin_teams_count": MessageLookupByLibrary.simpleMessage("队伍数"),

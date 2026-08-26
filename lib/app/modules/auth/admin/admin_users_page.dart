@@ -56,7 +56,6 @@ class _AdminUsersPageState extends State<AdminUsersPage> {
         _users.clear();
         _offset = 0;
         _hasMore = true;
-        _activeSearch = _searchController.text.trim();
       }
     });
     try {
@@ -81,7 +80,8 @@ class _AdminUsersPageState extends State<AdminUsersPage> {
     }
   }
 
-  Future<void> _onSearch() async {
+  Future<void> _onSearch(String search) async {
+    _activeSearch = search.trim();
     await _load(reset: true);
   }
 
@@ -99,15 +99,19 @@ class _AdminUsersPageState extends State<AdminUsersPage> {
                 Expanded(
                   child: FormInput(
                     hint: S.current.auth_search_users,
-                    prefixIcon: Icons.search,
                     controller: _searchController,
                     autocorrect: false,
+                    textInputAction: TextInputAction.search,
                     validator: (_) => null,
                     onChanged: (_) => setState(() {}),
+                    onSubmit: _onSearch,
                   ),
                 ),
                 const SizedBox(width: 8),
-                PrimaryButton(label: S.current.search, onPressed: _loading ? null : _onSearch),
+                IconButton.filled(
+                  onPressed: _loading ? null : () => _onSearch(_searchController.text),
+                  icon: Icon(Icons.search),
+                ),
               ],
             ),
           ),
@@ -175,12 +179,15 @@ class _AdminUsersPageState extends State<AdminUsersPage> {
         ? S.current.auth_admin_no_email
         : _maskEmail(user.email!);
     final created = DateTime.fromMillisecondsSinceEpoch(user.createdAt * 1000);
+    final _searchString = _searchController.text;
+    final isHighlight =
+        _searchString.isNotEmpty && <String>[user.name, ?user.email, user.id.toString()].contains(_searchString);
     return InfoRow(
       leading: Container(
         width: 40,
         height: 40,
         alignment: Alignment.center,
-        decoration: BoxDecoration(shape: BoxShape.circle, color: cs.primary.withAlpha(30)),
+        decoration: BoxDecoration(shape: BoxShape.circle, color: (isHighlight ? cs.error : cs.primary).withAlpha(30)),
         child: Text(
           user.name.isEmpty ? '?' : user.name[0].toUpperCase(),
           style: TextStyle(color: cs.primary, fontWeight: FontWeight.w700),

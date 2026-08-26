@@ -55,7 +55,6 @@
   "auth_admin_reset_password_confirm": "Reset this user's password?",
   "auth_admin_reset_password_prompt": "Enter new password",
   "auth_admin_send_recovery": "Send Recovery Email",
-  "auth_admin_send_recovery_confirm": "Send recovery email to this user?",
   "auth_admin_sessions": "Active Sessions",
   "auth_admin_statistics": "Statistics",
   "auth_admin_teams_count": "Teams",

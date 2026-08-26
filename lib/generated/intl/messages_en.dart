@@ -169,7 +169,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "auth_admin_reset_password_confirm": MessageLookupByLibrary.simpleMessage("Reset this user\'s password?"),
     "auth_admin_reset_password_prompt": MessageLookupByLibrary.simpleMessage("Enter new password"),
     "auth_admin_send_recovery": MessageLookupByLibrary.simpleMessage("Send Recovery Email"),
-    "auth_admin_send_recovery_confirm": MessageLookupByLibrary.simpleMessage("Send recovery email to this user?"),
     "auth_admin_sessions": MessageLookupByLibrary.simpleMessage("Active Sessions"),
     "auth_admin_statistics": MessageLookupByLibrary.simpleMessage("Statistics"),
     "auth_admin_teams_count": MessageLookupByLibrary.simpleMessage("Teams"),

@@ -50,7 +50,6 @@
   "auth_admin_reset_password_confirm": null,
   "auth_admin_reset_password_prompt": null,
   "auth_admin_send_recovery": null,
-  "auth_admin_send_recovery_confirm": null,
   "auth_admin_sessions": null,
   "auth_admin_statistics": null,
   "auth_admin_teams_count": null,

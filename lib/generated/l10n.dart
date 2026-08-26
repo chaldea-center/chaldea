@@ -396,17 +396,6 @@ class S {
     );
   }
 
-  /// `Send recovery email to this user?`
-  String get auth_admin_send_recovery_confirm {
-    return Intl.message(
-      'Send recovery email to this user?',
-      name: 'auth_admin_send_recovery_confirm',
-      desc: '',
-      locale: localeName,
-      args: [],
-    );
-  }
-
   /// `Active Sessions`
   String get auth_admin_sessions {
     return Intl.message('Active Sessions', name: 'auth_admin_sessions', desc: '', locale: localeName, args: []);
