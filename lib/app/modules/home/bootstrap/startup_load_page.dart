@@ -24,8 +24,11 @@ class _StartupLoadingPageState extends State<StartupLoadingPage> {
   DateTime startTime = DateTime.now();
 
   bool onlineUpdate =
-      network.available && !kDebugMode && db.settings.autoUpdateData && (db.settings.updateDataBeforeStart || kIsWeb);
-  bool needBackgroundUpdate = !kIsWeb && db.settings.autoUpdateData;
+      network.available &&
+      !kDebugMode &&
+      db.settings.network.autoUpdateData &&
+      (db.settings.network.updateDataBeforeStart || kIsWeb);
+  bool needBackgroundUpdate = !kIsWeb && db.settings.network.autoUpdateData;
 
   @override
   void initState() {

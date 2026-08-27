@@ -54,7 +54,7 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
   }
 
   Future<void> getData() async {
-    params = db.settings.eventItemCalc.putIfAbsent(widget.warId, () => EventItemCalcParams());
+    params = db.settings.gameplay.eventItemCalc.putIfAbsent(widget.warId, () => EventItemCalcParams());
     if (widget.objectiveCounts != null) {
       // [objectiveCounts] should contain all items from shop even value is 0
       // except the final event item to qp shop, event points should not be in it

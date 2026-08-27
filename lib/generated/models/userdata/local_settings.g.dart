@@ -8,55 +8,28 @@ part of '../../../models/userdata/local_settings.dart';
 
 LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate('LocalSettings', json, ($checkedConvert) {
   final val = LocalSettings(
-    beta: $checkedConvert('beta', (v) => v as bool? ?? false),
-    showDebugFab: $checkedConvert('showDebugFab', (v) => v as bool? ?? false),
-    alwaysOnTop: $checkedConvert('alwaysOnTop', (v) => v as bool? ?? false),
-    windowPosition: $checkedConvert(
-      'windowPosition',
-      (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
-    ),
-    showSystemTray: $checkedConvert('showSystemTray', (v) => v as bool? ?? false),
-    launchTimes: $checkedConvert('launchTimes', (v) => (v as num?)?.toInt() ?? 0),
-    lastLaunchTime: $checkedConvert('lastLaunchTime', (v) => (v as num?)?.toInt() ?? 0),
-    lastBackup: $checkedConvert('lastBackup', (v) => (v as num?)?.toInt() ?? 0),
-    themeMode: $checkedConvert('themeMode', (v) => $enumDecodeNullable(_$ThemeModeEnumMap, v) ?? ThemeMode.system),
-    useMaterial3: $checkedConvert('useMaterial3', (v) => v as bool? ?? false),
-    flexScheme: $checkedConvert('flexScheme', (v) => $enumDecodeNullable(_$FlexSchemeEnumMap, v)),
-    flexSurfaceMode: $checkedConvert('flexSurfaceMode', (v) => $enumDecodeNullable(_$FlexSurfaceModeEnumMap, v)),
-    flexBlendLevel: $checkedConvert('flexBlendLevel', (v) => (v as num?)?.toInt()),
-    flexSchemeVariant: $checkedConvert('flexSchemeVariant', (v) => $enumDecodeNullable(_$FlexSchemeVariantEnumMap, v)),
-    colorSeedInt: $checkedConvert('colorSeedInt', (v) => (v as num?)?.toInt()),
-    enableMouseDrag: $checkedConvert('enableMouseDrag', (v) => v as bool? ?? true),
-    globalSelection: $checkedConvert('globalSelection', (v) => v as bool? ?? false),
+    formatVersion: $checkedConvert('formatVersion', (v) => (v as num?)?.toInt() ?? 2),
     language: $checkedConvert('language', (v) => v as String?),
-    preferredRegions: $checkedConvert(
-      'preferredRegions',
-      (v) => (v as List<dynamic>?)?.map((e) => const RegionConverter().fromJson(e as String)).toList(),
+    appearance: $checkedConvert(
+      'appearance',
+      (v) => v == null ? null : AppearanceSettings.fromJson(Map<String, dynamic>.from(v as Map)),
     ),
-    autoUpdateData: $checkedConvert('autoUpdateData', (v) => v as bool? ?? true),
-    updateDataBeforeStart: $checkedConvert('updateDataBeforeStart', (v) => v as bool? ?? false),
-    checkDataHash: $checkedConvert('checkDataHash', (v) => v as bool? ?? true),
-    proxyServer: $checkedConvert('proxyServer', (v) => v as bool? ?? false),
-    proxy: $checkedConvert(
-      'proxy',
-      (v) => v == null ? null : ProxySettings.fromJson(Map<String, dynamic>.from(v as Map)),
+    platform: $checkedConvert(
+      'platform',
+      (v) => v == null ? null : PlatformSettings.fromJson(Map<String, dynamic>.from(v as Map)),
     ),
-    autoUpdateApp: $checkedConvert('autoUpdateApp', (v) => v as bool? ?? true),
-    autoRotate: $checkedConvert('autoRotate', (v) => v as bool? ?? true),
-    forceEdgeSwipePopGesture: $checkedConvert('forceEdgeSwipePopGesture', (v) => v as bool? ?? false),
-    preferredFavorite: $checkedConvert('preferredFavorite', (v) => $enumDecodeNullable(_$FavoriteStateEnumMap, v)),
-    preferApRate: $checkedConvert('preferApRate', (v) => v as bool? ?? true),
-    preferredQuestRegion: $checkedConvert(
-      'preferredQuestRegion',
-      (v) => _$JsonConverterFromJson<String, Region>(v, const RegionConverter().fromJson),
+    network: $checkedConvert(
+      'network',
+      (v) => v == null ? null : NetworkSettings.fromJson(Map<String, dynamic>.from(v as Map)),
     ),
-    alertUploadUserData: $checkedConvert('alertUploadUserData', (v) => v as bool? ?? false),
-    forceOnline: $checkedConvert('forceOnline', (v) => v as bool? ?? false),
-    priorityTags: $checkedConvert(
-      'priorityTags',
-      (v) => (v as Map?)?.map((k, e) => MapEntry(int.parse(k as String), e as String)),
+    locale: $checkedConvert(
+      'locale',
+      (v) => v == null ? null : LocaleSettings.fromJson(Map<String, dynamic>.from(v as Map)),
     ),
-    galleries: $checkedConvert('galleries', (v) => (v as Map?)?.map((k, e) => MapEntry(k as String, e as bool))),
+    gameplay: $checkedConvert(
+      'gameplay',
+      (v) => v == null ? null : GameplaySettings.fromJson(Map<String, dynamic>.from(v as Map)),
+    ),
     display: $checkedConvert(
       'display',
       (v) => v == null ? null : DisplaySettings.fromJson(Map<String, dynamic>.from(v as Map)),
@@ -74,23 +47,6 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate('LocalSettings
       'battleSim',
       (v) => v == null ? null : BattleSimSetting.fromJson(Map<String, dynamic>.from(v as Map)),
     ),
-    eventItemCalc: $checkedConvert(
-      'eventItemCalc',
-      (v) => (v as Map?)?.map(
-        (k, e) => MapEntry(int.parse(k as String), EventItemCalcParams.fromJson(Map<String, dynamic>.from(e as Map))),
-      ),
-    ),
-    spoilerRegion: $checkedConvert(
-      'spoilerRegion',
-      (v) => v == null ? Region.jp : const RegionConverter().fromJson(v as String),
-    ),
-    removeOldDataRegion: $checkedConvert(
-      'removeOldDataRegion',
-      (v) => _$JsonConverterFromJson<String, Region>(v, const RegionConverter().fromJson),
-    ),
-    autoResetFilter: $checkedConvert('autoResetFilter', (v) => v as bool? ?? true),
-    hideUnreleasedCard: $checkedConvert('hideUnreleasedCard', (v) => v as bool? ?? false),
-    hideUnreleasedEnemyCollection: $checkedConvert('hideUnreleasedEnemyCollection', (v) => v as bool? ?? false),
     filters: $checkedConvert(
       'filters',
       (v) => v == null ? null : LocalDataFilters.fromJson(Map<String, dynamic>.from(v as Map)),
@@ -99,21 +55,9 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate('LocalSettings
       'fakerSettings',
       (v) => v == null ? null : FakerSettings.fromJson(Map<String, dynamic>.from(v as Map)),
     ),
-    jpAutoLogins: $checkedConvert(
-      'autologins',
-      (v) => (v as List<dynamic>?)?.map((e) => AutoLoginDataJP.fromJson(Map<String, dynamic>.from(e as Map))).toList(),
-    ),
-    cnAutoLogins: $checkedConvert(
-      'cnAutoLogins',
-      (v) => (v as List<dynamic>?)?.map((e) => AutoLoginDataCN.fromJson(Map<String, dynamic>.from(e as Map))).toList(),
-    ),
     remoteConfig: $checkedConvert(
       'remoteConfig',
       (v) => v == null ? null : RemoteConfig.fromJson(Map<String, dynamic>.from(v as Map)),
-    ),
-    masterMissionOptions: $checkedConvert(
-      'masterMissionOptions',
-      (v) => v == null ? null : MasterMissionOptions.fromJson(Map<String, dynamic>.from(v as Map)),
     ),
     bookmarks: $checkedConvert(
       'bookmarks',
@@ -129,17 +73,45 @@ LocalSettings _$LocalSettingsFromJson(Map json) => $checkedCreate('LocalSettings
     ),
   );
   return val;
-}, fieldKeyMap: const {'jpAutoLogins': 'autologins'});
+});
 
 Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) => <String, dynamic>{
-  'beta': instance.beta,
-  'showDebugFab': instance.showDebugFab,
-  'alwaysOnTop': instance.alwaysOnTop,
-  'windowPosition': instance.windowPosition,
-  'showSystemTray': instance.showSystemTray,
-  'launchTimes': instance.launchTimes,
-  'lastLaunchTime': instance.lastLaunchTime,
-  'lastBackup': instance.lastBackup,
+  'formatVersion': instance.formatVersion,
+  'appearance': instance.appearance.toJson(),
+  'platform': instance.platform.toJson(),
+  'network': instance.network.toJson(),
+  'locale': instance.locale.toJson(),
+  'gameplay': instance.gameplay.toJson(),
+  'display': instance.display.toJson(),
+  'carousel': instance.carousel.toJson(),
+  'github': instance.github.toJson(),
+  'tips': instance.tips.toJson(),
+  'battleSim': instance.battleSim.toJson(),
+  'filters': instance.filters.toJson(),
+  'fakerSettings': instance.fakerSettings.toJson(),
+  'remoteConfig': instance.remoteConfig.toJson(),
+  'bookmarks': instance.bookmarks.toJson(),
+  'misc': instance.misc.toJson(),
+  'secrets': instance.secrets.toJson(),
+  'language': instance.language,
+};
+
+AppearanceSettings _$AppearanceSettingsFromJson(Map json) => $checkedCreate('AppearanceSettings', json, (
+  $checkedConvert,
+) {
+  final val = AppearanceSettings(
+    themeMode: $checkedConvert('themeMode', (v) => $enumDecodeNullable(_$ThemeModeEnumMap, v) ?? ThemeMode.system),
+    useMaterial3: $checkedConvert('useMaterial3', (v) => v as bool? ?? false),
+    flexScheme: $checkedConvert('flexScheme', (v) => $enumDecodeNullable(_$FlexSchemeEnumMap, v)),
+    flexSurfaceMode: $checkedConvert('flexSurfaceMode', (v) => $enumDecodeNullable(_$FlexSurfaceModeEnumMap, v)),
+    flexBlendLevel: $checkedConvert('flexBlendLevel', (v) => (v as num?)?.toInt()),
+    flexSchemeVariant: $checkedConvert('flexSchemeVariant', (v) => $enumDecodeNullable(_$FlexSchemeVariantEnumMap, v)),
+    colorSeedInt: $checkedConvert('colorSeedInt', (v) => (v as num?)?.toInt()),
+  );
+  return val;
+});
+
+Map<String, dynamic> _$AppearanceSettingsToJson(AppearanceSettings instance) => <String, dynamic>{
   'themeMode': _$ThemeModeEnumMap[instance.themeMode]!,
   'useMaterial3': instance.useMaterial3,
   'flexScheme': _$FlexSchemeEnumMap[instance.flexScheme],
@@ -147,51 +119,6 @@ Map<String, dynamic> _$LocalSettingsToJson(LocalSettings instance) => <String, d
   'flexBlendLevel': instance.flexBlendLevel,
   'flexSchemeVariant': _$FlexSchemeVariantEnumMap[instance.flexSchemeVariant],
   'colorSeedInt': instance.colorSeedInt,
-  'enableMouseDrag': instance.enableMouseDrag,
-  'globalSelection': instance.globalSelection,
-  'preferredRegions': instance.preferredRegions?.map(const RegionConverter().toJson).toList(),
-  'autoUpdateData': instance.autoUpdateData,
-  'updateDataBeforeStart': instance.updateDataBeforeStart,
-  'checkDataHash': instance.checkDataHash,
-  'autoUpdateApp': instance.autoUpdateApp,
-  'proxyServer': instance.proxyServer,
-  'proxy': instance.proxy.toJson(),
-  'autoRotate': instance.autoRotate,
-  'forceEdgeSwipePopGesture': instance.forceEdgeSwipePopGesture,
-  'preferApRate': instance.preferApRate,
-  'preferredQuestRegion': _$JsonConverterToJson<String, Region>(
-    instance.preferredQuestRegion,
-    const RegionConverter().toJson,
-  ),
-  'alertUploadUserData': instance.alertUploadUserData,
-  'forceOnline': instance.forceOnline,
-  'priorityTags': instance.priorityTags.map((k, e) => MapEntry(k.toString(), e)),
-  'galleries': instance.galleries,
-  'display': instance.display.toJson(),
-  'carousel': instance.carousel.toJson(),
-  'github': instance.github.toJson(),
-  'tips': instance.tips.toJson(),
-  'battleSim': instance.battleSim.toJson(),
-  'eventItemCalc': instance.eventItemCalc.map((k, e) => MapEntry(k.toString(), e.toJson())),
-  'spoilerRegion': const RegionConverter().toJson(instance.spoilerRegion),
-  'removeOldDataRegion': _$JsonConverterToJson<String, Region>(
-    instance.removeOldDataRegion,
-    const RegionConverter().toJson,
-  ),
-  'autoResetFilter': instance.autoResetFilter,
-  'hideUnreleasedCard': instance.hideUnreleasedCard,
-  'hideUnreleasedEnemyCollection': instance.hideUnreleasedEnemyCollection,
-  'filters': instance.filters.toJson(),
-  'fakerSettings': instance.fakerSettings.toJson(),
-  'autologins': instance.jpAutoLogins.map((e) => e.toJson()).toList(),
-  'cnAutoLogins': instance.cnAutoLogins.map((e) => e.toJson()).toList(),
-  'remoteConfig': instance.remoteConfig.toJson(),
-  'masterMissionOptions': instance.masterMissionOptions.toJson(),
-  'bookmarks': instance.bookmarks.toJson(),
-  'misc': instance.misc.toJson(),
-  'secrets': instance.secrets.toJson(),
-  'language': instance.language,
-  'preferredFavorite': _$FavoriteStateEnumMap[instance.preferredFavorite],
 };
 
 const _$ThemeModeEnumMap = {ThemeMode.system: 'system', ThemeMode.light: 'light', ThemeMode.dark: 'dark'};
@@ -304,13 +231,111 @@ const _$FlexSchemeVariantEnumMap = {
   FlexSchemeVariant.chroma: 'chroma',
 };
 
-const _$FavoriteStateEnumMap = {FavoriteState.all: 'all', FavoriteState.owned: 'owned', FavoriteState.other: 'other'};
+PlatformSettings _$PlatformSettingsFromJson(Map json) => $checkedCreate('PlatformSettings', json, ($checkedConvert) {
+  final val = PlatformSettings(
+    alwaysOnTop: $checkedConvert('alwaysOnTop', (v) => v as bool? ?? false),
+    windowPosition: $checkedConvert(
+      'windowPosition',
+      (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
+    ),
+    showSystemTray: $checkedConvert('showSystemTray', (v) => v as bool? ?? false),
+    autoRotate: $checkedConvert('autoRotate', (v) => v as bool? ?? true),
+  );
+  return val;
+});
+
+Map<String, dynamic> _$PlatformSettingsToJson(PlatformSettings instance) => <String, dynamic>{
+  'alwaysOnTop': instance.alwaysOnTop,
+  'windowPosition': instance.windowPosition,
+  'showSystemTray': instance.showSystemTray,
+  'autoRotate': instance.autoRotate,
+};
+
+NetworkSettings _$NetworkSettingsFromJson(Map json) => $checkedCreate('NetworkSettings', json, ($checkedConvert) {
+  final val = NetworkSettings(
+    autoUpdateData: $checkedConvert('autoUpdateData', (v) => v as bool? ?? true),
+    updateDataBeforeStart: $checkedConvert('updateDataBeforeStart', (v) => v as bool? ?? false),
+    checkDataHash: $checkedConvert('checkDataHash', (v) => v as bool? ?? true),
+    autoUpdateApp: $checkedConvert('autoUpdateApp', (v) => v as bool? ?? true),
+    forceOnline: $checkedConvert('forceOnline', (v) => v as bool? ?? false),
+    alertUploadUserData: $checkedConvert('alertUploadUserData', (v) => v as bool? ?? false),
+    proxy: $checkedConvert(
+      'proxy',
+      (v) => v == null ? null : ProxySettings.fromJson(Map<String, dynamic>.from(v as Map)),
+    ),
+  );
+  return val;
+});
+
+Map<String, dynamic> _$NetworkSettingsToJson(NetworkSettings instance) => <String, dynamic>{
+  'autoUpdateData': instance.autoUpdateData,
+  'updateDataBeforeStart': instance.updateDataBeforeStart,
+  'checkDataHash': instance.checkDataHash,
+  'autoUpdateApp': instance.autoUpdateApp,
+  'forceOnline': instance.forceOnline,
+  'alertUploadUserData': instance.alertUploadUserData,
+  'proxy': instance.proxy.toJson(),
+};
+
+LocaleSettings _$LocaleSettingsFromJson(Map json) => $checkedCreate('LocaleSettings', json, ($checkedConvert) {
+  final val = LocaleSettings(
+    preferredRegions: $checkedConvert(
+      'preferredRegions',
+      (v) => (v as List<dynamic>?)?.map((e) => const RegionConverter().fromJson(e as String)).toList(),
+    ),
+    preferredQuestRegion: $checkedConvert(
+      'preferredQuestRegion',
+      (v) => _$JsonConverterFromJson<String, Region>(v, const RegionConverter().fromJson),
+    ),
+  );
+  return val;
+});
+
+Map<String, dynamic> _$LocaleSettingsToJson(LocaleSettings instance) => <String, dynamic>{
+  'preferredRegions': instance.preferredRegions?.map(const RegionConverter().toJson).toList(),
+  'preferredQuestRegion': _$JsonConverterToJson<String, Region>(
+    instance.preferredQuestRegion,
+    const RegionConverter().toJson,
+  ),
+};
 
 Value? _$JsonConverterFromJson<Json, Value>(Object? json, Value? Function(Json json) fromJson) =>
     json == null ? null : fromJson(json as Json);
 
 Json? _$JsonConverterToJson<Json, Value>(Value? value, Json? Function(Value value) toJson) =>
     value == null ? null : toJson(value);
+
+GameplaySettings _$GameplaySettingsFromJson(Map json) => $checkedCreate('GameplaySettings', json, ($checkedConvert) {
+  final val = GameplaySettings(
+    preferApRate: $checkedConvert('preferApRate', (v) => v as bool? ?? true),
+    preferredFavorite: $checkedConvert('preferredFavorite', (v) => $enumDecodeNullable(_$FavoriteStateEnumMap, v)),
+    priorityTags: $checkedConvert(
+      'priorityTags',
+      (v) => (v as Map?)?.map((k, e) => MapEntry(int.parse(k as String), e as String)),
+    ),
+    eventItemCalc: $checkedConvert(
+      'eventItemCalc',
+      (v) => (v as Map?)?.map(
+        (k, e) => MapEntry(int.parse(k as String), EventItemCalcParams.fromJson(Map<String, dynamic>.from(e as Map))),
+      ),
+    ),
+    masterMissionOptions: $checkedConvert(
+      'masterMissionOptions',
+      (v) => v == null ? null : MasterMissionOptions.fromJson(Map<String, dynamic>.from(v as Map)),
+    ),
+  );
+  return val;
+});
+
+Map<String, dynamic> _$GameplaySettingsToJson(GameplaySettings instance) => <String, dynamic>{
+  'preferApRate': instance.preferApRate,
+  'preferredFavorite': _$FavoriteStateEnumMap[instance.preferredFavorite],
+  'priorityTags': instance.priorityTags.map((k, e) => MapEntry(k.toString(), e)),
+  'eventItemCalc': instance.eventItemCalc.map((k, e) => MapEntry(k.toString(), e.toJson())),
+  'masterMissionOptions': instance.masterMissionOptions.toJson(),
+};
+
+const _$FavoriteStateEnumMap = {FavoriteState.all: 'all', FavoriteState.owned: 'owned', FavoriteState.other: 'other'};
 
 ProxySettings _$ProxySettingsFromJson(Map json) => $checkedCreate('ProxySettings', json, ($checkedConvert) {
   final val = ProxySettings(
@@ -341,15 +366,29 @@ Map<String, dynamic> _$ProxySettingsToJson(ProxySettings instance) => <String, d
 
 DisplaySettings _$DisplaySettingsFromJson(Map json) => $checkedCreate('DisplaySettings', json, ($checkedConvert) {
   final val = DisplaySettings(
-    galleryIconSize: $checkedConvert(
-      'galleryIconSize',
-      (v) => $enumDecodeNullable(_$GalleryIconSizeEnumMap, v) ?? .medium,
-    ),
-    showAccountAtHome: $checkedConvert('showAccountAtHome', (v) => v as bool? ?? true),
     showWindowFab: $checkedConvert('showWindowFab', (v) => v as bool? ?? true),
+    maxWindowWidth: $checkedConvert('maxWindowWidth', (v) => (v as num?)?.toInt()),
+    enableSplitView: $checkedConvert('enableSplitView', (v) => v as bool? ?? true),
+    splitMasterRatio: $checkedConvert('splitMasterRatio', (v) => (v as num?)?.toInt()),
+    showAccountAtHome: $checkedConvert('showAccountAtHome', (v) => v as bool? ?? true),
+    classFilterStyle: $checkedConvert(
+      'classFilterStyle',
+      (v) => $enumDecodeNullable(_$SvtListClassFilterStyleEnumMap, v) ?? SvtListClassFilterStyle.auto,
+    ),
     svtPlanInputMode: $checkedConvert(
       'svtPlanInputMode',
       (v) => $enumDecodeNullable(_$SvtPlanInputModeEnumMap, v) ?? SvtPlanInputMode.dropdown,
+    ),
+    autoTurnOnPlanNotReach: $checkedConvert('autoTurnOnPlanNotReach', (v) => v as bool? ?? false),
+    onlyAppendUnlocked: $checkedConvert('onlyAppendUnlocked', (v) => v as bool? ?? true),
+    planPageFullScreen: $checkedConvert('planPageFullScreen', (v) => v as bool? ?? false),
+    hideSvtPlanDetails: $checkedConvert(
+      'hideSvtPlanDetails',
+      (v) => (v as List<dynamic>?)?.map((e) => $enumDecodeNullable(_$SvtPlanDetailEnumMap, e)).toList(),
+    ),
+    sortedSvtTabs: $checkedConvert(
+      'sortedSvtTabs',
+      (v) => (v as List<dynamic>?)?.map((e) => $enumDecodeNullable(_$SvtTabEnumMap, e)).toList(),
     ),
     itemDetailViewType: $checkedConvert(
       'itemDetailViewType',
@@ -360,69 +399,45 @@ DisplaySettings _$DisplaySettingsFromJson(Map json) => $checkedCreate('DisplaySe
       (v) => $enumDecodeNullable(_$ItemDetailSvtSortEnumMap, v) ?? ItemDetailSvtSort.collectionNo,
     ),
     itemQuestsSortByAp: $checkedConvert('itemQuestsSortByAp', (v) => v as bool? ?? true),
-    autoTurnOnPlanNotReach: $checkedConvert('autoTurnOnPlanNotReach', (v) => v as bool? ?? false),
-    classFilterStyle: $checkedConvert(
-      'classFilterStyle',
-      (v) => $enumDecodeNullable(_$SvtListClassFilterStyleEnumMap, v) ?? SvtListClassFilterStyle.auto,
-    ),
-    onlyAppendUnlocked: $checkedConvert('onlyAppendUnlocked', (v) => v as bool? ?? true),
-    planPageFullScreen: $checkedConvert('planPageFullScreen', (v) => v as bool? ?? false),
-    sortedSvtTabs: $checkedConvert(
-      'sortedSvtTabs',
-      (v) => (v as List<dynamic>?)?.map((e) => $enumDecodeNullable(_$SvtTabEnumMap, e)).toList(),
-    ),
-    hideSvtPlanDetails: $checkedConvert(
-      'hideSvtPlanDetails',
-      (v) => (v as List<dynamic>?)?.map((e) => $enumDecodeNullable(_$SvtPlanDetailEnumMap, e)).toList(),
-    ),
     showOriginalMissionText: $checkedConvert('showOriginalMissionText', (v) => v as bool? ?? false),
-    maxWindowWidth: $checkedConvert('maxWindowWidth', (v) => (v as num?)?.toInt()),
-    splitMasterRatio: $checkedConvert('splitMasterRatio', (v) => (v as num?)?.toInt()),
-    enableSplitView: $checkedConvert('enableSplitView', (v) => v as bool? ?? true),
+    galleries: $checkedConvert('galleries', (v) => (v as Map?)?.map((k, e) => MapEntry(k as String, e as bool))),
+    galleryIconSize: $checkedConvert(
+      'galleryIconSize',
+      (v) => $enumDecodeNullable(_$GalleryIconSizeEnumMap, v) ?? .medium,
+    ),
+    enableMouseDrag: $checkedConvert('enableMouseDrag', (v) => v as bool? ?? true),
+    globalSelection: $checkedConvert('globalSelection', (v) => v as bool? ?? false),
+    forceEdgeSwipePopGesture: $checkedConvert('forceEdgeSwipePopGesture', (v) => v as bool? ?? false),
     ad: $checkedConvert('ad', (v) => v == null ? null : AdSetting.fromJson(Map<String, dynamic>.from(v as Map))),
+    showDebugFab: $checkedConvert('showDebugFab', (v) => v as bool? ?? false),
   );
   return val;
 });
 
 Map<String, dynamic> _$DisplaySettingsToJson(DisplaySettings instance) => <String, dynamic>{
-  'galleryIconSize': _$GalleryIconSizeEnumMap[instance.galleryIconSize]!,
-  'showAccountAtHome': instance.showAccountAtHome,
   'showWindowFab': instance.showWindowFab,
+  'maxWindowWidth': instance.maxWindowWidth,
+  'enableSplitView': instance.enableSplitView,
+  'splitMasterRatio': instance.splitMasterRatio,
+  'showAccountAtHome': instance.showAccountAtHome,
+  'classFilterStyle': _$SvtListClassFilterStyleEnumMap[instance.classFilterStyle]!,
   'svtPlanInputMode': _$SvtPlanInputModeEnumMap[instance.svtPlanInputMode]!,
+  'autoTurnOnPlanNotReach': instance.autoTurnOnPlanNotReach,
+  'onlyAppendUnlocked': instance.onlyAppendUnlocked,
+  'planPageFullScreen': instance.planPageFullScreen,
+  'hideSvtPlanDetails': instance.hideSvtPlanDetails.map((e) => _$SvtPlanDetailEnumMap[e]!).toList(),
+  'sortedSvtTabs': instance.sortedSvtTabs.map((e) => _$SvtTabEnumMap[e]!).toList(),
   'itemDetailViewType': _$ItemDetailViewTypeEnumMap[instance.itemDetailViewType]!,
   'itemDetailSvtSort': _$ItemDetailSvtSortEnumMap[instance.itemDetailSvtSort]!,
   'itemQuestsSortByAp': instance.itemQuestsSortByAp,
-  'autoTurnOnPlanNotReach': instance.autoTurnOnPlanNotReach,
-  'classFilterStyle': _$SvtListClassFilterStyleEnumMap[instance.classFilterStyle]!,
-  'onlyAppendUnlocked': instance.onlyAppendUnlocked,
-  'planPageFullScreen': instance.planPageFullScreen,
-  'sortedSvtTabs': instance.sortedSvtTabs.map((e) => _$SvtTabEnumMap[e]!).toList(),
-  'hideSvtPlanDetails': instance.hideSvtPlanDetails.map((e) => _$SvtPlanDetailEnumMap[e]!).toList(),
   'showOriginalMissionText': instance.showOriginalMissionText,
-  'maxWindowWidth': instance.maxWindowWidth,
-  'splitMasterRatio': instance.splitMasterRatio,
-  'enableSplitView': instance.enableSplitView,
+  'galleries': instance.galleries,
+  'galleryIconSize': _$GalleryIconSizeEnumMap[instance.galleryIconSize]!,
+  'enableMouseDrag': instance.enableMouseDrag,
+  'globalSelection': instance.globalSelection,
+  'forceEdgeSwipePopGesture': instance.forceEdgeSwipePopGesture,
   'ad': instance.ad.toJson(),
-};
-
-const _$GalleryIconSizeEnumMap = {
-  GalleryIconSize.small: 'small',
-  GalleryIconSize.medium: 'medium',
-  GalleryIconSize.large: 'large',
-};
-
-const _$SvtPlanInputModeEnumMap = {SvtPlanInputMode.dropdown: 'dropdown', SvtPlanInputMode.slider: 'slider'};
-
-const _$ItemDetailViewTypeEnumMap = {
-  ItemDetailViewType.separated: 'separated',
-  ItemDetailViewType.grid: 'grid',
-  ItemDetailViewType.list: 'list',
-};
-
-const _$ItemDetailSvtSortEnumMap = {
-  ItemDetailSvtSort.collectionNo: 'collectionNo',
-  ItemDetailSvtSort.clsName: 'clsName',
-  ItemDetailSvtSort.rarity: 'rarity',
+  'showDebugFab': instance.showDebugFab,
 };
 
 const _$SvtListClassFilterStyleEnumMap = {
@@ -431,6 +446,23 @@ const _$SvtListClassFilterStyleEnumMap = {
   SvtListClassFilterStyle.singleRowExpanded: 'singleRowExpanded',
   SvtListClassFilterStyle.twoRow: 'twoRow',
   SvtListClassFilterStyle.doNotShow: 'doNotShow',
+};
+
+const _$SvtPlanInputModeEnumMap = {SvtPlanInputMode.dropdown: 'dropdown', SvtPlanInputMode.slider: 'slider'};
+
+const _$SvtPlanDetailEnumMap = {
+  SvtPlanDetail.ascension: 'ascension',
+  SvtPlanDetail.activeSkill: 'activeSkill',
+  SvtPlanDetail.appendSkill: 'appendSkill',
+  SvtPlanDetail.costume: 'costume',
+  SvtPlanDetail.coin: 'coin',
+  SvtPlanDetail.grail: 'grail',
+  SvtPlanDetail.noblePhantasm: 'noblePhantasm',
+  SvtPlanDetail.fou5: 'fou5',
+  SvtPlanDetail.fou4: 'fou4',
+  SvtPlanDetail.fou3: 'fou3',
+  SvtPlanDetail.bondLimit: 'bondLimit',
+  SvtPlanDetail.commandCode: 'commandCode',
 };
 
 const _$SvtTabEnumMap = {
@@ -447,19 +479,22 @@ const _$SvtTabEnumMap = {
   SvtTab.quest: 'quest',
 };
 
-const _$SvtPlanDetailEnumMap = {
-  SvtPlanDetail.ascension: 'ascension',
-  SvtPlanDetail.activeSkill: 'activeSkill',
-  SvtPlanDetail.appendSkill: 'appendSkill',
-  SvtPlanDetail.costume: 'costume',
-  SvtPlanDetail.coin: 'coin',
-  SvtPlanDetail.grail: 'grail',
-  SvtPlanDetail.noblePhantasm: 'noblePhantasm',
-  SvtPlanDetail.fou5: 'fou5',
-  SvtPlanDetail.fou4: 'fou4',
-  SvtPlanDetail.fou3: 'fou3',
-  SvtPlanDetail.bondLimit: 'bondLimit',
-  SvtPlanDetail.commandCode: 'commandCode',
+const _$ItemDetailViewTypeEnumMap = {
+  ItemDetailViewType.separated: 'separated',
+  ItemDetailViewType.grid: 'grid',
+  ItemDetailViewType.list: 'list',
+};
+
+const _$ItemDetailSvtSortEnumMap = {
+  ItemDetailSvtSort.collectionNo: 'collectionNo',
+  ItemDetailSvtSort.clsName: 'clsName',
+  ItemDetailSvtSort.rarity: 'rarity',
+};
+
+const _$GalleryIconSizeEnumMap = {
+  GalleryIconSize.small: 'small',
+  GalleryIconSize.medium: 'medium',
+  GalleryIconSize.large: 'large',
 };
 
 AdSetting _$AdSettingFromJson(Map json) => $checkedCreate('AdSetting', json, ($checkedConvert) {
@@ -672,6 +707,9 @@ Map<String, dynamic> _$MasterMissionOptionsToJson(MasterMissionOptions instance)
 
 _MiscSettings _$MiscSettingsFromJson(Map json) => $checkedCreate('_MiscSettings', json, ($checkedConvert) {
   final val = _MiscSettings(
+    launchTimes: $checkedConvert('launchTimes', (v) => (v as num?)?.toInt() ?? 0),
+    lastLaunchTime: $checkedConvert('lastLaunchTime', (v) => (v as num?)?.toInt() ?? 0),
+    lastBackup: $checkedConvert('lastBackup', (v) => (v as num?)?.toInt() ?? 0),
     nonSvtCharaFigureIds: $checkedConvert(
       'nonSvtCharaFigureIds',
       (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet(),
@@ -693,6 +731,9 @@ _MiscSettings _$MiscSettingsFromJson(Map json) => $checkedCreate('_MiscSettings'
 });
 
 Map<String, dynamic> _$MiscSettingsToJson(_MiscSettings instance) => <String, dynamic>{
+  'launchTimes': instance.launchTimes,
+  'lastLaunchTime': instance.lastLaunchTime,
+  'lastBackup': instance.lastBackup,
   'nonSvtCharaFigureIds': instance.nonSvtCharaFigureIds.toList(),
   'markedCharaFigureSvtIds': instance.markedCharaFigureSvtIds.map((k, e) => MapEntry(k.toString(), e)),
   'nonSvtCharaImageIds': instance.nonSvtCharaImageIds.toList(),

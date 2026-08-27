@@ -7,7 +7,7 @@ class CustomHttpOverrides extends HttpOverrides {
   HttpClient createHttpClient(SecurityContext? context) {
     final client = super.createHttpClient(context);
     client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
-    final proxySettings = db.settings.proxy;
+    final proxySettings = db.settings.network.proxy;
     if (proxySettings.enableHttpProxy &&
         proxySettings.proxyHost?.isNotEmpty == true &&
         proxySettings.proxyPort != null) {

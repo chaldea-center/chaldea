@@ -107,8 +107,8 @@ class _FgoAnnualReportPageState extends State<FgoAnnualReportPage> {
   Widget build(BuildContext context) {
     ThemeData themeData = ThemeData(
       brightness: Brightness.dark,
-      useMaterial3: db.settings.useMaterial3,
-      colorSchemeSeed: db.settings.colorSeed,
+      useMaterial3: db.settings.appearance.useMaterial3,
+      colorSchemeSeed: db.settings.appearance.colorSeed,
       tooltipTheme: const TooltipThemeData(waitDuration: Duration(milliseconds: 500)),
     );
     themeData = themeData.copyWith(
@@ -136,7 +136,7 @@ class _FgoAnnualReportPageState extends State<FgoAnnualReportPage> {
             errors.add(Text('${S.current.settings_tab_name} -> ${S.current.gamedata} -> ${S.current.update_dataset}'));
           }
           if (data != null) {
-            if ((!db.settings.spoilerRegion.isJP && db.settings.spoilerRegion != data.region) ||
+            if ((!db.settings.filters.spoilerRegion.isJP && db.settings.filters.spoilerRegion != data.region) ||
                 db.gameData.spoilerRegion?.isJP == false) {
               errors.add(
                 Text(
@@ -144,7 +144,7 @@ class _FgoAnnualReportPageState extends State<FgoAnnualReportPage> {
                 ),
               );
             }
-            if (db.settings.removeOldDataRegion != null || db.gameData.removeOldDataRegion != null) {
+            if (db.settings.filters.removeOldDataRegion != null || db.gameData.removeOldDataRegion != null) {
               errors.add(
                 Text(
                   '${S.current.restart_to_apply_changes}: ${S.current.reset} ${S.current.gamedata}-> Delete Old Data',

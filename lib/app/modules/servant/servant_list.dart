@@ -45,7 +45,7 @@ class ServantListPage extends StatefulWidget {
 class ServantListPageState extends State<ServantListPage> with SearchableListState<Servant, ServantListPage> {
   @override
   Iterable<Servant> get wholeData {
-    if (db.settings.hideUnreleasedEnemyCollection || widget.planMode) {
+    if (db.settings.filters.hideUnreleasedEnemyCollection || widget.planMode) {
       return db.gameData.servantsWithDup.values.where((e) => e.type != SvtType.enemyCollectionDetail);
     } else {
       return db.gameData.servantsWithDup.values;
@@ -72,10 +72,10 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
   @override
   void initState() {
     super.initState();
-    if (db.settings.autoResetFilter && widget.filterData == null) {
+    if (db.settings.filters.autoResetFilter && widget.filterData == null) {
       filterData.reset();
-      if (db.settings.preferredFavorite != null) {
-        filterData.favorite = db.settings.preferredFavorite!;
+      if (db.settings.gameplay.preferredFavorite != null) {
+        filterData.favorite = db.settings.gameplay.preferredFavorite!;
       }
     }
     if (widget.planMode) {

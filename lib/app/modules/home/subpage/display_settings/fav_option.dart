@@ -21,10 +21,10 @@ class _FavOptionSettingState extends State<FavOptionSetting> {
       body: ListView(
         children: [
           RadioGroup<FavoriteState?>(
-            groupValue: db.settings.preferredFavorite,
+            groupValue: db.settings.gameplay.preferredFavorite,
             onChanged: (v) {
               setState(() {
-                db.settings.preferredFavorite = v;
+                db.settings.gameplay.preferredFavorite = v;
                 db.saveSettings();
               });
             },

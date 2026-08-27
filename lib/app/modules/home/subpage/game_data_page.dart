@@ -83,39 +83,39 @@ class _GameDataPageState extends State<GameDataPage> {
                 },
               ),
               SwitchListTile.adaptive(
-                value: db.settings.autoUpdateData,
+                value: db.settings.network.autoUpdateData,
                 title: Text(S.current.auto_update),
                 onChanged: (v) {
                   setState(() {
-                    db.settings.autoUpdateData = v;
+                    db.settings.network.autoUpdateData = v;
                     db.saveSettings();
                   });
                 },
               ),
               SwitchListTile.adaptive(
-                value: kIsWeb ? db.settings.autoUpdateData : db.settings.updateDataBeforeStart,
+                value: kIsWeb ? db.settings.network.autoUpdateData : db.settings.network.updateDataBeforeStart,
                 title: Text(S.current.update_data_at_start),
                 subtitle: Text(
-                  (kIsWeb ? db.settings.autoUpdateData : db.settings.updateDataBeforeStart)
+                  (kIsWeb ? db.settings.network.autoUpdateData : db.settings.network.updateDataBeforeStart)
                       ? S.current.update_data_at_start_on_hint
                       : S.current.update_data_at_start_off_hint,
                   textScaler: const TextScaler.linear(0.8),
                 ),
-                onChanged: !kIsWeb && db.settings.autoUpdateData
+                onChanged: !kIsWeb && db.settings.network.autoUpdateData
                     ? (v) {
                         setState(() {
-                          db.settings.updateDataBeforeStart = v;
+                          db.settings.network.updateDataBeforeStart = v;
                           db.saveSettings();
                         });
                       }
                     : null,
               ),
               // SwitchListTile.adaptive(
-              //   value: db.settings.checkDataHash,
+              //   value: db.settings.network.checkDataHash,
               //   title: Text(S.current.check_file_hash),
               //   onChanged: (v) {
               //     setState(() {
-              //       db.settings.checkDataHash = v;
+              //       db.settings.network.checkDataHash = v;
               //       db.saveSettings();
               //     });
               //   },
@@ -167,38 +167,38 @@ class _GameDataPageState extends State<GameDataPage> {
             ),
             children: [
               SwitchListTile.adaptive(
-                value: db.settings.hideUnreleasedCard,
+                value: db.settings.filters.hideUnreleasedCard,
                 title: Text(S.current.hide_unreleased_card),
                 subtitle: Text(S.current.filter),
                 onChanged: (v) {
-                  db.settings.hideUnreleasedCard = v;
+                  db.settings.filters.hideUnreleasedCard = v;
                   setState(() {});
                 },
               ),
               ListTile(
                 title: Text(S.current.delete_unreleased_card),
                 trailing: DropdownButton<Region>(
-                  value: db.settings.spoilerRegion,
+                  value: db.settings.filters.spoilerRegion,
                   items: [
                     for (final region in Region.values) DropdownMenuItem(value: region, child: Text(region.localName)),
                   ],
                   onChanged: (v) {
                     setState(() {
                       if (v != null) {
-                        db.settings.spoilerRegion = v;
+                        db.settings.filters.spoilerRegion = v;
                       }
                     });
                   },
                 ),
               ),
               SwitchListTile.adaptive(
-                value: db.settings.hideUnreleasedEnemyCollection,
+                value: db.settings.filters.hideUnreleasedEnemyCollection,
                 // secondary: Icon(DirectionalIcons.of(context,
                 //     ltr: Icons.subdirectory_arrow_right, rtl: Icons.subdirectory_arrow_left)),
                 title: const Text("Hide All Enemy Collections"),
                 subtitle: const Text("Servant List"),
                 onChanged: (v) {
-                  db.settings.hideUnreleasedEnemyCollection = v;
+                  db.settings.filters.hideUnreleasedEnemyCollection = v;
                   setState(() {});
                 },
               ),
@@ -210,14 +210,14 @@ class _GameDataPageState extends State<GameDataPage> {
                 title: const Text('Delete Old Data'),
                 subtitle: const Text('Old event/war/summon..., reduce memory.'),
                 trailing: DropdownButton<Region?>(
-                  value: db.settings.removeOldDataRegion,
+                  value: db.settings.filters.removeOldDataRegion,
                   items: [
                     const DropdownMenuItem(value: null, child: Text('NO')),
                     for (final region in Region.values) DropdownMenuItem(value: region, child: Text(region.localName)),
                   ],
                   onChanged: (v) {
                     setState(() {
-                      db.settings.removeOldDataRegion = v;
+                      db.settings.filters.removeOldDataRegion = v;
                     });
                   },
                 ),

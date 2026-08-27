@@ -76,7 +76,7 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
   Region _resolveDefaultRegion() {
     return widget.region ?? Region.jp;
     // if (widget.region != null) return widget.region!;
-    // final fixedRegion = db.settings.preferredQuestRegion;
+    // final fixedRegion = db.settings.locale.preferredQuestRegion;
     // if (fixedRegion == null || fixedRegion == Region.jp) {
     //   return Region.jp;
     // }
@@ -386,20 +386,20 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
             ListTile(
               title: Text(S.current.general_default),
               contentPadding: const EdgeInsets.symmetric(horizontal: 24),
-              selected: db.settings.preferredQuestRegion == null,
+              selected: db.settings.locale.preferredQuestRegion == null,
               onTap: () {
                 Navigator.pop(context);
-                db.settings.preferredQuestRegion = null;
+                db.settings.locale.preferredQuestRegion = null;
               },
             ),
             for (final region in Region.values)
               ListTile(
                 title: Text(region.localName),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 24),
-                selected: db.settings.preferredQuestRegion == region,
+                selected: db.settings.locale.preferredQuestRegion == region,
                 onTap: () {
                   Navigator.pop(context);
-                  db.settings.preferredQuestRegion = region;
+                  db.settings.locale.preferredQuestRegion = region;
                 },
               ),
             SFooter(S.current.quest_prefer_region_hint),

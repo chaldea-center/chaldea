@@ -41,7 +41,7 @@ class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
   late StreamSubscription<List<ConnectivityResult>> _subscription;
   Map<String, dynamic> testResults = {};
 
-  final settings = db.settings.proxy;
+  final settings = db.settings.network.proxy;
 
   List<_Group> get testGroups => [
     _Group(
@@ -119,13 +119,13 @@ class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
                   ),
                 ),
                 SwitchListTile.adaptive(
-                  value: db.settings.forceOnline,
+                  value: db.settings.network.forceOnline,
                   title: Text(S.current.network_force_online),
                   subtitle: Text(S.current.network_force_online_hint),
                   dense: true,
                   onChanged: (v) {
                     setState(() {
-                      db.settings.forceOnline = v;
+                      db.settings.network.forceOnline = v;
                     });
                   },
                 ),

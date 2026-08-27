@@ -304,11 +304,11 @@ class _SettingsPageState extends State<SettingsPage> {
                   },
                 ),
                 SwitchListTile.adaptive(
-                  value: db.settings.showDebugFab,
+                  value: db.settings.display.showDebugFab,
                   title: Text(S.current.debug_fab),
                   onChanged: (v) {
                     setState(() {
-                      db.settings.showDebugFab = v;
+                      db.settings.display.showDebugFab = v;
                       db.saveSettings();
                     });
                     if (v) {

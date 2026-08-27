@@ -205,7 +205,9 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
           title: Text(S.current.toggle_dark_mode),
           onTap: () {
             Navigator.pop(context);
-            db.settings.themeMode = db.settings.isResolvedDarkMode ? ThemeMode.light : ThemeMode.dark;
+            db.settings.appearance.themeMode = db.settings.appearance.isResolvedDarkMode
+                ? ThemeMode.light
+                : ThemeMode.dark;
             db.notifyAppUpdate();
           },
         ),
@@ -215,7 +217,7 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
             constraints: BoxConstraints(maxWidth: 360),
             child: DropdownButton<FlexScheme>(
               isExpanded: true,
-              value: db.settings.resolvedFlexScheme,
+              value: db.settings.appearance.resolvedFlexScheme,
               items: [
                 for (final item in AppTheme.kFlexSchemes)
                   DropdownMenuItem(
@@ -245,9 +247,9 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
                   ),
               ],
               onChanged: (v) {
-                if (db.settings.flexScheme != v) {
+                if (db.settings.appearance.flexScheme != v) {
                   setState(() {
-                    db.settings.flexScheme = v;
+                    db.settings.appearance.flexScheme = v;
                     db.notifyAppUpdate();
                   });
                 }

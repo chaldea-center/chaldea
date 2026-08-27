@@ -10,7 +10,8 @@ class _NetworkStat {
   List<ConnectivityResult>? get connectivity => _connectivity;
 
   bool get available =>
-      db.settings.forceOnline || (_connectivity != null && _connectivity!.any((e) => e != ConnectivityResult.none));
+      db.settings.network.forceOnline ||
+      (_connectivity != null && _connectivity!.any((e) => e != ConnectivityResult.none));
 
   bool get unavailable => !available;
 

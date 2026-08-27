@@ -78,7 +78,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
   @override
   void initState() {
     super.initState();
-    if (quest.isDomusQuest) preferApRate = db.settings.preferApRate;
+    if (quest.isDomusQuest) preferApRate = db.settings.gameplay.preferApRate;
     _enemyHash = widget.enemyHash;
     _init();
   }

@@ -153,7 +153,7 @@ class SplitRoute<T> extends PageRoute<T> with CupertinoRouteTransitionMixin<T> {
       });
       return Offstage(child: child);
     }
-    if (db.settings.globalSelection) {
+    if (db.settings.display.globalSelection) {
       child = InheritSelectionArea(child: child);
     }
     return child;

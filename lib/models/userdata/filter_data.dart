@@ -158,8 +158,14 @@ mixin FilterDataMixin {
   }
 }
 
-@JsonSerializable()
+@JsonSerializable(converters: [RegionConverter()])
 class LocalDataFilters {
+  Region spoilerRegion; // delete unreleased
+  Region? removeOldDataRegion;
+  bool autoResetFilter;
+  bool hideUnreleasedCard;
+  bool hideUnreleasedEnemyCollection;
+
   SvtFilterData svtFilterData;
   SvtFilterData laplaceSvtFilterData;
   CraftFilterData craftFilterData;
@@ -171,6 +177,11 @@ class LocalDataFilters {
   ScriptReaderFilterData scriptReaderFilterData;
 
   LocalDataFilters({
+    this.spoilerRegion = Region.jp,
+    this.removeOldDataRegion,
+    this.autoResetFilter = true,
+    this.hideUnreleasedCard = false,
+    this.hideUnreleasedEnemyCollection = false,
     SvtFilterData? svtFilterData,
     SvtFilterData? laplaceSvtFilterData,
     CraftFilterData? craftFilterData,
@@ -300,7 +311,7 @@ class SvtFilterData with FilterDataMixin {
     effectScope.options = {SvtEffectScope.active, SvtEffectScope.td};
     isEventSvt = false;
     customBondValue = -1;
-    if (db.settings.hideUnreleasedCard) {
+    if (db.settings.filters.hideUnreleasedCard) {
       if (db.curUser.region != Region.jp) {
         region.set(db.curUser.region);
       }
@@ -468,7 +479,7 @@ class CraftFilterData with FilterDataMixin {
   @override
   void reset() {
     super.reset();
-    if (db.settings.hideUnreleasedCard) {
+    if (db.settings.filters.hideUnreleasedCard) {
       if (db.curUser.region != Region.jp) {
         region.set(db.curUser.region);
       }
@@ -562,7 +573,7 @@ class CmdCodeFilterData with FilterDataMixin {
   void reset() {
     super.reset();
     favorite = false;
-    if (db.settings.hideUnreleasedCard) {
+    if (db.settings.filters.hideUnreleasedCard) {
       if (db.curUser.region != Region.jp) {
         region.set(db.curUser.region);
       }
@@ -852,12 +863,12 @@ class EnemyFilterData with FilterDataMixin {
   @override
   void reset() {
     super.reset();
-    if (db.settings.hideUnreleasedCard) {
+    if (db.settings.filters.hideUnreleasedCard) {
       if (db.curUser.region != Region.jp) {
         region.set(db.curUser.region);
       }
-    } else if (db.settings.spoilerRegion != Region.jp) {
-      region.set(db.settings.spoilerRegion);
+    } else if (db.settings.filters.spoilerRegion != Region.jp) {
+      region.set(db.settings.filters.spoilerRegion);
     }
   }
 

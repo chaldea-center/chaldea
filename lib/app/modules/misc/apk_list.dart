@@ -49,7 +49,7 @@ class _ApkListPageState extends State<ApkListPage> {
   static final Map<String, String> bfgoVersions = {};
 
   late final _hidden = db.settings.hideApple;
-  late bool proxy = db.settings.proxy.worker;
+  late bool proxy = db.settings.network.proxy.worker;
   // silent manifest-declaration probe
   bool canInstallApk = false;
   String get apkHost => proxy ? '${HostsX.worker.kCN}/proxy' : 'https://fgo.bigcereal.com';

@@ -35,7 +35,7 @@ class _SummonListPageState extends State<SummonListPage>
   @override
   void initState() {
     super.initState();
-    if (db.settings.autoResetFilter) {
+    if (db.settings.filters.autoResetFilter) {
       filterData.reset();
     }
   }

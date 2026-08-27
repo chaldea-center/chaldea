@@ -173,11 +173,11 @@ class _AboutPageState extends State<AboutPage> {
                 ),
               if (!kIsWeb && !PlatformU.isIOS && !AppInfo.isMacStoreApp && !AppInfo.isFDroid)
                 SwitchListTile.adaptive(
-                  value: db.settings.autoUpdateApp,
+                  value: db.settings.network.autoUpdateApp,
                   title: Text(S.current.auto_update),
                   onChanged: (v) {
                     setState(() {
-                      db.settings.autoUpdateApp = v;
+                      db.settings.network.autoUpdateApp = v;
                       db.saveSettings();
                     });
                   },

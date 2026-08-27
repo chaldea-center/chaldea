@@ -24,7 +24,7 @@ class _MissionSolverOptions {
   bool get isRegionNA => warId < 1000 ? false : _isRegionNA;
   set isRegionNA(bool v) => _isRegionNA = v;
 
-  MasterMissionOptions get preset => db.settings.masterMissionOptions;
+  MasterMissionOptions get preset => db.settings.gameplay.masterMissionOptions;
 }
 
 class MissionInputTab extends StatefulWidget {

@@ -172,10 +172,10 @@ abstract final class AppTheme {
   static ThemeData _build(Brightness brightness) {
     final isDark = brightness == Brightness.dark;
     ThemeData themeData = (isDark ? FlexThemeData.dark : FlexThemeData.light)(
-      scheme: db.settings.resolvedFlexScheme,
-      // surfaceMode: db.settings.flexSurfaceMode,
-      // variant: db.settings.flexSchemeVariant,
-      blendLevel: (db.settings.flexBlendLevel ?? 0).clamp(0, 40),
+      scheme: db.settings.appearance.resolvedFlexScheme,
+      // surfaceMode: db.settings.appearance.flexSurfaceMode,
+      // variant: db.settings.appearance.flexSchemeVariant,
+      blendLevel: (db.settings.appearance.flexBlendLevel ?? 0).clamp(0, 40),
       appBarStyle: .scaffoldBackground,
       subThemesData: FlexSubThemesData(
         inputDecoratorBorderType: .underline,
@@ -213,59 +213,6 @@ abstract final class AppTheme {
       ),
     );
     return themeData;
-
-    // final seedColor = db.settings.colorSeed;
-    // // final cs = isDark ? AppColorScheme.dark : AppColorScheme.light;
-    // final cs = seedColor == null
-    //     ? (isDark ? ColorScheme.dark() : ColorScheme.light())
-    //     : ColorScheme.fromSeed(seedColor: seedColor, brightness: brightness);
-    //     FlexThemeData.light();
-
-    // return ThemeData(
-    //   brightness: brightness,
-    //   useMaterial3: true,
-    //   extensions: {AppThemeData.forBrightness(brightness)},
-    // );
-
-    //  ThemeData(
-    //   cardTheme: CardThemeData(
-    //     color: cs.surfaceContainer,
-    //     elevation: 0,
-    //     shape: RoundedRectangleBorder(
-    //       borderRadius: AppShape.medium,
-    //       side: BorderSide(color: cs.outlineVariant, width: 1),
-    //     ),
-    //   ),
-    //   inputDecorationTheme: InputDecorationTheme(
-    //     filled: true,
-    //     fillColor: cs.surfaceContainerHighest,
-    //     contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-    //     enabledBorder: border,
-    //     focusedBorder: focusedBorder,
-    //     errorBorder: errorBorder,
-    //     focusedErrorBorder: errorBorder.copyWith(borderSide: BorderSide(color: cs.error, width: 2)),
-    //     disabledBorder: border.copyWith(borderSide: BorderSide(color: cs.outlineVariant.withAlpha(80), width: 1)),
-    //     labelStyle: TextStyle(color: cs.onSurfaceVariant),
-    //     hintStyle: TextStyle(color: cs.onSurfaceVariant),
-    //   ),
-    //   filledButtonTheme: FilledButtonThemeData(
-    //     style: FilledButton.styleFrom(
-    //       minimumSize: const Size(0, 48),
-    //       shape: RoundedRectangleBorder(borderRadius: AppShape.small),
-    //     ),
-    //   ),
-    //   outlinedButtonTheme: OutlinedButtonThemeData(
-    //     style: OutlinedButton.styleFrom(
-    //       minimumSize: const Size(0, 48),
-    //       shape: RoundedRectangleBorder(borderRadius: AppShape.small),
-    //       side: BorderSide(color: cs.outline, width: 1),
-    //     ),
-    //   ),
-    //   dividerTheme: DividerThemeData(thickness: 0.5, color: cs.outlineVariant),
-    //   listTileTheme: const ListTileThemeData(minLeadingWidth: 24),
-    //   tooltipTheme: const TooltipThemeData(waitDuration: Duration(milliseconds: 500)),
-    //   extensions: {AppThemeData.forBrightness(brightness)},
-    // );
   }
 
   static const kDefaultScheme = FlexScheme.tealM3;

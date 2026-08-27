@@ -39,7 +39,7 @@ class _GachaListPageState extends State<GachaListPage>
     super.initState();
     region = widget.region;
     doFetchData();
-    if (db.settings.autoResetFilter) {
+    if (db.settings.filters.autoResetFilter) {
       filterData.reset();
     }
   }

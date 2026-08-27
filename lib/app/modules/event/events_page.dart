@@ -45,7 +45,7 @@ class EventListPageState extends State<EventListPage>
   @override
   void initState() {
     super.initState();
-    if (db.settings.autoResetFilter) {
+    if (db.settings.filters.autoResetFilter) {
       filterData.reset();
     }
     _tabController = TabController(length: tabNames.length, vsync: this);

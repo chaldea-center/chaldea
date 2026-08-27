@@ -35,7 +35,7 @@ class CmdCodeListPageState extends State<CmdCodeListPage> with SearchableListSta
   @override
   void initState() {
     super.initState();
-    if (db.settings.autoResetFilter && widget.filterData == null) {
+    if (db.settings.filters.autoResetFilter && widget.filterData == null) {
       filterData.reset();
     }
     options = _CmdCodeSearchOptions(

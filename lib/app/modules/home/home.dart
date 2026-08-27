@@ -70,7 +70,7 @@ class _HomePageState extends State<HomePage> with AfterLayoutMixin {
       if (db.settings.display.showWindowFab && !(rootRouter.appState.showSidebar && SplitRoute.isSplit(null))) {
         WindowManagerFab.createOverlay(context);
       }
-      if (db.settings.showDebugFab) {
+      if (db.settings.display.showDebugFab) {
         DebugFab.createOverlay(context);
       }
     }

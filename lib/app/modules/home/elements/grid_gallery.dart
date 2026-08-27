@@ -22,7 +22,7 @@ class GridGallery extends StatefulWidget {
 class _GridGalleryState extends State<GridGallery> {
   bool _editMode = false;
 
-  Map<String, bool> get galleries => db.settings.galleries;
+  Map<String, bool> get galleries => db.settings.display.galleries;
 
   @override
   Widget build(BuildContext context) {

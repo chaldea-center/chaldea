@@ -31,149 +31,72 @@ part '../../generated/models/userdata/local_settings.g.dart';
 
 @JsonSerializable(converters: [RegionConverter()])
 class LocalSettings {
-  bool beta;
-  bool showDebugFab;
-  bool alwaysOnTop;
-  List<int>? windowPosition;
-  bool showSystemTray;
-  int launchTimes;
-  int lastLaunchTime;
-  int lastBackup;
-  ThemeMode themeMode;
-  bool useMaterial3;
-  FlexScheme? flexScheme;
-  FlexScheme get resolvedFlexScheme => flexScheme ?? .tealM3;
-  FlexSurfaceMode? flexSurfaceMode;
-  int? flexBlendLevel;
-  FlexSchemeVariant? flexSchemeVariant;
-  int? colorSeedInt;
-  bool enableMouseDrag;
-  bool globalSelection;
-  String? _language;
-  List<Region>? preferredRegions;
-  bool autoUpdateData; // dataset
-  bool updateDataBeforeStart;
-  bool checkDataHash;
-  bool autoUpdateApp;
-  @protected
-  bool proxyServer; // when change this, also change Hosts.cn
-  ProxySettings proxy;
-  bool autoRotate;
-  bool forceEdgeSwipePopGesture;
-  // ignore: unused_field
-  FavoriteState? _preferredFavorite;
-  bool preferApRate;
-  Region? preferredQuestRegion;
-  bool alertUploadUserData;
-  bool forceOnline;
+  /// LocalSettings data format version.
+  /// 1: legacy flat layout (before the settings group refactor).
+  /// 2: nested groups (appearance/platform/network/locale/gameplay/...).
+  static const int kSettingsFormatVersion = 2;
 
-  Map<int, String> priorityTags;
-  Map<String, bool> galleries;
+  @JsonKey(defaultValue: kSettingsFormatVersion)
+  int formatVersion;
+
+  String? _language;
+
+  AppearanceSettings appearance;
+  PlatformSettings platform;
+  NetworkSettings network;
+  LocaleSettings locale;
+  GameplaySettings gameplay;
+
   DisplaySettings display;
   CarouselSetting carousel;
   GithubSetting github;
   TipsSetting tips;
   BattleSimSetting battleSim;
-  Map<int, EventItemCalcParams> eventItemCalc;
-
-  // filters
-  Region spoilerRegion; // delete unreleased
-  Region? removeOldDataRegion;
-  bool autoResetFilter;
-  bool hideUnreleasedCard;
-  bool hideUnreleasedEnemyCollection;
-
   LocalDataFilters filters;
-
   FakerSettings fakerSettings;
-  @protected
-  @JsonKey(name: 'autologins')
-  List<AutoLoginDataJP> jpAutoLogins;
-  @protected
-  List<AutoLoginDataCN> cnAutoLogins;
-
   RemoteConfig remoteConfig;
-
-  MasterMissionOptions masterMissionOptions;
   BookmarkHistory bookmarks;
   _MiscSettings misc;
   _SecretsData secrets;
 
   LocalSettings({
-    this.beta = false,
-    this.showDebugFab = false,
-    this.alwaysOnTop = false,
-    this.windowPosition,
-    this.showSystemTray = false,
-    this.launchTimes = 0,
-    this.lastLaunchTime = 0,
-    this.lastBackup = 0,
-    this.themeMode = ThemeMode.system,
-    this.useMaterial3 = false,
-    this.flexScheme,
-    this.flexSurfaceMode,
-    this.flexBlendLevel,
-    this.flexSchemeVariant,
-    this.colorSeedInt,
-    this.enableMouseDrag = true,
-    this.globalSelection = false,
+    int? formatVersion,
     this._language,
-    List<Region>? preferredRegions,
-    this.autoUpdateData = true,
-    this.updateDataBeforeStart = false,
-    this.checkDataHash = true,
-    this.proxyServer = false,
-    ProxySettings? proxy,
-    this.autoUpdateApp = true,
-    this.autoRotate = true,
-    this.forceEdgeSwipePopGesture = false,
-    FavoriteState? preferredFavorite,
-    this.preferApRate = true,
-    this.preferredQuestRegion,
-    this.alertUploadUserData = false,
-    this.forceOnline = false,
-    Map<int, String>? priorityTags,
-    Map<String, bool>? galleries,
+    AppearanceSettings? appearance,
+    PlatformSettings? platform,
+    NetworkSettings? network,
+    LocaleSettings? locale,
+    GameplaySettings? gameplay,
     DisplaySettings? display,
     CarouselSetting? carousel,
     GithubSetting? github,
     TipsSetting? tips,
     BattleSimSetting? battleSim,
-    Map<int, EventItemCalcParams>? eventItemCalc,
-    this.spoilerRegion = Region.jp,
-    this.removeOldDataRegion,
-    this.autoResetFilter = true,
-    this.hideUnreleasedCard = false,
-    this.hideUnreleasedEnemyCollection = false,
     LocalDataFilters? filters,
     FakerSettings? fakerSettings,
-    List<AutoLoginDataJP>? jpAutoLogins,
-    List<AutoLoginDataCN>? cnAutoLogins,
     RemoteConfig? remoteConfig,
-    MasterMissionOptions? masterMissionOptions,
     BookmarkHistory? bookmarks,
     _MiscSettings? misc,
     _SecretsData? secrets,
-  }) : _preferredFavorite = preferredFavorite ?? (launchTimes == 0 ? FavoriteState.all : null),
-       preferredRegions = preferredRegions == null
-           ? null
-           : (List.of(Region.values)..sort2((e) => preferredRegions.indexOf(e) % Region.values.length)),
-       priorityTags = priorityTags ?? {},
-       galleries = galleries ?? {},
-       proxy = proxy ?? ProxySettings(proxy: proxyServer),
+  }) : formatVersion = formatVersion ?? kSettingsFormatVersion,
+       appearance = appearance ?? AppearanceSettings(),
+       platform = platform ?? PlatformSettings(),
+       network = network ?? NetworkSettings(),
+       locale = locale ?? LocaleSettings(),
+       gameplay =
+           gameplay ??
+           GameplaySettings(
+             // same first-launch default as the pre-refactor constructor
+             preferredFavorite: (misc?.launchTimes ?? 0) == 0 ? FavoriteState.all : null,
+           ),
        display = display ?? DisplaySettings(),
        carousel = carousel ?? CarouselSetting(),
        github = github ?? GithubSetting(),
        tips = tips ?? TipsSetting(),
        battleSim = battleSim ?? BattleSimSetting(),
-       eventItemCalc = eventItemCalc ?? {},
        filters = filters ?? LocalDataFilters(),
-       fakerSettings =
-           fakerSettings ?? FakerSettings(jpAutoLogins: jpAutoLogins ?? [], cnAutoLogins: cnAutoLogins ?? []),
-       jpAutoLogins = jpAutoLogins ?? [],
-       cnAutoLogins = cnAutoLogins ?? [],
+       fakerSettings = fakerSettings ?? FakerSettings(),
        remoteConfig = remoteConfig ?? RemoteConfig(),
-       masterMissionOptions = masterMissionOptions ?? MasterMissionOptions(),
        bookmarks = bookmarks ?? BookmarkHistory(),
        misc = misc ?? _MiscSettings(),
        secrets = secrets ?? _SecretsData();
@@ -185,39 +108,172 @@ class LocalSettings {
     return S.load(lang.locale, override: true);
   }
 
-  // ignore: unnecessary_getters_setters
-  FavoriteState? get preferredFavorite => _preferredFavorite;
-  set preferredFavorite(FavoriteState? v) => _preferredFavorite = v;
+  ThemeMode get themeMode => appearance.themeMode;
 
-  bool get hideApple => PlatformU.isApple && launchTimes < 5;
+  List<Region> get resolvedPreferredRegions => locale.resolvedPreferredRegions(_language);
 
-  List<Region> get resolvedPreferredRegions {
-    if (preferredRegions != null && preferredRegions!.isNotEmpty) {
-      return preferredRegions!;
+  bool get hideApple => PlatformU.isApple && misc.launchTimes < 5;
+
+  factory LocalSettings.fromJson(Map<String, dynamic> rawJson) {
+    final formatVersion = rawJson['formatVersion'];
+    if (formatVersion is int) {
+      if (formatVersion >= kSettingsFormatVersion) {
+        return _$LocalSettingsFromJson(rawJson);
+      }
     }
-    switch (Language.getLanguage(_language)) {
-      case Language.jp:
-        return [Region.jp, Region.na, Region.cn, Region.tw, Region.kr];
-      case Language.chs:
-        return [Region.cn, Region.tw, Region.jp, Region.na, Region.kr];
-      case Language.cht:
-        return [Region.tw, Region.cn, Region.jp, Region.na, Region.kr];
-      case Language.ko:
-        return [Region.kr, Region.na, Region.jp, Region.cn, Region.tw];
-      default:
-        return [Region.na, Region.jp, Region.cn, Region.tw, Region.kr];
-    }
+    return _$LocalSettingsFromJson(_migrateLegacyV1(rawJson));
   }
 
-  factory LocalSettings.fromJson(Map<String, dynamic> json) {
-    if (!json.containsKey('preferredFavorite')) {
-      json = Map.of(json);
-      json['preferredFavorite'] = _$FavoriteStateEnumMap[FavoriteState.all];
-    }
-    return _$LocalSettingsFromJson(json);
+  Map<String, dynamic> toJson() {
+    final json = _$LocalSettingsToJson(this);
+    _writeLegacyV1Mirrors(json);
+    return json;
   }
 
-  Map<String, dynamic> toJson() => _$LocalSettingsToJson(this);
+  static void _writeLegacyV1Mirrors(Map<String, dynamic> json) {
+    void mirror(String group, Iterable<String> keys) {
+      final src = (json[group] as Map?)?.cast<String, dynamic>();
+      if (src == null) return;
+      for (final k in keys) {
+        if (src.containsKey(k)) json[k] ??= src[k];
+      }
+    }
+
+    mirror('appearance', [
+      'themeMode',
+      'useMaterial3',
+      'flexScheme',
+      'flexSurfaceMode',
+      'flexBlendLevel',
+      'flexSchemeVariant',
+      'colorSeedInt',
+    ]);
+    mirror('platform', ['alwaysOnTop', 'windowPosition', 'showSystemTray', 'autoRotate']);
+    mirror('network', [
+      'autoUpdateData',
+      'updateDataBeforeStart',
+      'checkDataHash',
+      'autoUpdateApp',
+      'forceOnline',
+      'alertUploadUserData',
+    ]);
+    // v1 stored the proxy object at root level
+    final proxy = json['network']?['proxy'];
+    if (proxy is Map) json['proxy'] = proxy;
+    mirror('locale', ['preferredRegions', 'preferredQuestRegion']);
+    mirror('gameplay', ['preferApRate', 'preferredFavorite', 'priorityTags', 'eventItemCalc', 'masterMissionOptions']);
+    mirror('display', ['enableMouseDrag', 'globalSelection', 'forceEdgeSwipePopGesture', 'galleries', 'showDebugFab']);
+    mirror('filters', [
+      'spoilerRegion',
+      'removeOldDataRegion',
+      'autoResetFilter',
+      'hideUnreleasedCard',
+      'hideUnreleasedEnemyCollection',
+    ]);
+    mirror('misc', ['launchTimes', 'lastLaunchTime', 'lastBackup']);
+  }
+
+  static Map<String, dynamic> _migrateLegacyV1(Map<String, dynamic> rawJson) {
+    Map<String, dynamic> nested(String key, Iterable<String> legacyKeys) {
+      final source = (rawJson[key] as Map?)?.cast<String, dynamic>() ?? <String, dynamic>{};
+      final target = Map.of(source);
+      for (final k in legacyKeys) {
+        if (target[k] == null && rawJson.containsKey(k)) target[k] = rawJson[k];
+      }
+      return target;
+    }
+
+    final json = Map.of(rawJson);
+
+    json['appearance'] = nested('appearance', [
+      'themeMode',
+      'useMaterial3',
+      'flexScheme',
+      'flexSurfaceMode',
+      'flexBlendLevel',
+      'flexSchemeVariant',
+      'colorSeedInt',
+    ]);
+    json['platform'] = nested('platform', ['alwaysOnTop', 'windowPosition', 'showSystemTray', 'autoRotate']);
+
+    final networkMap = nested('network', [
+      'autoUpdateData',
+      'updateDataBeforeStart',
+      'checkDataHash',
+      'autoUpdateApp',
+      'forceOnline',
+      'alertUploadUserData',
+    ]);
+    // Fold the root-level proxy object and the legacy 'proxyServer' mirror
+    // switch into network.proxy (single source of truth).
+    final proxyMap = Map.of((rawJson['proxy'] as Map?)?.cast<String, dynamic>() ?? {});
+    if (proxyMap['proxy'] == null && rawJson.containsKey('proxyServer')) {
+      proxyMap['proxy'] = rawJson['proxyServer'];
+    }
+    networkMap['proxy'] = proxyMap;
+    json['network'] = networkMap;
+
+    json['locale'] = nested('locale', ['preferredRegions', 'preferredQuestRegion']);
+
+    final gameplayMap = nested('gameplay', ['preferApRate', 'preferredFavorite', 'eventItemCalc', 'priorityTags']);
+    // masterMissionOptions moves one level down into gameplay.
+    if (gameplayMap['masterMissionOptions'] == null && rawJson.containsKey('masterMissionOptions')) {
+      gameplayMap['masterMissionOptions'] = rawJson['masterMissionOptions'];
+    }
+    // same default injection as the pre-refactor factory
+    gameplayMap['preferredFavorite'] ??= _$FavoriteStateEnumMap[FavoriteState.all];
+    json['gameplay'] = gameplayMap;
+
+    json['display'] = nested('display', [
+      'enableMouseDrag',
+      'globalSelection',
+      'forceEdgeSwipePopGesture',
+      'galleries',
+      'showDebugFab',
+    ]);
+    json['filters'] = nested('filters', [
+      'spoilerRegion',
+      'removeOldDataRegion',
+      'autoResetFilter',
+      'hideUnreleasedCard',
+      'hideUnreleasedEnemyCollection',
+    ]);
+    json['misc'] = nested('misc', ['launchTimes', 'lastLaunchTime', 'lastBackup']);
+
+    final fakerMap = Map.of((rawJson['fakerSettings'] as Map?)?.cast<String, dynamic>() ?? {});
+    if (fakerMap['jpAutoLogins'] == null && rawJson.containsKey('autologins')) {
+      fakerMap['jpAutoLogins'] = rawJson['autologins'];
+    }
+    if (fakerMap['cnAutoLogins'] == null && rawJson.containsKey('cnAutoLogins')) {
+      fakerMap['cnAutoLogins'] = rawJson['cnAutoLogins'];
+    }
+    json['fakerSettings'] = fakerMap;
+
+    return json;
+  }
+}
+
+@JsonSerializable()
+class AppearanceSettings {
+  ThemeMode themeMode;
+  bool useMaterial3;
+  FlexScheme? flexScheme;
+  FlexSurfaceMode? flexSurfaceMode;
+  int? flexBlendLevel;
+  FlexSchemeVariant? flexSchemeVariant;
+  int? colorSeedInt;
+
+  AppearanceSettings({
+    this.themeMode = ThemeMode.system,
+    this.useMaterial3 = false,
+    this.flexScheme,
+    this.flexSurfaceMode,
+    this.flexBlendLevel,
+    this.flexSchemeVariant,
+    this.colorSeedInt,
+  });
+
+  FlexScheme get resolvedFlexScheme => flexScheme ?? .tealM3;
 
   bool get isResolvedDarkMode {
     if (themeMode == ThemeMode.system) {
@@ -235,6 +291,111 @@ class LocalSettings {
       return null;
     }
   }
+
+  factory AppearanceSettings.fromJson(Map<String, dynamic> json) => _$AppearanceSettingsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AppearanceSettingsToJson(this);
+}
+
+@JsonSerializable()
+class PlatformSettings {
+  bool alwaysOnTop;
+  List<int>? windowPosition;
+  bool showSystemTray;
+  bool autoRotate;
+
+  PlatformSettings({
+    this.alwaysOnTop = false,
+    this.windowPosition,
+    this.showSystemTray = false,
+    this.autoRotate = true,
+  });
+
+  factory PlatformSettings.fromJson(Map<String, dynamic> json) => _$PlatformSettingsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$PlatformSettingsToJson(this);
+}
+
+@JsonSerializable()
+class NetworkSettings {
+  bool autoUpdateData; // dataset
+  bool updateDataBeforeStart;
+  bool checkDataHash;
+  bool autoUpdateApp;
+  bool forceOnline;
+  bool alertUploadUserData;
+  ProxySettings proxy;
+
+  NetworkSettings({
+    this.autoUpdateData = true,
+    this.updateDataBeforeStart = false,
+    this.checkDataHash = true,
+    this.autoUpdateApp = true,
+    this.forceOnline = false,
+    this.alertUploadUserData = false,
+    ProxySettings? proxy,
+  }) : proxy = proxy ?? ProxySettings();
+
+  factory NetworkSettings.fromJson(Map<String, dynamic> json) => _$NetworkSettingsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$NetworkSettingsToJson(this);
+}
+
+/// Region preferences.
+@JsonSerializable(converters: [RegionConverter()])
+class LocaleSettings {
+  List<Region>? preferredRegions;
+  Region? preferredQuestRegion;
+
+  LocaleSettings({List<Region>? preferredRegions, this.preferredQuestRegion})
+    : preferredRegions = preferredRegions == null
+          ? null
+          : (List.of(Region.values)..sort2((e) => preferredRegions.indexOf(e) % Region.values.length));
+
+  List<Region> resolvedPreferredRegions(String? language) {
+    if (preferredRegions != null && preferredRegions!.isNotEmpty) {
+      return preferredRegions!;
+    }
+    switch (Language.getLanguage(language)) {
+      case Language.jp:
+        return [Region.jp, Region.na, Region.cn, Region.tw, Region.kr];
+      case Language.chs:
+        return [Region.cn, Region.tw, Region.jp, Region.na, Region.kr];
+      case Language.cht:
+        return [Region.tw, Region.cn, Region.jp, Region.na, Region.kr];
+      case Language.ko:
+        return [Region.kr, Region.na, Region.jp, Region.cn, Region.tw];
+      default:
+        return [Region.na, Region.jp, Region.cn, Region.tw, Region.kr];
+    }
+  }
+
+  factory LocaleSettings.fromJson(Map<String, dynamic> json) => _$LocaleSettingsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$LocaleSettingsToJson(this);
+}
+
+@JsonSerializable()
+class GameplaySettings {
+  bool preferApRate;
+  FavoriteState? preferredFavorite;
+  Map<int, String> priorityTags;
+  Map<int, EventItemCalcParams> eventItemCalc;
+  MasterMissionOptions masterMissionOptions;
+
+  GameplaySettings({
+    this.preferApRate = true,
+    this.preferredFavorite,
+    Map<int, String>? priorityTags,
+    Map<int, EventItemCalcParams>? eventItemCalc,
+    MasterMissionOptions? masterMissionOptions,
+  }) : priorityTags = priorityTags ?? {},
+       eventItemCalc = eventItemCalc ?? {},
+       masterMissionOptions = masterMissionOptions ?? MasterMissionOptions();
+
+  factory GameplaySettings.fromJson(Map<String, dynamic> json) => _$GameplaySettingsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$GameplaySettingsToJson(this);
 }
 
 @JsonSerializable()
@@ -277,47 +438,68 @@ class ProxySettings {
 
 @JsonSerializable()
 class DisplaySettings {
-  GalleryIconSize galleryIconSize = .medium;
-  bool showAccountAtHome;
   bool showWindowFab;
+  int? maxWindowWidth; // web only
+  bool enableSplitView;
+  int? splitMasterRatio;
+
+  bool showAccountAtHome;
+
+  SvtListClassFilterStyle classFilterStyle;
+
   SvtPlanInputMode svtPlanInputMode;
+  bool autoTurnOnPlanNotReach;
+  bool onlyAppendUnlocked;
+  bool planPageFullScreen;
+  List<SvtPlanDetail> hideSvtPlanDetails;
+
+  List<SvtTab> sortedSvtTabs;
+
   ItemDetailViewType itemDetailViewType;
   ItemDetailSvtSort itemDetailSvtSort;
   bool itemQuestsSortByAp;
-  bool autoTurnOnPlanNotReach;
-  SvtListClassFilterStyle classFilterStyle;
-  bool onlyAppendUnlocked;
-  bool planPageFullScreen;
-  List<SvtTab> sortedSvtTabs;
-  List<SvtPlanDetail> hideSvtPlanDetails;
+
   bool showOriginalMissionText;
-  int? maxWindowWidth; // web only
-  int? splitMasterRatio;
-  bool enableSplitView;
+
+  Map<String, bool> galleries;
+  GalleryIconSize galleryIconSize = .medium;
+
+  bool enableMouseDrag;
+  bool globalSelection;
+  bool forceEdgeSwipePopGesture;
+
   AdSetting ad;
 
+  bool showDebugFab;
+
   DisplaySettings({
-    this.galleryIconSize = .medium,
-    this.showAccountAtHome = true,
     this.showWindowFab = true,
+    this.maxWindowWidth,
+    this.enableSplitView = true,
+    this.splitMasterRatio,
+    this.showAccountAtHome = true,
+    this.classFilterStyle = SvtListClassFilterStyle.auto,
     this.svtPlanInputMode = SvtPlanInputMode.dropdown,
+    this.autoTurnOnPlanNotReach = false,
+    this.onlyAppendUnlocked = true,
+    this.planPageFullScreen = false,
+    List<SvtPlanDetail?>? hideSvtPlanDetails,
+    List<SvtTab?>? sortedSvtTabs,
     this.itemDetailViewType = ItemDetailViewType.separated,
     this.itemDetailSvtSort = ItemDetailSvtSort.collectionNo,
     this.itemQuestsSortByAp = true,
-    this.autoTurnOnPlanNotReach = false,
-    this.classFilterStyle = SvtListClassFilterStyle.auto,
-    this.onlyAppendUnlocked = true,
-    this.planPageFullScreen = false,
-    List<SvtTab?>? sortedSvtTabs,
-    List<SvtPlanDetail?>? hideSvtPlanDetails,
     this.showOriginalMissionText = false,
-    this.maxWindowWidth,
-    this.splitMasterRatio,
-    this.enableSplitView = true,
+    Map<String, bool>? galleries,
+    this.galleryIconSize = .medium,
+    this.enableMouseDrag = true,
+    this.globalSelection = false,
+    this.forceEdgeSwipePopGesture = false,
     AdSetting? ad,
+    this.showDebugFab = false,
   }) : sortedSvtTabs = sortedSvtTabs?.whereType<SvtTab>().toList() ?? List.of(SvtTab.values),
        hideSvtPlanDetails = hideSvtPlanDetails?.whereType<SvtPlanDetail>().toList() ?? [],
-       ad = ad ?? AdSetting() {
+       ad = ad ?? AdSetting(),
+       galleries = galleries ?? {} {
     validateSvtTabs();
   }
 
@@ -666,14 +848,20 @@ class MasterMissionOptions {
 
 @JsonSerializable()
 class _MiscSettings {
+  int launchTimes;
+  int lastLaunchTime;
+  int lastBackup;
+
   // CharaFigure
   Set<int> nonSvtCharaFigureIds;
   Map<int, int> markedCharaFigureSvtIds;
-  // Image
   Set<String> nonSvtCharaImageIds;
   Map<String, int> markedCharaImageSvtIds;
 
   _MiscSettings({
+    this.launchTimes = 0,
+    this.lastLaunchTime = 0,
+    this.lastBackup = 0,
     Set<int>? nonSvtCharaFigureIds,
     Map<int, int>? markedCharaFigureSvtIds,
     Set<String>? nonSvtCharaImageIds,

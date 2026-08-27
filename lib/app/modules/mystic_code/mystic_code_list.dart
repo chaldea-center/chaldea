@@ -38,7 +38,7 @@ class MysticCodeListPageState extends State<MysticCodeListPage>
   @override
   void initState() {
     super.initState();
-    if (db.settings.autoResetFilter && widget.filterData == null) {
+    if (db.settings.filters.autoResetFilter && widget.filterData == null) {
       filterData.reset();
     }
   }

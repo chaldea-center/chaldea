@@ -295,7 +295,7 @@ class _ItemFilterDialogState extends State<ItemFilterDialog> {
           int priority = 5 - index;
           bool checked = priorityFilter.options.contains(priority);
           String text = '${S.current.priority} $priority ';
-          final tag = db.settings.priorityTags[priority] ?? "";
+          final tag = db.settings.gameplay.priorityTags[priority] ?? "";
           return CheckboxListTile(
             value: checked,
             title: Text(text + tag),

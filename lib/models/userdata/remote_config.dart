@@ -232,7 +232,7 @@ enum AdFeatureState {
 class HostsX {
   const HostsX._();
   static ServerUrlConfig get _config => db.settings.remoteConfig.urls;
-  static ProxySettings get proxy => db.settings.proxy;
+  static ProxySettings get proxy => db.settings.network.proxy;
 
   static UrlProxy get app => _config.app;
   static String get appHost => _config.app.of(proxy.data);

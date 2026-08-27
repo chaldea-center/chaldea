@@ -22,7 +22,7 @@ class _ThemeColorPageState extends State<ThemeColorPage> {
             groupValue: db.settings.themeMode,
             onChanged: (v) {
               if (v != null && v != db.settings.themeMode) {
-                db.settings.themeMode = v;
+                db.settings.appearance.themeMode = v;
                 db.notifySettings();
                 db.notifyAppUpdate();
               }
@@ -37,10 +37,10 @@ class _ThemeColorPageState extends State<ThemeColorPage> {
             ),
           ),
           // RadioGroup<bool>(
-          //   groupValue: db.settings.useMaterial3,
+          //   groupValue: db.settings.appearance.useMaterial3,
           //   onChanged: (v) {
-          //     if (v != null && v != db.settings.useMaterial3) {
-          //       db.settings.useMaterial3 = v;
+          //     if (v != null && v != db.settings.appearance.useMaterial3) {
+          //       db.settings.appearance.useMaterial3 = v;
           //       db.notifySettings();
           //       db.notifyAppUpdate();
           //     }
@@ -61,7 +61,7 @@ class _ThemeColorPageState extends State<ThemeColorPage> {
                 DropdownButton<FlexSurfaceMode>(
                   padding: EdgeInsetsDirectional.only(start: 8),
                   isExpanded: true,
-                  value: db.settings.flexSurfaceMode ?? FlexSurfaceMode.level,
+                  value: db.settings.appearance.flexSurfaceMode ?? FlexSurfaceMode.level,
                   items: [
                     for (final mode in FlexSurfaceMode.values)
                       DropdownMenuItem(
@@ -70,8 +70,8 @@ class _ThemeColorPageState extends State<ThemeColorPage> {
                       ),
                   ],
                   onChanged: (v) {
-                    if (v != null && v != db.settings.flexSurfaceMode) {
-                      db.settings.flexSurfaceMode = v;
+                    if (v != null && v != db.settings.appearance.flexSurfaceMode) {
+                      db.settings.appearance.flexSurfaceMode = v;
                       db.notifyAppUpdate();
                     }
                     setState(() {});
@@ -86,7 +86,7 @@ class _ThemeColorPageState extends State<ThemeColorPage> {
                 DropdownButton<FlexSchemeVariant>(
                   padding: EdgeInsetsDirectional.only(start: 8),
                   isExpanded: true,
-                  value: db.settings.flexSchemeVariant,
+                  value: db.settings.appearance.flexSchemeVariant,
                   hint: Text(S.current.general_default),
                   items: [
                     for (final variant in FlexSchemeVariant.values)
@@ -96,8 +96,8 @@ class _ThemeColorPageState extends State<ThemeColorPage> {
                       ),
                   ],
                   onChanged: (v) {
-                    if (v != null && v != db.settings.flexSchemeVariant) {
-                      db.settings.flexSchemeVariant = v;
+                    if (v != null && v != db.settings.appearance.flexSchemeVariant) {
+                      db.settings.appearance.flexSchemeVariant = v;
                       db.notifyAppUpdate();
                     }
                     setState(() {});
@@ -106,18 +106,18 @@ class _ThemeColorPageState extends State<ThemeColorPage> {
               ],
             ),
           TileGroup(
-            header: 'Blend Level: ${db.settings.flexBlendLevel ?? 0}',
+            header: 'Blend Level: ${db.settings.appearance.flexBlendLevel ?? 0}',
             children: [
               Padding(
                 padding: .symmetric(horizontal: 8),
                 child: Slider(
-                  value: db.settings.flexBlendLevel?.toDouble() ?? 0,
+                  value: db.settings.appearance.flexBlendLevel?.toDouble() ?? 0,
                   min: 0,
                   max: 40,
                   divisions: 40,
                   onChanged: (value) {
                     setState(() {
-                      db.settings.flexBlendLevel = value.round().clamp(0, 40);
+                      db.settings.appearance.flexBlendLevel = value.round().clamp(0, 40);
                     });
                   },
                   onChangeEnd: (value) {
@@ -128,10 +128,10 @@ class _ThemeColorPageState extends State<ThemeColorPage> {
             ],
           ),
           RadioGroup<FlexScheme>(
-            groupValue: db.settings.resolvedFlexScheme,
+            groupValue: db.settings.appearance.resolvedFlexScheme,
             onChanged: (v) {
-              if (v != db.settings.flexScheme) {
-                db.settings.flexScheme = v;
+              if (v != db.settings.appearance.flexScheme) {
+                db.settings.appearance.flexScheme = v;
                 db.notifySettings();
                 db.notifyAppUpdate();
               }

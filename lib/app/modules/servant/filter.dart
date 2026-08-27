@@ -499,7 +499,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData, ServantFilt
               values: filterData.priority,
               optionBuilder: (value) {
                 String text = value.toString();
-                final tag = db.settings.priorityTags[value];
+                final tag = db.settings.gameplay.priorityTags[value];
                 if (tag != null && tag.isNotEmpty) {
                   text += ' $tag';
                 }

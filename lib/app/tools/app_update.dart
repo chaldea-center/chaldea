@@ -217,7 +217,9 @@ class AppUpdateDetail {
 
 Future<_Release?> _githubLatestRelease(String org, String repo) async {
   final dio = DioE();
-  final root = db.settings.proxy.worker ? '${HostsX.worker.cn}/proxy/github/api.github.com' : 'https://api.github.com';
+  final root = db.settings.network.proxy.worker
+      ? '${HostsX.worker.cn}/proxy/github/api.github.com'
+      : 'https://api.github.com';
   final resp = await dio.get('$root/repos/$org/$repo/releases/latest');
   return _Release.fromJson(resp.data);
 }
@@ -269,11 +271,11 @@ class _Asset {
       browserDownloadUrl.replaceFirst('https://github.com/', '${HostsX.worker.cn}/proxy/github/github.com/');
 
   String get proxyUrl {
-    return db.settings.proxy.worker ? _proxyUrlCN : _proxyUrlGlobal;
+    return db.settings.network.proxy.worker ? _proxyUrlCN : _proxyUrlGlobal;
   }
 
   Set<String> get urls {
-    if (db.settings.proxy.worker) {
+    if (db.settings.network.proxy.worker) {
       return {_proxyUrlCN, _proxyUrlGlobal};
     }
     return {browserDownloadUrl, _proxyUrlGlobal, _proxyUrlCN};

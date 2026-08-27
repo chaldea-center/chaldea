@@ -8,6 +8,17 @@ part of '../../../models/userdata/filter_data.dart';
 
 LocalDataFilters _$LocalDataFiltersFromJson(Map json) => $checkedCreate('LocalDataFilters', json, ($checkedConvert) {
   final val = LocalDataFilters(
+    spoilerRegion: $checkedConvert(
+      'spoilerRegion',
+      (v) => v == null ? Region.jp : const RegionConverter().fromJson(v as String),
+    ),
+    removeOldDataRegion: $checkedConvert(
+      'removeOldDataRegion',
+      (v) => _$JsonConverterFromJson<String, Region>(v, const RegionConverter().fromJson),
+    ),
+    autoResetFilter: $checkedConvert('autoResetFilter', (v) => v as bool? ?? true),
+    hideUnreleasedCard: $checkedConvert('hideUnreleasedCard', (v) => v as bool? ?? false),
+    hideUnreleasedEnemyCollection: $checkedConvert('hideUnreleasedEnemyCollection', (v) => v as bool? ?? false),
     svtFilterData: $checkedConvert(
       'svtFilterData',
       (v) => v == null ? null : SvtFilterData.fromJson(Map<String, dynamic>.from(v as Map)),
@@ -49,6 +60,14 @@ LocalDataFilters _$LocalDataFiltersFromJson(Map json) => $checkedCreate('LocalDa
 });
 
 Map<String, dynamic> _$LocalDataFiltersToJson(LocalDataFilters instance) => <String, dynamic>{
+  'spoilerRegion': const RegionConverter().toJson(instance.spoilerRegion),
+  'removeOldDataRegion': _$JsonConverterToJson<String, Region>(
+    instance.removeOldDataRegion,
+    const RegionConverter().toJson,
+  ),
+  'autoResetFilter': instance.autoResetFilter,
+  'hideUnreleasedCard': instance.hideUnreleasedCard,
+  'hideUnreleasedEnemyCollection': instance.hideUnreleasedEnemyCollection,
   'svtFilterData': instance.svtFilterData.toJson(),
   'laplaceSvtFilterData': instance.laplaceSvtFilterData.toJson(),
   'craftFilterData': instance.craftFilterData.toJson(),
@@ -59,6 +78,12 @@ Map<String, dynamic> _$LocalDataFiltersToJson(LocalDataFilters instance) => <Str
   'gachaFilterData': instance.gachaFilterData.toJson(),
   'scriptReaderFilterData': instance.scriptReaderFilterData.toJson(),
 };
+
+Value? _$JsonConverterFromJson<Json, Value>(Object? json, Value? Function(Json json) fromJson) =>
+    json == null ? null : fromJson(json as Json);
+
+Json? _$JsonConverterToJson<Json, Value>(Value? value, Json? Function(Value value) toJson) =>
+    value == null ? null : toJson(value);
 
 SvtFilterData _$SvtFilterDataFromJson(Map json) => $checkedCreate('SvtFilterData', json, ($checkedConvert) {
   final val = SvtFilterData(

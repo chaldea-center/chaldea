@@ -94,7 +94,7 @@ class GameDataLoader {
     cancelToken = CancelToken();
     try {
       await JsonHelper.init();
-      final result = await _loadJson(offline, force, connectTimeout, db.settings.removeOldDataRegion);
+      final result = await _loadJson(offline, force, connectTimeout, db.settings.filters.removeOldDataRegion);
       if (result.isValid) {
         if (!completer.isCompleted) completer.complete(result);
       } else {
@@ -164,7 +164,7 @@ class GameDataLoader {
         bytes = await _file.readAsBytes();
       }
       // tier 1: gameDir, either full or minified (size, hash) pair
-      bool valid = bytes != null && (!db.settings.checkDataHash || checkFileVersion(bytes, fv));
+      bool valid = bytes != null && (!db.settings.network.checkDataHash || checkFileVersion(bytes, fv));
       if (!valid) {
         if (offline) {
           final _localHash = bytes == null ? '' : md5.convert(bytes).toString().toLowerCase();
@@ -178,7 +178,7 @@ class GameDataLoader {
         } else {
           downloading.value += 1;
           var resp = await _downFileWithRetry(fv.filename, options: Options(responseType: ResponseType.bytes));
-          if (db.settings.checkDataHash && !checkFileVersion(resp.data, fv)) {
+          if (db.settings.network.checkDataHash && !checkFileVersion(resp.data, fv)) {
             resp = await _downFileWithRetry(fv.filename, options: Options(responseType: ResponseType.bytes), t: true);
             if (!checkFileVersion(resp.data, fv)) {
               final _hash = md5.convert(resp.data).toString().toLowerCase();
@@ -287,8 +287,8 @@ class GameDataLoader {
       throw Exception('No data loaded');
     }
     _gameJson["version"] = newVersion.toJson();
-    if (db.settings.spoilerRegion != Region.jp) {
-      _gameJson['spoilerRegion'] = const RegionConverter().toJson(db.settings.spoilerRegion);
+    if (db.settings.filters.spoilerRegion != Region.jp) {
+      _gameJson['spoilerRegion'] = const RegionConverter().toJson(db.settings.filters.spoilerRegion);
     }
     _gameJson['removeOldDataRegion'] = removeOldDataRegion == null
         ? null

@@ -101,10 +101,10 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                 '/${S.current.command_code}',
             children: [
               SwitchListTile.adaptive(
-                value: db.settings.autoResetFilter,
+                value: db.settings.filters.autoResetFilter,
                 title: Text(S.current.auto_reset),
                 onChanged: (v) {
-                  db.settings.autoResetFilter = v;
+                  db.settings.filters.autoResetFilter = v;
                   db.saveSettings();
                   setState(() {});
                 },
@@ -244,7 +244,7 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                   title: Text(S.current.quest_prefer_region),
                   subtitle: Text(S.current.quest_prefer_region_hint, textScaler: const TextScaler.linear(0.9)),
                   trailing: DropdownButton<Region?>(
-                    value: db.settings.preferredQuestRegion,
+                    value: db.settings.locale.preferredQuestRegion,
                     items: [
                       DropdownMenuItem(value: null, child: Text(S.current.general_default)),
                       for (final region in Region.values)
@@ -252,7 +252,7 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                     ],
                     onChanged: (v) {
                       setState(() {
-                        db.settings.preferredQuestRegion = v;
+                        db.settings.locale.preferredQuestRegion = v;
                       });
                     },
                   ),
@@ -267,10 +267,10 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
             children: [
               if (PlatformU.isDesktop)
                 SwitchListTile.adaptive(
-                  value: db.settings.alwaysOnTop,
+                  value: db.settings.platform.alwaysOnTop,
                   title: Text(S.current.setting_always_on_top),
                   onChanged: (v) {
-                    db.settings.alwaysOnTop = v;
+                    db.settings.platform.alwaysOnTop = v;
                     db.saveSettings();
                     AppWindowUtil.setAlwaysOnTop(v);
                     setState(() {});
@@ -291,12 +291,12 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                 },
               ),
               SwitchListTile.adaptive(
-                value: db.settings.showDebugFab,
+                value: db.settings.display.showDebugFab,
                 title: Text(S.current.debug_fab),
                 subtitle: Text('${S.current.screenshots} etc.'),
                 onChanged: (v) {
                   setState(() {
-                    db.settings.showDebugFab = v;
+                    db.settings.display.showDebugFab = v;
                     db.saveSettings();
                   });
                   if (v) {
@@ -310,11 +310,11 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
               // on Android, cannot detect phone or mobile
               if (PlatformU.isMobile && !AppInfo.isIPad || kDebugMode)
                 SwitchListTile.adaptive(
-                  value: db.settings.autoRotate,
+                  value: db.settings.platform.autoRotate,
                   title: Text(S.current.setting_auto_rotate),
                   onChanged: (v) {
                     setState(() {
-                      db.settings.autoRotate = v;
+                      db.settings.platform.autoRotate = v;
                       if (v) {
                         SystemChrome.setPreferredOrientations([]);
                       } else {
@@ -326,46 +326,46 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                 ),
               if (!SplitRoute.isPopGestureAlwaysDisabled)
                 SwitchListTile.adaptive(
-                  value: db.settings.forceEdgeSwipePopGesture,
+                  value: db.settings.display.forceEdgeSwipePopGesture,
                   title: Text(S.current.edge_swipe_pop_gesture),
                   onChanged: (v) {
                     setState(() {
-                      db.settings.forceEdgeSwipePopGesture = v;
+                      db.settings.display.forceEdgeSwipePopGesture = v;
                     });
                     db.notifyAppUpdate();
                   },
                 ),
               if (PlatformU.isTargetDesktop)
                 SwitchListTile.adaptive(
-                  value: db.settings.enableMouseDrag,
+                  value: db.settings.display.enableMouseDrag,
                   title: Text(S.current.setting_drag_by_mouse),
                   subtitle: Text(S.current.desktop_only),
                   onChanged: (v) {
                     setState(() {
-                      db.settings.enableMouseDrag = v;
+                      db.settings.display.enableMouseDrag = v;
                     });
                     db.notifyAppUpdate();
                   },
                 ),
               SwitchListTile.adaptive(
-                value: db.settings.globalSelection,
+                value: db.settings.display.globalSelection,
                 title: Text(S.current.global_text_selection),
                 // subtitle: Text(S.current.desktop_only),
                 onChanged: (v) {
                   setState(() {
-                    db.settings.globalSelection = v;
+                    db.settings.display.globalSelection = v;
                   });
                   db.notifyAppUpdate();
                 },
               ),
               if (PlatformU.isDesktop) ...[
                 SwitchListTile.adaptive(
-                  value: db.settings.showSystemTray,
+                  value: db.settings.platform.showSystemTray,
                   title: Text(S.current.show_system_tray),
                   subtitle: Text(S.current.system_tray_close_hint),
                   onChanged: (v) {
                     setState(() {
-                      db.settings.showSystemTray = v;
+                      db.settings.platform.showSystemTray = v;
                     });
                     AppWindowUtil.toggleTray(v);
                   },

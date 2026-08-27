@@ -37,7 +37,7 @@ class EnemyListPageState extends State<EnemyListPage> with SearchableListState<B
   @override
   void initState() {
     super.initState();
-    if (db.settings.autoResetFilter && widget.filterData == null) {
+    if (db.settings.filters.autoResetFilter && widget.filterData == null) {
       filterData.reset();
     }
     _allEnemies = ReverseGameData.questEnemies(

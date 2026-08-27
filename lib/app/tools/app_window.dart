@@ -62,7 +62,7 @@ class AppWindowUtil {
 
   static Future<void> setAlwaysOnTop([bool? onTop]) async {
     if (PlatformU.isDesktop) {
-      onTop ??= db.settings.alwaysOnTop;
+      onTop ??= db.settings.platform.alwaysOnTop;
       windowManager.setAlwaysOnTop(onTop);
     }
   }
@@ -145,7 +145,7 @@ class AppWindowUtil {
 
   static Future<void> onWindowClose() async {
     await db.saveAll();
-    if (db.settings.showSystemTray) {
+    if (db.settings.platform.showSystemTray) {
       await minimizeWindow();
       return;
     }
@@ -157,7 +157,7 @@ class AppWindowUtil {
   // close window if return true
   static Future<bool> _shouldCloseCheckUpload() async {
     logger.i('closing desktop app...');
-    final alertUploadUserData = db.settings.alertUploadUserData && kDebugMode;
+    final alertUploadUserData = db.settings.network.alertUploadUserData && kDebugMode;
     if (!alertUploadUserData) {
       await Future.delayed(const Duration(milliseconds: 200));
       return true;

@@ -239,7 +239,7 @@ class _BootstrapPageState extends State<BootstrapPage> with SingleTickerProvider
             title: Text(_themeModeName(mode)),
             minLeadingWidth: 24,
             onTap: () {
-              db.settings.themeMode = mode;
+              db.settings.appearance.themeMode = mode;
               db.saveSettings();
               db.notifyAppUpdate();
             },
@@ -381,7 +381,7 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
             crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               DropdownButton<bool>(
-                value: db.settings.proxy.data,
+                value: db.settings.network.proxy.data,
                 items: [
                   DropdownMenuItem(
                     value: false,
@@ -395,7 +395,7 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
                 onChanged: (v) {
                   setState(() {
                     if (v != null) {
-                      db.settings.proxy.setAll(v);
+                      db.settings.network.proxy.setAll(v);
                     }
                   });
                 },
@@ -417,10 +417,10 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
           dense: true,
           title: Text('${S.current.auto_update} (${S.current.gamedata})'),
           // subtitle: Text(),
-          value: db.settings.autoUpdateData,
+          value: db.settings.network.autoUpdateData,
           onChanged: (v) {
             setState(() {
-              db.settings.autoUpdateData = v;
+              db.settings.network.autoUpdateData = v;
               db.saveSettings();
             });
           },

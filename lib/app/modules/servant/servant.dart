@@ -273,7 +273,7 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
                             children: [
                               Icon(icons[index], color: Theme.of(context).colorScheme.primary),
                               AutoSizeText(
-                                db.settings.priorityTags[priority] ?? '',
+                                db.settings.gameplay.priorityTags[priority] ?? '',
                                 overflow: TextOverflow.visible,
                                 minFontSize: 6,
                                 maxFontSize: 12,

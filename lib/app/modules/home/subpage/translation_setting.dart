@@ -24,12 +24,12 @@ class _TranslationSettingState extends State<TranslationSetting> {
               children: [
                 TextSpan(
                   text: 'Auto',
-                  style: db.settings.preferredRegions == null ? null : Theme.of(context).textTheme.bodySmall,
+                  style: db.settings.locale.preferredRegions == null ? null : Theme.of(context).textTheme.bodySmall,
                 ),
                 const TextSpan(text: ' / '),
                 TextSpan(
                   text: 'Fixed',
-                  style: db.settings.preferredRegions == null ? Theme.of(context).textTheme.bodySmall : null,
+                  style: db.settings.locale.preferredRegions == null ? Theme.of(context).textTheme.bodySmall : null,
                 ),
               ],
             ),
@@ -42,7 +42,7 @@ class _TranslationSettingState extends State<TranslationSetting> {
               child: Text(S.current.reset),
               onPressed: () {
                 setState(() {
-                  db.settings.preferredRegions = null;
+                  db.settings.locale.preferredRegions = null;
                   db.saveSettings();
                   db.notifySettings();
                 });
@@ -75,7 +75,7 @@ class _TranslationSettingState extends State<TranslationSetting> {
         setState(() {
           final item = regions.removeAt(oldIndex);
           regions.insert(newIndex, item);
-          db.settings.preferredRegions = regions;
+          db.settings.locale.preferredRegions = regions;
           db.saveSettings();
           db.notifySettings();
         });

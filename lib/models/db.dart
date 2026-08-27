@@ -110,7 +110,7 @@ class _Database {
     await paths.initRootPath(testAppPath: testAppPath);
     Hive.init(paths.hiveDir);
     await loadSettings();
-    settings.forceOnline = true;
+    settings.network.forceOnline = true;
     AppInfo.initiateForTest();
   }
 
@@ -278,7 +278,7 @@ class _Database {
       await _saveBytes(await _lastSavedFile.readAsBytes(), '${timeStamp}d.json');
     }
     if (_saved.isNotEmpty) {
-      db.settings.lastBackup = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+      db.settings.misc.lastBackup = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     }
     return _saved;
   }
