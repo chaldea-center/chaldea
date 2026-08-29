@@ -5359,6 +5359,11 @@ class S {
     return Intl.message('Full View', name: 'recorder_screenshot_full_view', desc: '', locale: localeName, args: []);
   }
 
+  /// `Redownload`
+  String get redownload {
+    return Intl.message('Redownload', name: 'redownload', desc: '', locale: localeName, args: []);
+  }
+
   /// `Refresh`
   String get refresh {
     return Intl.message('Refresh', name: 'refresh', desc: '', locale: localeName, args: []);
@@ -7147,6 +7152,215 @@ class S {
   /// `{a} {b}`
   String words_separate(Object a, Object b) {
     return Intl.message('$a $b', name: 'words_separate', desc: '', locale: localeName, args: [a, b]);
+  }
+
+  /// `Cancel download and pick`
+  String get xapk_cancel_and_pick {
+    return Intl.message(
+      'Cancel download and pick',
+      name: 'xapk_cancel_and_pick',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `A download is in progress. Cancel it and pick a local file instead?`
+  String get xapk_cancel_download_to_pick {
+    return Intl.message(
+      'A download is in progress. Cancel it and pick a local file instead?',
+      name: 'xapk_cancel_download_to_pick',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Please confirm the install in the system dialog`
+  String get xapk_confirming {
+    return Intl.message(
+      'Please confirm the install in the system dialog',
+      name: 'xapk_confirming',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `The device installer refused the confirmation dialog. On MIUI, turn off "MIUI optimization" in Developer options and retry.`
+  String get xapk_error_confirm_activity_missing {
+    return Intl.message(
+      'The device installer refused the confirmation dialog. On MIUI, turn off "MIUI optimization" in Developer options and retry.',
+      name: 'xapk_error_confirm_activity_missing',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Archive failed the integrity check (CRC), please re-download`
+  String get xapk_error_crc_failed {
+    return Intl.message(
+      'Archive failed the integrity check (CRC), please re-download',
+      name: 'xapk_error_crc_failed',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `File not found`
+  String get xapk_error_file_not_found {
+    return Intl.message('File not found', name: 'xapk_error_file_not_found', desc: '', locale: localeName, args: []);
+  }
+
+  /// `A split APK listed in the manifest is missing from the archive`
+  String get xapk_error_missing_split {
+    return Intl.message(
+      'A split APK listed in the manifest is missing from the archive',
+      name: 'xapk_error_missing_split',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `No base APK found in the manifest`
+  String get xapk_error_no_base_split {
+    return Intl.message(
+      'No base APK found in the manifest',
+      name: 'xapk_error_no_base_split',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `manifest.json is missing or invalid`
+  String get xapk_error_no_manifest {
+    return Intl.message(
+      'manifest.json is missing or invalid',
+      name: 'xapk_error_no_manifest',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Not a valid XAPK archive`
+  String get xapk_error_not_zip {
+    return Intl.message('Not a valid XAPK archive', name: 'xapk_error_not_zip', desc: '', locale: localeName, args: []);
+  }
+
+  /// `This XAPK contains OBB expansion data, which is not supported yet. Please install it with an external installer app.`
+  String get xapk_error_obb_unsupported {
+    return Intl.message(
+      'This XAPK contains OBB expansion data, which is not supported yet. Please install it with an external installer app.',
+      name: 'xapk_error_obb_unsupported',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Archive size differs from the manifest — the file is corrupt, please re-download`
+  String get xapk_error_size_mismatch {
+    return Intl.message(
+      'Archive size differs from the manifest — the file is corrupt, please re-download',
+      name: 'xapk_error_size_mismatch',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Timed out waiting for the system installer`
+  String get xapk_error_timeout {
+    return Intl.message(
+      'Timed out waiting for the system installer',
+      name: 'xapk_error_timeout',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Install failed`
+  String get xapk_install_failed {
+    return Intl.message('Install failed', name: 'xapk_install_failed', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Install finished`
+  String get xapk_install_success {
+    return Intl.message('Install finished', name: 'xapk_install_success', desc: '', locale: localeName, args: []);
+  }
+
+  /// `XAPK Install`
+  String get xapk_install_title {
+    return Intl.message('XAPK Install', name: 'xapk_install_title', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Installing...`
+  String get xapk_installing {
+    return Intl.message('Installing...', name: 'xapk_installing', desc: '', locale: localeName, args: []);
+  }
+
+  /// `This build (e.g. from Google Play) does not declare the install-permission, so it cannot install APK/XAPK directly. Please use a third-party installer.`
+  String get xapk_no_install_permission_hint {
+    return Intl.message(
+      'This build (e.g. from Google Play) does not declare the install-permission, so it cannot install APK/XAPK directly. Please use a third-party installer.',
+      name: 'xapk_no_install_permission_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Not every XAPK is supported (e.g. those containing OBB expansion data are not). If parsing or installation fails, please use a third-party installer — such as ApkPure App, APKCombo Installer, or MT Explorer — or the APK page's install helper.`
+  String get xapk_not_supported_hint {
+    return Intl.message(
+      'Not every XAPK is supported (e.g. those containing OBB expansion data are not). If parsing or installation fails, please use a third-party installer — such as ApkPure App, APKCombo Installer, or MT Explorer — or the APK page\'s install helper.',
+      name: 'xapk_not_supported_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Package`
+  String get xapk_package {
+    return Intl.message('Package', name: 'xapk_package', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Ready to install`
+  String get xapk_parsed {
+    return Intl.message('Ready to install', name: 'xapk_parsed', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Parsing...`
+  String get xapk_parsing {
+    return Intl.message('Parsing...', name: 'xapk_parsing', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Select XAPK/APK file`
+  String get xapk_select_file {
+    return Intl.message('Select XAPK/APK file', name: 'xapk_select_file', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Total size`
+  String get xapk_total_size {
+    return Intl.message('Total size', name: 'xapk_total_size', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Device compatibility`
+  String get xapk_vendor_guidance_header {
+    return Intl.message(
+      'Device compatibility',
+      name: 'xapk_vendor_guidance_header',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
   }
 }
 

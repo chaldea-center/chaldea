@@ -1065,6 +1065,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "recognizer_result_count": m34,
     "recorder_screenshot_current_view": MessageLookupByLibrary.simpleMessage("Current View"),
     "recorder_screenshot_full_view": MessageLookupByLibrary.simpleMessage("Full View"),
+    "redownload": MessageLookupByLibrary.simpleMessage("Redownload"),
     "refresh": MessageLookupByLibrary.simpleMessage("Refresh"),
     "region_cn": MessageLookupByLibrary.simpleMessage("CN"),
     "region_jp": MessageLookupByLibrary.simpleMessage("JP"),
@@ -1385,5 +1386,46 @@ class MessageLookup extends MessageLookupByLibrary {
       "CN endpoint for China mainland\nWeb app is only recommended for PC users, Mobile website is laggy and may refresh unexpectedly.",
     ),
     "words_separate": m12,
+    "xapk_cancel_and_pick": MessageLookupByLibrary.simpleMessage("Cancel download and pick"),
+    "xapk_cancel_download_to_pick": MessageLookupByLibrary.simpleMessage(
+      "A download is in progress. Cancel it and pick a local file instead?",
+    ),
+    "xapk_confirming": MessageLookupByLibrary.simpleMessage("Please confirm the install in the system dialog"),
+    "xapk_error_confirm_activity_missing": MessageLookupByLibrary.simpleMessage(
+      "The device installer refused the confirmation dialog. On MIUI, turn off \"MIUI optimization\" in Developer options and retry.",
+    ),
+    "xapk_error_crc_failed": MessageLookupByLibrary.simpleMessage(
+      "Archive failed the integrity check (CRC), please re-download",
+    ),
+    "xapk_error_file_not_found": MessageLookupByLibrary.simpleMessage("File not found"),
+    "xapk_error_missing_split": MessageLookupByLibrary.simpleMessage(
+      "A split APK listed in the manifest is missing from the archive",
+    ),
+    "xapk_error_no_base_split": MessageLookupByLibrary.simpleMessage("No base APK found in the manifest"),
+    "xapk_error_no_manifest": MessageLookupByLibrary.simpleMessage("manifest.json is missing or invalid"),
+    "xapk_error_not_zip": MessageLookupByLibrary.simpleMessage("Not a valid XAPK archive"),
+    "xapk_error_obb_unsupported": MessageLookupByLibrary.simpleMessage(
+      "This XAPK contains OBB expansion data, which is not supported yet. Please install it with an external installer app.",
+    ),
+    "xapk_error_size_mismatch": MessageLookupByLibrary.simpleMessage(
+      "Archive size differs from the manifest — the file is corrupt, please re-download",
+    ),
+    "xapk_error_timeout": MessageLookupByLibrary.simpleMessage("Timed out waiting for the system installer"),
+    "xapk_install_failed": MessageLookupByLibrary.simpleMessage("Install failed"),
+    "xapk_install_success": MessageLookupByLibrary.simpleMessage("Install finished"),
+    "xapk_install_title": MessageLookupByLibrary.simpleMessage("XAPK Install"),
+    "xapk_installing": MessageLookupByLibrary.simpleMessage("Installing..."),
+    "xapk_no_install_permission_hint": MessageLookupByLibrary.simpleMessage(
+      "This build (e.g. from Google Play) does not declare the install-permission, so it cannot install APK/XAPK directly. Please use a third-party installer.",
+    ),
+    "xapk_not_supported_hint": MessageLookupByLibrary.simpleMessage(
+      "Not every XAPK is supported (e.g. those containing OBB expansion data are not). If parsing or installation fails, please use a third-party installer — such as ApkPure App, APKCombo Installer, or MT Explorer — or the APK page\'s install helper.",
+    ),
+    "xapk_package": MessageLookupByLibrary.simpleMessage("Package"),
+    "xapk_parsed": MessageLookupByLibrary.simpleMessage("Ready to install"),
+    "xapk_parsing": MessageLookupByLibrary.simpleMessage("Parsing..."),
+    "xapk_select_file": MessageLookupByLibrary.simpleMessage("Select XAPK/APK file"),
+    "xapk_total_size": MessageLookupByLibrary.simpleMessage("Total size"),
+    "xapk_vendor_guidance_header": MessageLookupByLibrary.simpleMessage("Device compatibility"),
   };
 }

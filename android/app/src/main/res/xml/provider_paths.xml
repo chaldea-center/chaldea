@@ -7,4 +7,12 @@
     <external-files-path
         name="external_files_app"
         path="." />
+    <!-- app cache: file_picker caches picked files here when the original
+         content URI has no resolvable direct file path -->
+    <cache-path
+        name="cache"
+        path="." />
+    <files-path
+        name="files"
+        path="." />
 </paths>

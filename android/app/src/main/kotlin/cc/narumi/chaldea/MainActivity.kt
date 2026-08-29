@@ -5,18 +5,25 @@ import android.net.Uri
 import android.os.Build
 import androidx.annotation.NonNull
 import androidx.core.content.FileProvider
+import cc.narumi.chaldea.xapk.XapkInstaller
 import io.flutter.plugins.GeneratedPluginRegistrant
 
 
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
+import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 import java.io.File
 
 class MainActivity: FlutterActivity() {
     private val _channel = "chaldea.narumi.cc/chaldea"
+    private val _xapkEventChannel = "chaldea.narumi.cc/xapk"
+    private val xapkInstaller by lazy { XapkInstaller(this) }
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+        // XAPK install state stream: {phase, progress, bytes, totalBytes, error, message}
+        EventChannel(flutterEngine.dartExecutor.binaryMessenger, _xapkEventChannel)
+            .setStreamHandler(xapkInstaller)
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, _channel).apply {
             setMethodCallHandler { methodCall, result ->
                 if (methodCall.method == "sendBackground") {
@@ -36,6 +43,20 @@ class MainActivity: FlutterActivity() {
                     } else {
                         installApk(path, result)
                     }
+                } else if (methodCall.method == "xapkParse") {
+                    val path = methodCall.arguments as? String
+                    if (path == null) {
+                        result.error("INVALID_ARGS", "xapkParse requires a file path argument", null)
+                    } else {
+                        xapkInstaller.parseAsync(path, result)
+                    }
+                } else if (methodCall.method == "xapkInstall") {
+                    val path = methodCall.arguments as? String
+                    if (path == null) {
+                        result.error("INVALID_ARGS", "xapkInstall requires a file path argument", null)
+                    } else {
+                        xapkInstaller.installAsync(path, result)
+                    }
                 } else {
                     result.notImplemented()
                 }
@@ -49,6 +70,8 @@ class MainActivity: FlutterActivity() {
     // the permission) need no channel-specific Dart code.
     // [granted] — the user allowed "install unknown apps" for this app. Always
     // true below Android 8, where the app-op does not exist.
+    // [manufacturer] — Build.MANUFACTURER, used by the XAPK install page to
+    // highlight the matching vendor guidance entry.
     private fun installCapability(): Map<String, Any> {
         val declared = try {
             val info = packageManager.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS)
@@ -57,7 +80,11 @@ class MainActivity: FlutterActivity() {
             false
         }
         val granted = Build.VERSION.SDK_INT < Build.VERSION_CODES.O || packageManager.canRequestPackageInstalls()
-        return mapOf("declared" to declared, "granted" to granted)
+        return mapOf(
+            "declared" to declared,
+            "granted" to granted,
+            "manufacturer" to (Build.MANUFACTURER ?: ""),
+        )
     }
 
     // The "install unknown apps" grant can only be given in system settings,

@@ -56,25 +56,6 @@ class ApkInstaller {
     await _showDownloadDialog(context, url: url, filename: filename ?? filenameOf(url));
   }
 
-  /// Reserved entry (see CONTEXT.md): XAPK direct install is planned but not
-  /// implemented yet — explain and point to external installers.
-  static Future<void> showXapkReserved(BuildContext context) {
-    return showDialog(
-      context: context,
-      useRootNavigator: false,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('XAPK'),
-          content: const Text(
-            'XAPK direct install is not supported yet. '
-            'Please install it with an external installer app.',
-          ),
-          actions: [TextButton(onPressed: () => Navigator.pop(context), child: Text(S.current.confirm))],
-        );
-      },
-    );
-  }
-
   static Future<bool?> _showGrantDialog(BuildContext context) {
     return showDialog<bool>(
       context: context,

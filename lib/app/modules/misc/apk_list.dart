@@ -6,6 +6,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:chaldea/app/api/chaldea.dart';
+import 'package:chaldea/app/app.dart';
+import 'package:chaldea/app/modules/misc/xapk_install_page.dart';
 import 'package:chaldea/app/tools/apk_installer.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -214,6 +216,7 @@ class _ApkListPageState extends State<ApkListPage> {
                       ),
                   ],
                 ),
+                if (canInstallApk) xapkInstallEntry,
                 xapkHint,
                 const SizedBox(height: 16),
                 const DividerWithTitle(title: 'Links', indent: 16, height: 16),
@@ -369,8 +372,9 @@ class _ApkListPageState extends State<ApkListPage> {
 
   void _onInstallTap(BuildContext context, String url) {
     if (url.toLowerCase().endsWith('.xapk')) {
-      // reserved entry: XAPK direct install is future work
-      ApkInstaller.showXapkReserved(context);
+      // XAPK direct install: full download→parse→install flow on the
+      // dedicated page (ADR 0004)
+      router.pushPage(XapkInstallPage(url: url));
     } else {
       ApkInstaller.installFromUrl(context, url: url);
     }
@@ -446,6 +450,22 @@ class _ApkListPageState extends State<ApkListPage> {
     );
   }
 
+  Widget get xapkInstallEntry {
+    return TileGroup(
+      children: [
+        ListTile(
+          leading: const Icon(Icons.install_mobile),
+          title: Text(S.current.xapk_install_title),
+          subtitle: Text(S.current.xapk_select_file),
+          trailing: const Icon(Icons.chevron_right),
+          onTap: () {
+            router.pushPage(const XapkInstallPage());
+          },
+        ),
+      ],
+    );
+  }
+
   Widget get xapkHint {
     return Card(
       margin: const EdgeInsets.all(8),
@@ -456,16 +476,16 @@ class _ApkListPageState extends State<ApkListPage> {
           data: Language.isZH
               ? """**重要 2024.07.19**
 
-Google 不再提供APK格式安装包。XAPK格式需要通过安装器安装，如ApkPure App、APKCombo Installer、MT管理器、UU加速器等进行安装。等效于Google Play商店安装的官方版本。
+Google 不再提供APK格式安装包。XAPK格式可使用本应用的「XAPK 安装」功能直接安装（等效于Google Play商店安装的官方版本），也可通过 ApkPure App、APKCombo Installer、MT管理器等外部安装器安装。
 
-部分机型需关闭一些系统优化，如MIUI需关闭MIUI优化。
+部分机型需关闭一些系统优化，如MIUI需关闭MIUI优化，详见XAPK安装页的兼容性说明。
 
 <https://docs.chaldea.center/zh/guide/fgo_apk>"""
               : """**IMPORTANT 2024.07.19**
 
-Google Play Store won't provide APK format anymore. XAPK needs installer: ApkPure App/APKCombo Installer/MT Explorer/...
+Google Play Store won't provide APK format anymore. XAPK can be installed directly with the built-in "XAPK Install" feature (equivalent to the official Play Store version), or with an external installer such as ApkPure App / APKCombo Installer / MT Explorer.
 
-Some devices have to turn off optimization, such as MIUI.
+Some devices have to turn off optimization, such as MIUI — see the compatibility notes on the XAPK install page.
 
 <https://docs.chaldea.center/guide/fgo_apk>""",
         ),

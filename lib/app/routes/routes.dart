@@ -60,6 +60,7 @@ import '../modules/misc/common_release.dart';
 import '../modules/misc/discord_page.dart';
 import '../modules/misc/gift_page.dart';
 import '../modules/misc/quest_date_range.dart';
+import '../modules/misc/xapk_install_page.dart';
 import '../modules/script/reader_entry.dart';
 import '../modules/servant/servant_list.dart';
 import '../modules/shop/shop.dart';
@@ -210,6 +211,7 @@ class Routes {
   static const String aprilFool = '/april-fool';
   static const String effectSearch = '/effect-search';
   static const String apk = '/apk';
+  static const String xapkInstall = '/xapk-install';
 
   static const String laplace = '/laplace';
   static const String laplaceBattle = '/laplace/battle';
@@ -501,6 +503,9 @@ class RouteConfiguration {
         return const SimulationPreview();
       case Routes.apk:
         return const ApkListPage();
+      case Routes.xapkInstall:
+        // /xapk-install?url=<remote> or /xapk-install?path=<local file>
+        return XapkInstallPage(url: query['url'], filePath: query['path']);
       case Routes.aprilFool:
         return const AprilFoolHome();
       case Routes.routes:

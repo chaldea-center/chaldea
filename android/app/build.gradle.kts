@@ -145,4 +145,8 @@ dependencies {
     // OkHttp: required by Pangle/GroMore SDK for network requests
     // (see official docs: https://www.csjplatform.com/supportcenter/28659)
     implementation("com.squareup.okhttp3:okhttp:3.12.1")
+    // JVM unit tests: real org.json replaces the android.jar stubs for
+    // XapkCore manifest parsing tests
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.json:json:20240303")
 }
