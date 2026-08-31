@@ -348,6 +348,7 @@ class AutoBattleOptions {
   bool enableSkillShift;
   List<int> skillShiftEnemyUniqueIds;
   bool sendFriendRequest;
+  Map<int, int> battleMissionValueDict;
 
   // loop
   List<int> recoverIds;
@@ -384,6 +385,7 @@ class AutoBattleOptions {
     this.enableSkillShift = true,
     List<int>? skillShiftEnemyUniqueIds,
     this.sendFriendRequest = false,
+    Map<int, int>? battleMissionValueDict,
     List<int>? recoverIds,
     this.loopCount = 0,
     Map<int, int>? targetDrops,
@@ -397,6 +399,7 @@ class AutoBattleOptions {
        grandSupportEquipIds = grandSupportEquipIds ?? {},
        usedTurnArray = usedTurnArray ?? [],
        skillShiftEnemyUniqueIds = skillShiftEnemyUniqueIds ?? [],
+       battleMissionValueDict = battleMissionValueDict ?? {},
        recoverIds = recoverIds ?? [],
        targetDrops = targetDrops ?? {},
        winTargetItemNum = winTargetItemNum ?? {};

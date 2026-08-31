@@ -82,6 +82,31 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
         throw SilentException('Mismatch event support setting.\nSupposed: $shouldUseEventDeck');
       }
     }
+    if (battleOption.battleMissionValueDict.isNotEmpty) {
+      if (!runtime.mounted) {
+        throw SilentException('Need battleMissionValueDict confirmation but not mounted');
+      }
+      // one line per key: show the mission text with the largest targetNum
+      String dictLine(MapEntry<int, int> e) {
+        final entries = runtime.gameData.timerData.battleMissionValues[e.key];
+        if (entries == null || entries.isEmpty) return '${e.key}: ${e.value}';
+        final mission = entries.reduce((a, b) => a.targetNum > b.targetNum ? a : b).mission;
+        return '${mission.name} (${e.key}: ${e.value})';
+      }
+
+      final confirm = await runtime.showLocalDialog(
+        SimpleConfirmDialog(
+          title: const Text('Battle Mission Values'),
+          content: Text(
+            'Submit with each battle result (win):\n'
+            '${battleOption.battleMissionValueDict.entries.map(dictLine).join('\n')}',
+          ),
+        ),
+      );
+      if (confirm != true) {
+        throw SilentException('cancel battleMissionValueDict submission');
+      }
+    }
     int finishedCount = 0, totalCount = battleOption.loopCount;
     List<int> elapseSeconds = [];
     runtime.agentData.curLoopDropStat.reset();
@@ -676,7 +701,6 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
           'but received ${options.skillShiftEnemyUniqueIds}',
         );
       }
-
       final resp = await agent.battleResult(
         battleId: battleEntity.id,
         resultType: BattleResultType.win,
@@ -693,6 +717,7 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
         skillShiftUniqueIdArray: itemDroppedSkillShiftEnemies.map((e) => e.uniqueId).toList(),
         skillShiftNpcSvtIdArray: itemDroppedSkillShiftEnemies.map((e) => e.npcId).toList(),
         sendDelay: sendDelay,
+        battleMissionValueDict: options.battleMissionValueDict,
       );
 
       if (options.sendFriendRequest) {

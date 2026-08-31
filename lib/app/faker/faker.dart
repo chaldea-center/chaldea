@@ -27,6 +27,7 @@ import 'package:chaldea/utils/notification.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '_shared/history.dart';
+import 'battle_mission_value_page.dart';
 import 'details/dialogs.dart';
 import 'details/dump_clean.dart';
 import 'details/login_result.dart';
@@ -1650,6 +1651,29 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
             });
           },
           controlAffinity: ListTileControlAffinity.trailing,
+        ),
+        ListTile(
+          dense: true,
+          title: const Text("Battle Mission Values"),
+          subtitle: Text(
+            battleOption.battleMissionValueDict.isEmpty
+                ? 'empty'
+                : battleOption.battleMissionValueDict.entries.map((e) => '${e.key}:${e.value}').join(', '),
+          ),
+          trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+          onTap: () async {
+            final questPhase =
+                AtlasApi.questPhaseCache(battleOption.questId, battleOption.questPhase, null, runtime.region) ??
+                AtlasApi.questPhaseCache(battleOption.questId, battleOption.questPhase);
+            if (questPhase == null) {
+              EasyLoading.showToast('Quest phase cache not found, please set quest first');
+              return;
+            }
+            await router.pushPage(
+              BattleMissionValuePage(runtime: runtime, options: battleOption, questPhase: questPhase),
+            );
+            if (mounted) setState(() {});
+          },
         ),
         CheckboxListTile.adaptive(
           dense: true,
