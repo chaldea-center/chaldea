@@ -198,8 +198,8 @@ class _UserShopsPageState extends State<UserShopsPage>
                     TextSpan(
                       text: [
                         '\n${S.current.item_own} ${mstData.getItemOrSvtNum(shop.targetIds.single).format()}',
-                        if (mstData.isCurPlanUser)
-                          '${S.current.item_left} ${(db.itemCenter.itemLeft[shop.targetIds.single] ?? 0).format()}',
+                        if (mstData.getItemLeft(shop.targetIds.single) case final left?)
+                          '${S.current.item_left} ${left.format()}',
                       ].join('\n'),
                       style: canBuy ? Theme.of(context).textTheme.bodySmall : null,
                     ),

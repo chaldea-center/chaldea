@@ -126,9 +126,9 @@ class _CreateRecipePageState extends State<CreateRecipePage>
                   context: context,
                   width: 32,
                   showOne: false,
-                  text: [
+                  text: <String>[
                     mstData.getItemOrSvtNum(gift.objectId).format(),
-                    if (mstData.isCurPlanUser) (db.itemCenter.itemLeft[gift.objectId] ?? 0).format(),
+                    ?mstData.getItemLeft(gift.objectId)?.format(),
                   ].join('\n'),
                 ),
               ),

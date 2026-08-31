@@ -66,6 +66,10 @@ User _$UserFromJson(Map json) => $checkedCreate('User', json, ($checkedConvert) 
       'items',
       (v) => (v as Map?)?.map((k, e) => MapEntry(int.parse(k as String), (e as num).toInt())),
     ),
+    itemsLeft: $checkedConvert(
+      'itemsLeft',
+      (v) => (v as Map?)?.map((k, e) => MapEntry(int.parse(k as String), (e as num).toInt())),
+    ),
     craftEssences: $checkedConvert(
       'craftEssences',
       (v) => (v as Map?)?.map(
@@ -127,6 +131,7 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
   'sameEventPlan': instance.sameEventPlan,
   'curSvtPlanNo': instance.curSvtPlanNo,
   'items': instance.items.map((k, e) => MapEntry(k.toString(), e)),
+  'itemsLeft': instance.itemsLeft.map((k, e) => MapEntry(k.toString(), e)),
   'craftEssences': instance.craftEssences.map((k, e) => MapEntry(k.toString(), e.toJson())),
   'cmdCodes': instance.cmdCodes.map((k, e) => MapEntry(k.toString(), e.toJson())),
   'mysticCodes': instance.mysticCodes.map((k, e) => MapEntry(k.toString(), e)),

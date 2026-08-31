@@ -304,7 +304,7 @@ class _UserEventTradePageState extends State<UserEventTradePage>
             width: 32,
             text: [
               mstData.getItemOrSvtNum(gift.objectId).format(),
-              (db.itemCenter.itemLeft[gift.objectId] ?? 0).format(),
+              ?mstData.getItemLeft(gift.objectId)?.format(),
             ].join('\n'),
           ),
       ],

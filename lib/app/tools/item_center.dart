@@ -434,8 +434,27 @@ class ItemCenter {
     for (final board in statClassBoard.values) {
       itemLeft.addDict(board.multiple(-1));
     }
+    _syncUserItemsLeft();
     streamController.sink.add(this);
     db.notifyUserdata();
+  }
+
+  void _syncUserItemsLeft() {
+    const keptCategories = {
+      ItemCategory.normal,
+      ItemCategory.ascension,
+      ItemCategory.skill,
+      ItemCategory.special,
+      ItemCategory.coin,
+    };
+    user.itemsLeft
+      ..clear()
+      ..addEntries(
+        itemLeft.entries.where((entry) {
+          final category = db.gameData.items[entry.key]?.category;
+          return category != null && keptCategories.contains(category);
+        }),
+      );
   }
 
   // <svtId, details>

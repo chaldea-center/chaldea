@@ -126,7 +126,7 @@ class _ExRoomShopPageState extends State<ExRoomShopPage> with FakerRuntimeStateM
       itemId: itemId ?? 0,
       itemNum: itemNum,
       ownNum: itemId == null ? 0 : mstData.getItemOrSvtNum(itemId),
-      leftNum: mstData.isCurPlanUser && itemId != null ? db.itemCenter.itemLeft[itemId] ?? 0 : null,
+      leftNum: itemId == null ? null : mstData.getItemLeft(itemId),
     );
   }
 

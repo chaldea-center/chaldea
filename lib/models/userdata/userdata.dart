@@ -157,6 +157,11 @@ class User {
 
   Map<int, int> items;
 
+  /// Derived snapshot of itemLeft, synced by ItemCenter.updateLeftItems()
+  /// while this user is the current user. Material categories only
+  /// (normal/ascension/skill/special/coin). Stale by design until the user becomes current again.
+  Map<int, int> itemsLeft;
+
   Map<int, CraftStatus> craftEssences;
   Map<int, CmdCodeStatus> cmdCodes;
   Map<int, int> mysticCodes;
@@ -185,6 +190,7 @@ class User {
     this.sameEventPlan = true,
     int curSvtPlanNo = 0,
     Map<int, int>? items,
+    Map<int, int>? itemsLeft,
     Map<int, CraftStatus>? craftEssences,
     Map<int, CmdCodeStatus>? cmdCodes,
     Map<int, int>? mysticCodes,
@@ -203,6 +209,7 @@ class User {
        plans = List.generate(kSvtPlanMaxNum, (index) => plans?.getOrNull(index) ?? UserPlan()),
        _curSvtPlanNo = curSvtPlanNo.clamp(0, kSvtPlanMaxNum - 1),
        items = items ?? {},
+       itemsLeft = itemsLeft ?? {},
        craftEssences = craftEssences ?? {},
        cmdCodes = cmdCodes ?? {},
        mysticCodes = mysticCodes ?? {},

@@ -498,7 +498,7 @@ class _ItemSelectListDialog extends StatelessWidget {
         return _ItemSelectTile(
           itemSelect: select,
           count: mstData.getItemOrSvtNum(itemId),
-          leftCount: mstData.isCurPlanUser ? (db.itemCenter.itemLeft[itemId] ?? 0) : null,
+          leftCount: mstData.getItemLeft(itemId),
           onTap: () {
             Navigator.pop(context, select);
           },

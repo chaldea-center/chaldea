@@ -794,9 +794,9 @@ QP/友情点/魔力棱镜: 0
         context: context,
         item: null,
         itemId: itemId,
-        text: [
+        text: <String>[
           widget.mstData.getItemOrSvtNum(itemId).format(),
-          (db.itemCenter.itemLeft[itemId] ?? 0).format(),
+          ?widget.mstData.getItemLeft(itemId)?.format(),
         ].join('\n'),
       ),
       title: Text(Item.getName(itemId)),
