@@ -763,3 +763,64 @@ Map<String, dynamic> _$BattleAttackRecordDataToJson(BattleAttackRecordData insta
   'critical': instance.critical,
   'cardType': const CardTypeConverter().toJson(instance.cardType),
 };
+
+FormationBondOption _$FormationBondOptionFromJson(Map json) =>
+    $checkedCreate('FormationBondOption', json, ($checkedConvert) {
+      final val = FormationBondOption(
+        teamFormation: $checkedConvert(
+          'teamFormation',
+          (v) => v == null ? null : BattleTeamFormation.fromJson(Map<String, dynamic>.from(v as Map)),
+        ),
+        quest: $checkedConvert(
+          'quest',
+          (v) => v == null ? null : BattleQuestInfo.fromJson(Map<String, dynamic>.from(v as Map)),
+        ),
+        enableEvent: $checkedConvert('enableEvent', (v) => v as bool? ?? true),
+        campaigns: $checkedConvert(
+          'campaigns',
+          (v) => (v as Map?)?.map(
+            (k, e) =>
+                MapEntry(int.parse(k as String), (e as Map).map((k, e) => MapEntry(int.parse(k as String), e as bool))),
+          ),
+        ),
+        fixedDate: $checkedConvert('fixedDate', (v) => (v as num?)?.toInt()),
+        svtBonus: $checkedConvert(
+          'svtBonus',
+          (v) => (v as List<dynamic>?)
+              ?.map((e) => FormationBondSvtBonus.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList(),
+        ),
+        frontlineBonus: $checkedConvert('frontlineBonus', (v) => v as bool? ?? true),
+        teapotTimes: $checkedConvert('teapotTimes', (v) => (v as num?)?.toInt() ?? 1),
+      );
+      return val;
+    });
+
+Map<String, dynamic> _$FormationBondOptionToJson(FormationBondOption instance) => <String, dynamic>{
+  'teamFormation': instance.teamFormation.toJson(),
+  'quest': instance.quest?.toJson(),
+  'enableEvent': instance.enableEvent,
+  'campaigns': instance.campaigns.map((k, e) => MapEntry(k.toString(), e.map((k, e) => MapEntry(k.toString(), e)))),
+  'fixedDate': instance.fixedDate,
+  'svtBonus': instance.svtBonus.map((e) => e.toJson()).toList(),
+  'frontlineBonus': instance.frontlineBonus,
+  'teapotTimes': instance.teapotTimes,
+};
+
+FormationBondSvtBonus _$FormationBondSvtBonusFromJson(Map json) =>
+    $checkedCreate('FormationBondSvtBonus', json, ($checkedConvert) {
+      final val = FormationBondSvtBonus(
+        addValue: $checkedConvert('addValue', (v) => (v as num?)?.toInt() ?? 0),
+        addRate: $checkedConvert('addRate', (v) => (v as num?)?.toInt() ?? 0),
+        isBond15: $checkedConvert('isBond15', (v) => v as bool? ?? false),
+        isBondReachLimit: $checkedConvert('isBondReachLimit', (v) => v as bool? ?? false),
+      );
+      return val;
+    });
+
+Map<String, dynamic> _$FormationBondSvtBonusToJson(FormationBondSvtBonus instance) => <String, dynamic>{
+  'addValue': instance.addValue,
+  'addRate': instance.addRate,
+  'isBond15': instance.isBond15,
+  'isBondReachLimit': instance.isBondReachLimit,
+};

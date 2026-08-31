@@ -170,6 +170,8 @@ class User {
 
   BattleSimUserData battleSim;
 
+  FormationBondOption formationBondOption;
+
   String? lastImportId;
 
   User({
@@ -193,6 +195,7 @@ class User {
     Map<String, Map<int, int>>? luckyBagSvtScores,
     SaintQuartzPlan? saintQuartzPlan,
     BattleSimUserData? battleSim,
+    FormationBondOption? formationBondOption,
     this.lastImportId,
   }) : id = id ?? const Uuid().v4(),
        servants = servants ?? {},
@@ -209,7 +212,8 @@ class User {
        freeLPParams = freeLPParams ?? FreeLPParams(),
        luckyBagSvtScores = luckyBagSvtScores ?? {},
        saintQuartzPlan = saintQuartzPlan ?? SaintQuartzPlan(),
-       battleSim = battleSim ?? BattleSimUserData();
+       battleSim = battleSim ?? BattleSimUserData(),
+       formationBondOption = formationBondOption ?? FormationBondOption();
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 

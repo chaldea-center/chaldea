@@ -24,7 +24,6 @@ import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
-import '../bond/formation_bond.dart';
 import '../quest/breakdown/quest_phase.dart';
 import '../quest/quest.dart';
 import 'formation/default_lvs.dart';
@@ -151,11 +150,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
           ),
           TextButton(
             onPressed: () {
-              router.pushPage(
-                BondBonusHomePage(
-                  option: FormationBondOption(formation: options.formation.copy(), quest: questPhase),
-                ),
-              );
+              router.pushPage(BondBonusHomePage(option: _tempFormationBondOption()));
             },
             child: Text(S.current.bond),
           ),
@@ -1271,6 +1266,24 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     team.options = options.toShareData();
 
     return team;
+  }
+
+  /// Temporary bond option for the bond bonus page: initialized from persisted
+  /// settings but with the current battle formation/quest, never written back.
+  /// Mutable maps/lists are deep-copied so the temp page never mutates persisted state.
+  FormationBondOption _tempFormationBondOption() {
+    final saved = db.userData.curUser.formationBondOption;
+    return FormationBondOption(
+      teamFormation: options.formation.copy().toFormationData(),
+      quest: questPhase == null ? null : BattleQuestInfo.quest(questPhase!),
+      enableEvent: saved.enableEvent,
+      campaigns: {for (final (eventId, eventCampaigns) in saved.campaigns.items) eventId: Map.of(eventCampaigns)},
+      // fixedDate: saved.fixedDate,
+      // svt bonus is based on pos, since formation is overridden, svtBonus has no value to copy
+      // svtBonus: [for (final bonus in saved.svtBonus) FormationBondSvtBonus.fromJson(bonus.toJson())],
+      frontlineBonus: saved.frontlineBonus,
+      teapotTimes: saved.teapotTimes,
+    );
   }
 
   void onTapSharedTeams(QuestPhase quest) async {

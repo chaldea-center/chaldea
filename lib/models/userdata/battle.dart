@@ -1357,3 +1357,48 @@ class BattleAttackRecordData {
 
   Map<String, dynamic> toJson() => _$BattleAttackRecordDataToJson(this);
 }
+
+@JsonSerializable()
+class FormationBondOption {
+  BattleTeamFormation teamFormation;
+  // quest reference stored as id/phase; restore falls back to null if unresolvable
+  BattleQuestInfo? quest;
+  bool enableEvent;
+  // <eventId, <campaign idx, enabled>>
+  Map<int, Map<int, bool>> campaigns;
+  int? fixedDate;
+  List<FormationBondSvtBonus> svtBonus;
+  bool frontlineBonus;
+  int teapotTimes;
+
+  FormationBondOption({
+    BattleTeamFormation? teamFormation,
+    this.quest,
+    this.enableEvent = true,
+    Map<int, Map<int, bool>>? campaigns,
+    this.fixedDate,
+    List<FormationBondSvtBonus>? svtBonus,
+    this.frontlineBonus = true,
+    this.teapotTimes = 1,
+  }) : teamFormation = teamFormation ?? BattleTeamFormation(),
+       campaigns = campaigns ?? {},
+       svtBonus = svtBonus ?? List.generate(6, (_) => FormationBondSvtBonus());
+
+  factory FormationBondOption.fromJson(Map<String, dynamic> json) => _$FormationBondOptionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$FormationBondOptionToJson(this);
+}
+
+@JsonSerializable()
+class FormationBondSvtBonus {
+  int addValue;
+  int addRate;
+  bool isBond15;
+  bool isBondReachLimit;
+
+  FormationBondSvtBonus({this.addValue = 0, this.addRate = 0, this.isBond15 = false, this.isBondReachLimit = false});
+
+  factory FormationBondSvtBonus.fromJson(Map<String, dynamic> json) => _$FormationBondSvtBonusFromJson(json);
+
+  Map<String, dynamic> toJson() => _$FormationBondSvtBonusToJson(this);
+}

@@ -18,15 +18,6 @@ const int _kMaxSvtNum = 6;
 
 String _strRate(int value) => value.format(percent: true, base: 10);
 
-class SvtExtraBondBonus {
-  int addValue;
-  int addRate;
-  bool isBond15;
-  bool isBondReachLimit;
-
-  SvtExtraBondBonus({this.addValue = 0, this.addRate = 0, this.isBond15 = false, this.isBondReachLimit = false});
-}
-
 class SvtBondBonusResult {
   int baseValue = 0;
 
@@ -58,32 +49,9 @@ class SvtBondBonusResult {
   }
 }
 
-class FormationBondOption {
-  BattleTeamSetup formation;
-  QuestPhase? quest;
-  bool enableEvent;
-  Map<Event, Map<EventCampaign, bool>> campaigns;
-  int? fixedDate;
-  List<SvtExtraBondBonus> svtBonus;
-  // progress
-  bool frontlineBonus;
-  int teapotTimes;
-
-  FormationBondOption({
-    BattleTeamSetup? formation,
-    this.quest,
-    this.enableEvent = true,
-    Map<Event, Map<EventCampaign, bool>>? campaigns,
-    this.fixedDate,
-    List<SvtExtraBondBonus>? svtBonus,
-    this.frontlineBonus = true,
-    this.teapotTimes = 1,
-  }) : formation = formation ?? BattleTeamSetup(),
-       campaigns = campaigns ?? {},
-       svtBonus = svtBonus ?? List.generate(_kMaxSvtNum, (_) => SvtExtraBondBonus());
-}
-
 class FormationBondTab extends StatefulWidget {
+  /// null: persistent instance backed by `db.userData.formationBondOption`, saved on dispose;
+  /// non-null: temporary instance (e.g. opened from battle simulation), never written back.
   final FormationBondOption? option;
   const FormationBondTab({super.key, this.option});
 
@@ -92,11 +60,63 @@ class FormationBondTab extends StatefulWidget {
 }
 
 class _FormationBondTabState extends State<FormationBondTab> {
-  late final option = widget.option ?? FormationBondOption(quest: db.gameData.getQuestPhase(94137202));
+  late final FormationBondOption option;
+  // runtime formation, converted from/to [FormationBondOption.teamFormation] on load/save
+  final BattleTeamSetup formation = BattleTeamSetup();
+  QuestPhase? questEntity;
+
+  @override
+  void initState() {
+    super.initState();
+    option = widget.option ?? db.userData.curUser.formationBondOption;
+    restore();
+  }
+
+  /// Restore the two non-JSON runtime values (team setup, quest entity) from persisted option.
+  /// Quest resolution falls back to network; on failure the quest is cleared but other settings kept.
+  /// All other fields are referenced directly on [option], no conversion needed.
+  Future<void> restore() async {
+    final questInfo = option.quest;
+    if (questInfo != null) {
+      questEntity =
+          db.gameData.getQuestPhase(questInfo.id, questInfo.phase) ??
+          await AtlasApi.questPhase(questInfo.id, questInfo.phase);
+      if (questEntity == null) option.quest = null;
+    }
+
+    final saved = option.teamFormation;
+    final svts = <PlayerSvtData>[];
+    for (int index = 0; index < max(6, saved.svts.length); index++) {
+      svts.add(await PlayerSvtData.fromStoredData(saved.svts.getOrNull(index)));
+    }
+    formation.svts
+      ..clear()
+      ..addAll(svts);
+    formation.mysticCodeData.loadStoredData(saved.mysticCode);
+    if (mounted) setState(() {});
+  }
+
+  @override
+  void dispose() {
+    if (widget.option == null) saveData();
+    super.dispose();
+  }
+
+  /// Persist runtime formation/quest back into [option]. Only called for the persistent instance.
+  void saveData() {
+    option.teamFormation = formation.toFormationData();
+    option.quest = questEntity == null ? null : BattleQuestInfo.quest(questEntity!);
+  }
 
   void validate() {
     option.teapotTimes = option.teapotTimes.clamp(1, 3);
-    final quest = option.quest;
+    if (option.svtBonus.length < _kMaxSvtNum) {
+      option.svtBonus = List.generate(
+        _kMaxSvtNum,
+        (index) => option.svtBonus.getOrNull(index) ?? FormationBondSvtBonus(),
+      );
+    }
+    final quest = questEntity;
     if (quest == null) return;
     final startedAt = quest.openedAt, endedAt = quest.closedAt;
 
@@ -127,12 +147,15 @@ class _FormationBondTabState extends State<FormationBondTab> {
         }
 
         if (campaign.target == CombineAdjustTarget.questFriendship && event.isCampaignQuest(quest.id)) {
-          (option.campaigns[event] ??= {})[campaign] ??=
-              prevData[event]?[campaign] ?? (quest.closedAt < kNeverClosedTimestamp);
+          (option.campaigns[event.id] ??= {})[campaign.idx] ??=
+              prevData[event.id]?[campaign.idx] ?? (quest.closedAt < kNeverClosedTimestamp);
         }
       }
     }
-    option.campaigns = sortDict(option.campaigns, compare: (a, b) => b.key.startedAt - a.key.startedAt);
+    option.campaigns = sortDict(
+      option.campaigns,
+      compare: (a, b) => (db.gameData.events[b.key]?.startedAt ?? 0) - (db.gameData.events[a.key]?.startedAt ?? 0),
+    );
   }
 
   ///  ======= svals =====
@@ -148,12 +171,12 @@ class _FormationBondTabState extends State<FormationBondTab> {
   ///           RateCount: 30, 150
 
   List<SvtBondBonusResult> calcResults() {
-    final quest = option.quest;
+    final quest = questEntity;
     final results = List.generate(option.svtBonus.length, (_) => SvtBondBonusResult()..baseValue = quest?.bond ?? 0);
 
     final eventId = quest?.logicEventId ?? 0;
 
-    for (final (deckPos, deckSvt) in option.formation.svts.take(_kMaxSvtNum).indexed) {
+    for (final (deckPos, deckSvt) in formation.svts.take(_kMaxSvtNum).indexed) {
       final svt = deckSvt.svt;
       if (svt == null) continue;
       final selfResult = results[deckPos];
@@ -197,7 +220,7 @@ class _FormationBondTabState extends State<FormationBondTab> {
             final funcOverwriteTvalsList = func.getOverwriteTvalsList();
             if (funcOverwriteTvalsList.isEmpty && func.functvals.isEmpty) return true;
             final int targetIndex = results.indexOf(target);
-            final targetDeckSvt = option.formation.svts.getOrNull(targetIndex);
+            final targetDeckSvt = formation.svts.getOrNull(targetIndex);
             final targetIndivs = targetDeckSvt?.svt?.getIndividuality(eventId, targetDeckSvt.limitCount) ?? [];
             if (funcOverwriteTvalsList.isNotEmpty) {
               if (funcOverwriteTvalsList.every((andVals) {
@@ -248,9 +271,13 @@ class _FormationBondTabState extends State<FormationBondTab> {
         }
       }
       // check campaign bonus
-      for (final campaigns in option.campaigns.values) {
-        for (final (campaign, enabled) in campaigns.items) {
-          if (enabled && campaign.targetIds.contains(svt.id)) {
+      for (final (eventId, eventCampaigns) in option.campaigns.items) {
+        final event = db.gameData.events[eventId];
+        if (event == null) continue;
+        for (final (idx, enabled) in eventCampaigns.items) {
+          final campaign = event.campaigns.firstWhereOrNull((e) => e.idx == idx);
+          if (campaign == null || !enabled) continue;
+          if (campaign.targetIds.contains(svt.id)) {
             switch (campaign.calcType) {
               case EventCombineCalc.addition:
                 selfResult.eventAddRate += max(0, campaign.value);
@@ -315,7 +342,7 @@ class _FormationBondTabState extends State<FormationBondTab> {
     }
 
     for (final index in range(results.length)) {
-      final deckSvt = option.formation.svts.getOrNull(index);
+      final deckSvt = formation.svts.getOrNull(index);
       if (deckSvt == null ||
           deckSvt.svt == null ||
           deckSvt.supportType.isSupport ||
@@ -330,7 +357,7 @@ class _FormationBondTabState extends State<FormationBondTab> {
 
   @override
   Widget build(BuildContext context) {
-    final quest = option.quest;
+    final quest = questEntity;
     final eventId = quest?.logicEventId;
     final eventSkillIds = {
       if (eventId != null)
@@ -342,11 +369,22 @@ class _FormationBondTabState extends State<FormationBondTab> {
     }.toList()..sort();
     validate();
     final results = calcResults();
+    // resolve id/idx-keyed campaigns into runtime Event/EventCampaign instances
+    final eventCampaignToggles = <(Event, EventCampaign, bool)>[];
+    for (final (eventId, eventCampaigns) in option.campaigns.items) {
+      final event = db.gameData.events[eventId];
+      if (event == null) continue;
+      for (final (idx, enabled) in eventCampaigns.items) {
+        final campaign = event.campaigns.firstWhereOrNull((e) => e.idx == idx);
+        if (campaign == null) continue;
+        eventCampaignToggles.add((event, campaign, enabled));
+      }
+    }
     return ListView(
       children: [
         TeamSetupCard(
-          formation: option.formation,
-          quest: option.quest,
+          formation: formation,
+          quest: quest,
           playerRegion: Region.jp,
           onChanged: () {
             if (mounted) setState(() {});
@@ -377,7 +415,7 @@ class _FormationBondTabState extends State<FormationBondTab> {
                 ),
                 const TextSpan(text: '  COST '),
                 TextSpan(
-                  text: option.formation.totalCost.toString(),
+                  text: formation.totalCost.toString(),
                   style: TextStyle(color: Theme.of(context).colorScheme.secondary),
                 ),
               ],
@@ -401,36 +439,43 @@ class _FormationBondTabState extends State<FormationBondTab> {
                 title: 'Quest ID',
                 initValue: quest?.id,
                 validate: (v) => db.gameData.quests.containsKey(v),
-                onSubmit: (v) {
+                onSubmit: (v) async {
                   final _quest = db.gameData.quests[v];
                   if (_quest == null || !mounted) return;
-                  router.showDialog(
-                    builder: (context) => SimpleDialog(
-                      title: Text("Quest Phase"),
-                      children: [
-                        for (final phase in _quest.phases)
-                          ListTile(
-                            enabled: !_quest.phasesNoBattle.contains(phase),
-                            contentPadding: EdgeInsets.symmetric(horizontal: 24),
-                            onTap: () async {
-                              Navigator.pop(context);
-                              final questPhase = await showEasyLoading(() => AtlasApi.questPhase(_quest.id, phase));
-                              if (questPhase == null) {
-                                EasyLoading.showError(S.current.not_found);
-                                return;
-                              }
-                              option.quest = questPhase;
-                              if (mounted) setState(() {});
-                            },
-                            title: Text('phase $phase'),
-                          ),
-                      ],
-                    ),
-                  );
+                  int? phase;
+                  if (_quest.phases.length == 1) {
+                    phase = _quest.phases.single;
+                  } else {
+                    phase = await router.showDialog(
+                      builder: (context) => SimpleDialog(
+                        title: Text("Quest Phase"),
+                        children: [
+                          for (final phase in _quest.phases)
+                            ListTile(
+                              enabled: !_quest.phasesNoBattle.contains(phase),
+                              contentPadding: EdgeInsets.symmetric(horizontal: 24),
+                              onTap: () async {
+                                Navigator.pop(context, phase);
+                              },
+                              title: Text('phase $phase'),
+                            ),
+                        ],
+                      ),
+                    );
+                  }
+                  if (phase == null || !_quest.phases.contains(phase)) return;
+
+                  final questPhase = await showEasyLoading(() => AtlasApi.questPhase(_quest.id, phase!));
+                  if (questPhase == null) {
+                    EasyLoading.showError(S.current.not_found);
+                    return;
+                  }
+                  questEntity = questPhase;
+                  if (mounted) setState(() {});
                 },
               ).showDialog(context);
             },
-            child: Text(option.quest == null ? '0' : '${option.quest?.id}/${option.quest?.phase}'),
+            child: Text(quest == null ? '0' : '${quest.id}/${quest.phase}'),
           ),
         ),
         DividerWithTitle(title: S.current.event, indent: 16),
@@ -500,37 +545,36 @@ class _FormationBondTabState extends State<FormationBondTab> {
             });
           },
         ),
-        if (option.campaigns.isNotEmpty) DividerWithTitle(title: S.current.event_campaign, indent: 16),
-        for (final (event, campaigns) in option.campaigns.items)
-          for (final campaign in campaigns.keys)
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: SwitchListTile.adaptive(
-                    dense: true,
-                    title: Text(event.lShortName.l),
-                    subtitle: Text(
-                      '${S.current.bond} ${campaign.calcType.operatorText}${campaign.value.format(percent: true, base: 10)}'
-                      '\n${strTime(event.startedAt)}~${strTime(event.endedAt)}',
-                    ),
-                    value: campaigns[campaign] ?? true,
-                    onChanged: (v) {
-                      setState(() {
-                        campaigns[campaign] = v;
-                      });
-                    },
+        if (eventCampaignToggles.isNotEmpty) DividerWithTitle(title: S.current.event_campaign, indent: 16),
+        for (final (event, campaign, enabled) in eventCampaignToggles)
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Expanded(
+                child: SwitchListTile.adaptive(
+                  dense: true,
+                  title: Text(event.lShortName.l),
+                  subtitle: Text(
+                    '${S.current.bond} ${campaign.calcType.operatorText}${campaign.value.format(percent: true, base: 10)}'
+                    '\n${strTime(event.startedAt)}~${strTime(event.endedAt)}',
                   ),
+                  value: enabled,
+                  onChanged: (v) {
+                    setState(() {
+                      (option.campaigns[event.id] ??= {})[campaign.idx] = v;
+                    });
+                  },
                 ),
-                IconButton(onPressed: event.routeTo, icon: Icon(DirectionalIcons.keyboard_arrow_forward(context))),
-              ],
-            ),
+              ),
+              IconButton(onPressed: event.routeTo, icon: Icon(DirectionalIcons.keyboard_arrow_forward(context))),
+            ],
+          ),
       ],
     );
   }
 
   Widget buildExtraBonus(int index) {
-    final deckSvt = option.formation.svts.getOrNull(index);
+    final deckSvt = formation.svts.getOrNull(index);
     if (deckSvt == null || deckSvt.svt == null || deckSvt.supportType.isSupport) return const SizedBox.shrink();
     final detail = option.svtBonus[index];
 
@@ -558,6 +602,7 @@ class _FormationBondTabState extends State<FormationBondTab> {
         _textButton('+${detail.addValue}', () {
           InputCancelOkDialog.number(
             title: 'Bond Add Value',
+            autofocus: true,
             initValue: detail.addValue,
             validate: (v) => v >= 0,
             onSubmit: (value) {
@@ -569,6 +614,7 @@ class _FormationBondTabState extends State<FormationBondTab> {
         _textButton('+${detail.addRate.format(percent: true, base: 10)}', () {
           InputCancelOkDialog(
             title: 'Bond Add Percent(%)',
+            autofocus: true,
             initValue: (detail.addValue / 10).format(),
             validate: (s) => (double.parse(s) * 10).toInt() >= 0,
             onSubmit: (s) {
@@ -600,7 +646,7 @@ class _FormationBondTabState extends State<FormationBondTab> {
   }
 
   Widget buildResult(int index, SvtBondBonusResult result) {
-    final deckSvt = option.formation.svts.getOrNull(index);
+    final deckSvt = formation.svts.getOrNull(index);
     if (deckSvt == null || deckSvt.svt == null) return const SizedBox.shrink();
     final detail = option.svtBonus[index];
     if (deckSvt.supportType.isSupport) {

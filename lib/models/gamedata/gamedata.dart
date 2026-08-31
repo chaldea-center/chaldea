@@ -885,4 +885,52 @@ class GameTimerData {
        constants = constants ?? ConstData.constants;
 
   factory GameTimerData.fromJson(Map<String, dynamic> json) => _$GameTimerDataFromJson(json);
+
+  /// Runtime index of battleMissionValue mission conditions, keyed by
+  /// `detail.targetIds.single`. Rebuilt whenever timerData is refreshed,
+  /// so no persistence is needed for candidates.
+  late final Map<int, List<BattleMissionValueEntry>> battleMissionValues = _buildBattleMissionValues();
+
+  Map<int, List<BattleMissionValueEntry>> _buildBattleMissionValues() {
+    final Map<int, List<BattleMissionValueEntry>> result = {};
+    for (final mm in masterMissions.values) {
+      for (final mission in mm.missions) {
+        for (final cond in mission.conds) {
+          for (final detail in cond.details) {
+            if (detail.missionCondType != EventMissionCondDetailType.battleMissionValue.value) continue;
+            // key must be a single targetId, skip malformed details
+            if (detail.targetIds.length != 1) continue;
+            result
+                .putIfAbsent(detail.targetIds.first, () => [])
+                .add(
+                  BattleMissionValueEntry(
+                    masterMission: mm,
+                    mission: mission,
+                    targetNum: cond.targetNum,
+                    targetQuestIndividualities: detail.targetQuestIndividualities,
+                  ),
+                );
+          }
+        }
+      }
+    }
+    return result;
+  }
+}
+
+/// One candidate value of a battleMissionValue key, extracted from a
+/// master mission condition. Not persisted; derived from [GameTimerData].
+/// Holds the mission entities directly instead of copying their fields.
+class BattleMissionValueEntry {
+  final MasterMission masterMission;
+  final EventMission mission;
+  final int targetNum;
+  final List<int> targetQuestIndividualities;
+
+  const BattleMissionValueEntry({
+    required this.masterMission,
+    required this.mission,
+    required this.targetNum,
+    required this.targetQuestIndividualities,
+  });
 }
