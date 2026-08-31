@@ -2921,14 +2921,20 @@ class DeckServantEntity {
   factory DeckServantEntity.fromJson(Map<String, dynamic> data) => _$DeckServantEntityFromJson(data);
   Map<String, dynamic> toJson() => _$DeckServantEntityToJson(this);
 
-  factory DeckServantEntity.empty({required int userEquipId, required bool eventDeckNoSupport}) {
+  factory DeckServantEntity.empty({
+    required int userEquipId,
+    required bool eventDeckNoSupport,
+    required bool supportSvtMultipleSet,
+  }) {
+    final int? supportPos = eventDeckNoSupport ? null : (supportSvtMultipleSet ? 6 : 3);
     return DeckServantEntity(
-      svts: List.generate(
-        6,
-        (index) => index == 2 && !eventDeckNoSupport
-            ? DeckServantData.support(pos: index + 1)
-            : DeckServantData.user(pos: index + 1),
-      ),
+      svts: List.generate(6, (index) {
+        final pos = index + 1;
+        if (pos == supportPos) {
+          return DeckServantData.support(pos: pos);
+        }
+        return DeckServantData.user(pos: pos);
+      }),
       userEquipId: userEquipId,
       waveSvts: [],
     );

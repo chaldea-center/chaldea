@@ -105,15 +105,9 @@ class _FgoAnnualReportPageState extends State<FgoAnnualReportPage> {
 
   @override
   Widget build(BuildContext context) {
-    ThemeData themeData = ThemeData(
-      brightness: Brightness.dark,
-      useMaterial3: db.settings.appearance.useMaterial3,
-      colorSchemeSeed: db.settings.appearance.colorSeed,
-      tooltipTheme: const TooltipThemeData(waitDuration: Duration(milliseconds: 500)),
-    );
+    ThemeData themeData = AppTheme.dark();
     themeData = themeData.copyWith(
-      appBarTheme: themeData.appBarTheme.copyWith(titleSpacing: 0, toolbarHeight: 48),
-      listTileTheme: themeData.listTileTheme.copyWith(minLeadingWidth: 24),
+      tooltipTheme: themeData.tooltipTheme.copyWith(waitDuration: const Duration(milliseconds: 500)),
     );
     return Theme(
       data: themeData,
@@ -140,14 +134,15 @@ class _FgoAnnualReportPageState extends State<FgoAnnualReportPage> {
                 db.gameData.spoilerRegion?.isJP == false) {
               errors.add(
                 Text(
-                  "${S.current.restart_to_apply_changes}: ${S.current.reset} ${S.current.gamedata} -> ${S.current.delete_unreleased_card}",
+                  "${S.current.restart_to_apply_changes}: ${S.current.reset} "
+                  "${S.current.gamedata} -> ${S.current.delete_unreleased_card}=>${Region.jp.localName}",
                 ),
               );
             }
             if (db.settings.filters.removeOldDataRegion != null || db.gameData.removeOldDataRegion != null) {
               errors.add(
                 Text(
-                  '${S.current.restart_to_apply_changes}: ${S.current.reset} ${S.current.gamedata}-> Delete Old Data',
+                  '${S.current.restart_to_apply_changes}: ${S.current.reset} ${S.current.gamedata}-> Delete Old Data => NO',
                 ),
               );
             }

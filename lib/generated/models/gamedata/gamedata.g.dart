@@ -75,7 +75,7 @@ GameData _$GameDataFromJson(Map json) => GameData(
     (k, e) => MapEntry(int.parse(k as String), MasterMission.fromJson(Map<String, dynamic>.from(e as Map))),
   ),
   questGroups: (json['questGroups'] as List<dynamic>?)
-      ?.map((e) => QuestGroup.fromJson(Map<String, dynamic>.from(e as Map)))
+      ?.map((e) => MstQuestGroup.fromJson(Map<String, dynamic>.from(e as Map)))
       .toList(),
   questPhaseDetails: (json['questPhaseDetails'] as List<dynamic>?)
       ?.map((e) => BasicQuestPhaseDetail.fromJson(Map<String, dynamic>.from(e as Map)))
@@ -221,6 +221,9 @@ GameTimerData _$GameTimerDataFromJson(Map json) => GameTimerData(
   timestamp: (json['timestamp'] as num?)?.toInt(),
   events:
       (json['events'] as List<dynamic>?)?.map((e) => Event.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
+      const [],
+  wars:
+      (json['wars'] as List<dynamic>?)?.map((e) => NiceWar.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??
       const [],
   quests:
       (json['quests'] as List<dynamic>?)?.map((e) => Quest.fromJson(Map<String, dynamic>.from(e as Map))).toList() ??

@@ -62,7 +62,7 @@ part '../../generated/models/gamedata/gamedata.g.dart';
 
 @JsonSerializable(converters: [RegionConverter()], createToJson: false)
 class GameData with _GameDataExtra {
-  static final kMinCompatibleVer = DateTime.utc(2026, 5, 2);
+  static final kMinCompatibleVer = DateTime.utc(2026, 8, 20);
   DataVersion version;
   @protected
   Map<int, Servant> servants;
@@ -82,7 +82,7 @@ class GameData with _GameDataExtra {
   Map<int, EnemyMaster> enemyMasters;
   Map<int, MstMasterMission> masterMissions;
   Map<int, MasterMission> extraMasterMission;
-  List<QuestGroup> questGroups;
+  List<MstQuestGroup> questGroups;
   Map<int, BasicQuestPhaseDetail> questPhaseDetails;
   Map<int, NiceGacha> gachas;
   WikiData wiki;
@@ -132,7 +132,7 @@ class GameData with _GameDataExtra {
     Map<int, EnemyMaster>? enemyMasters,
     Map<int, MstMasterMission>? masterMissions,
     Map<int, MasterMission>? extraMasterMission,
-    List<QuestGroup>? questGroups,
+    List<MstQuestGroup>? questGroups,
     List<BasicQuestPhaseDetail>? questPhaseDetails,
     Map<int, NiceGacha>? gachas,
     WikiData? wiki,
@@ -715,11 +715,10 @@ class _ProcessedData {
         for (final group in event.pointGroups) group.groupId: group,
     };
     for (final quest in gameData.questGroups) {
-      final type = quest.type2;
-      questGroups.putIfAbsent(type, () => {}).putIfAbsent(quest.groupId, () => []).add(quest.questId);
-      if (type == QuestGroupType.eventQuest) {
+      questGroups.putIfAbsent(quest.type, () => {}).putIfAbsent(quest.groupId, () => []).add(quest.questId);
+      if (quest.type == QuestGroupType.eventQuest) {
         eventQuestGroups.putIfAbsent(quest.groupId, () => []).add(quest.questId);
-      } else if (type == QuestGroupType.eventTower) {
+      } else if (quest.type == QuestGroupType.eventTower) {
         eventTowerQuestGroups.putIfAbsent(quest.groupId, () => []).add(quest.questId);
       }
     }
@@ -837,16 +836,17 @@ class _ProcessedData {
 
 @JsonSerializable(createToJson: false)
 class GameTimerData {
-  int updatedAt;
-  String? hash;
-  int timestamp;
-  Map<int, Event> events;
-  Map<int, Quest> quests;
-  Map<int, NiceGacha> gachas;
-  Map<int, MasterMission> masterMissions;
-  Map<int, NiceShop> shops;
-  Map<int, Item> items;
-  GameConstants constants;
+  final int updatedAt;
+  final String? hash;
+  final int timestamp;
+  final Map<int, Event> events;
+  final Map<int, NiceWar> wars;
+  final Map<int, Quest> quests;
+  final Map<int, NiceGacha> gachas;
+  final Map<int, MasterMission> masterMissions;
+  final Map<int, NiceShop> shops;
+  final Map<int, Item> items;
+  final GameConstants constants;
 
   late final Map<int, EventMission> eventMissions = {
     for (final mm in masterMissions.values)
@@ -854,12 +854,20 @@ class GameTimerData {
     for (final event in events.values)
       for (final m in event.missions) m.id: m,
   };
+  late final Map<int, Quest> allQuests = {
+    for (final war in wars.values)
+      for (final quest in war.quests) quest.id: quest,
+    for (final war in wars.values)
+      for (final selection in war.questSelections) selection.quest.id: selection.quest,
+    ...quests,
+  };
 
   GameTimerData({
     this.updatedAt = 0,
     this.hash,
     int? timestamp,
     List<Event> events = const [],
+    List<NiceWar> wars = const [],
     List<Quest> quests = const [],
     List<NiceGacha> gachas = const [],
     List<MasterMission> masterMissions = const [],
@@ -868,6 +876,7 @@ class GameTimerData {
     GameConstants? constants,
   }) : timestamp = timestamp ?? updatedAt,
        events = {for (final e in events) e.id: e},
+       wars = {for (final e in wars) e.id: e},
        quests = {for (final e in quests) e.id: e},
        gachas = {for (final e in gachas) e.id: e},
        masterMissions = {for (final e in masterMissions) e.id: e},

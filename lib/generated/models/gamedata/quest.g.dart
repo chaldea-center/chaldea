@@ -93,6 +93,11 @@ Quest _$QuestFromJson(Map json) => Quest(
   chapterSubStr: json['chapterSubStr'] as String? ?? "",
   giftIcon: json['giftIcon'] as String?,
   gifts: json['gifts'] == null ? const [] : const GiftsConverter().fromJson(json['gifts'] as List),
+  groups:
+      (json['groups'] as List<dynamic>?)
+          ?.map((e) => QuestGroup.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList() ??
+      const [],
   presents:
       (json['presents'] as List<dynamic>?)
           ?.map((e) => QuestPhasePresent.fromJson(Map<String, dynamic>.from(e as Map)))
@@ -139,6 +144,7 @@ Map<String, dynamic> _$QuestToJson(Quest instance) => <String, dynamic>{
   'chapterSubStr': instance.chapterSubStr,
   'giftIcon': instance.giftIcon,
   'gifts': const GiftsConverter().toJson(instance.gifts),
+  'groups': instance.groups.map((e) => e.toJson()).toList(),
   'presents': instance.presents.map((e) => e.toJson()).toList(),
   'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
   'releaseOverwrites': instance.releaseOverwrites.map((e) => e.toJson()).toList(),
@@ -178,6 +184,11 @@ QuestPhase _$QuestPhaseFromJson(Map json) => QuestPhase(
   chapterSubId: (json['chapterSubId'] as num?)?.toInt() ?? 0,
   chapterSubStr: json['chapterSubStr'] as String? ?? "",
   gifts: json['gifts'] == null ? const [] : const GiftsConverter().fromJson(json['gifts'] as List),
+  groups:
+      (json['groups'] as List<dynamic>?)
+          ?.map((e) => QuestGroup.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList() ??
+      const [],
   presents:
       (json['presents'] as List<dynamic>?)
           ?.map((e) => QuestPhasePresent.fromJson(Map<String, dynamic>.from(e as Map)))
@@ -272,6 +283,7 @@ Map<String, dynamic> _$QuestPhaseToJson(QuestPhase instance) => <String, dynamic
   'chapterSubStr': instance.chapterSubStr,
   'giftIcon': instance.giftIcon,
   'gifts': const GiftsConverter().toJson(instance.gifts),
+  'groups': instance.groups.map((e) => e.toJson()).toList(),
   'presents': instance.presents.map((e) => e.toJson()).toList(),
   'releaseConditions': instance.releaseConditions.map((e) => e.toJson()).toList(),
   'releaseOverwrites': instance.releaseOverwrites.map((e) => e.toJson()).toList(),
@@ -1222,14 +1234,46 @@ const _$FrequencyTypeEnumMap = {
 };
 
 QuestGroup _$QuestGroupFromJson(Map json) => QuestGroup(
-  questId: (json['questId'] as num).toInt(),
-  type: (json['type'] as num).toInt(),
-  groupId: (json['groupId'] as num).toInt(),
+  type: $enumDecodeNullable(_$QuestGroupTypeEnumMap, json['type']) ?? .eventQuest,
+  groupId: (json['groupId'] as num?)?.toInt() ?? 0,
 );
 
 Map<String, dynamic> _$QuestGroupToJson(QuestGroup instance) => <String, dynamic>{
+  'type': _$QuestGroupTypeEnumMap[instance.type]!,
+  'groupId': instance.groupId,
+};
+
+const _$QuestGroupTypeEnumMap = {
+  QuestGroupType.none: 'none',
+  QuestGroupType.eventQuest: 'eventQuest',
+  QuestGroupType.questRelease: 'questRelease',
+  QuestGroupType.eventPointQuest: 'eventPointQuest',
+  QuestGroupType.eventPointGroupQuest: 'eventPointGroupQuest',
+  QuestGroupType.eventRaceQuest: 'eventRaceQuest',
+  QuestGroupType.eventRaceGroupQuest: 'eventRaceGroupQuest',
+  QuestGroupType.missionGroupQuest: 'missionGroupQuest',
+  QuestGroupType.eventTower: 'eventTower',
+  QuestGroupType.eventTowerFloor: 'eventTowerFloor',
+  QuestGroupType.highlightQuest: 'highlightQuest',
+  QuestGroupType.eventDailyPoint: 'eventDailyPoint',
+  QuestGroupType.eventActivityPointGauge: 'eventActivityPointGauge',
+  QuestGroupType.interlude: 'interlude',
+  QuestGroupType.eventBattleLine: 'eventBattleLine',
+  QuestGroupType.battleGroup: 'battleGroup',
+  QuestGroupType.shareQuestInfo: 'shareQuestInfo',
+  QuestGroupType.alloutBattleQuest: 'alloutBattleQuest',
+  QuestGroupType.eventFortification: 'eventFortification',
+};
+
+MstQuestGroup _$MstQuestGroupFromJson(Map json) => MstQuestGroup(
+  questId: (json['questId'] as num).toInt(),
+  type: json['type'] == null ? .eventQuest : QuestGroupType.fromValue(json['type']),
+  groupId: (json['groupId'] as num).toInt(),
+);
+
+Map<String, dynamic> _$MstQuestGroupToJson(MstQuestGroup instance) => <String, dynamic>{
   'questId': instance.questId,
-  'type': instance.type,
+  'type': _$QuestGroupTypeEnumMap[instance.type]!,
   'groupId': instance.groupId,
 };
 

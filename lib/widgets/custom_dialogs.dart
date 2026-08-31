@@ -234,6 +234,12 @@ class SimpleConfirmDialog extends StatelessWidget {
     this.insetPadding = const EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0),
   });
 
+  Future<bool?> showDialog(BuildContext? context, {bool barrierDismissible = true, bool useRootNavigator = false}) {
+    return DialogShowMethod(
+      this,
+    ).showDialog(context, barrierDismissible: barrierDismissible, useRootNavigator: useRootNavigator);
+  }
+
   @override
   Widget build(BuildContext context) {
     List<Widget> children = <Widget>[
@@ -274,6 +280,68 @@ class SimpleConfirmDialog extends StatelessWidget {
       scrollable: scrollable,
       actions: children,
       insetPadding: insetPadding,
+    );
+  }
+}
+
+class ConfirmSliderDialog extends StatefulWidget {
+  final Widget title;
+  final Widget content;
+  final VoidCallback? onConfirm;
+  const ConfirmSliderDialog({super.key, required this.title, required this.content, this.onConfirm});
+
+  @override
+  State<ConfirmSliderDialog> createState() => _ConfirmSliderDialogState();
+
+  Future<bool?> showDialog(BuildContext? context, {bool barrierDismissible = true, bool useRootNavigator = false}) {
+    return DialogShowMethod(
+      this,
+    ).showDialog(context, barrierDismissible: barrierDismissible, useRootNavigator: useRootNavigator);
+  }
+}
+
+class _ConfirmSliderDialogState extends State<ConfirmSliderDialog> {
+  double _value = 0;
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: widget.title,
+      scrollable: true,
+      content: Column(
+        mainAxisSize: .min,
+        crossAxisAlignment: .start,
+        spacing: 8,
+        children: [
+          widget.content,
+          Slider(
+            value: _value.toDouble(),
+            min: 0,
+            max: 1,
+            onChanged: (v) {
+              setState(() {
+                _value = v.clamp(0.0, 1.0);
+              });
+            },
+            onChangeEnd: (v) {
+              setState(() {
+                _value = v > 0.9 ? 1 : 0;
+              });
+            },
+          ),
+        ],
+      ),
+      actions: [
+        TextButton(onPressed: () => Navigator.pop(context, false), child: Text(S.current.cancel)),
+        TextButton(
+          onPressed: _value.round() == 1
+              ? () {
+                  Navigator.pop(context, true);
+                  widget.onConfirm?.call();
+                }
+              : null,
+          child: Text(S.current.confirm),
+        ),
+      ],
     );
   }
 }

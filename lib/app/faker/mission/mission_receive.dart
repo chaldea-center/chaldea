@@ -265,6 +265,15 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(mission.name, style: Theme.of(context).textTheme.bodySmall),
+                  if (mission.startedAt != _mm?.startedAt || mission.endedAt != _mm?.endedAt) ...[
+                    const Divider(),
+                    Text(
+                      [
+                        mission.startedAt,
+                        mission.endedAt,
+                      ].map((e) => e.sec2date().toStringShort(omitSec: true)).join(' ~ '),
+                    ),
+                  ],
                   const Divider(),
                   MissionCondsDescriptor(mission: mission, missions: missions),
                 ],
@@ -275,12 +284,21 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
       maxLines: 2,
       overflow: TextOverflow.ellipsis,
     );
-    Widget subtitle = Wrap(
-      spacing: 1,
-      runSpacing: 1,
-      crossAxisAlignment: WrapCrossAlignment.center,
-      children: [for (final gift in mission.gifts) gift.iconBuilder(context: context, width: 32)],
+
+    Widget subtitle = Column(
+      crossAxisAlignment: .start,
+      mainAxisSize: .min,
+      children: [
+        if (mission.endedAt != _mm?.endedAt) Text('~ ${mission.endedAt.sec2date().toStringShort()}'),
+        Wrap(
+          spacing: 1,
+          runSpacing: 1,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [for (final gift in mission.gifts) gift.iconBuilder(context: context, width: 32)],
+        ),
+      ],
     );
+
     // random mission not checked
     final progressType = getMissionProgress(mission.id);
 

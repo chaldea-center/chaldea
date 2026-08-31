@@ -117,8 +117,9 @@ class FakerRuntime {
 
   Widget buildMenuButton(BuildContext context) {
     return IconButton(
-      onPressed: () {
-        router.showDialog(builder: (context) => FakerMenuDialog(runtime: this));
+      onPressed: () async {
+        await router.showDialog(builder: (context) => FakerMenuDialog(runtime: this));
+        update();
       },
       icon: Icon(Icons.grid_view_rounded),
       tooltip: 'Menu',

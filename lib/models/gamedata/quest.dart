@@ -87,6 +87,7 @@ class Quest with RouteInfo {
   String? giftIcon;
   @GiftsConverter()
   List<Gift> gifts;
+  List<QuestGroup> groups;
   List<QuestPhasePresent> presents;
   List<QuestRelease> releaseConditions;
   List<QuestReleaseOverwrite> releaseOverwrites;
@@ -119,6 +120,7 @@ class Quest with RouteInfo {
     this.chapterSubStr = "",
     String? giftIcon,
     this.gifts = const [],
+    this.groups = const [],
     this.presents = const [],
     this.releaseConditions = const [],
     this.releaseOverwrites = const [],
@@ -455,6 +457,7 @@ class QuestPhase extends Quest {
     super.chapterSubId,
     super.chapterSubStr,
     super.gifts,
+    super.groups,
     super.presents,
     super.giftIcon,
     super.releaseConditions,
@@ -2002,17 +2005,29 @@ class QuestPhaseRestriction {
 
 @JsonSerializable()
 class QuestGroup {
-  final int questId;
-  final int type;
-  final int groupId;
+  // int questId;
+  QuestGroupType type;
+  int groupId;
 
-  QuestGroupType get type2 => kQuestGroupTypeMapping[type] ?? QuestGroupType.none;
-
-  QuestGroup({required this.questId, required this.type, required this.groupId});
+  QuestGroup({this.type = .eventQuest, this.groupId = 0});
 
   factory QuestGroup.fromJson(Map<String, dynamic> json) => _$QuestGroupFromJson(json);
 
   Map<String, dynamic> toJson() => _$QuestGroupToJson(this);
+}
+
+@JsonSerializable()
+class MstQuestGroup {
+  final int questId;
+  @JsonKey(fromJson: QuestGroupType.fromValue)
+  final QuestGroupType type;
+  final int groupId;
+
+  MstQuestGroup({required this.questId, this.type = .eventQuest, required this.groupId});
+
+  factory MstQuestGroup.fromJson(Map<String, dynamic> json) => _$MstQuestGroupFromJson(json);
+
+  Map<String, dynamic> toJson() => _$MstQuestGroupToJson(this);
 }
 
 @JsonSerializable()
@@ -2420,6 +2435,7 @@ enum NpcServantFollowerFlag {
 
 enum NpcFollowerEntityFlag { none, recommendedIcon, isMySvtOrNpc, fixedNpc }
 
+@JsonEnum(alwaysCreate: true)
 enum QuestGroupType {
   none(0),
   eventQuest(1), // groupId=eventId
@@ -2443,6 +2459,17 @@ enum QuestGroupType {
 
   const QuestGroupType(this.value);
   final int value;
+
+  static QuestGroupType fromValue(dynamic v) {
+    if (v is String) {
+      return decodeEnumNullable(_$QuestGroupTypeEnumMap, v) ?? .none;
+    } else if (v is int) {
+      return kQuestGroupTypeMapping[v] ?? .none;
+    } else {
+      assert(false, 'Unknown QuestGroupType ${v.runtimeType} $v');
+      return .none;
+    }
+  }
 }
 
 final kQuestGroupTypeMapping = {for (final v in QuestGroupType.values) v.value: v};

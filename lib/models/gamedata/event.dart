@@ -578,7 +578,7 @@ class EventDetail {
 class MstMasterMission with RouteInfo {
   int id;
   int startedAt;
-  int endedAt;
+  int endedAt; // EventMission may have different startedAt and endedAt
   int closedAt;
   // int priority;
   // int imageId;

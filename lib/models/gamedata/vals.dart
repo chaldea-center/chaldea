@@ -443,6 +443,7 @@ class DataVals {
   int? get UserEquipSkillMaxTargetNum => _get('UserEquipSkillMaxTargetNum');
   int? get ShowMasterPopupDuringNoblePhantasm => _get('ShowMasterPopupDuringNoblePhantasm');
   List<List<int>>? get TypeIndividualityEachFunc => _2dList('TypeIndividualityEachFunc');
+  int? get NotRemoveOnShift => _get('NotRemoveOnShift');
 
   //
   int? get Individuality => _get('Individuality');

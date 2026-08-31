@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:chaldea/app/app.dart';
@@ -269,24 +271,33 @@ class FakerReminders extends StatelessWidget {
     for (final mm in runtime.gameData.timerData.masterMissions.values) {
       if (const [MissionType.none, MissionType.daily].contains(mm.type)) continue;
       if (mm.missions.isEmpty) continue;
-      if (mm.closedAt < now || mm.startedAt > now || mm.endedAt - now > _kMissionWarningDay * kSecsPerDay) continue;
+      if (mm.closedAt < now || mm.startedAt > now || mm.id == MasterMission.kExtraMasterMissionId) continue;
+      // mm.endedAt - now > _kMissionWarningDay * kSecsPerDay
+      int closestEndedAt = mm.endedAt;
       Map<MissionProgressType, int> progresses = {};
       for (final mission in mm.missions) {
-        final int progress =
-            mstData.userEventMission[mission.id]?.missionProgressType ?? MissionProgressType.none.value;
-        progresses.addNum(MissionProgressType.fromValue(progress), 1);
+        final progress = runtime.condCheck.getEventMissionProgress(mission.id);
+        progresses.addNum(progress, 1);
+        if (progress != .achieve && isTimeOpen(mission.startedAt, mission.endedAt, now)) {
+          closestEndedAt = min(mission.endedAt, closestEndedAt);
+        }
       }
-      bool needWarning = progresses.keys.any((e) => e != MissionProgressType.achieve);
+      bool needWarning =
+          progresses.keys.any((e) => e != MissionProgressType.achieve) &&
+          closestEndedAt - now < _kMissionWarningDay * kSecsPerDay;
       if (needWarning) {
         String subtitle = [
-          mm.endedAt.sec2date().toCustomString(year: false, second: false),
+          closestEndedAt.sec2date().toCustomString(year: false, second: false),
           for (final type in progresses.keys.toList()..sort2((e) => e.value)) '${type.name} ${progresses[type]}',
         ].join(', ');
 
         yield ListTile(
           leading: const FaIcon(FontAwesomeIcons.listCheck, size: 18),
           title: Text('[${Transl.enums(mm.type, (e) => e.missionType).l}] ${mm.getDispName()}'),
-          subtitle: Text(subtitle),
+          subtitle: Text(
+            subtitle,
+            style: closestEndedAt - now < kSecsPerDay ? TextStyle(color: Theme.of(context).colorScheme.error) : null,
+          ),
           trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
           onTap: () {
             router.pushPage(UserEventMissionReceivePage(runtime: runtime, initId: mm.id));
@@ -321,39 +332,64 @@ class FakerReminders extends StatelessWidget {
   }
 
   Iterable<Widget> getQuests(BuildContext context, int now) sync* {
+    int? _getClosestClosedAt(Iterable<int> questIds, {required bool skipOutdated, int? eventEndedAt}) {
+      List<int> closedAtTimes = <int>[?eventEndedAt];
+      for (final questId in questIds) {
+        final quest = runtime.gameData.timerData.allQuests[questId];
+        if (quest == null) continue;
+        if (skipOutdated && quest.closedAt < now) continue;
+        closedAtTimes.add(quest.closedAt);
+      }
+      if (closedAtTimes.isEmpty) return null;
+      return Maths.min(closedAtTimes);
+    }
+
     Set<int> _shownQuestIds = {};
     Map<int, Servant> svtQuests = {
       for (final svt in db.gameData.servantsNoDup.values)
         for (final questId in svt.relateQuestIds) questId: svt,
     };
     const _kXInterlude = [91601804, 94054830, 94041930];
-    bool _isQuestNeedClear(int questId, {Quest? quest, bool checkSvt = true}) {
+    bool _isQuestNeedClear(int questId, {bool checkSvt = true}) {
       if (mstData.isQuestClear(questId)) return false;
       if (_kXInterlude.contains(questId) && _kXInterlude.any(mstData.isQuestClear)) {
         return false;
       }
 
-      quest ??= db.gameData.quests[questId];
-      if (quest != null) {
-        final war = quest.war;
-        if (quest.type == QuestType.main &&
+      final _quest = runtime.gameData.timerData.allQuests[questId];
+      final jpQuest = db.gameData.quests[questId];
+      final fbQuest = _quest ?? jpQuest;
+      final war = runtime.gameData.timerData.wars[fbQuest?.warId] ?? fbQuest?.war;
+
+      if (fbQuest != null) {
+        if (fbQuest.type == QuestType.main &&
             war != null &&
             war.lastQuestId != 0 &&
             mstData.isQuestClear(war.lastQuestId)) {
           return false;
         }
-        if (quest.flags.contains(QuestFlag.branch) || quest.flags.contains(QuestFlag.branchScenario)) {
+        if (fbQuest.flags.contains(QuestFlag.branch) || fbQuest.flags.contains(QuestFlag.branchScenario)) {
           return false;
         }
-        if (quest.flags.contains(QuestFlag.raid)) return false;
+        if (fbQuest.flags.contains(QuestFlag.raid)) return false;
       }
+
       final svt = svtQuests[questId];
       if (checkSvt && svt != null) {
         if (mstData.userSvtCollection[svt.id]?.isGet != true) return false;
         if (runtime.region != .jp) {
-          final releasedAt = db.gameData.mappingData.questRelease[questId]?.ofRegion(runtime.region);
+          final releasedAt =
+              _quest?.openedAt ?? db.gameData.mappingData.questRelease[questId]?.ofRegion(runtime.region);
           if (releasedAt != null && releasedAt > now) return false;
         }
+      }
+
+      if (_quest != null) {
+        if (questId == 94146202) {
+          print(_quest.closedAt - (now - kSecsPerDay));
+        }
+        // Quest already outdated for 1day+
+        if (_quest.closedAt < now - kSecsPerDay) return false;
       }
       return true;
     }
@@ -422,13 +458,16 @@ class FakerReminders extends StatelessWidget {
       }
       questIds.retainWhere(_isQuestNeedClear);
       if (questIds.isEmpty) continue;
+
       _shownQuestIds.addAll(questIds);
+      final nextClosedAt =
+          _getClosestClosedAt(questIds, skipOutdated: true, eventEndedAt: event.endedAt) ?? event.endedAt;
       yield ListTile(
         dense: true,
         leading: Icon(Icons.flag),
         title: Text(event.lShortName.l, overflow: TextOverflow.ellipsis),
         subtitle: Text(
-          '${questIds.length} uncleared quests, ${event.endedAt.sec2date().toCustomString(year: false, second: false)}',
+          '${questIds.length} uncleared quests, ${nextClosedAt.sec2date().toCustomString(year: false, second: false)}',
         ),
         trailing: IconButton(
           onPressed: () => event.routeTo(region: runtime.region),
@@ -475,12 +514,15 @@ class FakerReminders extends StatelessWidget {
         if (uncleared.isEmpty) continue;
         _shownQuestIds.addAll(uncleared);
 
+        final nextClosedAt =
+            _getClosestClosedAt(uncleared, skipOutdated: true, eventEndedAt: event.endedAt) ?? event.endedAt;
+
         yield ListTile(
           dense: true,
           leading: Icon(Icons.map),
           title: Text(event.lShortName.l, maxLines: 1, overflow: TextOverflow.ellipsis),
           subtitle: Text(
-            '${uncleared.length}/${questIds.length} uncleared, ${event.endedAt.sec2date().toCustomString(year: false, second: false)}',
+            '${uncleared.length}/${questIds.length} uncleared, ${nextClosedAt.sec2date().toCustomString(year: false, second: false)}',
           ),
           trailing: IconButton(
             onPressed: () => event.routeTo(region: runtime.region),
@@ -494,11 +536,10 @@ class FakerReminders extends StatelessWidget {
     }
 
     // no war event quests
-    final timerQuests = runtime.gameData.timerData.quests.values
+    final timerQuests = runtime.gameData.timerData.allQuests.values
         .where(
           (quest) =>
-              quest.openedAt <= now &&
-              quest.closedAt > now &&
+              isTimeOpen(quest.openedAt, quest.closedAt, now) &&
               quest.closedAt < now + 365 * kSecsPerDay &&
               !mstData.isQuestClear(quest.id) &&
               !const [WarId.interlude].contains(quest.warId),

@@ -8,7 +8,6 @@ import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/tools/icon_cache_manager.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/packages/platform/platform.dart';
-import 'package:chaldea/utils/extension.dart';
 import 'package:chaldea/utils/url.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import 'logger.dart';

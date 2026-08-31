@@ -46,7 +46,7 @@ class _ExRoomShopPageState extends State<ExRoomShopPage> with FakerRuntimeStateM
     return Scaffold(
       appBar: AppBar(
         title: Text(Transl.enums(ShopType.exRoomShop, (e) => e.shopType).l),
-        actions: [runtime.buildHistoryButton(context)],
+        actions: [runtime.buildMenuButton(context)],
       ),
       body: Column(
         children: [

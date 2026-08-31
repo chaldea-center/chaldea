@@ -160,6 +160,8 @@ class UserDeckListPageState extends State<UserDeckListPage> {
                               userEquipId: mstData.user?.userEquipId ?? mstData.userEquip.last.id,
                               eventDeckNoSupport:
                                   eventParam.questPhase?.flags.contains(QuestFlag.eventDeckNoSupport) == true,
+                              supportSvtMultipleSet:
+                                  eventParam.questPhase?.flags.contains(QuestFlag.supportSvtMultipleSet) == true,
                             ),
                           ),
                         ),

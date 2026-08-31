@@ -803,28 +803,28 @@ class ImportHttpPageState extends State<ImportHttpPage> {
       return;
     }
     final lastImportDifferent = user.lastImportId != null && user.lastImportId != userGame.friendCode;
-    bool? confirm = await SimpleConfirmDialog(
-      title: Text(S.current.import_data),
-      content: Text(
-        [
-          'Import ${userGame.name} (${userGame.friendCode})',
-          'to [${db.curUser.name}]',
-          if (lastImportDifferent) 'Last imported: ${user.lastImportId}!!!',
-        ].join('\n'),
-      ),
-    ).showDialog(context);
-    if (confirm != true || !mounted) return;
-
     if (lastImportDifferent) {
-      final diffConfirm = await SimpleConfirmDialog(
+      final diffConfirm = await ConfirmSliderDialog(
         title: Text(S.current.warning),
         content: Text(
           'Last imported:\n${user.lastImportId}\n\n'
-          'Current import:\n${userGame.friendCode}\n\n\n${S.current.confirm}?',
+          'Current importing:\n${userGame.friendCode} (${userGame.displayName})\n\n\n${S.current.confirm}?',
           style: TextStyle(color: Theme.of(context).colorScheme.error),
         ),
       ).showDialog(context);
       if (diffConfirm != true || !mounted) return;
+    } else {
+      bool? confirm = await SimpleConfirmDialog(
+        title: Text(S.current.import_data),
+        content: Text(
+          [
+            'Import ${userGame.name} (${userGame.friendCode})',
+            'to [${db.curUser.name}]',
+            if (lastImportDifferent) 'Last imported: ${user.lastImportId}!!!',
+          ].join('\n'),
+        ),
+      ).showDialog(context);
+      if (confirm != true || !mounted) return;
     }
 
     user.isGirl = userGame.genderType == 2;
