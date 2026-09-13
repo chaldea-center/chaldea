@@ -8,14 +8,11 @@ PODS:
   - flutter_gromore_ads (3.2.0):
     - Ads-Fusion-CN-Beta (= 5.9.1.5)
     - Flutter
-  - image_gallery_saver (2.0.2):
-    - Flutter
 
 DEPENDENCIES:
   - countly_flutter_np (from `.symlinks/plugins/countly_flutter_np/ios`)
   - Flutter (from `Flutter`)
   - flutter_gromore_ads (from `.symlinks/plugins/flutter_gromore_ads/ios`)
-  - image_gallery_saver (from `.symlinks/plugins/image_gallery_saver/ios`)
 
 SPEC REPOS:
   trunk:
@@ -28,16 +25,13 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_gromore_ads:
     :path: ".symlinks/plugins/flutter_gromore_ads/ios"
-  image_gallery_saver:
-    :path: ".symlinks/plugins/image_gallery_saver/ios"
 
 SPEC CHECKSUMS:
   Ads-Fusion-CN-Beta: f9d37fdb96242a4b0185e068185832d87582531c
   countly_flutter_np: c69ae85c9054a23aaab49d277549945be5031ec9
   Flutter: 71a624a5bc0c04062bf19101d501e466baf2fb47
   flutter_gromore_ads: 016c2b62a05d42dc656dcd3574b9d9df18700f6e
-  image_gallery_saver: 14711d79da40581063e8842a11acf1969d781ed7
 
-PODFILE CHECKSUM: cc54186ced2e039a44fac3e0b2893e0a7c51f338
+PODFILE CHECKSUM: 6efac9352fd89ca3c9e17670b6790339bedc70e4
 
 COCOAPODS: 1.16.2

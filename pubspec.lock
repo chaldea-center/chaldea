@@ -774,15 +774,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.9.2"
-  image_gallery_saver:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: HEAD
-      resolved-ref: ce2100eb09bbe82c141c4f49635b4d50c238df3a
-      url: "https://github.com/chaldea-center/image_gallery_saver.git"
-    source: git
-    version: "2.0.3"
   import_sorter:
     dependency: "direct dev"
     description:
@@ -1305,6 +1296,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.28.0"
+  saver_gallery:
+    dependency: "direct main"
+    description:
+      name: saver_gallery
+      sha256: dcecd87113ffcb0eb467bb0ef5ed8f6dd894e26ff3dfd5822624281e7d2cb894
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.1.0"
   screen_retriever:
     dependency: transitive
     description:

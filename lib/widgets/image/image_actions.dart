@@ -7,13 +7,14 @@ import 'package:flutter/foundation.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cached_network_image_platform_interface/cached_network_image_platform_interface.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pasteboard/pasteboard.dart';
 import 'package:path/path.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:saver_gallery/saver_gallery.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:chaldea/app/modules/tools/custom_chara_figure.dart';
@@ -132,23 +133,36 @@ class ImageActions {
               title: Text(S.current.save_to_photos),
               onTap: () async {
                 Navigator.pop(context);
-                if (PlatformU.isAndroid && await Permission.storage.isDenied) {
-                  await EasyThrottle.throttleAsync('permission.storage.request', Permission.storage.request);
-                }
-                dynamic result;
-                if (srcFp != null) {
-                  result = await ImageGallerySaver.saveFile(srcFp);
-                } else if (data != null) {
-                  result = await ImageGallerySaver.saveImage(data, quality: 100);
-                }
-                if (result is Map && result['isSuccess'] == true) {
-                  EasyLoading.showSuccess(S.current.saved);
-                } else {
-                  String? msg;
-                  if (result is Map) {
-                    msg = result['errorMessage'];
+                try {
+                  // skipIfExists is false, so saving does not need photo read access.
+                  Permission? permission;
+                  if (PlatformU.isIOS) {
+                    permission = Permission.photosAddOnly;
+                  } else if (PlatformU.isAndroid && (await DeviceInfoPlugin().androidInfo).version.sdkInt < 29) {
+                    permission = Permission.storage;
                   }
-                  EasyLoading.showError((msg ?? result).toString());
+                  if (permission != null && !(await permission.request()).isGranted) {
+                    EasyLoading.showError(S.current.failed);
+                    return;
+                  }
+
+                  final fileName = basename(destFp ?? srcFp ?? const Uuid().v4());
+                  final SaveResult result;
+                  if (srcFp != null) {
+                    result = await SaverGallery.saveFile(filePath: srcFp, fileName: fileName, skipIfExists: false);
+                  } else if (data != null) {
+                    result = await SaverGallery.saveImage(data, quality: 100, fileName: fileName, skipIfExists: false);
+                  } else {
+                    return;
+                  }
+                  if (result.isSuccess) {
+                    EasyLoading.showSuccess(S.current.saved);
+                  } else {
+                    EasyLoading.showError(result.errorMessage ?? S.current.failed);
+                  }
+                } catch (e, s) {
+                  EasyLoading.showError(e.toString());
+                  logger.e('save image to gallery failed', e, s);
                 }
               },
             ),

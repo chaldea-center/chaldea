@@ -72,8 +72,6 @@ dependencies:
   html: ^0.15.3
   http: ^1.2.0
   image: ^4.9.0
-  image_gallery_saver: # ^1.7.1
-    git: https://github.com/chaldea-center/image_gallery_saver.git
   intl: ">=0.19.0 <0.21.0"
   json_annotation: ^4.12.0
   just_audio: ^0.10.2
@@ -96,6 +94,7 @@ dependencies:
   pool: ^1.5.0
   photo_view: ^0.15.0
   screenshot: ^3.0.0
+  saver_gallery: ^5.1.0
   share_plus: ^13.1.0
   shared_preferences: ^2.2.0
   sliver_tools: ^0.2.12
