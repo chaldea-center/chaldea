@@ -824,3 +824,29 @@ Map<String, dynamic> _$FormationBondSvtBonusToJson(FormationBondSvtBonus instanc
   'isBond15': instance.isBond15,
   'isBondReachLimit': instance.isBondReachLimit,
 };
+
+BondSolverOptions _$BondSolverOptionsFromJson(Map json) => $checkedCreate('BondSolverOptions', json, ($checkedConvert) {
+  final val = BondSolverOptions(
+    maxCost: $checkedConvert('maxCost', (v) => (v as num?)?.toInt()),
+    favoriteOnly: $checkedConvert('favoriteOnly', (v) => v as bool? ?? true),
+    excludeUnreleased: $checkedConvert('excludeUnreleased', (v) => v as bool? ?? true),
+    maxBond: $checkedConvert('maxBond', (v) => (v as num?)?.toInt() ?? 10),
+    excludedSvts: $checkedConvert('excludedSvts', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
+    excludedCes: $checkedConvert('excludedCes', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
+    formationOption: $checkedConvert(
+      'formationOption',
+      (v) => v == null ? null : FormationBondOption.fromJson(Map<String, dynamic>.from(v as Map)),
+    ),
+  );
+  return val;
+});
+
+Map<String, dynamic> _$BondSolverOptionsToJson(BondSolverOptions instance) => <String, dynamic>{
+  'maxCost': instance.maxCost,
+  'favoriteOnly': instance.favoriteOnly,
+  'excludeUnreleased': instance.excludeUnreleased,
+  'maxBond': instance.maxBond,
+  'excludedSvts': instance.excludedSvts.toList(),
+  'excludedCes': instance.excludedCes.toList(),
+  'formationOption': instance.formationOption.toJson(),
+};

@@ -1402,3 +1402,40 @@ class FormationBondSvtBonus {
 
   Map<String, dynamic> toJson() => _$FormationBondSvtBonusToJson(this);
 }
+
+@JsonSerializable()
+class BondSolverOptions {
+  /// null: use default (max cost of the highest master level).
+  int? maxCost;
+  bool favoriteOnly;
+  bool excludeUnreleased;
+
+  /// exclude servants whose current bond >= this value.
+  int maxBond;
+  Set<int> excludedSvts;
+  Set<int> excludedCes;
+
+  /// Quest/formation/event settings the solver runs against.
+  ///
+  /// `FormationBondOption` is reused as-is — it is exactly what
+  /// `FormationBondSolver.solve(option: ...)` consumes. It is nested here
+  /// instead of living on `User.formationBondOption` so the manual formation
+  /// page and the solver tab never write to each other's configuration.
+  FormationBondOption formationOption;
+
+  BondSolverOptions({
+    this.maxCost,
+    this.favoriteOnly = true,
+    this.excludeUnreleased = true,
+    this.maxBond = 10,
+    Set<int>? excludedSvts,
+    Set<int>? excludedCes,
+    FormationBondOption? formationOption,
+  }) : excludedSvts = excludedSvts ?? {},
+       excludedCes = excludedCes ?? {},
+       formationOption = formationOption ?? FormationBondOption();
+
+  factory BondSolverOptions.fromJson(Map<String, dynamic> json) => _$BondSolverOptionsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$BondSolverOptionsToJson(this);
+}

@@ -84,6 +84,8 @@ class BasicServant with GameCardMixin {
       ((type == SvtType.normal || type == SvtType.heroine) && collectionNo > 0) ||
       (kPlayableTransformSvtIds.contains(id));
 
+  bool get isCollectionSvt => collectionNo > 0 && (type == .normal || type == .heroine || type == .enemyCollection);
+
   bool get isServantType => const [
     SvtType.normal,
     SvtType.heroine,
@@ -499,7 +501,10 @@ class Servant extends BasicServant {
 
   String? get customIcon {
     if (originalCollectionNo <= 0) return borderedIcon;
-    String? _icon = db.userData.customSvtIcon[collectionNo];
+    String? _icon;
+    if (isCollectionSvt) {
+      _icon = db.userData.customSvtIcon[collectionNo];
+    }
     if (_icon != null) return _icon;
 
     if (db.userData.preferAprilFoolIcon) {
@@ -510,7 +515,7 @@ class Servant extends BasicServant {
     if (db.userData.svtAscensionIcon == -1 && isUserSvt) {
       ascension = status.cur.ascension;
     }
-    if (ascensionImage.isNotEmpty && collectionNo > 0) {
+    if (ascensionImage.isNotEmpty && isCollectionSvt) {
       final limits = ascensionImage.where((e) => e.limitCount == ascension).toList();
       if (limits.isNotEmpty &&
           limits.every((e) => e.condType == CondType.questClear && !db.gameData.quests.containsKey(e.condTargetId))) {
@@ -720,7 +725,7 @@ class Servant extends BasicServant {
   }
 
   ServantExtra get extra {
-    if (isServantType && collectionNo > 0) {
+    if (isCollectionSvt) {
       return db.gameData.wiki.servants[originalCollectionNo] ??= ServantExtra(collectionNo: originalCollectionNo);
     }
     return ServantExtra(collectionNo: originalCollectionNo);

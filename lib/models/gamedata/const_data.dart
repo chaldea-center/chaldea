@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:chaldea/utils/basic.dart';
 import 'package:chaldea/utils/extension.dart';
 import '../db.dart';
 import '_helper.dart';
@@ -156,6 +157,10 @@ class ConstGameData {
       }
     }
   }
+
+  int get maxUserLevel => Maths.max(userLevel.keys, 0);
+
+  int get maxUserCost => Maths.max(userLevel.values.map((e) => e.maxCost), 0);
 
   List<SvtLimitHide> getSvtLimitHides(int svtId, int? limitCount) {
     Set<SvtLimitHide> hides = {...?svtLimitHides[-1], ...?svtLimitHides[svtId]};

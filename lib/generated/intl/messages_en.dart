@@ -328,6 +328,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "bond_eff": MessageLookupByLibrary.simpleMessage("Bond Eff"),
     "bond_equip_change_skill": MessageLookupByLibrary.simpleMessage("Change Bond CE effect"),
     "bond_limit": MessageLookupByLibrary.simpleMessage("Bond Limit"),
+    "bond_solver": MessageLookupByLibrary.simpleMessage("Solver"),
     "bootstrap_page_title": MessageLookupByLibrary.simpleMessage("Bootstrap Page"),
     "branch_quest": MessageLookupByLibrary.simpleMessage("Branch Quest"),
     "bronze": MessageLookupByLibrary.simpleMessage("Bronze"),

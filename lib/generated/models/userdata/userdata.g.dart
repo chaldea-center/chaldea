@@ -114,6 +114,10 @@ User _$UserFromJson(Map json) => $checkedCreate('User', json, ($checkedConvert) 
       'formationBondOption',
       (v) => v == null ? null : FormationBondOption.fromJson(Map<String, dynamic>.from(v as Map)),
     ),
+    bondSolverOptions: $checkedConvert(
+      'bondSolverOptions',
+      (v) => v == null ? null : BondSolverOptions.fromJson(Map<String, dynamic>.from(v as Map)),
+    ),
     lastImportId: $checkedConvert('lastImportId', (v) => v as String?),
   );
   return val;
@@ -144,6 +148,7 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
   'saintQuartzPlan': instance.saintQuartzPlan.toJson(),
   'battleSim': instance.battleSim.toJson(),
   'formationBondOption': instance.formationBondOption.toJson(),
+  'bondSolverOptions': instance.bondSolverOptions.toJson(),
   'lastImportId': instance.lastImportId,
 };
 

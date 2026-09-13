@@ -65,6 +65,11 @@ class _FormationBondTabState extends State<FormationBondTab> {
   final BattleTeamSetup formation = BattleTeamSetup();
   QuestPhase? questEntity;
 
+  /// False until [restore] finishes. [dispose] refuses to persist before then,
+  /// otherwise leaving the tab mid-restore would overwrite the stored
+  /// formation with the still-empty runtime one.
+  bool _restored = false;
+
   @override
   void initState() {
     super.initState();
@@ -93,12 +98,13 @@ class _FormationBondTabState extends State<FormationBondTab> {
       ..clear()
       ..addAll(svts);
     formation.mysticCodeData.loadStoredData(saved.mysticCode);
+    _restored = true;
     if (mounted) setState(() {});
   }
 
   @override
   void dispose() {
-    if (widget.option == null) saveData();
+    if (widget.option == null && _restored) saveData();
     super.dispose();
   }
 
@@ -109,249 +115,10 @@ class _FormationBondTabState extends State<FormationBondTab> {
   }
 
   void validate() {
-    option.teapotTimes = option.teapotTimes.clamp(1, 3);
-    if (option.svtBonus.length < _kMaxSvtNum) {
-      option.svtBonus = List.generate(
-        _kMaxSvtNum,
-        (index) => option.svtBonus.getOrNull(index) ?? FormationBondSvtBonus(),
-      );
-    }
-    final quest = questEntity;
-    if (quest == null) return;
-    final startedAt = quest.openedAt, endedAt = quest.closedAt;
-
-    if (option.fixedDate != null) {
-      if (option.fixedDate! < startedAt || option.fixedDate! > endedAt) {
-        option.fixedDate = null;
-      }
-    }
-
-    final prevData = option.campaigns;
-    option.campaigns = {};
-    for (final event in db.gameData.events.values) {
-      if (event.startedAt >= endedAt || event.endedAt <= startedAt) continue;
-      if (!event.isCampaignQuest(quest.id)) continue;
-      for (final campaign in event.campaigns) {
-        if (campaign.target != CombineAdjustTarget.questFriendship) continue;
-        if (campaign.warIds.isNotEmpty && !campaign.warIds.contains(quest.warId)) continue;
-        if (campaign.warGroupIds.isNotEmpty) {
-          final warGroups = quest.war?.groups ?? [];
-          if (warGroups.isEmpty) continue;
-          if (!campaign.warGroupIds.any((warGroupId) {
-            final warGroup = quest.war?.groups.firstWhereOrNull((e) => e.id == warGroupId);
-            if (warGroup == null) return false;
-            return quest.afterClear == warGroup.questAfterClear && quest.type == warGroup.questType;
-          })) {
-            continue;
-          }
-        }
-
-        if (campaign.target == CombineAdjustTarget.questFriendship && event.isCampaignQuest(quest.id)) {
-          (option.campaigns[event.id] ??= {})[campaign.idx] ??=
-              prevData[event.id]?[campaign.idx] ?? (quest.closedAt < kNeverClosedTimestamp);
-        }
-      }
-    }
-    option.campaigns = sortDict(
-      option.campaigns,
-      compare: (a, b) => (db.gameData.events[b.key]?.startedAt ?? 0) - (db.gameData.events[a.key]?.startedAt ?? 0),
-    );
+    validateFormationBondOption(option, questEntity);
   }
 
-  ///  ======= svals =====
-  ///              Target: 1 ?
-  ///       Individuality: 0, 2871, 2917...
-  ///             EventId: 80283, 80285...
-  ///           RateCount: 0, 10, 20, 50, 100, 200, 250, 300, 500, 1000
-  ///     ApplySupportSvt: 0
-  ///  OnlyMaxFuncGroupId: 1 ?
-  ///            AddCount: 50
-  /// ===== followerVals =====
-  ///       Individuality: 0
-  ///           RateCount: 30, 150
-
-  List<SvtBondBonusResult> calcResults() {
-    final quest = questEntity;
-    final results = List.generate(option.svtBonus.length, (_) => SvtBondBonusResult()..baseValue = quest?.bond ?? 0);
-
-    final eventId = quest?.logicEventId ?? 0;
-
-    for (final (deckPos, deckSvt) in formation.svts.take(_kMaxSvtNum).indexed) {
-      final svt = deckSvt.svt;
-      if (svt == null) continue;
-      final selfResult = results[deckPos];
-
-      final svtIndivs = svt.getIndividuality(eventId, deckSvt.limitCount);
-
-      void checkAddFunctions(NiceSkill skill, bool isEquipSkill) {
-        if (skill.actIndividuality.isNotEmpty &&
-            !Individuality.checkSignedIndivPartialMatch(self: svtIndivs, signedTarget: skill.actIndividuality)) {
-          return;
-        }
-        for (final func in skill.functions) {
-          if (func.funcType != FuncType.servantFriendshipUp) continue;
-          if (quest != null &&
-              func.funcquestTvals.isNotEmpty &&
-              !Individuality.checkSignedIndivPartialMatch(
-                self: quest.questIndividuality,
-                signedTarget: func.funcquestTvals,
-              )) {
-            continue;
-          }
-
-          DataVals? vals = switch (deckSvt.supportType) {
-            SupportSvtType.none => func.svals.firstOrNull,
-            SupportSvtType.friend || SupportSvtType.npc => func.followerVals?.firstOrNull ?? func.svals.firstOrNull,
-          };
-          if (vals == null) continue;
-          if (vals.ApplySupportSvt == 0 && deckSvt.supportType.isSupport) continue;
-          if (vals.EventId != null && vals.EventId != 0 && vals.EventId != eventId) continue;
-          final requipredIndiv = vals.Individuality ?? 0;
-          if (requipredIndiv != 0 &&
-              !Individuality.checkSignedIndivPartialMatch(self: svtIndivs, signedTarget: [requipredIndiv])) {
-            continue;
-          }
-          List<SvtBondBonusResult> targets = switch (func.funcTargetType) {
-            FuncTargetType.self => [selfResult],
-            FuncTargetType.ptFull => results.toList(),
-            _ => [],
-          };
-          targets.retainWhere((target) {
-            final funcOverwriteTvalsList = func.getOverwriteTvalsList();
-            if (funcOverwriteTvalsList.isEmpty && func.functvals.isEmpty) return true;
-            final int targetIndex = results.indexOf(target);
-            final targetDeckSvt = formation.svts.getOrNull(targetIndex);
-            final targetIndivs = targetDeckSvt?.svt?.getIndividuality(eventId, targetDeckSvt.limitCount) ?? [];
-            if (funcOverwriteTvalsList.isNotEmpty) {
-              if (funcOverwriteTvalsList.every((andVals) {
-                return !Individuality.checkSignedIndivAllMatch(self: targetIndivs, signedTarget: andVals);
-              })) {
-                return false;
-              }
-            } else if (func.functvals.isNotEmpty) {
-              if (!Individuality.checkSignedIndivPartialMatch(self: targetIndivs, signedTarget: func.functvals)) {
-                return false;
-              }
-            }
-            return true;
-          });
-
-          for (final target in targets) {
-            if (isEquipSkill) {
-              target.equipAddRate += vals.RateCount ?? 0;
-              target.equipAddValue += vals.AddCount ?? 0;
-            } else {
-              target.eventAddRate += vals.RateCount ?? 0;
-              target.eventAddRate += vals.AddCount ?? 0;
-            }
-          }
-        }
-      }
-
-      // check event bonus
-      if (option.enableEvent && quest != null) {
-        Map<int, Map<int, NiceSkill>> groupedEventSkills = {};
-        for (final skill in svt.extraPassive) {
-          if (skill.id == 970663) continue; // 夢火の導き Bond 15
-          final eventPassives = skill.extraPassive.where((eventPassive) {
-            if (eventPassive.startedAt > quest.closedAt || eventPassive.endedAt < quest.openedAt) return false;
-            final eventIds = eventPassive.getValidEventIds();
-            if (eventIds.isNotEmpty && !eventIds.contains(eventId)) return false;
-            return true;
-          }).toList();
-          if (eventPassives.isEmpty) continue;
-
-          for (final eventPassive in eventPassives) {
-            groupedEventSkills.putIfAbsent(eventPassive.num, () => {})[eventPassive.priority] = skill;
-          }
-        }
-        for (final skills in groupedEventSkills.values) {
-          final skill = skills[Maths.max<int>(skills.keys)]!;
-          checkAddFunctions(skill, false);
-        }
-      }
-      // check campaign bonus
-      for (final (eventId, eventCampaigns) in option.campaigns.items) {
-        final event = db.gameData.events[eventId];
-        if (event == null) continue;
-        for (final (idx, enabled) in eventCampaigns.items) {
-          final campaign = event.campaigns.firstWhereOrNull((e) => e.idx == idx);
-          if (campaign == null || !enabled) continue;
-          if (campaign.targetIds.contains(svt.id)) {
-            switch (campaign.calcType) {
-              case EventCombineCalc.addition:
-                selfResult.eventAddRate += max(0, campaign.value);
-                break;
-              case EventCombineCalc.multiplication:
-                selfResult.eventAddRate += max(0, campaign.value - 1000);
-              case EventCombineCalc.fixedValue:
-              case EventCombineCalc.none:
-                break;
-            }
-          }
-        }
-      }
-      // check ce bonus (normal + event)
-      final equips = [
-        deckSvt.equip1,
-        // equip2 is bond
-        if (quest?.isUseGrandBoard == true && deckSvt.grandSvt) deckSvt.equip3,
-      ];
-      for (final equip in equips) {
-        final ce = equip.ce;
-        if (ce == null) continue;
-        for (final skill in ce.getActivatedSkills(equip.limitBreak).values.expand((e) => e)) {
-          checkAddFunctions(skill, true);
-        }
-      }
-      // check position
-      if (option.frontlineBonus) {
-        final bool isFront = deckPos < 3;
-        switch (deckSvt.supportType) {
-          case SupportSvtType.none:
-            if (isFront) {
-              selfResult.frontlineAddRate += 200;
-            }
-            break;
-          case SupportSvtType.friend:
-          case SupportSvtType.npc:
-            if (isFront) {
-              for (final result in results) {
-                result.frontlineAddRate += 40;
-              }
-            }
-            break;
-        }
-      }
-
-      // extra: custom bond
-      final extraBonus = option.svtBonus[deckPos];
-      selfResult.customAddRate += extraBonus.addRate;
-      selfResult.customAddValue += extraBonus.addValue;
-      // check bond 15
-      if (extraBonus.isBond15 && !deckSvt.supportType.isSupport) {
-        for (final result in results) {
-          result.customAddRate += 250;
-        }
-      }
-
-      // check teapot
-      for (final result in results) {
-        result.teapotTimes = option.teapotTimes;
-      }
-    }
-
-    for (final index in range(results.length)) {
-      final deckSvt = formation.svts.getOrNull(index);
-      if (deckSvt == null ||
-          deckSvt.svt == null ||
-          deckSvt.supportType.isSupport ||
-          option.svtBonus[index].isBondReachLimit) {
-        results[index] = SvtBondBonusResult();
-      }
-    }
-    return results;
-  }
+  List<SvtBondBonusResult> calcResults() => calcFormationBondResults(option, questEntity, formation);
 
   String strTime(int t) => t.sec2date().toStringShort(omitSec: true);
 
@@ -424,59 +191,12 @@ class _FormationBondTabState extends State<FormationBondTab> {
           ),
         ),
         DividerWithTitle(title: S.current.settings_tab_name),
-        ListTile(
-          dense: true,
-          title: Text('${S.current.quest} ID'),
-          subtitle: quest == null
-              ? null
-              : Text(
-                  '${quest.lNameWithChapter}\n@${quest.lSpot.l}\n${strTime(quest.openedAt)}~${strTime(quest.closedAt)}',
-                ),
-          onTap: quest?.routeTo,
-          trailing: TextButton(
-            onPressed: () {
-              InputCancelOkDialog.number(
-                title: 'Quest ID',
-                initValue: quest?.id,
-                validate: (v) => db.gameData.quests.containsKey(v),
-                onSubmit: (v) async {
-                  final _quest = db.gameData.quests[v];
-                  if (_quest == null || !mounted) return;
-                  int? phase;
-                  if (_quest.phases.length == 1) {
-                    phase = _quest.phases.single;
-                  } else {
-                    phase = await router.showDialog(
-                      builder: (context) => SimpleDialog(
-                        title: Text("Quest Phase"),
-                        children: [
-                          for (final phase in _quest.phases)
-                            ListTile(
-                              enabled: !_quest.phasesNoBattle.contains(phase),
-                              contentPadding: EdgeInsets.symmetric(horizontal: 24),
-                              onTap: () async {
-                                Navigator.pop(context, phase);
-                              },
-                              title: Text('phase $phase'),
-                            ),
-                        ],
-                      ),
-                    );
-                  }
-                  if (phase == null || !_quest.phases.contains(phase)) return;
-
-                  final questPhase = await showEasyLoading(() => AtlasApi.questPhase(_quest.id, phase!));
-                  if (questPhase == null) {
-                    EasyLoading.showError(S.current.not_found);
-                    return;
-                  }
-                  questEntity = questPhase;
-                  if (mounted) setState(() {});
-                },
-              ).showDialog(context);
-            },
-            child: Text(quest == null ? '0' : '${quest.id}/${quest.phase}'),
-          ),
+        BondQuestPicker(
+          quest: quest,
+          onChanged: (v) {
+            questEntity = v;
+            if (mounted) setState(() {});
+          },
         ),
         DividerWithTitle(title: S.current.event, indent: 16),
         SwitchListTile.adaptive(
@@ -703,4 +423,325 @@ class _FormationBondTabState extends State<FormationBondTab> {
       children: [_row('+${totalBond - result.baseValue}', 0.9), _row(totalBond.toString())],
     );
   }
+}
+
+/// Recomputes the derived fields of [option] for [quest]: clamps the teapot
+/// multiplier, pads `svtBonus` to [_kMaxSvtNum], drops an out-of-range
+/// `fixedDate`, and rebuilds the campaign toggle map from the game data.
+///
+/// Shared by [FormationBondTab] and [BondSolverTab] so a quest's campaign
+/// toggles are resolved in exactly one place.
+void validateFormationBondOption(FormationBondOption option, QuestPhase? quest) {
+  option.teapotTimes = option.teapotTimes.clamp(1, 3);
+  if (option.svtBonus.length < _kMaxSvtNum) {
+    option.svtBonus = List.generate(
+      _kMaxSvtNum,
+      (index) => option.svtBonus.getOrNull(index) ?? FormationBondSvtBonus(),
+    );
+  }
+  if (quest == null) return;
+  final startedAt = quest.openedAt, endedAt = quest.closedAt;
+
+  if (option.fixedDate != null) {
+    if (option.fixedDate! < startedAt || option.fixedDate! > endedAt) {
+      option.fixedDate = null;
+    }
+  }
+
+  final prevData = option.campaigns;
+  option.campaigns = {};
+  for (final event in db.gameData.events.values) {
+    if (event.startedAt >= endedAt || event.endedAt <= startedAt) continue;
+    if (!event.isCampaignQuest(quest.id)) continue;
+    for (final campaign in event.campaigns) {
+      if (campaign.target != CombineAdjustTarget.questFriendship) continue;
+      if (campaign.warIds.isNotEmpty && !campaign.warIds.contains(quest.warId)) continue;
+      if (campaign.warGroupIds.isNotEmpty) {
+        final warGroups = quest.war?.groups ?? [];
+        if (warGroups.isEmpty) continue;
+        if (!campaign.warGroupIds.any((warGroupId) {
+          final warGroup = quest.war?.groups.firstWhereOrNull((e) => e.id == warGroupId);
+          if (warGroup == null) return false;
+          return quest.afterClear == warGroup.questAfterClear && quest.type == warGroup.questType;
+        })) {
+          continue;
+        }
+      }
+
+      if (campaign.target == CombineAdjustTarget.questFriendship && event.isCampaignQuest(quest.id)) {
+        (option.campaigns[event.id] ??= {})[campaign.idx] ??=
+            prevData[event.id]?[campaign.idx] ?? (quest.closedAt < kNeverClosedTimestamp);
+      }
+    }
+  }
+  option.campaigns = sortDict(
+    option.campaigns,
+    compare: (a, b) => (db.gameData.events[b.key]?.startedAt ?? 0) - (db.gameData.events[a.key]?.startedAt ?? 0),
+  );
+}
+
+/// Quest (id + phase) picker shared by [FormationBondTab] and [BondSolverTab].
+///
+/// Resolves the chosen quest phase from local game data first and falls back to
+/// the network; reports the resolved phase through [onChanged] (null on failure).
+class BondQuestPicker extends StatelessWidget {
+  final QuestPhase? quest;
+  final ValueChanged<QuestPhase?> onChanged;
+
+  const BondQuestPicker({super.key, required this.quest, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    final quest = this.quest;
+    String strTime(int t) => t.sec2date().toStringShort(omitSec: true);
+    return ListTile(
+      dense: true,
+      title: Text('${S.current.quest} ID'),
+      subtitle: quest == null
+          ? null
+          : Text('${quest.lNameWithChapter}\n@${quest.lSpot.l}\n${strTime(quest.openedAt)}~${strTime(quest.closedAt)}'),
+      onTap: quest?.routeTo,
+      trailing: TextButton(
+        onPressed: () {
+          InputCancelOkDialog.number(
+            title: 'Quest ID',
+            initValue: quest?.id,
+            validate: (v) => db.gameData.quests.containsKey(v),
+            onSubmit: (v) async {
+              final _quest = db.gameData.quests[v];
+              if (_quest == null || !context.mounted) return;
+              int? phase;
+              if (_quest.phases.length == 1) {
+                phase = _quest.phases.single;
+              } else {
+                phase = await router.showDialog<int>(
+                  builder: (context) => SimpleDialog(
+                    title: const Text("Quest Phase"),
+                    children: [
+                      for (final phase in _quest.phases)
+                        ListTile(
+                          enabled: !_quest.phasesNoBattle.contains(phase),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+                          onTap: () => Navigator.pop(context, phase),
+                          title: Text('phase $phase'),
+                        ),
+                    ],
+                  ),
+                );
+              }
+              if (phase == null || !_quest.phases.contains(phase)) return;
+
+              final questPhase = await showEasyLoading(() => AtlasApi.questPhase(_quest.id, phase!));
+              if (questPhase == null) {
+                EasyLoading.showError(S.current.not_found);
+                return;
+              }
+              onChanged(questPhase);
+            },
+          ).showDialog(context);
+        },
+        child: Text(quest == null ? '0' : '${quest.id}/${quest.phase}'),
+      ),
+    );
+  }
+}
+
+///  ======= svals =====
+///              Target: 1 ?
+///       Individuality: 0, 2871, 2917...
+///             EventId: 80283, 80285...
+///           RateCount: 0, 10, 20, 50, 100, 200, 250, 300, 500, 1000
+///     ApplySupportSvt: 0
+///  OnlyMaxFuncGroupId: 1 ?
+///            AddCount: 50
+/// ===== followerVals =====
+///       Individuality: 0
+///           RateCount: 30, 150
+///
+/// Pure bond calculation for one fixed team. Extracted from the tab state so
+/// the bond solver can be tested against the manual page's exact semantics.
+List<SvtBondBonusResult> calcFormationBondResults(
+  FormationBondOption option,
+  QuestPhase? quest,
+  BattleTeamSetup formation,
+) {
+  final results = List.generate(option.svtBonus.length, (_) => SvtBondBonusResult()..baseValue = quest?.bond ?? 0);
+
+  final eventId = quest?.logicEventId ?? 0;
+
+  for (final (deckPos, deckSvt) in formation.svts.take(_kMaxSvtNum).indexed) {
+    final svt = deckSvt.svt;
+    if (svt == null) continue;
+    final selfResult = results[deckPos];
+
+    final svtIndivs = svt.getIndividuality(eventId, deckSvt.limitCount);
+
+    void checkAddFunctions(NiceSkill skill, bool isEquipSkill) {
+      if (skill.actIndividuality.isNotEmpty &&
+          !Individuality.checkSignedIndivPartialMatch(self: svtIndivs, signedTarget: skill.actIndividuality)) {
+        return;
+      }
+      for (final func in skill.functions) {
+        if (func.funcType != FuncType.servantFriendshipUp) continue;
+        if (quest != null &&
+            func.funcquestTvals.isNotEmpty &&
+            !Individuality.checkSignedIndivPartialMatch(
+              self: quest.questIndividuality,
+              signedTarget: func.funcquestTvals,
+            )) {
+          continue;
+        }
+
+        DataVals? vals = switch (deckSvt.supportType) {
+          SupportSvtType.none => func.svals.firstOrNull,
+          SupportSvtType.friend || SupportSvtType.npc => func.followerVals?.firstOrNull ?? func.svals.firstOrNull,
+        };
+        if (vals == null) continue;
+        if (vals.ApplySupportSvt == 0 && deckSvt.supportType.isSupport) continue;
+        if (vals.EventId != null && vals.EventId != 0 && vals.EventId != eventId) continue;
+        final requipredIndiv = vals.Individuality ?? 0;
+        if (requipredIndiv != 0 &&
+            !Individuality.checkSignedIndivPartialMatch(self: svtIndivs, signedTarget: [requipredIndiv])) {
+          continue;
+        }
+        List<SvtBondBonusResult> targets = switch (func.funcTargetType) {
+          FuncTargetType.self => [selfResult],
+          FuncTargetType.ptFull => results.toList(),
+          _ => [],
+        };
+        targets.retainWhere((target) {
+          final funcOverwriteTvalsList = func.getOverwriteTvalsList();
+          if (funcOverwriteTvalsList.isEmpty && func.functvals.isEmpty) return true;
+          final int targetIndex = results.indexOf(target);
+          final targetDeckSvt = formation.svts.getOrNull(targetIndex);
+          final targetIndivs = targetDeckSvt?.svt?.getIndividuality(eventId, targetDeckSvt.limitCount) ?? [];
+          if (funcOverwriteTvalsList.isNotEmpty) {
+            if (funcOverwriteTvalsList.every((andVals) {
+              return !Individuality.checkSignedIndivAllMatch(self: targetIndivs, signedTarget: andVals);
+            })) {
+              return false;
+            }
+          } else if (func.functvals.isNotEmpty) {
+            if (!Individuality.checkSignedIndivPartialMatch(self: targetIndivs, signedTarget: func.functvals)) {
+              return false;
+            }
+          }
+          return true;
+        });
+
+        for (final target in targets) {
+          if (isEquipSkill) {
+            target.equipAddRate += vals.RateCount ?? 0;
+            target.equipAddValue += vals.AddCount ?? 0;
+          } else {
+            target.eventAddRate += vals.RateCount ?? 0;
+            target.eventAddValue += vals.AddCount ?? 0;
+          }
+        }
+      }
+    }
+
+    // check event bonus
+    if (option.enableEvent && quest != null) {
+      Map<int, Map<int, NiceSkill>> groupedEventSkills = {};
+      for (final skill in svt.extraPassive) {
+        if (skill.id == 970663) continue; // 夢火の導き Bond 15
+        final eventPassives = skill.extraPassive.where((eventPassive) {
+          if (eventPassive.startedAt > quest.closedAt || eventPassive.endedAt < quest.openedAt) return false;
+          final eventIds = eventPassive.getValidEventIds();
+          if (eventIds.isNotEmpty && !eventIds.contains(eventId)) return false;
+          return true;
+        }).toList();
+        if (eventPassives.isEmpty) continue;
+
+        for (final eventPassive in eventPassives) {
+          groupedEventSkills.putIfAbsent(eventPassive.num, () => {})[eventPassive.priority] = skill;
+        }
+      }
+      for (final skills in groupedEventSkills.values) {
+        final skill = skills[Maths.max<int>(skills.keys)]!;
+        checkAddFunctions(skill, false);
+      }
+    }
+    // check campaign bonus
+    for (final (eventId, eventCampaigns) in option.campaigns.items) {
+      final event = db.gameData.events[eventId];
+      if (event == null) continue;
+      for (final (idx, enabled) in eventCampaigns.items) {
+        final campaign = event.campaigns.firstWhereOrNull((e) => e.idx == idx);
+        if (campaign == null || !enabled) continue;
+        if (campaign.targetIds.contains(svt.id)) {
+          switch (campaign.calcType) {
+            case EventCombineCalc.addition:
+              selfResult.eventAddRate += max(0, campaign.value);
+              break;
+            case EventCombineCalc.multiplication:
+              selfResult.eventAddRate += max(0, campaign.value - 1000);
+            case EventCombineCalc.fixedValue:
+            case EventCombineCalc.none:
+              break;
+          }
+        }
+      }
+    }
+    // check ce bonus (normal + event)
+    final equips = [
+      deckSvt.equip1,
+      // equip2 is bond
+      if (quest?.isUseGrandBoard == true && deckSvt.grandSvt) deckSvt.equip3,
+    ];
+    for (final equip in equips) {
+      final ce = equip.ce;
+      if (ce == null) continue;
+      for (final skill in ce.getActivatedSkills(equip.limitBreak).values.expand((e) => e)) {
+        checkAddFunctions(skill, true);
+      }
+    }
+    // check position
+    if (option.frontlineBonus) {
+      final bool isFront = deckPos < 3;
+      switch (deckSvt.supportType) {
+        case SupportSvtType.none:
+          if (isFront) {
+            selfResult.frontlineAddRate += 200;
+          }
+          break;
+        case SupportSvtType.friend:
+        case SupportSvtType.npc:
+          if (isFront) {
+            for (final result in results) {
+              result.frontlineAddRate += 40;
+            }
+          }
+          break;
+      }
+    }
+
+    // extra: custom bond
+    final extraBonus = option.svtBonus[deckPos];
+    selfResult.customAddRate += extraBonus.addRate;
+    selfResult.customAddValue += extraBonus.addValue;
+    // check bond 15
+    if (extraBonus.isBond15 && !deckSvt.supportType.isSupport) {
+      for (final result in results) {
+        result.customAddRate += 250;
+      }
+    }
+
+    // check teapot
+    for (final result in results) {
+      result.teapotTimes = option.teapotTimes;
+    }
+  }
+
+  for (final index in range(results.length)) {
+    final deckSvt = formation.svts.getOrNull(index);
+    if (deckSvt == null ||
+        deckSvt.svt == null ||
+        deckSvt.supportType.isSupport ||
+        option.svtBonus[index].isBondReachLimit) {
+      results[index] = SvtBondBonusResult();
+    }
+  }
+  return results;
 }
