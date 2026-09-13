@@ -6,13 +6,13 @@ import 'package:flutter/rendering.dart' show ScrollCacheExtent;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image/image.dart' as img_lib;
 import 'package:material_ui/material_ui.dart';
-import 'package:screenshot/screenshot.dart';
 
 import 'package:chaldea/app/routes/delegate.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/screenshot.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../routes/root_delegate.dart';
 import 'window_manager.dart';

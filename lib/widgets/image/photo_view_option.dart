@@ -1,6 +1,5 @@
 import 'package:material_ui/material_ui.dart';
-import 'package:photo_view/photo_view.dart';
-import 'package:photo_view/photo_view_gallery.dart';
+import 'package:photo_zoom/photo_zoom.dart';
 
 class PhotoViewOption {
   // final ImageProvider? imageProvider;
@@ -14,18 +13,17 @@ class PhotoViewOption {
   final bool enableRotation; //x
   final PhotoViewController? controller;
   final PhotoViewScaleStateController? scaleStateController;
-  final dynamic minScale;
-  final dynamic maxScale;
-  final dynamic initialScale;
-  final Alignment? basePosition;
-  final ScaleStateCycle? scaleStateCycle;
+  final PhotoViewScale minScale;
+  final PhotoViewScale maxScale;
+  final PhotoViewScale initialScale;
+  final Alignment basePosition;
+  final ScaleStateCycle scaleStateCycle;
   final PhotoViewImageTapUpCallback? onTapUp;
   final PhotoViewImageTapDownCallback? onTapDown;
   final Size? customSize;
   final HitTestBehavior? gestureDetectorBehavior;
-  final bool? tightMode;
   final FilterQuality? filterQuality;
-  final bool? disableGestures;
+  final bool disableGestures;
   final ImageErrorWidgetBuilder? errorBuilder;
 
   const PhotoViewOption({
@@ -35,23 +33,31 @@ class PhotoViewOption {
     this.enableRotation = false,
     this.controller,
     this.scaleStateController,
-    this.minScale,
-    this.maxScale,
-    this.initialScale,
-    this.basePosition,
-    this.scaleStateCycle,
+    this.minScale = _kDefaultMinScale,
+    this.maxScale = _kDefaultMaxScale,
+    this.initialScale = _kDefaultInitialScale,
+    this.basePosition = Alignment.center,
+    this.scaleStateCycle = defaultScaleStateCycle,
     this.onTapUp,
     this.onTapDown,
     this.customSize,
     this.gestureDetectorBehavior,
-    this.tightMode = true,
     this.filterQuality,
-    this.disableGestures,
+    this.disableGestures = false,
     this.errorBuilder,
   });
 
-  static PhotoViewOption limited({double minScale = 0.4, dynamic maxScale}) {
-    return PhotoViewOption(minScale: PhotoViewComputedScale.contained * minScale, maxScale: maxScale);
+  /// Defaults mirror [PhotoViewGalleryPageOptions] so that "unset" behaves the
+  /// same as passing nothing at all.
+  static const PhotoViewScale _kDefaultMinScale = PhotoViewScale.value(0);
+  static const PhotoViewScale _kDefaultMaxScale = PhotoViewScale.value(double.infinity);
+  static const PhotoViewScale _kDefaultInitialScale = PhotoViewComputedScale.contained;
+
+  static PhotoViewOption limited({double minScale = 0.4, PhotoViewScale? maxScale}) {
+    return PhotoViewOption(
+      minScale: PhotoViewComputedScale.contained * minScale,
+      maxScale: maxScale ?? _kDefaultMaxScale,
+    );
   }
 
   PhotoViewOption copyWith({
@@ -61,16 +67,15 @@ class PhotoViewOption {
     bool? enableRotation,
     PhotoViewController? controller,
     PhotoViewScaleStateController? scaleStateController,
-    dynamic minScale,
-    dynamic maxScale,
-    dynamic initialScale,
+    PhotoViewScale? minScale,
+    PhotoViewScale? maxScale,
+    PhotoViewScale? initialScale,
     Alignment? basePosition,
     ScaleStateCycle? scaleStateCycle,
     PhotoViewImageTapUpCallback? onTapUp,
     PhotoViewImageTapDownCallback? onTapDown,
     Size? customSize,
     HitTestBehavior? gestureDetectorBehavior,
-    bool? tightMode,
     FilterQuality? filterQuality,
     bool? disableGestures,
     ImageErrorWidgetBuilder? errorBuilder,
@@ -91,7 +96,6 @@ class PhotoViewOption {
       onTapDown: onTapDown ?? this.onTapDown,
       customSize: customSize ?? this.customSize,
       gestureDetectorBehavior: gestureDetectorBehavior ?? this.gestureDetectorBehavior,
-      tightMode: tightMode ?? this.tightMode,
       filterQuality: filterQuality ?? this.filterQuality,
       disableGestures: disableGestures ?? this.disableGestures,
       errorBuilder: errorBuilder ?? this.errorBuilder,
@@ -112,7 +116,6 @@ class PhotoViewOption {
       onTapUp: onTapUp,
       onTapDown: onTapDown,
       gestureDetectorBehavior: gestureDetectorBehavior,
-      tightMode: tightMode,
       filterQuality: filterQuality,
       disableGestures: disableGestures,
       errorBuilder: errorBuilder,
@@ -134,8 +137,6 @@ class PhotoViewOption {
       onTapUp: onTapUp,
       onTapDown: onTapDown,
       gestureDetectorBehavior: gestureDetectorBehavior,
-      tightMode: tightMode,
-      filterQuality: filterQuality,
       disableGestures: disableGestures,
     );
   }
@@ -146,7 +147,7 @@ class PhotoViewGalleryOption {
   // final int? itemCount;
   // final PhotoViewGalleryBuilder? builder;
   final LoadingBuilder? loadingBuilder;
-  final BoxDecoration? backgroundDecoration;
+  final Decoration backgroundDecoration;
   final bool gaplessPlayback;
   final bool reverse;
   final PageController? pageController;
@@ -173,7 +174,7 @@ class PhotoViewGalleryOption {
 
   PhotoViewGalleryOption copyWith({
     LoadingBuilder? loadingBuilder,
-    BoxDecoration? backgroundDecoration,
+    Decoration? backgroundDecoration,
     bool? gaplessPlayback,
     bool? reverse,
     PageController? pageController,

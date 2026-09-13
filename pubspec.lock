@@ -377,14 +377,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.2"
-  dots_indicator:
-    dependency: "direct main"
-    description:
-      name: dots_indicator
-      sha256: c070af5058a084ba7b354df4b4c26c719595d70a3531eea6edd8af8716684ba3
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.0.1"
   encrypter_plus:
     dependency: "direct main"
     description:
@@ -1008,14 +1000,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.0"
-  modal_bottom_sheet:
-    dependency: "direct main"
-    description:
-      name: modal_bottom_sheet
-      sha256: eac66ef8cb0461bf069a38c5eb0fa728cee525a531a8304bd3f7b2185407c67e
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.0"
   msgpack_dart:
     dependency: "direct main"
     description:
@@ -1208,14 +1192,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.0.2"
-  photo_view:
+  photo_zoom:
     dependency: "direct main"
     description:
-      name: photo_view
-      sha256: "1fc3d970a91295fbd1364296575f854c9863f225505c28c46e0a03e48960c75e"
+      name: photo_zoom
+      sha256: "87931b0c4a14e8841dae636c52a12dc1fa83baa7d3ee6e391b940d17907358cb"
       url: "https://pub.dev"
     source: hosted
-    version: "0.15.0"
+    version: "1.2.3"
   platform:
     dependency: transitive
     description:
@@ -1344,14 +1328,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.2.2"
-  screenshot:
-    dependency: "direct main"
-    description:
-      name: screenshot
-      sha256: "63817697a7835e6ce82add4228e15d233b74d42975c143ad8cfe07009fab866b"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.0"
   sentry:
     dependency: transitive
     description:
@@ -1589,14 +1565,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.4.2"
-  table_sticky_headers:
-    dependency: "direct main"
-    description:
-      name: table_sticky_headers
-      sha256: "18206bf35c5c7306ac4d5efd66ea3f0b47a6c73b249523f7bc84e36344eacf3b"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.5"
   term_glyph:
     dependency: transitive
     description:

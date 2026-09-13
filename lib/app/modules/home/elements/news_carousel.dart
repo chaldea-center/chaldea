@@ -6,12 +6,12 @@ import 'package:flutter/foundation.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dio/dio.dart';
-import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_markdown_plus/flutter_markdown_plus.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as parser;
 import 'package:material_ui/material_ui.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:string_validator/string_validator.dart';
 
 import 'package:chaldea/app/api/chaldea.dart';
@@ -475,19 +475,23 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
         if (pages.length > 1)
           FittedBox(
             fit: BoxFit.scaleDown,
-            child: DotsIndicator(
-              dotsCount: pages.length,
-              position: _curCarouselIndex.toDouble(),
-              decorator: const DotsDecorator(
-                color: Colors.white70,
-                spacing: EdgeInsets.symmetric(vertical: 6, horizontal: 3),
-              ),
-              onTap: (v) {
+            child: AnimatedSmoothIndicator(
+              activeIndex: _curCarouselIndex,
+              count: pages.length,
+              onDotClicked: (index) {
                 setState(() {
-                  _curCarouselIndex = v.toInt().clamp(0, pages.length - 1);
+                  _curCarouselIndex = index.clamp(0, pages.length - 1);
                   _carouselController.animateToPage(_curCarouselIndex);
                 });
               },
+              effect: ColorTransitionEffect(
+                dotWidth: 9,
+                dotHeight: 9,
+                spacing: 6,
+                radius: 4.5,
+                dotColor: Colors.white70,
+                activeDotColor: Theme.of(context).colorScheme.primary,
+              ),
             ),
           ),
       ],

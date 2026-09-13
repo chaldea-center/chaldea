@@ -14,13 +14,13 @@ import 'package:dio/dio.dart';
 import 'package:image/image.dart';
 import 'package:path/path.dart' as p;
 import 'package:pool/pool.dart';
-import 'package:screenshot/screenshot.dart';
 
 import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/packages/file_plus/file_plus.dart';
 import 'package:chaldea/packages/network.dart';
+import 'package:chaldea/widgets/screenshot.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../../models/db.dart';
 import '../../packages/app_info.dart';

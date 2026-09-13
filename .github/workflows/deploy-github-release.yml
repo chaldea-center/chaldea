@@ -9,6 +9,16 @@ on:
       - 'v[0-9]+.[0-9]+.[0-9]+'
   workflow_dispatch:
 
+# One release build per ref at a time. Beta builds (main) supersede each other,
+# tagged releases are never cancelled half-way.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref_type != 'tag' }}
+
+# Least privilege by default; only publish-release escalates to `contents: write`.
+permissions:
+  contents: read
+
 jobs:
   create-build:
     name: Create ${{ matrix.target }} build
@@ -17,30 +27,22 @@ jobs:
       matrix:
         target: [windows, linux, android]
         include:
-          # - os: macos-10.15 # Catalina
+          # - os: macos-latest
           #   target: macOS
           #   build_target: macos
           #   build_path: build/macos/Build/Products/Release
-          #   asset_extension: .zip
-          #   asset_content_type: application/zip
           - os: windows-latest
             target: windows
             build_target: windows
             build_path: build\windows\x64\runner\Release
-            asset_extension: .zip
-            asset_content_type: application/zip
           - os: ubuntu-latest
             target: linux
             build_target: linux
             build_path: build/linux/x64/release/bundle
-            asset_extension: .tar.gz
-            asset_content_type: application/gzip
           - os: ubuntu-latest
             target: android
             build_target: apk
             build_path: build/app/outputs
-            asset_extension: .apk
-            asset_content_type: application/vnd.android.package-archive
       fail-fast: false
     steps:
       - name: Checkout chaldea code
@@ -52,11 +54,16 @@ jobs:
           flutter-version-file: "pubspec.yaml"
           cache: true
 
+      # All desktop targets default to `on` since Flutter 3.16, so the old
+      # `flutter config --enable-{linux,macos,windows}-desktop` calls are gone.
+      - name: Disable CLI animations
+        run: flutter config --no-cli-animations
+
       - name: Get Version
         shell: bash
         run: |
-          if [ "${{ startsWith(github.ref, 'refs/tags/v') }}" = "true" ]; then
-              echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+              echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
           else
               echo "VERSION=beta" >> $GITHUB_ENV
           fi
@@ -69,20 +76,15 @@ jobs:
           sudo apt-get install -y libgtk-3-dev libx11-dev pkg-config cmake ninja-build libblkid-dev
           sudo apt-get install -y libayatana-appindicator3-dev
 
+      # JDK 17 is the minimum required by AGP 8.12 / Gradle 9 and matches
+      # compileOptions + kotlinOptions jvmTarget in android/app/build.gradle.kts.
       - name: Install Android dependencies
         if: matrix.target == 'android'
         uses: actions/setup-java@v5
         with:
-          distribution: 'temurin' 
+          distribution: 'temurin'
           java-version: '17'
 
-      - name: Enable desktop support
-        if: matrix.target != 'android'
-        run: |
-          flutter config --no-cli-animations
-          flutter config --enable-linux-desktop
-          flutter config --enable-macos-desktop
-          flutter config --enable-windows-desktop
       - name: flutter doctor
         if: matrix.target != 'windows'
         run: flutter doctor -v
@@ -102,21 +104,24 @@ jobs:
           KEYSTORE_STORE_PASSWORD: ${{ secrets.KEYSTORE_STORE_PASSWORD }}
         working-directory: android
 
+      # --global instead of --system: writing to the system gitconfig needs
+      # elevated privileges, which is not guaranteed on every runner image.
       - name: Enable long path on Windows
         if: matrix.target == 'windows'
-        run: git config --system core.longpaths true
+        run: git config --global core.longpaths true
 
       - name: Generate git info
-        run:  dart ./scripts/gen_git_info.dart
+        run: dart ./scripts/gen_git_info.dart
 
       - run: flutter pub get
+      # Patch may rewrite pubspec.yaml (fdroid flavor), so resolve again after.
       - run: dart ./scripts/patch_before_build.dart ${{ matrix.target }} ${{ github.ref }}
       - run: flutter pub get
 
       - name: Build release (non-android)
         if: matrix.target != 'android'
         run: flutter build ${{ matrix.build_target }} -v --release
-        
+
       - name: Build release (Android APK+AAB)
         if: matrix.target == 'android'
         run: |
@@ -142,7 +147,15 @@ jobs:
         run: |
           cp $GITHUB_WORKSPACE/linux/README.md ./README.txt
           cp "${GITHUB_WORKSPACE}/res/release_docs/安装与升级说明-InstallAndUpgrade.txt" .
-          mv ../plugins/flutter_js/bundle/lib/libquickjs_c_bridge_plugin.so ./lib/libquickjs_c_bridge_plugin.so
+          if [ -f ../plugins/flutter_js/bundle/lib/libquickjs_c_bridge_plugin.so ]; then
+            cp ../plugins/flutter_js/bundle/lib/libquickjs_c_bridge_plugin.so ./lib/libquickjs_c_bridge_plugin.so
+            echo "Copied libquickjs_c_bridge_plugin.so"
+          else
+            echo "WARN: libquickjs_c_bridge_plugin.so not found, skip copy"
+          fi
+          echo "== Files to package (Linux) =="
+          ls -lhR
+          echo "==============================="
           tar czf $GITHUB_WORKSPACE/chaldea-$VERSION-${{ matrix.target }}.tar.gz *
         working-directory: ${{ matrix.build_path }}
       - name: Compress build for macOS
@@ -154,6 +167,15 @@ jobs:
         run: |
           cp ${env:GITHUB_WORKSPACE}/windows/README.md ./README.txt
           Copy-Item "${env:GITHUB_WORKSPACE}/res/release_docs/安装与升级说明-InstallAndUpgrade.txt" .
+          Write-Output "== Files to package (Windows) =="
+          Get-ChildItem -Recurse -Force | Sort-Object FullName | ForEach-Object {
+            if ($_.PSIsContainer) {
+              "[DIR ] $($_.FullName)"
+            } else {
+              "[FILE] $($_.Length) $($_.FullName)"
+            }
+          }
+          Write-Output "================================"
           compress-archive -Path * -DestinationPath ${env:GITHUB_WORKSPACE}\chaldea-${env:VERSION}-${{ matrix.target }}.zip
         working-directory: ${{ matrix.build_path }}
 
@@ -188,7 +210,8 @@ jobs:
           mkdir dist
           mv chaldea-*/chaldea-* dist/
           pushd dist
-          shasum -a 1 chaldea-*.{apk,aab,zip,gz} >checksums.txt
+          shopt -s nullglob
+          shasum -a 256 chaldea-*.{apk,aab,zip,gz} > checksums.txt
           cat checksums.txt
           ls -l
           popd
@@ -196,8 +219,8 @@ jobs:
       - name: Get Version
         shell: bash
         run: |
-          if [ "${{ startsWith(github.ref, 'refs/tags/v') }}" = "true" ]; then
-              echo "VERSION=${GITHUB_REF/refs\/tags\/v/}" >> $GITHUB_ENV
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+              echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
           else
               echo "VERSION=beta" >> $GITHUB_ENV
           fi
@@ -237,8 +260,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GH_PAGES_TOKEN }}
           RELEASE_ID: ${{ steps.release-beta.outputs.id || steps.release-stable.outputs.id }}
         run: |
-          OWNER="chaldea-center"
-          REPO="chaldea"
+          OWNER="${GITHUB_REPOSITORY%%/*}"
+          REPO="${GITHUB_REPOSITORY##*/}"
           TOKEN=$GITHUB_TOKEN
 
           sleep 15
@@ -255,5 +278,3 @@ jobs:
           else
             echo "Already published"
           fi
-
-         

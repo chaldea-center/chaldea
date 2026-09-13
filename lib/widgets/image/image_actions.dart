@@ -10,7 +10,6 @@ import 'package:cached_network_image_platform_interface/cached_network_image_pla
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pasteboard/pasteboard.dart';
 import 'package:path/path.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -45,9 +44,19 @@ class ImageActions {
     assert(srcFp != null || data != null);
     if (context == null) return Future.value();
     if (srcFp == null && data == null) return Future.value();
-    return showMaterialModalBottomSheet(
+    // Built-in sheet + DraggableScrollableSheet.
+    //
+    // The sheet-level drag gesture always loses the gesture arena to any
+    // scrollable inside it, so a plain ListView can only ever scroll and the
+    // sheet can never be dragged away. DraggableScrollableSheet is the widget
+    // BottomSheet is built to coordinate with: BottomSheet listens to
+    // DraggableScrollableNotification and closes itself once the extent reaches
+    // minChildSize (see BottomSheet.extentChanged). That is what replaced
+    // modal_bottom_sheet's ModalScrollController.
+    return showModalBottomSheet(
       context: context,
-      duration: const Duration(milliseconds: 250),
+      isScrollControlled: true,
+      showDragHandle: true,
       builder: (context) {
         List<Widget> children = [
           ...extraHeaders,
@@ -305,12 +314,23 @@ class ImageActions {
             },
           ),
         ]);
-        return ListView.separated(
-          shrinkWrap: true,
-          controller: ModalScrollController.of(context),
-          itemBuilder: (context, index) => children[index],
-          separatorBuilder: (_, _) => const Divider(height: 0.5, thickness: 0.5),
-          itemCount: children.length,
+        // No shrinkWrap: the scrollable must fill the sheet so that
+        // DraggableScrollableSheet can hand the drag over once the list hits
+        // its edge. maxChildSize < 1 keeps the barrier reachable, so the sheet
+        // can always be dismissed even on a very short window.
+        return DraggableScrollableSheet(
+          initialChildSize: 0.5,
+          minChildSize: 0.25,
+          maxChildSize: 0.95,
+          expand: false,
+          builder: (context, scrollController) {
+            return ListView.separated(
+              controller: scrollController,
+              itemBuilder: (context, index) => children[index],
+              separatorBuilder: (_, _) => const Divider(height: 0.5, thickness: 0.5),
+              itemCount: children.length,
+            );
+          },
         );
       },
     );

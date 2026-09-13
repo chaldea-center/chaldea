@@ -6,7 +6,6 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
-import 'package:screenshot/screenshot.dart';
 
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/quest/quest_list.dart';
@@ -17,6 +16,7 @@ import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/screenshot.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../bond_detail_page.dart';
 import '../quest_farming.dart';

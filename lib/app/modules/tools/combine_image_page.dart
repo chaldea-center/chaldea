@@ -6,7 +6,6 @@ import 'package:flutter/scheduler.dart';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:screenshot/screenshot.dart';
 
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/command_code/cmd_code_list.dart';
@@ -16,6 +15,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/screenshot.dart';
 import 'package:chaldea/widgets/widgets.dart';
 import '../common/extra_assets_page.dart';
 
