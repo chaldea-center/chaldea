@@ -655,6 +655,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "filter_category": MessageLookupByLibrary.simpleMessage("Category"),
     "filter_match_all": MessageLookupByLibrary.simpleMessage("Match All"),
     "filter_obtain": MessageLookupByLibrary.simpleMessage("Obtains"),
+    "filter_per_servant_bond_bonus_cap": MessageLookupByLibrary.simpleMessage("Per-Servant Bond Bonus Cap"),
     "filter_plan_not_reached": MessageLookupByLibrary.simpleMessage("Plan Not Reach"),
     "filter_revert": MessageLookupByLibrary.simpleMessage("Revert"),
     "filter_shown_type": MessageLookupByLibrary.simpleMessage("Display"),

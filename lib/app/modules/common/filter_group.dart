@@ -54,8 +54,8 @@ class FilterGroup<T> extends StatelessWidget {
         TextSpan(
           children: [
             CenterWidgetSpan(child: Icon(v ? Icons.grid_view_sharp : Icons.list, size: 16)),
-            const TextSpan(text: ' '),
-            TextSpan(text: v ? S.current.display_grid : S.current.display_list),
+            // const TextSpan(text: ' '),
+            // TextSpan(text: v ? S.current.display_grid : S.current.display_list),
           ],
         ),
       ),

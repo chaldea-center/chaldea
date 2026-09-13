@@ -599,6 +599,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "filter_category": MessageLookupByLibrary.simpleMessage("分类"),
     "filter_match_all": MessageLookupByLibrary.simpleMessage("全匹配"),
     "filter_obtain": MessageLookupByLibrary.simpleMessage("获取方式"),
+    "filter_per_servant_bond_bonus_cap": MessageLookupByLibrary.simpleMessage("单从者羁绊加成上限(户口数)"),
     "filter_plan_not_reached": MessageLookupByLibrary.simpleMessage("规划未满"),
     "filter_revert": MessageLookupByLibrary.simpleMessage("反向匹配"),
     "filter_shown_type": MessageLookupByLibrary.simpleMessage("显示"),

@@ -477,6 +477,7 @@
   "filter_category": "카테고리",
   "filter_match_all": "모두 선택",
   "filter_obtain": "습득 방법",
+  "filter_per_servant_bond_bonus_cap": null,
   "filter_plan_not_reached": "계획 미달성",
   "filter_revert": "역선택",
   "filter_shown_type": "표시",

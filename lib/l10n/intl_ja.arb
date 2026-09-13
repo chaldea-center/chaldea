@@ -477,6 +477,7 @@
   "filter_category": "分類",
   "filter_match_all": "全て",
   "filter_obtain": "入手方法",
+  "filter_per_servant_bond_bonus_cap": null,
   "filter_plan_not_reached": "プラン未完成",
   "filter_revert": "逆選択",
   "filter_shown_type": "表示",

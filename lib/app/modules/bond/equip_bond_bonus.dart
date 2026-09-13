@@ -88,6 +88,7 @@ enum _FilterType {
 class _ExtraFilterData {
   final ceStates = <int, _FilterType>{};
   bool useCostumeTraitForRegion = false;
+  final maxRateCountPerSvt = FilterRadioData<int>();
 }
 
 /// functvals: traits
@@ -96,6 +97,8 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
   late final _targetSvts = {for (final svt in widget.targetSvts) svt.id: svt};
   Map<int, ({CraftEssence ce, List<List<int>> traits, int rateCount})> allCeData = {};
   Map<int, Map<int, List<int>>> allCeMatchSvtData = {}; //<ceId, <svtId, [limitCount]>>
+  Map<int, Map<int, List<int>>> allSvtMatchCeData = {}; //<svtId, <limitId, [ceIds]>>
+  int maxTotalRateCount = 1000;
 
   final svtFilterData = SvtFilterData(sortKeys: SvtCompare.kRarityFirstKeys);
   final extraFilterData = _ExtraFilterData();
@@ -119,6 +122,7 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
   void initData({bool initFilters = false}) {
     allCeData.clear();
     allCeMatchSvtData.clear();
+    allSvtMatchCeData.clear();
     // ce data
     for (final ce in db.gameData.craftEssencesById.values) {
       if (ce.collectionNo <= 0 || ce.isRegionSpecific) continue;
@@ -164,6 +168,14 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
         final limitCounts = getMatchedLimitCounts(svt, traits);
         if (limitCounts.isEmpty) continue;
         svtLimitsData[svt.id] = limitCounts;
+      }
+    }
+    // svt mapping ce
+    for (final (ceId, svtLimits) in allCeMatchSvtData.items) {
+      for (final (svtId, limits) in svtLimits.items) {
+        for (final limit in limits) {
+          ((allSvtMatchCeData[svtId] ??= {})[limit] ??= []).add(ceId);
+        }
       }
     }
 
@@ -336,23 +348,40 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
     }
     resultData.sortByList((e) => [-e.rateCount, e.ceIds.length, -e.svts.length, ...e.ceIds]);
 
+    final maxRateCount = extraFilterData.maxRateCountPerSvt.radioValue;
+    if (maxRateCount != null && maxRateCount >= 0) {
+      Set<int> excludeSvtIds = {};
+      for (final (svtId, limitToCeIds) in allSvtMatchCeData.items) {
+        int svtMaxRateCount = Maths.max(
+          limitToCeIds.values.map((ceIds) => Maths.sum([for (final ceId in ceIds) allCeData[ceId]!.rateCount])),
+        );
+        if (svtMaxRateCount > maxRateCount) {
+          excludeSvtIds.add(svtId);
+        }
+      }
+      for (final group in resultData) {
+        group.svts.removeWhere((e) => excludeSvtIds.contains(e.svt.id));
+      }
+      resultData.removeWhere((e) => e.svts.isEmpty);
+    }
+
     return resultData;
   }
 
   @override
   Widget build(BuildContext context) {
+    final groups = getGroupData();
+
     return Column(
       children: [
-        Expanded(child: mainBody),
+        Expanded(child: _buildMainBody(groups)),
         kDefaultDivider,
-        buttonBar,
+        _buildButtonBar(),
       ],
     );
   }
 
-  Widget get mainBody {
-    final groups = getGroupData();
-
+  Widget _buildMainBody(List<_GroupItem> groups) {
     return ListView.separated(
       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       itemCount: groups.length,
@@ -441,7 +470,7 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
     );
   }
 
-  Widget get buttonBar {
+  Widget _buildButtonBar() {
     final ces = [
       null,
       ...(allCeData.values.toList()..sortByList((e) => [-e.rateCount, -e.ce.collectionNo])),
@@ -458,6 +487,24 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
               if (mounted) setState(() {});
             },
             planMode: false,
+            extraFilters: (context, update) {
+              List<int> validValues = <int>{
+                ?extraFilterData.maxRateCountPerSvt.radioValue,
+                for (int x = 0; x <= maxTotalRateCount; x += 200) x,
+              }.toList()..sort();
+              return [
+                FilterGroup<int>(
+                  title: Text('${S.current.filter_per_servant_bond_bonus_cap}≤'),
+                  options: validValues,
+                  values: extraFilterData.maxRateCountPerSvt,
+                  optionBuilder: (v) => Text(v.format(percent: true, base: 10)),
+                  onFilterChanged: (v, _) {
+                    if (mounted) setState(() {});
+                    update();
+                  },
+                ),
+              ];
+            },
           ),
         ),
       ),
@@ -615,8 +662,9 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: 4,
           children: [
-            Wrap(spacing: 2, runSpacing: 1, crossAxisAlignment: WrapCrossAlignment.center, children: extraBtns),
+            Wrap(spacing: 2, runSpacing: 0, crossAxisAlignment: WrapCrossAlignment.center, children: extraBtns),
             Wrap(spacing: 2, runSpacing: 1, crossAxisAlignment: WrapCrossAlignment.start, children: ceBtns),
           ],
         ),

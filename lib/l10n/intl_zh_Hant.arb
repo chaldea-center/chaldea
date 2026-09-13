@@ -478,6 +478,7 @@
   "filter_category": "分類",
   "filter_match_all": "全匹配",
   "filter_obtain": "獲取方式",
+  "filter_per_servant_bond_bonus_cap": null,
   "filter_plan_not_reached": "規劃未滿",
   "filter_revert": "反向匹配",
   "filter_shown_type": "顯示",

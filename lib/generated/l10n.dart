@@ -1343,6 +1343,11 @@ class S {
     return Intl.message('Bond Limit', name: 'bond_limit', desc: '', locale: localeName, args: []);
   }
 
+  /// `Solver`
+  String get bond_solver {
+    return Intl.message('Solver', name: 'bond_solver', desc: '', locale: localeName, args: []);
+  }
+
   /// `Bootstrap Page`
   String get bootstrap_page_title {
     return Intl.message('Bootstrap Page', name: 'bootstrap_page_title', desc: '', locale: localeName, args: []);
@@ -3185,6 +3190,17 @@ class S {
   /// `Obtains`
   String get filter_obtain {
     return Intl.message('Obtains', name: 'filter_obtain', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Per-Servant Bond Bonus Cap`
+  String get filter_per_servant_bond_bonus_cap {
+    return Intl.message(
+      'Per-Servant Bond Bonus Cap',
+      name: 'filter_per_servant_bond_bonus_cap',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
   }
 
   /// `Plan Not Reach`
