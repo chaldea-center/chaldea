@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
+
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/battle/simulation_preview.dart';
@@ -1012,6 +1016,29 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
           ),
         );
       }
+    }
+    if (kDebugMode) {
+      children.add(
+        IconButton(
+          onPressed: () {
+            final saveDrops = drops
+                .where((e) => e.type == .item && db.gameData.items[e.objectId]?.category == .normal)
+                .toList();
+            saveDrops.sort((a, b) => Item.compare(a.objectId, b.objectId));
+            Map<String, Map<String, String>> targetJson = {};
+            for (final drop in saveDrops) {
+              double dropRate = drop.dropCount / drop.runs;
+              double apRate = curPhase.consume / dropRate;
+              targetJson[drop.objectId.toString()] = {"NA": "${quest.name}, ~${apRate.toStringAsPrecision(3)} AP"};
+            }
+            String text = const JsonEncoder.withIndent('  ').convert(targetJson).trim();
+            assert(text.startsWith('{') && text.endsWith('}'));
+            copyToClipboard(text.substring(1, text.length - 2), toast: true);
+          },
+          icon: Icon(Icons.copy),
+          tooltip: 'Copy Drops to json',
+        ),
+      );
     }
     return Wrap(spacing: 3, runSpacing: 2, children: children);
   }

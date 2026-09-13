@@ -308,6 +308,9 @@ mixin GameCardMixin implements RouteInfo {
             showName: showName,
           );
         }
+        if (icon == null && const <int>[Items.npRankUpIconId, Items.skillUpgradeIconId].contains(id)) {
+          icon ??= Atlas.assetItem(id);
+        }
         if (icon != null) {
           return cardIconBuilder(
             context: context,

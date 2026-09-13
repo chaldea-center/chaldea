@@ -899,7 +899,7 @@ class GameTimerData {
           for (final detail in cond.details) {
             if (detail.missionCondType != EventMissionCondDetailType.battleMissionValue.value) continue;
             // key must be a single targetId, skip malformed details
-            if (detail.targetIds.length != 1) continue;
+            if (detail.targetIds.isEmpty) continue;
             result
                 .putIfAbsent(detail.targetIds.first, () => [])
                 .add(
