@@ -1,7 +1,8 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+
+import 'package:material_ui/material_ui.dart';
 
 ///
 /// Helper class that ensures a Widget is visible when it has the focus

@@ -2,7 +2,7 @@
 // of form pages (e.g. change-username, change-email). Replaces the old
 // InfoBanner usage and fills the empty space with a meaningful visual anchor.
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class ValueHeader extends StatelessWidget {
   final IconData icon;

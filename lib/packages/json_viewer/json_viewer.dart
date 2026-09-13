@@ -1,7 +1,7 @@
 /// src: https://github.com/mayankkushal/flutter_json_viewer
 /// Apache License 2.0
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'package:chaldea/widgets/inherit_selection_area.dart';
 

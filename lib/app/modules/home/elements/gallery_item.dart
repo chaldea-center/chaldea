@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'package:chaldea/app/modules/bond/bond_bonus.dart';
 import 'package:chaldea/app/modules/creator/chara_list.dart';

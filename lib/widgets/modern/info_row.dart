@@ -5,7 +5,7 @@
 // small/grey — used in profile/admin pages where sometimes the value should
 // dominate (e.g. email shown large with a small "Email" label).
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 enum InfoRowProminence { title, subtitle }
 

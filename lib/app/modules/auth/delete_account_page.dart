@@ -3,9 +3,8 @@
 // (4 list items with X icons) + password input + destructive button +
 // cancel link. On success: clear user, pop to root, push LoginPage.
 
-import 'package:flutter/material.dart';
-
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'package:chaldea/app/api/chaldea_server.dart';
 import 'package:chaldea/app/app.dart';

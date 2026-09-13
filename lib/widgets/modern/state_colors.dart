@@ -2,7 +2,7 @@
 // banners and badges. ColorScheme has no semantic slots for these, so we use
 // fixed Material palette colors with brightness-aware alpha for backgrounds.
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 @immutable
 class StateColors {

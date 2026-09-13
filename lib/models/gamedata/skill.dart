@@ -1,6 +1,6 @@
 // ignore_for_file: non_constant_identifier_names
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'package:chaldea/app/modules/skill/skill_detail.dart';
 import 'package:chaldea/app/modules/skill/td_detail.dart';

@@ -2,7 +2,7 @@
 // true (action rows usually navigate) and maps ActionRowVariant.danger to
 // InfoRow's danger flag for destructive actions like "Delete account".
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'info_row.dart';
 

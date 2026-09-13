@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class SpecialTextSpan extends WidgetSpan {
   SpecialTextSpan(String data, {required Offset offset, double? textScaleFactor, super.style})

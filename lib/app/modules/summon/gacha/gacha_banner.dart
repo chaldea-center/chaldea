@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cached_network_image_platform_interface/cached_network_image_platform_interface.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'package:chaldea/models/gamedata/common.dart';
 import 'package:chaldea/utils/atlas.dart';

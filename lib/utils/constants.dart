@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 const String kAppName = 'Chaldea';
 const String kPackageName = 'cc.narumi.chaldea';

@@ -3,7 +3,7 @@
 // design tokens). A `danger` flag swaps to error/onError. The `style` param
 // merges over defaults for per-call overrides.
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class PrimaryButton extends StatelessWidget {
   final String label;

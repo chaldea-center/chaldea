@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Clip top-left and top-right corner
 class TopCornerClipper extends CustomClipper<Path> {

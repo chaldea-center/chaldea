@@ -2,7 +2,7 @@
 // wordmark + "FGO Game Helper" tagline. Per design.md D7, uses the project's
 // existing app_icon_logo.png asset in place of the design's text "C" badge.
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class BrandArea extends StatelessWidget {
   const BrandArea({super.key});

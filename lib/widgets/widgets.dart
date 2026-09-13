@@ -1,4 +1,4 @@
-export 'package:flutter/material.dart';
+export 'package:material_ui/material_ui.dart';
 export 'package:flutter_hooks/flutter_hooks.dart';
 export 'after_layout.dart';
 export 'theme.dart';

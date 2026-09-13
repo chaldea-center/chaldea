@@ -12,7 +12,7 @@
 // on failure the error is shown immediately and focus is kept. On success
 // the field unfocuses (keyboard dismissed) before the callback runs.
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Controls when [FormInput] displays validation errors.
 enum ErrorDisplayMode {

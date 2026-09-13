@@ -1,10 +1,9 @@
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:flutter/material.dart';
-
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:intl/intl.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';

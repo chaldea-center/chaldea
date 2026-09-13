@@ -5,7 +5,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:tray_manager/tray_manager.dart';
@@ -87,7 +86,9 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WindowListener
         builder: (context, widget) {
           ErrorWidget.builder = _ErrorWidget.errorWidgetBuilder;
           isEasyLoadingAttached = true;
-          return FlutterEasyLoading(key: _easyLoadingKey, child: widget);
+          widget = FlutterEasyLoading(key: _easyLoadingKey, child: widget);
+          // ignore: deprecated_member_use
+          return MaterialUiCompatibilityBridge(child: widget);
         },
       ),
     );

@@ -3,7 +3,7 @@
 // the profile page has no avatar feature. Gradient and foreground colors
 // come from AppThemeData so they can be restyled via ThemeData.
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'package:chaldea/widgets/theme.dart';
 

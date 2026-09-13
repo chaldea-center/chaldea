@@ -6,7 +6,7 @@
 // is the idiomatic way to achieve this visual without gradient hacks or
 // nested containers.
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// A card-like container with an optional thick accent border on the left
 /// side (primary variant) or a simple uniform border (non-primary variant).

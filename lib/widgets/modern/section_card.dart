@@ -2,7 +2,7 @@
 // children and inserts themed Dividers between them. Card shape/elevation/
 // border come from cardTheme; this widget only adds title + divider layout.
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class SectionCard extends StatelessWidget {
   final String? header;

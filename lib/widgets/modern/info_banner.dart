@@ -3,7 +3,7 @@
 // for danger. Each variant gets a 4px left accent strip in its semantic
 // color via AccentContainer, making the variant instantly recognizable.
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'accent_container.dart';
 import 'state_colors.dart';

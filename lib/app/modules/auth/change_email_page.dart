@@ -7,9 +7,8 @@
 // then pop; ProfilePage refreshes via its _pushAndRefresh await.
 // The top uses ValueHeader (large icon + label + current email).
 
-import 'package:flutter/material.dart';
-
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'package:chaldea/app/api/chaldea_server.dart';
 import 'package:chaldea/app/modules/auth/validators.dart';

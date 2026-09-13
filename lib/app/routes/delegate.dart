@@ -1,8 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart' as material;
-import 'package:flutter/material.dart';
+
+import 'package:material_ui/material_ui.dart' as material;
+import 'package:material_ui/material_ui.dart';
 
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/common.dart';

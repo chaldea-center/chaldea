@@ -1,8 +1,7 @@
 import 'dart:math';
 
-import 'package:flutter/cupertino.dart';
-
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:data_table_2/data_table_2.dart';
 
 import 'package:chaldea/app/api/atlas.dart';

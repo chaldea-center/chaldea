@@ -3,7 +3,7 @@
 // (admin), status indicators, and similar inline labels where Chip's default
 // sizing is too large.
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 class MiniBadge extends StatelessWidget {
   final String label;

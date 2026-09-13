@@ -1,7 +1,8 @@
 // ignore_for_file: non_constant_identifier_names
 
-import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart' show SchedulerPhase;
+
+import 'package:material_ui/material_ui.dart';
 
 class DirectionalIcons {
   const DirectionalIcons._();
