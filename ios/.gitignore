@@ -1,6 +1,4 @@
 # custom
-# use Info-{Debug/Profile/Release}.plist instead
-Chaldea/info.plist
 
 # default
 **/dgph

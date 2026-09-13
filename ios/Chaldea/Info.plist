@@ -2,6 +2,13 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<!-- Alarm is disabled pending an App Store-compatible implementation.
+	Restore together with background audio and AppDelegate task registration.
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.gdelataillade.fetch</string>
+	</array>
+	-->
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
@@ -35,8 +42,6 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>FlutterDeepLinkingEnabled</key>
 	<true/>
-	<key>NSUserTrackingUsageDescription</key>
-	<string>We need your advertising identifier to show you personalized ads.</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSApplicationQueriesSchemes</key>
@@ -80,6 +85,8 @@
 	<string>Export images to photos</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Chaldea needs to import data and export backup</string>
+	<key>NSUserTrackingUsageDescription</key>
+	<string>We need your advertising identifier to show you personalized ads.</string>
 	<key>SKAdNetworkItems</key>
 	<array>
 		<dict>
@@ -293,6 +300,9 @@
 	<array>
 		<string>fetch</string>
 		<string>remote-notification</string>
+		<!-- Alarm background audio is disabled pending App Store review of its implementation.
+		<string>audio</string>
+		-->
 	</array>
 	<key>UIFileSharingEnabled</key>
 	<true/>

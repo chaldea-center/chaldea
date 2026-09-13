@@ -15,7 +15,8 @@ import alarm
       UNUserNotificationCenter.current().delegate = self as UNUserNotificationCenterDelegate
     }
     
-    SwiftAlarmPlugin.registerBackgroundTasks()
+    // Restore with the alarm background modes and permitted task identifier in Info.plist.
+    // SwiftAlarmPlugin.registerBackgroundTasks()
     
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }

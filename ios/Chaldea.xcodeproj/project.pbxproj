@@ -74,9 +74,7 @@
 		938F6D7525BAA9C100C3A1F8 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		93C2D0452805369A005903B6 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Main.strings"; sourceTree = "<group>"; };
 		93C2D0462805369B005903B6 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
-		93CB6326259F163D00EFEE0F /* Info-Release.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-Release.plist"; sourceTree = "<group>"; };
-		93CB6327259F163D00EFEE0F /* Info-Debug.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-Debug.plist"; sourceTree = "<group>"; };
-		93CB632A259F166B00EFEE0F /* Info-Profile.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-Profile.plist"; sourceTree = "<group>"; };
+		93CB6326259F163D00EFEE0F /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info.plist"; sourceTree = "<group>"; };
 		93D09B0625C013C70037A20F /* Chaldea.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Chaldea.entitlements; sourceTree = "<group>"; };
 		93D09B2325C34AEB0037A20F /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Main.strings; sourceTree = "<group>"; };
 		93D09B2425C34AEC0037A20F /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
@@ -181,9 +179,7 @@
 			isa = PBXGroup;
 			children = (
 				93D09B0625C013C70037A20F /* Chaldea.entitlements */,
-				93CB6327259F163D00EFEE0F /* Info-Debug.plist */,
-				93CB6326259F163D00EFEE0F /* Info-Release.plist */,
-				93CB632A259F166B00EFEE0F /* Info-Profile.plist */,
+				93CB6326259F163D00EFEE0F /* Info.plist */,
 				97C146FA1CF9000F007C117D /* Main.storyboard */,
 				97C146FD1CF9000F007C117D /* Assets.xcassets */,
 				97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */,
@@ -565,7 +561,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				INFOPLIST_FILE = "Chaldea/Info-$(CONFIGURATION).plist";
+				INFOPLIST_FILE = "Chaldea/Info.plist";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -838,7 +834,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				INFOPLIST_FILE = "Chaldea/Info-$(CONFIGURATION).plist";
+				INFOPLIST_FILE = "Chaldea/Info.plist";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -875,7 +871,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				INFOPLIST_FILE = "Chaldea/Info-$(CONFIGURATION).plist";
+				INFOPLIST_FILE = "Chaldea/Info.plist";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
 				LD_RUNPATH_SEARCH_PATHS = (
