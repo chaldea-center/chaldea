@@ -308,7 +308,7 @@ class ApiCacheManager {
             }
           }
           if (bytes != null && getCrc32(bytes).toString() == entry.crc) {
-            return SynchronousFuture(bytes);
+            return bytes;
           }
         }
 
@@ -321,7 +321,7 @@ class ApiCacheManager {
       var prevTask = _downloading[key];
       if (prevTask != null) {
         if (DateTime.now().difference(prevTask.startedAt) < const Duration(seconds: 30)) {
-          return prevTask.completer.future;
+          return await prevTask.completer.future;
         }
         print('api cancel timeout: $key');
         _downloading.remove(key);

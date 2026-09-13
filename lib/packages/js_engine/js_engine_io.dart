@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter_js/flutter_js.dart';
+import 'package:flutter_qjs_next/flutter_qjs.dart';
 
 import 'js_engine_interface.dart';
 
