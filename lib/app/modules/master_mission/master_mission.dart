@@ -189,6 +189,7 @@ class _MasterMissionPageState extends State<MasterMissionPage> with RegionBasedS
                 targetNum: clearCond.targetNum,
                 targetIds: clearCond.targetIds,
                 details: clearCond.details,
+                showMissionCondDetailExtraConds: false,
                 missions: masterMission.missions,
                 textScaleFactor: 0.8,
                 unknownMsg: mission.name,

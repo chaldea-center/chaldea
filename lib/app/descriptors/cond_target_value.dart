@@ -118,6 +118,14 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
           na: () => rich('Quest', quests(context), "available"),
           kr: null,
         );
+      case CondType.notQuestAvailable:
+        return localized(
+          jp: null,
+          cn: () => rich('关卡不可用', quests(context)),
+          tw: () => rich('關卡不可用', quests(context)),
+          na: () => rich('Quest', quests(context), "not available"),
+          kr: null,
+        );
       case CondType.svtLevel:
         return localized(
           jp: null,

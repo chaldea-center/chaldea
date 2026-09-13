@@ -8,6 +8,8 @@ import 'multi_entry.dart';
 class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
   final int? targetNum;
   final EventMissionConditionDetail detail;
+  final bool showMissionCondDetailExtraConds;
+
   final bool? _useAnd;
   @override
   final TextStyle? style;
@@ -25,6 +27,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
     super.key,
     required this.targetNum,
     required this.detail,
+    this.showMissionCondDetailExtraConds = true,
     this.style,
     this.textScaleFactor,
     this.leading,
@@ -321,6 +324,43 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
           na: () => rich('Use event item ', items(context), ' to clear any quest $targetNum times'),
           kr: null,
         );
+      case .battleMissionValue:
+        return localized(
+          jp: () => text('BattleMissionValue ${targetIds.join("/")} ≥$targetNum'),
+          cn: null,
+          tw: null,
+          na: null,
+          kr: null,
+        );
+      case .questClearWithSvtIndividualityNumAboveOnlyStartingMember:
+        if (targetIds.length < 2) break;
+        final traitSpan = traits(context, overrideIds: [targetIds[0]]);
+        final svtNum = targetIds[1];
+        return localized(
+          jp: () => rich('スタメンに', traitSpan, 'のサーヴァントを$svtNum騎以上編成してバトルを開始し、クエストを$targetNum回クリアせよ'),
+          cn: () => rich('在队伍内编入$svtNum骑', traitSpan, '从者作为首发队员，并完成关卡$targetNum次'),
+          tw: null,
+          na: () => rich('Put $svtNum servants with', traitSpan, ' in your Party and complete Quests $targetNum times'),
+          kr: null,
+        );
+      case .questClearWithTotalCostAbove:
+        final cost = targetIds.firstOrNull;
+        return localized(
+          jp: () => rich('総コスト$cost以上のパーティを編成して、クエストを$targetNum回クリアせよ'),
+          cn: () => rich('使用总COST$cost以上的队伍，完成关卡$targetNum次'),
+          tw: null,
+          na: () => rich('Use a Party with total cost above $cost and complete Quests $targetNum times'),
+          kr: null,
+        );
+      case .questClearWithTotalCostBelow:
+        final cost = targetIds.firstOrNull;
+        return localized(
+          jp: () => rich('総コスト$cost以下のパーティを編成して、クエストを$targetNum回クリアせよ'),
+          cn: () => rich('使用总COST$cost以下的队伍，完成关卡$targetNum次'),
+          tw: null,
+          na: () => rich('Use a Party with total cost under $cost and complete Quests $targetNum times'),
+          kr: null,
+        );
       // unused
       case EventMissionCondDetailType.battleSvtInDeck:
       case EventMissionCondDetailType.battleSvtEquipInDeck:
@@ -330,7 +370,6 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
       case EventMissionCondDetailType.questPhaseClearNumWarId:
       case EventMissionCondDetailType.questClearWithSvtInDeckNoneFollowerOnlyStartingMember:
       case EventMissionCondDetailType.purchaseShopNum:
-      case EventMissionCondDetailType.battleMissionValue:
       case null:
         break;
       case EventMissionCondDetailType.mapGimmickCountOnce:
@@ -343,11 +382,8 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
       case EventMissionCondDetailType.questClearWithSvtRarityEqual:
       case EventMissionCondDetailType.questClearWithSvtRarityAbove:
       case EventMissionCondDetailType.questClearWithSvtRarityBelow:
-      case EventMissionCondDetailType.questClearWithTotalCostAbove:
-      case EventMissionCondDetailType.questClearWithTotalCostBelow:
       case EventMissionCondDetailType.questClearWithTreasureDeviceTypeSvtOnly:
       case EventMissionCondDetailType.questClearWithSvtFriendshipRankAbove:
-      case EventMissionCondDetailType.questClearWithSvtIndividualityNumAboveOnlyStartingMember:
       case EventMissionCondDetailType.questClearWithSvtRarityEqualNumAboveOnlyStartingMember:
       case EventMissionCondDetailType.questClearWithSvtRarityAboveNumAboveOnlyStartingMember:
       case EventMissionCondDetailType.questClearWithSvtRarityBelowNumAboveOnlyStartingMember:
@@ -380,7 +416,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
     final eventIds = List<int>.of(detail.targetEventIds ?? []);
     final context = useContext();
     List<InlineSpan> extraSpans = [];
-    if (questTraits.isNotEmpty) {
+    if (showMissionCondDetailExtraConds && questTraits.isNotEmpty) {
       extraSpans.addAll(
         super.localized(
           jp: () => rich('(クエスト特性: ', MultiDescriptor.traits(context, questTraits), ')'),
@@ -391,7 +427,7 @@ class MissionCondDetailDescriptor extends HookWidget with DescriptorBase {
         ),
       );
     }
-    if (eventIds.isNotEmpty) {
+    if (showMissionCondDetailExtraConds && eventIds.isNotEmpty) {
       if (eventIds.length == 1 && eventIds.first == 0) {
         extraSpans.add(TextSpan(text: '(${S.current.main_story})'));
       } else if (eventIds.length == 1 && eventIds.first == eventId) {

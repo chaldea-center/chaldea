@@ -15,6 +15,7 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
   final List<int> targetIds;
   final List<EventMissionConditionDetail> details;
   final List<EventMission> missions;
+  final bool showMissionCondDetailExtraConds;
 
   /// logic among [details]
   @override
@@ -36,8 +37,9 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
     required this.condType,
     required this.targetNum,
     required this.targetIds,
-    List<EventMissionConditionDetail>? details,
+    this.details = const [],
     this.missions = const [],
+    this.showMissionCondDetailExtraConds = true,
     this.style,
     this.textScaleFactor,
     this.leading,
@@ -45,7 +47,7 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
     this.eventId,
     this.unknownMsg,
     this.padding,
-  }) : details = details ?? const [];
+  });
 
   bool _isPlayableAll(List<int> clsIds) {
     return kSvtClassIdsPlayableAlways.every((e) => clsIds.contains(e)) &&
@@ -59,6 +61,7 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
         return MissionCondDetailDescriptor(
           targetNum: targetNum,
           detail: details.first,
+          showMissionCondDetailExtraConds: showMissionCondDetailExtraConds,
           style: style,
           textScaleFactor: textScaleFactor,
           leading: leading,
@@ -81,6 +84,7 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
           MissionCondDetailDescriptor(
             targetNum: null,
             detail: details[index],
+            showMissionCondDetailExtraConds: showMissionCondDetailExtraConds,
             useAnd: details[index].useAnd,
             eventId: eventId,
             // unknownMsg: null,

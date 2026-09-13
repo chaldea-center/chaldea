@@ -1379,38 +1379,37 @@ class FuncDescriptor extends StatelessWidget {
         _addTraits(Transl.special.buffCheckSelf, func.traitVals);
       }
     }
-    if (func.funcType != FuncType.subState) {
-      final overwriteTvals = func.getOverwriteTvalsList();
-      List<InlineSpan> _traitSpans;
-      if (overwriteTvals.isNotEmpty) {
-        _traitSpans = SharedBuilder.traitsListSpans(context: context, traitsList: overwriteTvals);
-      } else if (func.traitVals.join(',') != func.functvals.join(',')) {
-        _traitSpans = SharedBuilder.traitSpans(context: context, traits: func.functvals);
-      } else {
-        _traitSpans = [];
-      }
-      String prefixWithTarget = Transl.special.funcTargetVals;
-      final targetTypeInt = vals?.FuncCheckTargetIndividualityTargetType;
-      if (targetTypeInt != null) {
-        final targetType = FuncTargetType.fromId(targetTypeInt);
-        prefixWithTarget =
-            "(${targetType == null ? 'Target$targetTypeInt' : Transl.funcTargetType(targetType).l})$prefixWithTarget";
-      }
 
-      List<InlineSpan> countConds = [];
-      for (final (v, op) in [
-        (vals?.FuncCheckTargetIndividualityCountEqual, '='),
-        (vals?.FuncCheckTargetIndividualityCountHigher, '≥'),
-        (vals?.FuncCheckTargetIndividualityCountLower, '≤'),
-      ]) {
-        if (v != null) {
-          countConds.add(TextSpan(text: '$op$v'));
-        }
-      }
+    final overwriteTvals = func.getOverwriteTvalsList();
+    List<InlineSpan> _traitSpans;
+    if (overwriteTvals.isNotEmpty) {
+      _traitSpans = SharedBuilder.traitsListSpans(context: context, traitsList: overwriteTvals);
+    } else if (func.traitVals.join(',') != func.functvals.join(',')) {
+      _traitSpans = SharedBuilder.traitSpans(context: context, traits: func.functvals);
+    } else {
+      _traitSpans = [];
+    }
+    String prefixWithTarget = Transl.special.funcTargetVals;
+    final targetTypeInt = vals?.FuncCheckTargetIndividualityTargetType;
+    if (targetTypeInt != null) {
+      final targetType = FuncTargetType.fromId(targetTypeInt);
+      prefixWithTarget =
+          "(${targetType == null ? 'Target$targetTypeInt' : Transl.funcTargetType(targetType).l})$prefixWithTarget";
+    }
 
-      if (_traitSpans.isNotEmpty) {
-        _condSpans.add([TextSpan(text: prefixWithTarget), ..._traitSpans, ...countConds, const TextSpan(text: ' ')]);
+    List<InlineSpan> countConds = [];
+    for (final (v, op) in [
+      (vals?.FuncCheckTargetIndividualityCountEqual, '='),
+      (vals?.FuncCheckTargetIndividualityCountHigher, '≥'),
+      (vals?.FuncCheckTargetIndividualityCountLower, '≤'),
+    ]) {
+      if (v != null) {
+        countConds.add(TextSpan(text: '$op$v'));
       }
+    }
+
+    if (_traitSpans.isNotEmpty) {
+      _condSpans.add([TextSpan(text: prefixWithTarget), ..._traitSpans, ...countConds, const TextSpan(text: ' ')]);
     }
     // if (func.funcType != FuncType.subState ||
     //     func.vals.map((e) => e.id).join(',') != func.functvals.map((e) => e.id).join(',')) {
