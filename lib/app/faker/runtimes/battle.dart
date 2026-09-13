@@ -96,6 +96,7 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
 
       final confirm = await runtime.showLocalDialog(
         SimpleConfirmDialog(
+          scrollable: true,
           title: const Text('Battle Mission Values'),
           content: Text(
             'Submit with each battle result (win):\n'

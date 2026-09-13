@@ -534,6 +534,14 @@ class QuestPhase extends Quest {
 
   bool get isUseGrandBoard => extraDetail?.isUseGrandBoard == 1;
 
+  int getSupportInitDeckIndex() {
+    final supportInitDeckIndex = extraDetail?.eventDeckIndex;
+    if (supportInitDeckIndex != null) return supportInitDeckIndex;
+    if (flags.contains(QuestFlag.eventDeckNoSupport)) return -1;
+    if (flags.contains(QuestFlag.supportSvtMultipleSet)) return 6;
+    return 3;
+  }
+
   @override
   Transl<String, String> get lSpot {
     final spot = this.spot;
@@ -1835,6 +1843,7 @@ class QuestPhaseExtraDetail with DataScriptBase {
   int? get isUseGrandBoard => getScript('isUseGrandBoard');
   int? get isInfinityCost => getScript('isInfinityCost');
   String? get battleFinishMovie => getScript("battleFinishMovie");
+  int? get eventDeckIndex => getScript("eventDeckIndex"); // Support Init Deck Index
 
   QuestPhaseExtraDetail({
     this.questSelect,

@@ -2923,14 +2923,12 @@ class DeckServantEntity {
 
   factory DeckServantEntity.empty({
     required int userEquipId,
-    required bool eventDeckNoSupport,
-    required bool supportSvtMultipleSet,
+    int? supportInitDeckIndex = 3, // null/-1 for invalid
   }) {
-    final int? supportPos = eventDeckNoSupport ? null : (supportSvtMultipleSet ? 6 : 3);
     return DeckServantEntity(
       svts: List.generate(6, (index) {
         final pos = index + 1;
-        if (pos == supportPos) {
+        if (pos == supportInitDeckIndex) {
           return DeckServantData.support(pos: pos);
         }
         return DeckServantData.user(pos: pos);

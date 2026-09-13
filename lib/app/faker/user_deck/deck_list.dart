@@ -158,10 +158,7 @@ class UserDeckListPageState extends State<UserDeckListPage> {
                             deckNo: eventParam.deckNo,
                             deckInfo: DeckServantEntity.empty(
                               userEquipId: mstData.user?.userEquipId ?? mstData.userEquip.last.id,
-                              eventDeckNoSupport:
-                                  eventParam.questPhase?.flags.contains(QuestFlag.eventDeckNoSupport) == true,
-                              supportSvtMultipleSet:
-                                  eventParam.questPhase?.flags.contains(QuestFlag.supportSvtMultipleSet) == true,
+                              supportInitDeckIndex: eventParam.questPhase?.getSupportInitDeckIndex(),
                             ),
                           ),
                         ),

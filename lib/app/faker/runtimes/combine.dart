@@ -123,7 +123,9 @@ class FakerRuntimeCombine extends FakerRuntimeBase {
       if (baseUserSvt == null) throw SilentException('user svt ${options.baseUserSvtId} not found');
       final baseSvt = baseUserSvt.dbSvt;
       if (baseSvt == null) throw SilentException('svt ${baseUserSvt.svtId} not found');
-      if (baseSvt.rarity == 0 || baseSvt.type != SvtType.normal || baseSvt.collectionNo == 0) {
+      if (baseSvt.rarity == 0 ||
+          !const [SvtType.normal, SvtType.heroine].contains(baseSvt.type) ||
+          baseSvt.collectionNo == 0) {
         throw SilentException('Invalid base svt');
       }
       final maxLv = baseUserSvt.maxLv;

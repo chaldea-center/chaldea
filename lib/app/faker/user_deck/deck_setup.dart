@@ -84,8 +84,7 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
     } else {
       deckInfo = DeckServantEntity.empty(
         userEquipId: mstData.user?.userEquipId ?? 0,
-        eventDeckNoSupport: eventDeckParam?.questPhase?.flags.contains(QuestFlag.eventDeckNoSupport) == true,
-        supportSvtMultipleSet: eventDeckParam?.questPhase?.flags.contains(QuestFlag.supportSvtMultipleSet) == true,
+        supportInitDeckIndex: eventDeckParam?.questPhase?.getSupportInitDeckIndex(),
       );
     }
   }
