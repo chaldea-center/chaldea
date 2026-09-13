@@ -5,10 +5,9 @@ import 'package:chaldea/utils/extension.dart';
 import '../db.dart';
 import '_helper.dart';
 import 'common.dart';
-import 'quest.dart' show Gift, QuestAfterClearType;
+import 'quest.dart' show Gift;
 import 'servant.dart';
 import 'skill.dart';
-import 'war.dart' show WarId;
 
 part '../../generated/models/gamedata/const_data.g.dart';
 
@@ -58,8 +57,9 @@ class ConstGameData {
   final List<int> randomEnemyQuests;
   final Map<int, List<int>> svtFaceLimits;
   final Map<int, int> extraWarEventMapping;
+  @protected
   final Map<int, int> sameQuestRemap;
-  late final Map<int, int> sameQuestRemapReverse = {for (final (k, v) in sameQuestRemap.items) v: k};
+  late final Map<int, Set<int>> sameQuestRemapList = {};
   final Map<int, List<int>> subEvents;
   final Map<String, List<String>> routeSelects;
   final Map<int, int> shopDailyTargets;
@@ -118,6 +118,15 @@ class ConstGameData {
     this.battlePoints = const {},
   }) : buffTypeActionMap = {} {
     _fixBuffActions();
+    // sameQuestRemap: multiple keys may map to same value
+    for (final (k, v) in sameQuestRemap.items) {
+      (sameQuestRemapList[v] ??= {}).addAll([k, v]);
+    }
+    for (final vv in sameQuestRemapList.values.toList()) {
+      for (final v in vv) {
+        (sameQuestRemapList[v] ??= {}).addAll(vv);
+      }
+    }
   }
 
   void _fixBuffActions() {
@@ -212,23 +221,10 @@ class ConstGameData {
   }
 
   List<int> getSimilarQuestIds(int questId) {
-    final ids = [sameQuestRemap[questId], sameQuestRemapReverse[questId]].whereType<int>().toList();
-    if (ids.isNotEmpty) return ids;
-    final quest = db.gameData.quests[questId];
-    final war = quest?.war;
-    if (quest != null &&
-        war != null &&
-        war.parentWarId == WarId.grandBoardWar &&
-        quest.afterClear == QuestAfterClearType.repeatLast) {
-      final similarQuest = war.quests.firstWhereOrNull(
-        (e) =>
-            e.id != questId &&
-            e.afterClear == quest.afterClear &&
-            e.name == quest.name &&
-            e.recommendLv == quest.recommendLv,
-      );
-      if (similarQuest != null) ids.add(similarQuest.id);
-    }
+    // including questId self
+    final ids = sameQuestRemapList[questId]?.toList() ?? [];
+    assert(ids.length != 1, '$questId->$ids');
+    if (ids.length == 1) return [];
     return ids;
   }
 

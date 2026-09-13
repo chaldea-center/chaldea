@@ -458,11 +458,12 @@ class _SimulationPreviewState extends State<SimulationPreview> {
           text: '${S.current.quest_content_same_warning}: ',
           children: [
             for (final questId in sameQuestIds)
-              SharedBuilder.textButtonSpan(
-                context: context,
-                text: '$questId ',
-                onTap: () => router.push(url: Routes.questI(questId)),
-              ),
+              if (questId != questPhase?.id)
+                SharedBuilder.textButtonSpan(
+                  context: context,
+                  text: '$questId ',
+                  onTap: () => router.push(url: Routes.questI(questId)),
+                ),
           ],
         ),
     ];

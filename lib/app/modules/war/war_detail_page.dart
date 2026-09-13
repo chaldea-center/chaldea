@@ -205,9 +205,11 @@ class _WarDetailPageState extends State<WarDetailPage> with RegionBasedState<Nic
           candidateQuests.retainWhere((e) => e.recommendLevel == maxLv);
 
           final questIds = candidateQuests.map((e) => e.id).toSet();
-          for (final (k, v) in ConstData.sameQuestRemap.items) {
-            if (k != v && questIds.contains(k) && questIds.contains(v)) {
-              questIds.remove(min(k, v));
+          for (final (_, vv) in ConstData.sameQuestRemapList.items) {
+            Set<int> sameQuestIds = questIds.intersection(vv);
+            if (sameQuestIds.isNotEmpty) {
+              sameQuestIds.remove(Maths.max<int>(sameQuestIds));
+              questIds.removeAll(sameQuestIds);
             }
           }
           candidateQuests.retainWhere((e) => questIds.contains(e.id));

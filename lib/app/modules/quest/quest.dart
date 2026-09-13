@@ -241,11 +241,12 @@ class _QuestDetailPageState extends State<QuestDetailPage> {
                         text: '${S.current.quest_content_same_warning}: ',
                         children: [
                           for (final questId in sameQuestIds)
-                            SharedBuilder.textButtonSpan(
-                              context: context,
-                              text: '$questId ',
-                              onTap: () => router.push(url: Routes.questI(questId)),
-                            ),
+                            if (questId != quest.id)
+                              SharedBuilder.textButtonSpan(
+                                context: context,
+                                text: '$questId ',
+                                onTap: () => router.push(url: Routes.questI(questId)),
+                              ),
                         ],
                       ),
                       style: TextStyle(color: Colors.amber),
