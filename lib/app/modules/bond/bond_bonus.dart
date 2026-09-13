@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/userdata/battle.dart';
 import 'package:chaldea/widgets/widgets.dart';
@@ -12,31 +14,21 @@ class BondBonusHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tabs = [
+      (Tab(text: S.current.craft_essence), KeepAliveBuilder(builder: (_) => EquipBondBonusTab())),
+      (Tab(text: S.current.servant), KeepAliveBuilder(builder: (_) => ServantBondCETableTab())),
+      (Tab(text: S.current.team), KeepAliveBuilder(builder: (_) => FormationBondTab(option: option))),
+      if (kDebugMode) (Tab(text: S.current.bond_solver), KeepAliveBuilder(builder: (_) => const BondSolverTab())),
+    ];
     return DefaultTabController(
-      length: 4,
+      length: tabs.length,
       initialIndex: option == null ? 0 : 2,
       child: Scaffold(
         appBar: AppBar(
           title: Text(S.current.bond_bonus),
-          bottom: FixedHeight.tabBar(
-            TabBar(
-              tabs: [
-                Tab(text: S.current.craft_essence),
-                Tab(text: S.current.servant),
-                Tab(text: S.current.team),
-                Tab(text: S.current.bond_solver),
-              ],
-            ),
-          ),
+          bottom: FixedHeight.tabBar(TabBar(tabs: tabs.map((e) => e.$1).toList())),
         ),
-        body: TabBarView(
-          children: [
-            KeepAliveBuilder(builder: (_) => EquipBondBonusTab()),
-            KeepAliveBuilder(builder: (_) => ServantBondCETableTab()),
-            KeepAliveBuilder(builder: (_) => FormationBondTab(option: option)),
-            KeepAliveBuilder(builder: (_) => const BondSolverTab()),
-          ],
-        ),
+        body: TabBarView(children: tabs.map((e) => e.$2).toList()),
       ),
     );
   }

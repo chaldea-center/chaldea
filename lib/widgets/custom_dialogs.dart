@@ -31,9 +31,8 @@ class InputCancelOkDialog extends StatefulWidget {
     this.validate,
     this.onSubmit,
     this.keyboardType,
-    bool? autofocus,
-  }) : showNumButton = false,
-       autofocus = autofocus ?? initValue == null;
+    this.autofocus = true,
+  }) : showNumButton = false;
 
   InputCancelOkDialog.number({
     super.key,
@@ -47,10 +46,9 @@ class InputCancelOkDialog extends StatefulWidget {
     bool Function(int v)? validate,
     ValueChanged<int>? onSubmit,
     this.keyboardType = TextInputType.number,
-    bool? autofocus,
+    this.autofocus = true,
     this.showNumButton = true,
   }) : initValue = initValue?.toString(),
-       autofocus = autofocus ?? initValue == null,
        validate = ((String s) {
          final v = int.parse(s);
          if (validate != null) return validate(v);
