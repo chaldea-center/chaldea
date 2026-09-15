@@ -229,18 +229,14 @@ class ConstGameData {
   }
 
   List<Quest> collapseQuests(Iterable<Quest> quests) {
-    final grouped = <int, Quest>{};
-    for (final quest in quests) {
-      final sameQuestIds = getSimilarQuestIds(quest.id)..sort();
-      final defaultId = sameQuestIds.isEmpty ? quest.id : sameQuestIds.first;
-      if (!grouped.containsKey(defaultId) || quest.id == defaultId) {
-        grouped[defaultId] = quest;
+    final grouped = <int, Quest>{for (final quest in quests) quest.id: quest};
+    for (final quest in grouped.values.toList()) {
+      final remapId = sameQuestRemap[quest.id];
+      if (grouped.containsKey(remapId) && remapId != quest.id) {
+        grouped.remove(quest.id);
       }
     }
-    return [
-      for (final entry in grouped.entries)
-        if (entry.value.id == entry.key) entry.value else db.gameData.quests[entry.key] ?? entry.value,
-    ];
+    return grouped.values.toList();
   }
 
   bool checkPlusTypes(List<BuffAction> actions, BuffType type) {
