@@ -22,9 +22,9 @@ import 'filter_data.dart';
 import 'remote_config.dart';
 import 'version.dart';
 
-export 'remote_config.dart';
-export 'filter_data.dart';
 export 'battle.dart';
+export 'filter_data.dart';
+export 'remote_config.dart';
 
 part '../../generated/models/userdata/local_settings.g.dart';
 

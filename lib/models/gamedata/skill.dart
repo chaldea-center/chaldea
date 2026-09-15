@@ -15,6 +15,7 @@ import 'gamedata.dart';
 
 export 'func.dart';
 export 'vals.dart';
+
 part '../../generated/models/gamedata/skill.g.dart';
 
 const kActiveSkillNums = [1, 2, 3];
