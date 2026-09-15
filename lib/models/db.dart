@@ -8,6 +8,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
@@ -25,8 +26,6 @@ import 'gamedata/gamedata.dart';
 import 'paths.dart';
 import 'userdata/local_settings.dart';
 import 'userdata/userdata.dart';
-
-import 'package:flutter_web_plugins/url_strategy.dart'; // ignore: depend_on_referenced_packages
 
 void _emptyCallback() {}
 
