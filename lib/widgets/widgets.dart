@@ -1,7 +1,7 @@
-export 'package:material_ui/material_ui.dart';
 export 'package:flutter_hooks/flutter_hooks.dart';
+export 'package:material_ui/material_ui.dart';
+
 export 'after_layout.dart';
-export 'theme.dart';
 export 'custom_dialogs.dart';
 export 'custom_table.dart';
 export 'custom_tile.dart';
@@ -21,7 +21,8 @@ export 'searchable_list_state.dart';
 export 'simple_accordion.dart';
 export 'slider.dart';
 export 'sliver_grid.dart';
+export 'text.dart';
+export 'theme.dart';
 export 'tile_items.dart';
 export 'timer_update.dart';
-export 'text.dart';
 export 'widget_builders.dart';
