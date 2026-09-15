@@ -1,2 +1,1 @@
-#include? "Pods/Target Support Files/Pods-Chaldea/Pods-Chaldea.release.xcconfig"
 #include "ephemeral/Flutter-Generated.xcconfig"

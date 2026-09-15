@@ -1,4 +1,3 @@
 #include "../../Flutter/Flutter-Debug.xcconfig"
 #include "Warnings.xcconfig"
 #include "AppInfo.xcconfig"
-#include "Pods/Target Support Files/Pods-Chaldea/Pods-Chaldea.debug.xcconfig"
