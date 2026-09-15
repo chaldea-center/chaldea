@@ -449,9 +449,23 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   }
 
   Widget questDetail() {
+    final sameQuestIds = ConstData.getSimilarQuestIds(questPhase?.id ?? 0);
     List<TextSpan> hints = [
       if (questPhase != null && questPhase!.enemyHashes.length > 1)
         TextSpan(text: S.current.laplace_enemy_multi_ver_hint),
+      if (sameQuestIds.isNotEmpty)
+        TextSpan(
+          text: '${S.current.quest_content_same_warning}: ',
+          children: [
+            for (final questId in sameQuestIds)
+              if (questId != questPhase?.id)
+                SharedBuilder.textButtonSpan(
+                  context: context,
+                  text: '$questId ',
+                  onTap: () => router.push(url: Routes.questI(questId)),
+                ),
+          ],
+        ),
     ];
     return Column(
       mainAxisSize: MainAxisSize.min,
