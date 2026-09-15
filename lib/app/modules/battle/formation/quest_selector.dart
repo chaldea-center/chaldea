@@ -141,7 +141,7 @@ class _FQSelectDropdownState extends State<FQSelectDropdown> {
   }
 
   Widget questBtn() {
-    final quests = options[eventWarId]?.quests ?? [];
+    final quests = ConstData.collapseQuests(options[eventWarId]?.quests ?? <Quest>[]);
     if (!quests.contains(quest)) quest = null;
     return DropdownButton<Quest>(
       // isDense: true,
