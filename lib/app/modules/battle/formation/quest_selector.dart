@@ -141,8 +141,15 @@ class _FQSelectDropdownState extends State<FQSelectDropdown> {
   }
 
   Widget questBtn() {
-    final quests = options[eventWarId]?.quests ?? [];
-    if (!quests.contains(quest)) quest = null;
+    final allQuests = options[eventWarId]?.quests ?? <Quest>[];
+    if (!allQuests.contains(quest)) quest = null;
+    final quests = ConstData.collapseQuests(allQuests);
+    // Preserve the actual entry ID when opening an existing formation.
+    if (quest != null) {
+      final sameQuestIds = ConstData.getSimilarQuestIds(quest!.id);
+      final index = quests.indexWhere((q) => sameQuestIds.isEmpty ? q.id == quest!.id : sameQuestIds.contains(q.id));
+      if (index >= 0) quests[index] = quest!;
+    }
     return DropdownButton<Quest>(
       // isDense: true,
       isExpanded: true,

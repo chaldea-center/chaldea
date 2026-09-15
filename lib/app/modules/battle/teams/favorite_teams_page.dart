@@ -25,7 +25,7 @@ class _FavoriteTeamsPageState extends State<FavoriteTeamsPage> {
       (e) => [e.warId < 1000 ? -e.warId : -(e.war?.event?.startedAt ?? e.event?.startedAt ?? e.openedAt), e.priority],
     );
     quests.sort((a, b) => -Quest.compare(a, b, spotLayer: true));
-    return quests;
+    return ConstData.collapseQuests(quests);
   }
 
   @override
@@ -54,7 +54,8 @@ class _FavoriteTeamsPageState extends State<FavoriteTeamsPage> {
   }
 
   Widget listItemBuilder(BuildContext context, Quest quest) {
-    final teamIds = favoriteTeams[quest.id]?.toList() ?? [];
+    final questIds = {quest.id, ...ConstData.getSimilarQuestIds(quest.id)};
+    final teamIds = {for (final id in questIds) ...?favoriteTeams[id]}.toList();
     return ListTile(
       dense: true,
       leading: CachedImage(imageUrl: quest.spot?.shownImage, placeholder: (context, url) => const SizedBox()),
@@ -100,7 +101,9 @@ class _FavoriteTeamsPageState extends State<FavoriteTeamsPage> {
                       title: Text(S.current.delete),
                       content: Text(id.toString()),
                       onTapOk: () {
-                        favoriteTeams[quest.id]?.remove(id);
+                        for (final questId in {quest.id, ...ConstData.getSimilarQuestIds(quest.id)}) {
+                          favoriteTeams[questId]?.remove(id);
+                        }
                         if (mounted) Navigator.pop(context);
                       },
                     ).showDialog(context);

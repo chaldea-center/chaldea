@@ -5,7 +5,7 @@ import 'package:chaldea/utils/extension.dart';
 import '../db.dart';
 import '_helper.dart';
 import 'common.dart';
-import 'quest.dart' show Gift;
+import 'quest.dart' show Gift, Quest;
 import 'servant.dart';
 import 'skill.dart';
 
@@ -226,6 +226,21 @@ class ConstGameData {
     assert(ids.length != 1, '$questId->$ids');
     if (ids.length == 1) return [];
     return ids;
+  }
+
+  List<Quest> collapseQuests(Iterable<Quest> quests) {
+    final grouped = <int, Quest>{};
+    for (final quest in quests) {
+      final sameQuestIds = getSimilarQuestIds(quest.id)..sort();
+      final defaultId = sameQuestIds.isEmpty ? quest.id : sameQuestIds.first;
+      if (!grouped.containsKey(defaultId) || quest.id == defaultId) {
+        grouped[defaultId] = quest;
+      }
+    }
+    return [
+      for (final entry in grouped.entries)
+        if (entry.value.id == entry.key) entry.value else db.gameData.quests[entry.key] ?? entry.value,
+    ];
   }
 
   bool checkPlusTypes(List<BuffAction> actions, BuffType type) {
