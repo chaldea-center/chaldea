@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_easyloading/src/runtime.dart'; // ignore: implementation_imports
 import 'package:intl/intl.dart' hide TextDirection;
 import 'package:material_ui/material_ui.dart' as material;
 import 'package:material_ui/material_ui.dart';
@@ -13,8 +14,6 @@ import 'package:material_ui/material_ui.dart';
 import '../packages/app_info.dart';
 import '../packages/platform/platform.dart';
 import 'constants.dart';
-
-import 'package:flutter_easyloading/src/runtime.dart'; // ignore: implementation_imports
 
 // ignore: camel_case_types
 typedef int32_t = int;

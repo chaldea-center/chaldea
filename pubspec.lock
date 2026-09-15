@@ -13,10 +13,10 @@ packages:
     dependency: "direct main"
     description:
       name: alarm
-      sha256: ec617bf6e22a3ed8ed2b722c911dca60761a0405e840e3c2352ccf2eb5bd5b0b
+      sha256: bcf2d302976f5009f6634ebcae253869af454b45410136a3a91de04d3bc21060
       url: "https://pub.dev"
     source: hosted
-    version: "5.13.0"
+    version: "5.13.1"
   analyzer:
     dependency: transitive
     description:
@@ -29,10 +29,10 @@ packages:
     dependency: transitive
     description:
       name: android_file_picker
-      sha256: "014c74ab48d452c3252465682375a7fe6ddf56abb908ec361f207a3c4ffb2444"
+      sha256: "14ab27769b54c48d5a8a71aa9858372b7a3ae77572ea0a8aee744643c5d8c53d"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.1"
+    version: "2.0.0"
   android_id:
     dependency: "direct main"
     description:
@@ -45,10 +45,10 @@ packages:
     dependency: "direct main"
     description:
       name: archive
-      sha256: ace891da0862b0e4cabbb064ee3fd87b2728b898949fdb366d83fe98342c9f19
+      sha256: "6c5bcd986e06b94e3c40244af471750840a3d2341d1f9763a1100a14add517b4"
       url: "https://pub.dev"
     source: hosted
-    version: "4.2.0"
+    version: "4.3.0"
   args:
     dependency: "direct main"
     description:
@@ -429,42 +429,42 @@ packages:
     dependency: "direct main"
     description:
       name: file_picker
-      sha256: "9be6aac79508dbcf8dac80a4fb20f27ce6f910837ca27e3670b9295995cc0110"
+      sha256: "98c0b156b6380ba55bc767a14e2e6b3feb246e713ad40092424596fa79005bea"
       url: "https://pub.dev"
     source: hosted
-    version: "12.3.0"
+    version: "13.1.0"
   file_picker_darwin:
     dependency: transitive
     description:
       name: file_picker_darwin
-      sha256: "59fa5394cfa5b6dc8bf491630cb17077b77b844adbb840df371e7be5355d6cf6"
+      sha256: deb3ff69d58656b885c85bc1627f09ecb79860f272a5e7577149582ede4dce5d
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.0"
+    version: "2.1.0"
   file_picker_linux:
     dependency: transitive
     description:
       name: file_picker_linux
-      sha256: bd52ff1e0048f29df95f913c55ad2991c72791d93e6c42241912c4bdee946cb9
+      sha256: e7db600f50672ce5ebbe422ac0906e0f3d2a476188cc93e7126afee12bf08063
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.0"
+    version: "2.0.0"
   file_picker_platform_interface:
     dependency: transitive
     description:
       name: file_picker_platform_interface
-      sha256: "0355558fd9af6da499d18e333d6b3beb44b0bf19e00933fccd15d18eb8d0e9ca"
+      sha256: bbdc085a6f168e63f147e9ce8988f79fa0800a58e7f25a48f762c60837107ba5
       url: "https://pub.dev"
     source: hosted
-    version: "3.4.0"
+    version: "4.0.0"
   file_picker_web:
     dependency: transitive
     description:
       name: file_picker_web
-      sha256: "935560a9d29fa6f006f2855addebb88e88d438e13627d4cc24187033c106f227"
+      sha256: b3004268da0c1b52baa18df430e7ec4438194de855a807d26b447cbf07ef3496
       url: "https://pub.dev"
     source: hosted
-    version: "3.1.0"
+    version: "4.0.0"
   fixnum:
     dependency: transitive
     description:
@@ -484,12 +484,11 @@ packages:
   flex_color_scheme:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "63963337e97719f7d6db5bddc976738dde32a67f"
-      url: "https://github.com/IiemB/flex_color_scheme"
-    source: git
-    version: "8.4.0"
+      name: flex_color_scheme
+      sha256: "77973145524ae7aab669cd1debe4971f4ec256771b205f3da1ac33f147df5f79"
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.0.0"
   flex_seed_scheme:
     dependency: transitive
     description:
@@ -543,6 +542,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.21.3+1"
+  flutter_js:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: migrate-to-spm
+      resolved-ref: dbfc63824b473978d0d974c10f8d27c7601c6d15
+      url: "https://github.com/ElvynForge/flutter_js.git"
+    source: git
+    version: "0.8.7"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -620,14 +628,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.35"
-  flutter_qjs_next:
-    dependency: "direct main"
-    description:
-      name: flutter_qjs_next
-      sha256: "78950478c8dc9f32f921838270a4808ec6aa6151b2ca6cf622b54cfb65f7cb87"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.2"
   flutter_spinkit:
     dependency: transitive
     description:
@@ -658,7 +658,7 @@ packages:
     source: hosted
     version: "5.1.0"
   flutter_web_plugins:
-    dependency: transitive
+    dependency: "direct main"
     description: flutter
     source: sdk
     version: "0.0.0"
@@ -762,19 +762,10 @@ packages:
     dependency: "direct main"
     description:
       name: image
-      sha256: "1976370a4df3091bb0f72409c187ad1f9132a818bc6b95ca59c0bae1c75c688e"
+      sha256: a1e7f4951e538a568e14b856702afc9ae1d2f4b202daced8d22c1b9cd211ce89
       url: "https://pub.dev"
     source: hosted
-    version: "4.9.2"
-  import_sorter:
-    dependency: "direct dev"
-    description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "1a4a9abad2ba48bb48da87d43104c8ab1e798acf"
-      url: "https://github.com/chaldea-center/import_sorter.git"
-    source: git
-    version: "4.6.0"
+    version: "4.10.1"
   intl:
     dependency: "direct main"
     description:
@@ -788,7 +779,7 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "7b483b0186661f17e205e4438ff8661f34ee9a39"
+      resolved-ref: "765ce1753c6e4875c899495b956d2c4422e166fc"
       url: "https://github.com/chaldea-center/intl_utils.git"
     source: git
     version: "2.8.16"
@@ -1557,6 +1548,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
+  sync_http:
+    dependency: transitive
+    description:
+      name: sync_http
+      sha256: "7f0cd72eca000d2e026bcd6f990b81d0ca06022ef4e32fb257b30d3d1014a961"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.1"
   synchronized:
     dependency: transitive
     description:
@@ -1581,6 +1580,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.12"
+  tidy_imports:
+    dependency: "direct dev"
+    description:
+      name: tidy_imports
+      sha256: "4e87d8f9cc256dcc5888fb723222c75914c3b4c57b25920486ad544e5f663289"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.4.0"
   timezone:
     dependency: "direct main"
     description:
@@ -1785,10 +1792,10 @@ packages:
     dependency: "direct main"
     description:
       name: video_player_win
-      sha256: a4caca55ead1eb469d10060592e7ecdcbcd4493c6e2b63e4e666ff5446c790f1
+      sha256: df03760c1498ee0c0efe2688b302c331acf46489e9821761d1adb137148502f1
       url: "https://pub.dev"
     source: hosted
-    version: "3.2.2"
+    version: "3.3.0"
   vm_service:
     dependency: transitive
     description:
@@ -1873,10 +1880,10 @@ packages:
     dependency: transitive
     description:
       name: windows_file_picker
-      sha256: "62e6e6e115231d1d1d71c7b5883b4091ce3e0190e49548dfb0ff8cba8d91ad96"
+      sha256: "9f3aa833068b09e380fdc59560ad260a4a14e9397173abb533699f967443602e"
       url: "https://pub.dev"
     source: hosted
-    version: "1.3.0"
+    version: "2.0.0"
   worker_manager:
     dependency: "direct main"
     description:
