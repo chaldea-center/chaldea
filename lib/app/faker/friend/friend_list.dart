@@ -4,6 +4,7 @@ import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/models/gamedata/mst_tables.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
+
 import '../runtime.dart';
 
 class FriendListPage extends StatefulWidget {

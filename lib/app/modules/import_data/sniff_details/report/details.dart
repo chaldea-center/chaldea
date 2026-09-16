@@ -9,6 +9,7 @@ import 'package:chaldea/utils/constants.dart';
 import 'package:chaldea/utils/extension.dart';
 import 'package:chaldea/utils/url.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import 'report_data.dart';
 
 class UserGachaListPage extends StatelessWidget {

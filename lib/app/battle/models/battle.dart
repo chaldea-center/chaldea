@@ -17,6 +17,7 @@ import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '../functions/function_executor.dart';
 import '../interactions/_delegate.dart';
 import '../interactions/choose_targets.dart';
@@ -111,11 +112,11 @@ class BattleData {
       ? onFieldAllyServants[playerTargetIndex]
       : null;
 
-  BattleServantData? getTargetedAlly(final BattleServantData? svt, {bool defaultToPlayer = true}) {
+  BattleServantData? getTargetedAlly(BattleServantData? svt, {bool defaultToPlayer = true}) {
     return svt?.isPlayer ?? defaultToPlayer ? targetedPlayer : targetedEnemy;
   }
 
-  BattleServantData? getTargetedEnemy(final BattleServantData? svt, {bool defaultToPlayer = true}) {
+  BattleServantData? getTargetedEnemy(BattleServantData? svt, {bool defaultToPlayer = true}) {
     return svt?.isPlayer ?? defaultToPlayer ? targetedEnemy : targetedPlayer;
   }
 
@@ -202,15 +203,15 @@ class BattleData {
   final List<List<Map<int, bool>?>> _functionResultsStack = [];
   final List<Map<int, bool>> _curFuncResults = [];
 
-  void setFuncResult(final int uniqueId, final bool result) {
+  void setFuncResult(int uniqueId, bool result) {
     _curFuncResults.last[uniqueId] = result;
   }
 
-  bool getCurFuncResult(final int uniqueId) {
+  bool getCurFuncResult(int uniqueId) {
     return _curFuncResults.last[uniqueId] ?? false;
   }
 
-  Future<T> withFunctions<T>(final FutureOr<T> Function() onExecute) async {
+  Future<T> withFunctions<T>(FutureOr<T> Function() onExecute) async {
     final sanityCheck = _functionResultsStack.length;
     final List<Map<int, bool>?> funcsStacks = [];
     try {
@@ -222,7 +223,7 @@ class BattleData {
     }
   }
 
-  Future<T> withFunction<T>(final FutureOr<T> Function() onExecute) async {
+  Future<T> withFunction<T>(FutureOr<T> Function() onExecute) async {
     final sanityCheckCurFuncResults = _curFuncResults.length;
     final Map<int, bool> funcStacks = {};
     try {
@@ -234,7 +235,7 @@ class BattleData {
     }
   }
 
-  Future<T> withAction<T>(final FutureOr<T> Function() onExecute) async {
+  Future<T> withAction<T>(FutureOr<T> Function() onExecute) async {
     checkDuplicateFuncData.clear();
     try {
       return await onExecute();
@@ -251,7 +252,7 @@ class BattleData {
   // this is for logging only
   NiceFunction? curFunc;
 
-  void updateLastFuncResults(final int funcId, final int funcIndex) {
+  void updateLastFuncResults(int funcId, int funcIndex) {
     functionResults.add(HashMap<int, bool>.from(_curFuncResults.last));
     if (checkDuplicateFuncData[funcIndex] == null) {
       checkDuplicateFuncData[funcIndex] = {};
@@ -266,11 +267,7 @@ class BattleData {
 
   bool get isBattleFinished => nonnullEnemies.isEmpty || nonnullPlayers.isEmpty;
 
-  Future<void> init(
-    final QuestPhase quest,
-    final List<PlayerSvtData?> playerSettings,
-    final MysticCodeData? mysticCodeData,
-  ) async {
+  Future<void> init(QuestPhase quest, List<PlayerSvtData?> playerSettings, MysticCodeData? mysticCodeData) async {
     _copyRateUpEnemies(quest);
     niceQuest = quest;
     waveCount = 1;
@@ -416,7 +413,7 @@ class BattleData {
   }
 
   /// after init or shift, call battleData.initActorSkills to preserve skill order
-  Future<void> initActorSkills(final List<BattleServantData?> allActors) async {
+  Future<void> initActorSkills(List<BattleServantData?> allActors) async {
     for (final actor in allActors) {
       await actor?.activateClassPassive(this);
       await actor?.activateClassBoard(this);
@@ -452,11 +449,11 @@ class BattleData {
     }
   }
 
-  int cardDeckIndex(final BattleServantData svt, final CommandCardData card) {
+  int cardDeckIndex(BattleServantData svt, CommandCardData card) {
     return svt.fieldIndex * 5 + card.cardIndex;
   }
 
-  bool cardInDeck(final BattleServantData svt, final CommandCardData card) {
+  bool cardInDeck(BattleServantData svt, CommandCardData card) {
     return currentCards.contains(cardDeckIndex(svt, card));
   }
 
@@ -575,7 +572,7 @@ class BattleData {
     return true;
   }
 
-  Future<void> _replenishActors({final bool replenishAlly = true, final bool replenishEnemy = true}) async {
+  Future<void> _replenishActors({bool replenishAlly = true, bool replenishEnemy = true}) async {
     final List<BattleServantData> newActors = [];
 
     if (replenishAlly) {
@@ -678,7 +675,7 @@ class BattleData {
     }
   }
 
-  List<BattleServantData> _getNonnull(final List<BattleServantData?> list) {
+  List<BattleServantData> _getNonnull(List<BattleServantData?> list) {
     List<BattleServantData> results = [];
     for (final nullableSvt in list) {
       if (nullableSvt != null) {
@@ -688,7 +685,7 @@ class BattleData {
     return results;
   }
 
-  void changeStar(final num change) {
+  void changeStar(num change) {
     criticalStars += change;
     criticalStars = criticalStars.clamp(0, kValidTotalStarMax).toDouble();
   }
@@ -731,11 +728,11 @@ class BattleData {
     return allTraits;
   }
 
-  bool isActorOnField(final int actorUniqueId) {
+  bool isActorOnField(int actorUniqueId) {
     return nonnullActors.any((svt) => svt.uniqueId == actorUniqueId);
   }
 
-  bool isActorMainTarget(final BattleServantData target) {
+  bool isActorMainTarget(BattleServantData target) {
     return target.isPlayer
         ? onFieldAllyServants[playerTargetIndex] == target
         : onFieldEnemies[enemyTargetIndex] == target;
@@ -770,7 +767,7 @@ class BattleData {
     }
   }
 
-  bool canSelectNp(final int servantIndex) {
+  bool canSelectNp(int servantIndex) {
     if (onFieldAllyServants[servantIndex] == null) {
       return false;
     }
@@ -779,7 +776,7 @@ class BattleData {
   }
 
   // NOTE: this is different from canSelectNP
-  bool canUseNp(final int servantIndex) {
+  bool canUseNp(int servantIndex) {
     if (onFieldAllyServants[servantIndex] == null) {
       return false;
     }
@@ -788,7 +785,7 @@ class BattleData {
   }
 
   /// Only check skill sealed
-  bool isSkillSealed(final int servantIndex, final int skillIndex) {
+  bool isSkillSealed(int servantIndex, int skillIndex) {
     if (onFieldAllyServants[servantIndex] == null) {
       return false;
     }
@@ -797,7 +794,7 @@ class BattleData {
   }
 
   /// Check canAct and skill script
-  bool isSkillCondFailed(final int servantIndex, final int skillIndex) {
+  bool isSkillCondFailed(int servantIndex, int skillIndex) {
     if (onFieldAllyServants[servantIndex] == null) {
       return false;
     }
@@ -805,7 +802,7 @@ class BattleData {
     return onFieldAllyServants[servantIndex]!.isSkillCondFailed(this, skillIndex);
   }
 
-  bool canUseSvtSkillIgnoreCoolDown(final int servantIndex, final int skillIndex) {
+  bool canUseSvtSkillIgnoreCoolDown(int servantIndex, int skillIndex) {
     if (onFieldAllyServants[servantIndex] == null) {
       return false;
     }
@@ -891,7 +888,7 @@ class BattleData {
     }
   }
 
-  Future<void> activateSvtSkill(final int servantIndex, final int skillIndex) async {
+  Future<void> activateSvtSkill(int servantIndex, int skillIndex) async {
     final svt = onFieldAllyServants.getOrNull(servantIndex);
     if (svt == null || isBattleFinished) return;
 
@@ -913,7 +910,7 @@ class BattleData {
     );
   }
 
-  bool canUseMysticCodeSkillIgnoreCoolDown(final int skillIndex) {
+  bool canUseMysticCodeSkillIgnoreCoolDown(int skillIndex) {
     if (masterSkillInfo.length <= skillIndex || skillIndex < 0) {
       return false;
     }
@@ -960,7 +957,7 @@ class BattleData {
     }
   }
 
-  Future<void> activateMysticCodeSkill(final int skillIndex) async {
+  Future<void> activateMysticCodeSkill(int skillIndex) async {
     final skillInfo = masterSkillInfo.getOrNull(skillIndex);
     if (skillInfo == null || skillInfo.chargeTurn > 0 || isBattleFinished) {
       return;
@@ -985,12 +982,7 @@ class BattleData {
     );
   }
 
-  Future<void> activateCustomSkill(
-    final BattleServantData? actor,
-    final BaseSkill skill,
-    final int skillLv,
-    final bool isAlly,
-  ) async {
+  Future<void> activateCustomSkill(BattleServantData? actor, BaseSkill skill, int skillLv, bool isAlly) async {
     await recordError(
       save: true,
       action: 'custom_skill-${skill.id}',
@@ -1015,7 +1007,7 @@ class BattleData {
     );
   }
 
-  Future<void> playerTurn(final List<CombatAction> actions, {bool allowSkip = false}) async {
+  Future<void> playerTurn(List<CombatAction> actions, {bool allowSkip = false}) async {
     assert(isPlayerTurn);
     if (isBattleFinished) return;
     if (actions.isEmpty && !allowSkip) return;
@@ -1146,7 +1138,7 @@ class BattleData {
     return BattleChainType.none;
   }
 
-  static CommandCardData getActualCard(final CombatAction combatAction) {
+  static CommandCardData getActualCard(CombatAction combatAction) {
     final cardData = combatAction.cardData;
     final actor = combatAction.actor;
     CommandCardData outCardData =
@@ -1552,7 +1544,7 @@ class BattleData {
     }
   }
 
-  Future<void> _removeDeadActorsFromList(final List<BattleServantData?> actorList) async {
+  Future<void> _removeDeadActorsFromList(List<BattleServantData?> actorList) async {
     for (int i = 0; i < actorList.length; i += 1) {
       if (actorList[i] == null) {
         continue;
@@ -1592,7 +1584,7 @@ class BattleData {
     enemyTargetIndex = getNonNullTargetIndex(onFieldEnemies, enemyTargetIndex, true);
   }
 
-  int getNonNullTargetIndex(List<BattleServantData?> actorList, final int targetIndex, bool isEnemy) {
+  int getNonNullTargetIndex(List<BattleServantData?> actorList, int targetIndex, bool isEnemy) {
     if (actorList.length > targetIndex && targetIndex >= 0 && actorList[targetIndex] != null) {
       return targetIndex;
     }
@@ -1690,7 +1682,7 @@ class BattleData {
     return targets;
   }
 
-  static bool shouldRemoveDeadActors(final List<CombatAction> actions, final int index) {
+  static bool shouldRemoveDeadActors(List<CombatAction> actions, int index) {
     final currentAction = actions[index];
     final currentActualCard = getActualCard(currentAction);
     if (currentActualCard.isTD ||
@@ -1706,13 +1698,13 @@ class BattleData {
         nextAction.actor != currentAction.actor;
   }
 
-  static bool isNormalCard(final CombatAction action) {
+  static bool isNormalCard(CombatAction action) {
     final card = getActualCard(action);
 
     return !card.isTD && card.cardDetail.attackType != CommandCardAttackType.all;
   }
 
-  static bool isComboStart(final List<CombatAction> actions, final int index) {
+  static bool isComboStart(List<CombatAction> actions, int index) {
     // previousAction check
     final previousAction = actions.getOrNull(index - 1);
     final currentAction = actions[index];
@@ -1732,7 +1724,7 @@ class BattleData {
     return isNormalCard(nextAction) && nextAction.actor == currentAction.actor;
   }
 
-  static bool isComboEnd(final List<CombatAction> actions, final int index) {
+  static bool isComboEnd(List<CombatAction> actions, int index) {
     // previousAction check
     final previousAction = actions.getOrNull(index - 1);
     final currentAction = actions[index];
@@ -1750,7 +1742,7 @@ class BattleData {
     return nextAction == null || !isNormalCard(nextAction) || nextAction.actor != currentAction.actor;
   }
 
-  Future<bool> canActivate(final int activationRate, final String description) async {
+  Future<bool> canActivate(int activationRate, String description) async {
     if (activationRate <= 0) {
       return false;
     }
@@ -1781,7 +1773,7 @@ class BattleData {
     return curResult;
   }
 
-  Future<bool> canActivateFunction(final int activationRate) async {
+  Future<bool> canActivateFunction(int activationRate) async {
     final String funcString;
     if (curFunc != null && mounted) {
       final function = curFunc!;

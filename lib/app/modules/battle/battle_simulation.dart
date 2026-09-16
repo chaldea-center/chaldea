@@ -15,6 +15,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '../../battle/interactions/_delegate.dart';
 import '../../descriptors/skill_descriptor.dart';
 import '../quest/quest.dart';
@@ -168,7 +169,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
   }
 
   @override
-  Widget build(final BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: AutoSizeText(questPhase.lName.l, maxLines: 1),
@@ -419,7 +420,7 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
     );
   }
 
-  Widget buildBattleSvtData(final BattleServantData? svt, final int index) {
+  Widget buildBattleSvtData(BattleServantData? svt, int index) {
     if (svt == null) {
       Widget child = CachedImage(
         imageUrl: 'https://static.atlasacademy.io/JP/Enemys/0.png',
@@ -793,11 +794,11 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
   }
 
   Widget buildSkillInfo({
-    required final BattleSkillInfoData skillInfo,
+    required BattleSkillInfoData skillInfo,
     required bool isSealed,
     required bool donotSkillSelect,
     required bool isCondFailed,
-    required final VoidCallback onTap,
+    required VoidCallback onTap,
   }) {
     final cd = skillInfo.chargeTurn;
     Widget cdText = Text(

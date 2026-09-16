@@ -7,6 +7,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/individuality.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
+
 import '../interactions/skill_act_select.dart';
 import '../utils/battle_logger.dart';
 import 'battle.dart';
@@ -59,17 +60,17 @@ class BattleSkillInfoData {
 
   List<int> getIndividualiyArray() => skill?.individuality ?? [];
 
-  void setRankUp(final int newRank) {
+  void setRankUp(int newRank) {
     rankUp = newRank;
     skillScript = skill?.script;
   }
 
-  void shortenSkill(final int turns) {
+  void shortenSkill(int turns) {
     chargeTurn -= turns;
     chargeTurn = max(0, chargeTurn);
   }
 
-  void extendSkill(final int turns) {
+  void extendSkill(int turns) {
     chargeTurn += turns;
     chargeTurn = min(999, chargeTurn);
   }
@@ -81,10 +82,10 @@ class BattleSkillInfoData {
   }
 
   static bool checkSkillScript(
-    final BattleData battleData,
-    final BattleServantData? activator,
-    final SkillScript? skillScript,
-    final int skillLv,
+    BattleData battleData,
+    BattleServantData? activator,
+    SkillScript? skillScript,
+    int skillLv,
   ) {
     if (skillScript == null) {
       return true;
@@ -144,7 +145,7 @@ class BattleSkillInfoData {
   }
 
   Future<bool> activate(
-    final BattleData battleData, {
+    BattleData battleData, {
     BattleServantData? activator,
     CommandCardData? card,
     bool defaultToPlayer = true,
@@ -309,10 +310,10 @@ class BattleSkillInfoData {
   }
 
   static bool checkSkillScriptCondition(
-    final BattleData battleData,
-    final BattleServantData? activator,
-    final SkillScriptCond cond,
-    final int? value,
+    BattleData battleData,
+    BattleServantData? activator,
+    SkillScriptCond cond,
+    int? value,
   ) {
     if (value == null) {
       return true;

@@ -8,6 +8,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/custom_dialogs.dart';
+
 import '_base.dart';
 
 class FakerRuntimeGacha extends FakerRuntimeBase {

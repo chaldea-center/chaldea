@@ -6,6 +6,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '../models/battle.dart';
 import '_dialog.dart';
 
@@ -34,7 +35,7 @@ class ChooseTargetsDialog extends StatefulWidget {
   State<ChooseTargetsDialog> createState() => _ChooseTargetsDialogState();
 
   static Future<List<BattleServantData>?> show(
-    final BattleData battleData, {
+    BattleData battleData, {
     required FuncTargetType targetType,
     required List<BattleServantData> targets,
     int maxCount = 1,
@@ -64,7 +65,7 @@ class _ChooseTargetsDialogState extends State<ChooseTargetsDialog> {
   Set<BattleServantData> selected = {};
 
   @override
-  Widget build(final BuildContext context) {
+  Widget build(BuildContext context) {
     final List<Widget> children = [];
     final playerSvts = widget.targets.where((e) => e.isPlayer).toList(),
         enemies = widget.targets.where((e) => e.isEnemy).toList();

@@ -232,9 +232,8 @@ class SimpleConfirmDialog extends StatelessWidget {
   });
 
   Future<bool?> showDialog(BuildContext? context, {bool barrierDismissible = true, bool useRootNavigator = false}) {
-    return DialogShowMethod(
-      this,
-    ).showDialog(context, barrierDismissible: barrierDismissible, useRootNavigator: useRootNavigator);
+    return DialogShowMethod(this)
+        .showDialog(context, barrierDismissible: barrierDismissible, useRootNavigator: useRootNavigator);
   }
 
   @override
@@ -291,9 +290,8 @@ class ConfirmSliderDialog extends StatefulWidget {
   State<ConfirmSliderDialog> createState() => _ConfirmSliderDialogState();
 
   Future<bool?> showDialog(BuildContext? context, {bool barrierDismissible = true, bool useRootNavigator = false}) {
-    return DialogShowMethod(
-      this,
-    ).showDialog(context, barrierDismissible: barrierDismissible, useRootNavigator: useRootNavigator);
+    return DialogShowMethod(this)
+        .showDialog(context, barrierDismissible: barrierDismissible, useRootNavigator: useRootNavigator);
   }
 }
 

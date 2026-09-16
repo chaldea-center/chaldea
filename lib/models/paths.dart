@@ -8,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:chaldea/generated/l10n.dart';
+
 import '../packages/logger.dart';
 import '../packages/platform/platform.dart';
 import '../utils/constants.dart';
@@ -72,9 +73,9 @@ class PathManager {
       _persistentPath = (await getApplicationDocumentsDirectory()).path;
       final sp = await SharedPreferences.getInstance();
       androidUseExternalStorage = sp.get('android_use_external') == true;
-      List<String> externalPaths = (await getExternalStorageDirectories(
-        type: StorageDirectory.documents,
-      ))!.map((e) => dirname(e.path)).toList();
+      List<String> externalPaths = (await getExternalStorageDirectories(type: StorageDirectory.documents))!
+          .map((e) => dirname(e.path))
+          .toList();
       // don't use getApplicationDocumentsDirectory, it is hidden to user.
       // android external storages: [emulated, external SD]
       if (androidUseExternalStorage && externalPaths.length >= 2) {

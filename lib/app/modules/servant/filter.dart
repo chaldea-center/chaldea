@@ -7,6 +7,7 @@ import 'package:chaldea/models/gamedata/individuality.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '../common/filter_group.dart';
 import '../common/filter_page_base.dart';
 import '../effect_search/util.dart';
@@ -51,9 +52,8 @@ class ServantFilterPage extends FilterPage<SvtFilterData> {
         if (svtPlan.ascension > svtStat.cur.ascension) SvtPlanScope.ascension,
         if ([for (var i = 0; i < kActiveSkillNums.length; i++) svtPlan.skills[i] > svtStat.cur.skills[i]].any((e) => e))
           SvtPlanScope.active,
-        if ([
-          for (var i = 0; i < kAppendSkillNums.length; i++) svtPlan.appendSkills[i] > svtStat.cur.appendSkills[i],
-        ].any((e) => e))
+        if ([for (var i = 0; i < kAppendSkillNums.length; i++) svtPlan.appendSkills[i] > svtStat.cur.appendSkills[i]]
+            .any((e) => e))
           SvtPlanScope.append,
         if ([
           for (var costume in svt.costumesForPlan.values)

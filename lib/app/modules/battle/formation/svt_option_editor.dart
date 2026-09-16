@@ -23,6 +23,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import 'select_skill_page.dart';
 
 class ServantOptionEditPage extends StatefulWidget {
@@ -71,7 +72,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
   }
 
   @override
-  Widget build(final BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text(S.current.battle_edit_servant_option), actions: [popupMenu]),
       body: Column(
@@ -508,7 +509,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     );
   }
 
-  Widget _header(final BuildContext context) {
+  Widget _header(BuildContext context) {
     final growCurve = dispSvt.growCurveForLimit(playerSvtData.limitCount);
     final ascensionText =
         dispSvt.getCostume(playerSvtData.limitCount)?.lName.l ??
@@ -550,7 +551,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
             useRootNavigator: false,
             builder: (context) {
               final List<Widget> children = [];
-              void _addOne(final int limitCount, final String name, final String? icon) {
+              void _addOne(int limitCount, String name, String? icon) {
                 if (icon == null) return;
                 final borderedIcon = dispSvt.shouldBordered ? dispSvt.bordered(icon) : icon;
                 children.add(
@@ -681,7 +682,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     final baseClassBoard = ClassBoard.getClassBoard(dispSvt.classId);
     final grandBoard = ClassBoard.getGrandClassBoard(dispSvt.classId);
 
-    Widget _buildBoard(ClassBoard board, final List<int> squares) {
+    Widget _buildBoard(ClassBoard board, List<int> squares) {
       final allSquares = [
         for (final square in board.squares)
           if (square.skillType != ClassBoardSkillType.none) square.id,
@@ -825,8 +826,10 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
                         setState(() {
                           playerSvtData.classBoardData.classStatistics.clear();
                           for (final type in classStatTypes) {
-                            playerSvtData.classBoardData.getClassStatistic(type, dispSvt.classId).typeVal =
-                                _getMaxCounts(type).single.toInt();
+                            playerSvtData.classBoardData
+                                .getClassStatistic(type, dispSvt.classId)
+                                .typeVal = _getMaxCounts(type).single
+                                .toInt();
                           }
                         });
                       }
@@ -841,7 +844,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     );
   }
 
-  Widget _buildTdDescriptor(final BuildContext context) {
+  Widget _buildTdDescriptor(BuildContext context) {
     final int ascension = playerSvtData.limitCount;
     final List<NiceTd> shownTds = BattleUtils.getShownTds(dispSvt, ascension);
     if (playerSvtData.td != null && !shownTds.contains(playerSvtData.td)) {
@@ -924,7 +927,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     );
   }
 
-  Widget _buildActiveSkill(final BuildContext context, final int skillNum) {
+  Widget _buildActiveSkill(BuildContext context, int skillNum) {
     final index = skillNum - 1;
     final int ascension = playerSvtData.limitCount;
     final List<NiceSkill> shownSkills = BattleUtils.getShownSkills(dispSvt, ascension, skillNum);
@@ -1005,7 +1008,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     );
   }
 
-  Widget _buildAppendSkill(final BuildContext context, final int skillNum) {
+  Widget _buildAppendSkill(BuildContext context, int skillNum) {
     final index = skillNum - 1;
     final skill = playerSvtData.svt?.appendPassive.firstWhereOrNull((e) => e.num == skillNum + 99)?.skill;
     return SimpleAccordion(
@@ -1507,7 +1510,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
     EasyLoading.showSuccess('${S.current.updated}(${resultSource.detailName})');
   }
 
-  Future<void> _onSelectSupport(final SupportServant support) async {
+  Future<void> _onSelectSupport(SupportServant support) async {
     EasyLoading.show();
     final svt = await AtlasApi.svt(support.svt.id);
     EasyLoading.dismiss();
@@ -1605,7 +1608,7 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
   }
 
   @override
-  Widget build(final BuildContext context) {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('[${S.current.edit}] ${playerSvtData.dispSvt?.lName.l ?? ""}'), actions: [popupMenu]),
       body: Column(
@@ -1751,7 +1754,7 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
     );
   }
 
-  Widget _header(final BuildContext context) {
+  Widget _header(BuildContext context) {
     final ce = curEquip.ce;
     if (ce == null) return SizedBox.shrink();
     final atk = ce.atkGrowth.getOrNull(curEquip.lv - 1) ?? 0, hp = ce.hpGrowth.getOrNull(curEquip.lv - 1) ?? 0;

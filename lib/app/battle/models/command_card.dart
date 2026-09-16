@@ -177,7 +177,7 @@ class CombatAction {
 
   CombatAction(this.actor, this.cardData);
 
-  bool isValid(final BattleData battleData) {
+  bool isValid(BattleData battleData) {
     if (cardData.isTD) {
       return battleData.delegate?.whetherTd?.call(actor) ?? actor.canNP();
     } else {
@@ -185,7 +185,7 @@ class CombatAction {
     }
   }
 
-  bool isValidCounter(final BattleData battleData) {
+  bool isValidCounter(BattleData battleData) {
     if (cardData.isTD) {
       final delegateResult = battleData.delegate?.whetherTd?.call(actor);
       if (delegateResult != null) {

@@ -65,7 +65,7 @@ class BattleBuff {
 
   bool get isSelectable => validBuffs.every((buff) => !buff.getTraits().contains(Trait.cantBeSacrificed.value));
 
-  void removeBuffWithTrait(final int trait, {bool includeNoAct = false, bool includeNoField = false}) {
+  void removeBuffWithTrait(int trait, {bool includeNoAct = false, bool includeNoField = false}) {
     _activeList.removeWhere(
       (buff) =>
           (includeNoAct || !buff.checkState(BuffState.noAct)) &&
@@ -74,7 +74,7 @@ class BattleBuff {
     );
   }
 
-  void removeBuffOfType(final BuffType type, {bool includeNoAct = false, bool includeNoField = false}) {
+  void removeBuffOfType(BuffType type, {bool includeNoAct = false, bool includeNoField = false}) {
     _activeList.removeWhere(
       (buff) =>
           (includeNoAct || !buff.checkState(BuffState.noAct)) &&
@@ -102,11 +102,11 @@ class BattleBuff {
     }
   }
 
-  void clearPassive(final int uniqueId) {
+  void clearPassive(int uniqueId) {
     _passiveList.removeWhere((buff) => buff.activatorUniqueId == uniqueId);
   }
 
-  void clearClassPassive(final int uniqueId) {
+  void clearClassPassive(int uniqueId) {
     _passiveList.removeWhere(
       (buff) => buff.skillInfoType == SkillInfoType.svtClassPassive && buff.activatorUniqueId == uniqueId,
     );
@@ -198,7 +198,7 @@ class BuffData {
     return [...buff.vals, ...vals.getAddIndividuality()];
   }
 
-  int getValue(final BattleServantData self, [final BattleServantData? opponent, final BattleData? battleData]) {
+  int getValue(BattleServantData self, [BattleServantData? opponent, BattleData? battleData]) {
     int addValue = 0;
     final paramAddValue = vals.ParamAddValue ?? vals.SnapShotParamAddValue;
     if (paramAddValue != null) {
@@ -401,8 +401,8 @@ class BuffData {
     BattleData? battleData,
     List<int>? selfTraits,
     List<NiceFunction>? receivedFunctionsList,
-    final List<int>? triggeredSkillIds,
-    final int? actorTargetFlag,
+    List<int>? triggeredSkillIds,
+    int? actorTargetFlag,
   }) {
     if (!(checkHpReduceToRegainIndiv(selfTraits) &&
         checkTargetFunctionIndividuality(receivedFunctionsList) &&
@@ -447,13 +447,13 @@ class BuffData {
             null;
   }
 
-  bool checkHpReduceToRegainIndiv(final List<int>? selfTraits) {
+  bool checkHpReduceToRegainIndiv(List<int>? selfTraits) {
     final hpReduceToRegainIndiv = vals.HpReduceToRegainIndiv;
     return hpReduceToRegainIndiv == null ||
         Individuality.checkSignedIndivPartialMatch(self: selfTraits, signedTarget: [hpReduceToRegainIndiv]);
   }
 
-  bool checkTargetFunctionIndividuality(final List<NiceFunction>? functions) {
+  bool checkTargetFunctionIndividuality(List<NiceFunction>? functions) {
     final targetFuncIndiv = vals.TargetFunctionIndividuality;
     final targetBuffIndiv = vals.TargetBuffIndividuality;
     if (targetFuncIndiv == null) {
@@ -557,11 +557,11 @@ class BuffData {
     return scriptCheck;
   }
 
-  bool canStack(final int buffGroup) {
+  bool canStack(int buffGroup) {
     return buffGroup == 0 || buffGroup != buff.buffGroup;
   }
 
-  void setUsed(final BattleServantData owner, [BattleData? battleData]) {
+  void setUsed(BattleServantData owner, [BattleData? battleData]) {
     isUsed = true;
 
     if (vals.BehaveAsFamilyBuff == 1 && vals.AddLinkageTargetIndividualty != null) {
@@ -613,7 +613,7 @@ class BuffData {
     }
   }
 
-  void updateActState(final BattleData battleData, final BattleServantData owner) {
+  void updateActState(BattleData battleData, BattleServantData owner) {
     bool isAct = _checkActState(battleData, owner, buff.script);
 
     if (buff.script.INDIVIDUALITIE_MULTI_OR != null) {

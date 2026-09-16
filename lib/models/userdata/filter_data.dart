@@ -4,6 +4,7 @@ import 'package:chaldea/app/modules/effect_search/util.dart';
 import 'package:chaldea/models/gamedata/effect.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/utils.dart';
+
 import '../../app/modules/ffo/schema.dart';
 import '../../generated/l10n.dart';
 import '../db.dart';

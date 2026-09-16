@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/userdata/battle.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import 'bond_solver.dart';
 import 'equip_bond_bonus.dart';
 import 'formation_bond.dart';

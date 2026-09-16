@@ -10,6 +10,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/url.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import 'logger.dart';
 
 const _kDefaultAspectRatio = 1344 / 576;

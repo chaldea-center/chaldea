@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 
 import 'package:chaldea/widgets/theme.dart';
+
 import 'showcase_home_page.dart';
 
 /// Standalone MaterialApp wrapper for running the showcase in isolation

@@ -1,5 +1,6 @@
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '../../../models/gamedata/func.dart';
 import '../../../models/gamedata/mappings.dart';
 import '../models/battle.dart';
@@ -25,12 +26,12 @@ class DamageValueAdjustor extends StatefulWidget {
   State<DamageValueAdjustor> createState() => _DamageValueAdjustorState();
 
   static Future<int> show(
-    final BattleData battleData,
-    final BattleServantData? activator,
-    final BattleServantData target,
-    final FuncType funcType,
-    final int minDamage,
-    final int maxDamage,
+    BattleData battleData,
+    BattleServantData? activator,
+    BattleServantData target,
+    FuncType funcType,
+    int minDamage,
+    int maxDamage,
   ) async {
     int damage = minDamage;
 

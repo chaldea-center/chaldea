@@ -14,6 +14,7 @@ import 'package:chaldea/packages/json_viewer/json_viewer.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '../../modules/battle/formation/formation_card.dart';
 import '../_shared/select_svt.dart';
 import '../_shared/select_svt_equip.dart';

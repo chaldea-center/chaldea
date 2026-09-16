@@ -28,6 +28,7 @@ import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/models/gamedata/individuality.dart';
 import 'package:chaldea/utils/extension.dart';
+
 import '../../api/atlas.dart';
 import '../interactions/act_set_select.dart';
 import '../utils/battle_logger.dart';
@@ -65,26 +66,26 @@ class FunctionExecutor {
   }
 
   static Future<void> executeFunctions(
-    final BattleData battleData,
-    final List<NiceFunction> functions,
-    final int skillLevel, {
-    final SkillScript? script,
-    final BattleServantData? activator,
-    final BattleServantData? targetedAlly,
-    final BattleServantData? targetedEnemy,
-    final CommandCardData? card,
-    final int overchargeLvl = 1,
-    final int? overchargeState,
-    final List<int>? ignoreBattlePoints,
-    final SkillType? skillType,
-    final SkillInfoType? skillInfoType,
-    final SkillOrTd? skillOrTd,
-    final int? selectedActionIndex,
-    final int? effectiveness,
-    final bool defaultToPlayer = true,
-    final BattleSkillParams? param,
-    final bool isTransform = false,
-    final int? consumedNp,
+    BattleData battleData,
+    List<NiceFunction> functions,
+    int skillLevel, {
+    SkillScript? script,
+    BattleServantData? activator,
+    BattleServantData? targetedAlly,
+    BattleServantData? targetedEnemy,
+    CommandCardData? card,
+    int overchargeLvl = 1,
+    int? overchargeState,
+    List<int>? ignoreBattlePoints,
+    SkillType? skillType,
+    SkillInfoType? skillInfoType,
+    SkillOrTd? skillOrTd,
+    int? selectedActionIndex,
+    int? effectiveness,
+    bool defaultToPlayer = true,
+    BattleSkillParams? param,
+    bool isTransform = false,
+    int? consumedNp,
   }) async {
     await battleData.withFunctions(() async {
       Map<int, List<NiceFunction>> actSets = {};
@@ -181,26 +182,26 @@ class FunctionExecutor {
 
   /// Return value is whether the uniqueIdToFuncResultMap is updated or not
   static Future<bool> executeFunction(
-    final BattleData battleData,
-    final NiceFunction function,
-    final int funcIndex,
-    final int skillLevel, {
-    final SkillScript? script,
-    final BattleServantData? activator,
-    final BattleServantData? targetedAlly,
-    final BattleServantData? targetedEnemy,
-    final CommandCardData? card,
-    final int overchargeLvl = 1,
-    final int? overchargeState,
-    final List<int>? ignoreBattlePoints,
-    final bool shouldTrigger = true,
-    final bool shouldDamageRelease = true,
-    final SkillType? skillType,
-    final SkillInfoType? skillInfoType,
-    final int? selectedActionIndex,
-    final int? effectiveness,
-    final bool defaultToPlayer = true,
-    final int? consumedNp,
+    BattleData battleData,
+    NiceFunction function,
+    int funcIndex,
+    int skillLevel, {
+    SkillScript? script,
+    BattleServantData? activator,
+    BattleServantData? targetedAlly,
+    BattleServantData? targetedEnemy,
+    CommandCardData? card,
+    int overchargeLvl = 1,
+    int? overchargeState,
+    List<int>? ignoreBattlePoints,
+    bool shouldTrigger = true,
+    bool shouldDamageRelease = true,
+    SkillType? skillType,
+    SkillInfoType? skillInfoType,
+    int? selectedActionIndex,
+    int? effectiveness,
+    bool defaultToPlayer = true,
+    int? consumedNp,
   }) async {
     if (!validateFunctionTargetTeam(function, activator?.isPlayer ?? defaultToPlayer)) {
       return false;
@@ -639,13 +640,13 @@ class FunctionExecutor {
     });
   }
 
-  static bool validateFunctionTargetTeam(final BaseFunction function, final bool isPlayer) {
+  static bool validateFunctionTargetTeam(BaseFunction function, bool isPlayer) {
     return function.funcTargetTeam == FuncApplyTarget.all ||
         (function.canBePlayerFunc && isPlayer) ||
         (function.canBeEnemyFunc && !isPlayer);
   }
 
-  static DataVals getDataVals(final NiceFunction function, final int skillLevel, int overchargeLevel) {
+  static DataVals getDataVals(NiceFunction function, int skillLevel, int overchargeLevel) {
     if (overchargeLevel > function.svalsList.length) {
       overchargeLevel = function.svalsList.length;
     }
@@ -654,10 +655,10 @@ class FunctionExecutor {
   }
 
   static DataVals updateDataValsWithEffectiveness(
-    final NiceFunction function,
-    final SkillScript? script,
-    final DataVals dataVals,
-    final int effectiveness,
+    NiceFunction function,
+    SkillScript? script,
+    DataVals dataVals,
+    int effectiveness,
   ) {
     if (dataVals.Value == null ||
         effectiveness == 1000 ||
@@ -681,7 +682,7 @@ class FunctionExecutor {
     return DataVals.fromJson(dataJson);
   }
 
-  static DataVals updateDataValsForActivatorConds(final DataVals dataVals, final BattleServantData activator) {
+  static DataVals updateDataValsForActivatorConds(DataVals dataVals, BattleServantData activator) {
     if (dataVals.Value == null) {
       return dataVals;
     }
@@ -715,14 +716,14 @@ class FunctionExecutor {
   }
 
   static Future<List<BattleServantData>> acquireFunctionTarget(
-    final BattleData battleData,
-    final FuncTargetType funcTargetType,
-    final BattleServantData? activator, {
-    final int? funcId,
-    final BattleServantData? targetedAlly,
-    final BattleServantData? targetedEnemy,
-    final DataVals? dataVals,
-    final bool defaultToPlayer = true,
+    BattleData battleData,
+    FuncTargetType funcTargetType,
+    BattleServantData? activator, {
+    int? funcId,
+    BattleServantData? targetedAlly,
+    BattleServantData? targetedEnemy,
+    DataVals? dataVals,
+    bool defaultToPlayer = true,
   }) async {
     final isAlly = activator?.isPlayer ?? defaultToPlayer;
     final List<BattleServantData> aliveAllies = isAlly ? battleData.nonnullPlayers : battleData.nonnullEnemies;
@@ -767,14 +768,14 @@ class FunctionExecutor {
   }
 
   static List<BattleServantData> acquireSimpleFunctionTarget(
-    final BattleData battleData,
-    final FuncTargetType funcTargetType,
-    final BattleServantData? activator, {
-    final int? funcId,
-    final BattleServantData? targetedAlly,
-    final BattleServantData? targetedEnemy,
-    final DataVals? dataVals,
-    final bool defaultToPlayer = true,
+    BattleData battleData,
+    FuncTargetType funcTargetType,
+    BattleServantData? activator, {
+    int? funcId,
+    BattleServantData? targetedAlly,
+    BattleServantData? targetedEnemy,
+    DataVals? dataVals,
+    bool defaultToPlayer = true,
   }) {
     final List<BattleServantData> targets = [];
 
@@ -963,7 +964,7 @@ class FunctionExecutor {
     return targets;
   }
 
-  static bool triggeredPositionCheck(final BattleData battleData, final DataVals dataVals) {
+  static bool triggeredPositionCheck(BattleData battleData, DataVals dataVals) {
     final triggeredFuncPosition = dataVals.TriggeredFuncPosition;
     if (triggeredFuncPosition == null || triggeredFuncPosition == 0) {
       return true;
@@ -985,7 +986,7 @@ class FunctionExecutor {
     return false;
   }
 
-  static bool triggeredPositionAllCheck(final BattleData battleData, final DataVals dataVals) {
+  static bool triggeredPositionAllCheck(BattleData battleData, DataVals dataVals) {
     final triggeredFuncPositionAll = dataVals.TriggeredFuncPositionAll;
     if (triggeredFuncPositionAll == null || triggeredFuncPositionAll == 0) {
       return true;
@@ -1006,11 +1007,7 @@ class FunctionExecutor {
     return true;
   }
 
-  static bool triggeredPositionTargetCheck(
-    final BattleData battleData,
-    final DataVals dataVals,
-    final BattleServantData target,
-  ) {
+  static bool triggeredPositionTargetCheck(BattleData battleData, DataVals dataVals, BattleServantData target) {
     final triggeredFuncPositionSameTarget = dataVals.TriggeredFuncPositionSameTarget;
     if (triggeredFuncPositionSameTarget == null || triggeredFuncPositionSameTarget == 0) {
       return true;
@@ -1120,11 +1117,11 @@ class FunctionExecutor {
   }
 
   static void updateTargets(
-    final BattleData battleData,
-    final NiceFunction function,
-    final int funcIndex,
-    final DataVals dataVals,
-    final List<BattleServantData> targets,
+    BattleData battleData,
+    NiceFunction function,
+    int funcIndex,
+    DataVals dataVals,
+    List<BattleServantData> targets,
   ) {
     final checkDead = dataVals.CheckDead != null && dataVals.CheckDead! > 0;
     targets.retainWhere((svt) => svt.isAlive(battleData, function: function) || checkDead);
@@ -1216,7 +1213,7 @@ class FunctionExecutor {
     }
   }
 
-  static bool battlePointCheck(final DataVals dataVals, final BattleServantData target) {
+  static bool battlePointCheck(DataVals dataVals, BattleServantData target) {
     final checkBattlePointPhaseRanges = dataVals.CheckBattlePointPhaseRange ?? [];
     for (final phaseRange in checkBattlePointPhaseRanges) {
       final curPhase = BattlePointCalc.determineBattlePointPhase(target, phaseRange.battlePointId);
@@ -1227,7 +1224,7 @@ class FunctionExecutor {
     return true;
   }
 
-  static bool battlePointRateCheck(final DataVals dataVals, final BattleServantData target) {
+  static bool battlePointRateCheck(DataVals dataVals, BattleServantData target) {
     final checkBattlePointRateRanges = dataVals.TriggeredTargetBattlePointRateRange ?? [];
     for (final rateRange in checkBattlePointRateRanges) {
       final curRate = BattlePointCalc.getBattlePointRate(target, rateRange.battlePointId);
@@ -1238,7 +1235,7 @@ class FunctionExecutor {
     return true;
   }
 
-  static bool isDmgFuncType(final FuncType? nextFuncType) {
+  static bool isDmgFuncType(FuncType? nextFuncType) {
     if (nextFuncType == null) {
       return false;
     }

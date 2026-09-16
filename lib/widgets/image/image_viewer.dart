@@ -16,6 +16,7 @@ import 'package:uuid/uuid.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
+
 import '../../app/tools/icon_cache_manager.dart';
 import '../../models/userdata/remote_config.dart';
 import '../../packages/network.dart';

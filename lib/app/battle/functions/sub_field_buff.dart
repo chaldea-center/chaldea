@@ -9,11 +9,11 @@ class SubFieldBuff {
   SubFieldBuff._();
 
   static Future<void> subFieldBuff(
-    final BattleData battleData,
-    final List<int> affectTraits,
-    final DataVals dataVals,
-    final BattleServantData? activator,
-    final List<BattleServantData> targets,
+    BattleData battleData,
+    List<int> affectTraits,
+    DataVals dataVals,
+    BattleServantData? activator,
+    List<BattleServantData> targets,
   ) async {
     final removeFromStart = dataVals.Value != null && dataVals.Value! > 0;
     final removeTargetCount = dataVals.Value != null && dataVals.Value2 != null
@@ -66,10 +66,10 @@ class SubFieldBuff {
   }
 
   static Future<bool> shouldSubFieldBuff(
-    final BattleData battleData,
-    final BuffData buff,
-    final List<int> affectTraits,
-    final DataVals dataVals,
+    BattleData battleData,
+    BuffData buff,
+    List<int> affectTraits,
+    DataVals dataVals,
   ) async {
     if (!Individuality.checkSignedIndivPartialMatch(self: buff.getTraits(), signedTarget: affectTraits)) {
       return false;

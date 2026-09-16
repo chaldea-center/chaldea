@@ -10,6 +10,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '../../descriptors/misc.dart';
 import '../common/not_found.dart';
 import 'map.dart';
@@ -288,8 +289,7 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
     String? icon = square.dispIcon;
     if (square.flags.contains(ClassBoardSquareFlag.blank)) {
       name ??= "blank";
-      icon ??=
-          "https://static.atlasacademy.io/file/aa-fgo-extract-jp/ClassBoard/Main/DownloadClassBoardSquareLineAtlas1/point_on.png";
+      icon ??= "https://static.atlasacademy.io/file/aa-fgo-extract-jp/ClassBoard/Main/DownloadClassBoardSquareLineAtlas1/point_on.png";
     }
     double iconSize = square.skillType == ClassBoardSkillType.none ? 40 : 24;
     return SimpleAccordion(

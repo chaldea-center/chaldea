@@ -22,6 +22,7 @@ import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/screenshot.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '../../quest/quest_card.dart';
 import '../formation/formation_card.dart';
 import 'svt_detail.dart';
@@ -1374,7 +1375,7 @@ mixin _ParamDialogMixin {
     );
   }
 
-  String cardBuffIcon(final int cardType) {
+  String cardBuffIcon(int cardType) {
     if (CardType.isArts(cardType)) {
       return buffIcon(313);
     } else if (CardType.isBuster(cardType)) {

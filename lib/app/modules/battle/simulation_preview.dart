@@ -24,6 +24,7 @@ import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '../quest/breakdown/quest_phase.dart';
 import '../quest/quest.dart';
 import 'formation/default_lvs.dart';
@@ -107,7 +108,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   }
 
   @override
-  Widget build(final BuildContext context) {
+  Widget build(BuildContext context) {
     checkPreviewReady();
     final List<Widget> children = [];
 
@@ -1090,7 +1091,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     if (mounted) setState(() {});
   }
 
-  void _questSelectCallback(final QuestPhase selected) {
+  void _questSelectCallback(QuestPhase selected) {
     questPhase = selected;
     if (!mounted) return;
     final curRoute = ModalRoute.of(context);

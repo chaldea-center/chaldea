@@ -1,6 +1,7 @@
 import 'package:chaldea/packages/svg.dart';
 import 'package:chaldea/utils/atlas.dart';
 import 'package:chaldea/utils/extension.dart';
+
 import '../../app/app.dart';
 import '../../app/tools/gamedata_loader.dart';
 import '../../generated/l10n.dart';

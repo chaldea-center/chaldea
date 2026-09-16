@@ -13,6 +13,7 @@ import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/simple_accordion.dart';
 import 'package:chaldea/widgets/tile_items.dart';
+
 import 'elements/grid_gallery.dart';
 import 'elements/news_carousel.dart';
 import 'elements/random_image.dart';

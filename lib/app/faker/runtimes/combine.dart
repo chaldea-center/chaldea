@@ -4,6 +4,7 @@ import 'package:chaldea/models/gamedata/mst_data.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
+
 import '_base.dart';
 
 class FakerRuntimeCombine extends FakerRuntimeBase {

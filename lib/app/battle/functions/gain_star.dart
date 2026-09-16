@@ -3,11 +3,11 @@ import 'package:chaldea/models/gamedata/vals.dart';
 
 class GainStar {
   static void gainStar(
-    final BattleData battleData,
-    final DataVals dataVals,
-    final BattleServantData? activator, {
-    final List<BattleServantData>? targets,
-    final bool isNegative = false,
+    BattleData battleData,
+    DataVals dataVals,
+    BattleServantData? activator, {
+    List<BattleServantData>? targets,
+    bool isNegative = false,
   }) {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.threshold) {

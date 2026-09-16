@@ -5,6 +5,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '../../modules/battle/formation/formation_card.dart';
 import '../_shared/select_svt_equip.dart';
 import '../runtime.dart';
@@ -257,9 +258,8 @@ class _SvtEquipCombinePageState extends State<SvtEquipCombinePage> with FakerRun
                       }
                       return false;
                     })) {
-                      final confirm = await const SimpleConfirmDialog(
-                        title: Text('Some card Lv>1!'),
-                      ).showDialog(context);
+                      final confirm = await const SimpleConfirmDialog(title: Text('Some card Lv>1!'))
+                          .showDialog(context);
                       if (confirm != true) return;
                     }
                     runtime.runTask(() async {

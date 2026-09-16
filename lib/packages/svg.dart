@@ -22,8 +22,7 @@ class SvgStrings {
     "ko": krFlag,
   };
 
-  static const String cnFlag =
-      """<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="flag-icons-cn" viewBox="0 0 640 480">
+  static const String cnFlag = """<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="flag-icons-cn" viewBox="0 0 640 480">
   <defs>
     <path id="cn-a" fill="#ff0" d="M-.6.8 0-1 .6.8-1-.3h2z"/>
   </defs>
@@ -94,8 +93,7 @@ class SvgStrings {
   </g>
 </svg>""";
 
-  static const String krFlag =
-      """<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="flag-icons-kr" viewBox="0 0 640 480">
+  static const String krFlag = """<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" id="flag-icons-kr" viewBox="0 0 640 480">
   <defs>
     <clipPath id="kr-a">
       <path fill-opacity=".7" d="M-95.8-.4h682.7v512H-95.8z"/>

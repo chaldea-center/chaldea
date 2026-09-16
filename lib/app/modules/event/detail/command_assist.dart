@@ -2,6 +2,7 @@ import 'package:chaldea/app/descriptors/skill_descriptor.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '../../common/misc.dart';
 
 class EventCommandAssistPage extends HookWidget {

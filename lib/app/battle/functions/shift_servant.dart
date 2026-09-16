@@ -1,15 +1,12 @@
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
+
 import '../models/battle.dart';
 
 class ShiftServant {
   const ShiftServant._();
 
-  static Future<void> skillShift(
-    final BattleData battleData,
-    final DataVals dataVals,
-    final Iterable<BattleServantData> targets,
-  ) async {
+  static Future<void> skillShift(BattleData battleData, DataVals dataVals, Iterable<BattleServantData> targets) async {
     for (final target in targets) {
       if (target.isPlayer) {
         continue;
@@ -26,11 +23,7 @@ class ShiftServant {
     }
   }
 
-  static Future<void> changeServant(
-    final BattleData battleData,
-    final DataVals dataVals,
-    final BattleServantData? actor,
-  ) async {
+  static Future<void> changeServant(BattleData battleData, DataVals dataVals, BattleServantData? actor) async {
     if (actor == null || actor.isPlayer) return;
     final changeIndex = dataVals.Value!;
     if (changeIndex == 0) {

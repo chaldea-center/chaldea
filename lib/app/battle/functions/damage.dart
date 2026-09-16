@@ -8,6 +8,7 @@ import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/models/gamedata/individuality.dart';
 import 'package:chaldea/utils/utils.dart';
+
 import '../interactions/damage_adjustor.dart';
 import '../utils/battle_logger.dart';
 
@@ -19,19 +20,19 @@ class Damage {
   /// during damage calculation, due to buffs potentially having only one count remaining, checkBuffStatus should
   /// not be called to avoid removing applied buffs
   static Future<void> damage(
-    final BattleData battleData,
-    final NiceFunction? damageFunction,
-    final DataVals dataVals,
-    final BattleServantData activator,
-    final Iterable<BattleServantData> targets,
-    final CommandCardData currentCard, {
-    final int chainPos = 1,
-    final BattleChainType chainType = BattleChainType.none,
-    final int firstCardType = 0,
-    final bool isComboStart = false,
-    final bool isComboEnd = false,
-    final bool shouldTrigger = true,
-    final bool shouldDamageRelease = true,
+    BattleData battleData,
+    NiceFunction? damageFunction,
+    DataVals dataVals,
+    BattleServantData activator,
+    Iterable<BattleServantData> targets,
+    CommandCardData currentCard, {
+    int chainPos = 1,
+    BattleChainType chainType = BattleChainType.none,
+    int firstCardType = 0,
+    bool isComboStart = false,
+    bool isComboEnd = false,
+    bool shouldTrigger = true,
+    bool shouldDamageRelease = true,
   }) async {
     final funcType = damageFunction?.funcType;
     final functionRate = dataVals.Rate ?? 1000;
@@ -573,10 +574,10 @@ class Damage {
   }
 
   static Future<int> getSpecificDamage(
-    final BattleData battleData,
-    final BattleServantData activator,
-    final BattleServantData target,
-    final CommandCardData card,
+    BattleData battleData,
+    BattleServantData activator,
+    BattleServantData target,
+    CommandCardData card,
   ) async {
     int powerMod = 0;
     powerMod += await activator.getBuffValue(battleData, BuffAction.damage, opponent: target, card: card);
@@ -709,7 +710,7 @@ class Damage {
     return result;
   }
 
-  static bool checkNotPierceIndividuality(final List<List<int>> notPierceIndividuality, final BuffData buff) {
+  static bool checkNotPierceIndividuality(List<List<int>> notPierceIndividuality, BuffData buff) {
     // Currently assuming the first array is OR. Need more samples on this
     for (final requiredTraits in notPierceIndividuality) {
       final match = Individuality.checkSignedIndivAllMatch(self: buff.getTraits(), signedTarget: requiredTraits);
@@ -721,10 +722,10 @@ class Damage {
   }
 
   static Future<bool> shouldSkipDamage(
-    final BattleData battleData,
-    final BattleServantData activator,
-    final BattleServantData target,
-    final CommandCardData currentCard,
+    BattleData battleData,
+    BattleServantData activator,
+    BattleServantData target,
+    CommandCardData currentCard,
   ) async {
     // this one is different as it ignores all pierce effects
     // no corresponding code found, copying logic for avoidance
@@ -842,10 +843,10 @@ class Damage {
   }
 
   static Future<bool> shouldSkipLethalDamage(
-    final BattleData battleData,
-    final BattleServantData activator,
-    final BattleServantData target,
-    final CommandCardData currentCard,
+    BattleData battleData,
+    BattleServantData activator,
+    BattleServantData target,
+    CommandCardData currentCard,
   ) async {
     if (target.hp > 0) {
       return false;
@@ -889,10 +890,10 @@ class Damage {
   }
 
   static Future<int> getClassRelation(
-    final BattleData battleData,
-    final BattleServantData activator,
-    final BattleServantData target, [
-    final CommandCardData? cardData,
+    BattleData battleData,
+    BattleServantData activator,
+    BattleServantData target, [
+    CommandCardData? cardData,
   ]) async {
     int relation = ConstData.getClassIdRelation(activator.logicalClassId, target.logicalClassId);
     relation = await activator.getClassRelation(battleData, relation, target, cardData, false);

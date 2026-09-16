@@ -7,6 +7,7 @@ import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
+
 import '../../mc/converter.dart';
 
 const int _kJpNoticePages = 4;

@@ -143,9 +143,9 @@ class MethodChannelChaldea {
   /// EventChannel. Emits [XapkInstallEvent]s; replays the current
   /// state on (re)subscription.
   static Stream<XapkInstallEvent> get xapkEvents {
-    _xapkEvents ??= const EventChannel(
-      'chaldea.narumi.cc/xapk',
-    ).receiveBroadcastStream().map((dynamic e) => XapkInstallEvent.fromMap(Map<String, dynamic>.from(e as Map)));
+    _xapkEvents ??= const EventChannel('chaldea.narumi.cc/xapk')
+        .receiveBroadcastStream()
+        .map((dynamic e) => XapkInstallEvent.fromMap(Map<String, dynamic>.from(e as Map)));
     return _xapkEvents!;
   }
 

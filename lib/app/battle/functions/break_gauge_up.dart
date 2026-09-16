@@ -6,10 +6,10 @@ class BreakGaugeUp {
   const BreakGaugeUp._();
 
   static Future<void> breakGaugeUp(
-    final BattleData battleData,
-    final FuncType funcType,
-    final DataVals dataVals,
-    final List<BattleServantData> targets,
+    BattleData battleData,
+    FuncType funcType,
+    DataVals dataVals,
+    List<BattleServantData> targets,
   ) async {
     final isDown = funcType == FuncType.breakGaugeDown;
     int value = dataVals.Value ?? 0;

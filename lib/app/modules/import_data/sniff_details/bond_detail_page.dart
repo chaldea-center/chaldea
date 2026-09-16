@@ -246,9 +246,9 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
         childAspectRatio: 132 / 144,
         children: bondCEs.map((entry) {
           final (:ce, :userCe, :collection, :svtCollection) = entry;
-          final t = DateTime.fromMillisecondsSinceEpoch(
-            (userCe?.createdAt ?? collection.updatedAt) * 1000,
-          ).toDateString().substring(2);
+          final t = DateTime.fromMillisecondsSinceEpoch((userCe?.createdAt ?? collection.updatedAt) * 1000)
+              .toDateString()
+              .substring(2);
           String text;
           if (userCe != null) {
             text = ' $t ';
@@ -417,18 +417,16 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
           dense: true,
           title: Text('Total Bond Value'),
           trailing: Text(
-            Maths.sum([
-              for (final collection in collections) collection.collection.friendship,
-            ]).format(compact: false, groupSeparator: ','),
+            Maths.sum([for (final collection in collections) collection.collection.friendship])
+                .format(compact: false, groupSeparator: ','),
           ),
         ),
         kDefaultDivider,
         ListTile(
           dense: true,
           title: Text(
-            [
-              for (int lv = maxLv; lv >= minLv; lv--) 'Lv.${lv.toString().padRight(2)} (${bondLvStat[lv] ?? 0})',
-            ].join('\n'),
+            [for (int lv = maxLv; lv >= minLv; lv--) 'Lv.${lv.toString().padRight(2)} (${bondLvStat[lv] ?? 0})']
+                .join('\n'),
             style: kMonoStyle,
           ),
         ),

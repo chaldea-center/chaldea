@@ -4,9 +4,10 @@ import 'package:chaldea/app/battle/models/buff.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/models/gamedata/individuality.dart';
+
 import '../models/svt_entity.dart';
 
-int capBuffValue(final BuffActionInfo buffAction, final int totalVal, final int? maxRate, [int? minRate]) {
+int capBuffValue(BuffActionInfo buffAction, int totalVal, int? maxRate, [int? minRate]) {
   int adjustValue = buffAction.baseParam + totalVal;
 
   if (buffAction.limit == BuffLimit.normal || buffAction.limit == BuffLimit.lower) {
@@ -27,7 +28,7 @@ int capBuffValue(final BuffActionInfo buffAction, final int totalVal, final int?
   return adjustValue;
 }
 
-int countAnyTraits(final Iterable<int> myTraits, final Iterable<int> requiredTraits) {
+int countAnyTraits(Iterable<int> myTraits, Iterable<int> requiredTraits) {
   if (requiredTraits.isEmpty) {
     return 0;
   }
@@ -43,10 +44,10 @@ int countAnyTraits(final Iterable<int> myTraits, final Iterable<int> requiredTra
 
 @Deprecated('Use `Individuality.checkSignedIndividualitiesPartialMatch` instead')
 bool checkSignedIndividualitiesPartialMatch({
-  required final Iterable<int> myTraits,
-  required final Iterable<int> requiredTraits,
-  final bool Function(Iterable<int>, Iterable<int>) positiveMatchFunc = partialMatch,
-  final bool Function(Iterable<int>, Iterable<int>) negativeMatchFunc = partialMatch,
+  required Iterable<int> myTraits,
+  required Iterable<int> requiredTraits,
+  bool Function(Iterable<int>, Iterable<int>) positiveMatchFunc = partialMatch,
+  bool Function(Iterable<int>, Iterable<int>) negativeMatchFunc = partialMatch,
 }) {
   final positiveTargets = requiredTraits.where((trait) => trait >= 0).toList();
   final negativeTargets = requiredTraits.where((trait) => trait < 0).toList();
@@ -61,10 +62,10 @@ bool checkSignedIndividualitiesPartialMatch({
   'Use `Individuality.checkSignedIndividualities2/checkSignedIndivPartialMatch/checkSignedIndivAllMatch` instead',
 )
 bool checkSignedIndividualities2({
-  required final Iterable<int>? myTraits,
-  required final Iterable<int>? requiredTraits,
-  final bool Function(Iterable<int>, Iterable<int>) positiveMatchFunc = partialMatch,
-  final bool Function(Iterable<int>, Iterable<int>) negativeMatchFunc = partialMatch,
+  required Iterable<int>? myTraits,
+  required Iterable<int>? requiredTraits,
+  bool Function(Iterable<int>, Iterable<int>) positiveMatchFunc = partialMatch,
+  bool Function(Iterable<int>, Iterable<int>) negativeMatchFunc = partialMatch,
 }) {
   return Individuality.checkSignedIndividualities2(
     self: myTraits?.toList(),
@@ -75,7 +76,7 @@ bool checkSignedIndividualities2({
 }
 
 @Deprecated('Use `Individuality.isPartialMatchArray` instead')
-bool partialMatch(final Iterable<int> myTraits, final Iterable<int> unsignedRequiredTraits) {
+bool partialMatch(Iterable<int> myTraits, Iterable<int> unsignedRequiredTraits) {
   final Set<int> myTraitsSet = myTraits.toSet();
   for (final trait in unsignedRequiredTraits) {
     if (myTraitsSet.contains(trait.abs())) {
@@ -86,7 +87,7 @@ bool partialMatch(final Iterable<int> myTraits, final Iterable<int> unsignedRequ
 }
 
 @Deprecated('Use `Individuality.isMatchArray` instead')
-bool allMatch(final Iterable<int> myTraits, final Iterable<int> unsignedRequiredTraits) {
+bool allMatch(Iterable<int> myTraits, Iterable<int> unsignedRequiredTraits) {
   final Set<int> myTraitsSet = myTraits.toSet();
   for (final trait in unsignedRequiredTraits) {
     if (!myTraitsSet.contains(trait.abs())) {
@@ -96,15 +97,15 @@ bool allMatch(final Iterable<int> myTraits, final Iterable<int> unsignedRequired
   return true;
 }
 
-List<BuffData> collectBuffsPerAction(final Iterable<BuffData> buffs, final BuffAction buffAction) {
+List<BuffData> collectBuffsPerAction(Iterable<BuffData> buffs, BuffAction buffAction) {
   return collectBuffsPerActions(buffs, [buffAction]);
 }
 
-List<BuffData> collectBuffsPerType(final Iterable<BuffData> buffs, final BuffType buffType) {
+List<BuffData> collectBuffsPerType(Iterable<BuffData> buffs, BuffType buffType) {
   return collectBuffsPerTypes(buffs, [buffType]);
 }
 
-List<BuffData> collectBuffsPerActions(final Iterable<BuffData> buffs, final Iterable<BuffAction> buffActions) {
+List<BuffData> collectBuffsPerActions(Iterable<BuffData> buffs, Iterable<BuffAction> buffActions) {
   final allBuffTypes = HashSet<BuffType>();
   for (final buffAction in buffActions) {
     final actionDetails = ConstData.buffActions[buffAction];
@@ -119,7 +120,7 @@ List<BuffData> collectBuffsPerActions(final Iterable<BuffData> buffs, final Iter
   return collectBuffsPerTypes(buffs, allBuffTypes);
 }
 
-List<BuffData> collectBuffsPerTypes(final Iterable<BuffData> buffs, final Iterable<BuffType> buffTypes) {
+List<BuffData> collectBuffsPerTypes(Iterable<BuffData> buffs, Iterable<BuffType> buffTypes) {
   return buffs.where((buff) => buffTypes.contains(buff.buff.type)).toList();
 }
 
@@ -141,7 +142,7 @@ class CheckTraitParameters {
   bool checkQuestTraits;
 
   CheckTraitParameters({
-    required final Iterable<int> requiredTraits,
+    required Iterable<int> requiredTraits,
     this.actor,
     this.requireAtLeast,
     this.checkActorTraits = false,

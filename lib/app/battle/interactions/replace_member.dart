@@ -5,6 +5,7 @@ import 'package:tuple/tuple.dart';
 import 'package:chaldea/app/battle/utils/battle_logger.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '../models/battle.dart';
 import '_dialog.dart';
 
@@ -18,7 +19,7 @@ class ReplaceMemberSelectionDialog extends StatefulWidget {
   @override
   State<ReplaceMemberSelectionDialog> createState() => _ReplaceMemberSelectionDialogState();
 
-  static Future<Tuple2<BattleServantData, BattleServantData>?> show(final BattleData battleData) async {
+  static Future<Tuple2<BattleServantData, BattleServantData>?> show(BattleData battleData) async {
     if (!battleData.mounted) return null;
     return showUserConfirm<Tuple2<BattleServantData, BattleServantData>>(
       context: battleData.context!,
@@ -34,7 +35,7 @@ class _ReplaceMemberSelectionDialogState extends State<ReplaceMemberSelectionDia
   BattleData get battleData => widget.battleData;
 
   @override
-  Widget build(final BuildContext context) {
+  Widget build(BuildContext context) {
     final List<Widget> children = [];
 
     final List<BattleServantData> selectableOnField = battleData.nonnullPlayers

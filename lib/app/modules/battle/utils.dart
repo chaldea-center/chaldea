@@ -8,6 +8,7 @@ import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
+
 import 'battle_simulation.dart';
 
 void replaySimulation({required BattleShareData detail, int? replayTeamId}) async {

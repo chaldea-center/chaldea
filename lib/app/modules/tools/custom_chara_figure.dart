@@ -11,6 +11,7 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '../../../generated/l10n.dart';
 
 class CustomCharaFigureIntro extends HookWidget {

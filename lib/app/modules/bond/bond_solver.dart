@@ -10,6 +10,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '../battle/formation/team.dart';
 import 'formation_bond.dart' show BondQuestPicker, validateFormationBondOption;
 

@@ -11,6 +11,7 @@ import 'package:uuid/uuid.dart';
 
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
+
 import '../generated/git_info.dart';
 import '../models/userdata/version.dart';
 import 'method_channel/method_channel_chaldea.dart';

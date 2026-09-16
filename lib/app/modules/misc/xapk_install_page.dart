@@ -718,27 +718,19 @@ class _XapkInstallPageState extends State<XapkInstallPage> {
             ),
             entry(
               'MIUI',
-              isZh
-                  ? '若安装无反应或失败：开发者选项 → 关闭「MIUI 优化」后重试。较新版本的 MIUI 安装器已修复此问题。'
-                  : 'If install silently fails: Developer options → turn off "MIUI optimization" and retry. Recent MIUI installer versions have fixed this.',
+              isZh ? '若安装无反应或失败：开发者选项 → 关闭「MIUI 优化」后重试。较新版本的 MIUI 安装器已修复此问题。' : 'If install silently fails: Developer options → turn off "MIUI optimization" and retry. Recent MIUI installer versions have fixed this.',
             ),
             entry(
               'EMUI',
-              isZh
-                  ? '设置 → 安全 → 更多安全设置 → 「安装外部来源应用」允许 Chaldea；弹出的安全检测选择「继续安装」。'
-                  : 'Settings → Security → More security settings → allow Chaldea under "Install apps from external sources"; choose "Continue install" on the security scan dialog.',
+              isZh ? '设置 → 安全 → 更多安全设置 → 「安装外部来源应用」允许 Chaldea；弹出的安全检测选择「继续安装」。' : 'Settings → Security → More security settings → allow Chaldea under "Install apps from external sources"; choose "Continue install" on the security scan dialog.',
             ),
             entry(
               'OneUI',
-              isZh
-                  ? '若被「自动阻止程序」拦截：设置 → 安全与隐私 → 自动阻止程序，允许该来源或暂时关闭。'
-                  : 'If blocked by "auto blocker": Settings → Security and privacy → Auto Blocker, allow this source or disable it temporarily.',
+              isZh ? '若被「自动阻止程序」拦截：设置 → 安全与隐私 → 自动阻止程序，允许该来源或暂时关闭。' : 'If blocked by "auto blocker": Settings → Security and privacy → Auto Blocker, allow this source or disable it temporarily.',
             ),
             entry(
               isZh ? '其他设备' : 'Others',
-              isZh
-                  ? '确保已授予「安装未知应用」权限（见上方提示），并在系统弹窗中确认安装。'
-                  : 'Make sure the "install unknown apps" permission is granted (see above) and confirm the system dialog.',
+              isZh ? '确保已授予「安装未知应用」权限（见上方提示），并在系统弹窗中确认安装。' : 'Make sure the "install unknown apps" permission is granted (see above) and confirm the system dialog.',
             ),
           ],
         ),

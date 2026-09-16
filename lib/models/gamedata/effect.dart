@@ -1,6 +1,7 @@
 // ignore_for_file: unused_element
 
 import 'package:chaldea/utils/utils.dart';
+
 import 'common.dart';
 import 'mappings.dart';
 import 'skill.dart';

@@ -51,9 +51,9 @@ class QuestEnemySummaryPage extends StatelessWidget {
             ...?enemy.classPassive.appendPassiveSkillIds,
           ],
         }.where((e) => e > 0 && db.gameData.baseSkills[e] != null).toList(),
-        tdIds = {
-          for (final enemy in enemies) enemy.noblePhantasm.noblePhantasmId,
-        }.where((e) => e > 0 && db.gameData.baseTds[e] != null).toList();
+        tdIds = {for (final enemy in enemies) enemy.noblePhantasm.noblePhantasmId}
+            .where((e) => e > 0 && db.gameData.baseTds[e] != null)
+            .toList();
 
     return Scaffold(
       appBar: AppBar(title: Text('[${S.current.enemy_summary}] ${svt.lName.l}')),

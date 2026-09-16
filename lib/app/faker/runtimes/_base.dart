@@ -1,5 +1,6 @@
 import 'package:chaldea/models/faker/shared/agent.dart';
 import 'package:chaldea/models/gamedata/mst_data.dart';
+
 import '../runtime.dart';
 
 abstract class FakerRuntimeBase {

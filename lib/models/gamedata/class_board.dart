@@ -2,6 +2,7 @@ import 'dart:ui' show Offset;
 
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/utils/extension.dart';
+
 import '../../app/app.dart';
 import '../db.dart';
 import '../userdata/userdata.dart';

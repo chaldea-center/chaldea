@@ -6,6 +6,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '_transform_tabber.dart';
 
 class SvtSkillTab extends StatefulWidget {
@@ -17,14 +18,14 @@ class SvtSkillTab extends StatefulWidget {
   @override
   State<SvtSkillTab> createState() => _SvtSkillTabState();
 
-  static bool hasUnusualLimitCond(final NiceSkill skill) {
+  static bool hasUnusualLimitCond(NiceSkill skill) {
     final skillSvt = skill.svt;
     return (skill.svt.num == 1 && skillSvt.condLimitCount != 0) ||
         (skill.svt.num == 2 && skillSvt.condLimitCount != 1) ||
         (skill.svt.num == 3 && skillSvt.condLimitCount != 3);
   }
 
-  static Widget releaseCondition(final NiceSkill skill) {
+  static Widget releaseCondition(NiceSkill skill) {
     final skillSvt = skill.svt;
 
     bool notMain = ['91', '94'].contains(skillSvt.condQuestId.toString().padRight(2).substring(0, 2));

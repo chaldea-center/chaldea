@@ -13,6 +13,7 @@ import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/constants.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import 'backup_backend/chaldea_backend.dart';
 
 class AppWindowUtil {
@@ -49,9 +50,8 @@ class AppWindowUtil {
 
   static Future<void> destroyWindow() async {
     if (kDebugMode) {
-      final confirm = await SimpleConfirmDialog(
-        title: Text(S.current.general_close),
-      ).showDialog(kAppKey.currentContext!);
+      final confirm = await SimpleConfirmDialog(title: Text(S.current.general_close))
+          .showDialog(kAppKey.currentContext!);
       if (confirm != true) return;
     }
     await windowManager.setPreventClose(false);

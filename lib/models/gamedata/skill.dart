@@ -7,6 +7,7 @@ import 'package:chaldea/app/modules/skill/td_detail.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widget_builders.dart' show CenterWidgetSpan;
+
 import '../../app/app.dart';
 import '../../app/tools/gamedata_loader.dart';
 import '../db.dart';

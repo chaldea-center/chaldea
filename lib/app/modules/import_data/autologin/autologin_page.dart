@@ -20,6 +20,7 @@ import 'package:chaldea/packages/method_channel/method_channel_chaldea.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import 'read_auth_page.dart';
 
 class AutoLoginPage extends StatefulWidget {

@@ -13,6 +13,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '../../routes/root_delegate.dart';
 import 'multi_screenshots.dart';
 
@@ -122,9 +123,8 @@ class WrapSideBar extends StatelessWidget {
       },
     );
     final ltr = Directionality.maybeOf(context);
-    final mqData = MediaQuery.of(
-      context,
-    ).removePadding(removeLeft: ltr == TextDirection.ltr, removeRight: ltr == TextDirection.rtl);
+    final mqData = MediaQuery.of(context)
+        .removePadding(removeLeft: ltr == TextDirection.ltr, removeRight: ltr == TextDirection.rtl);
     final headerIcon = SafeArea(
       top: true,
       left: false,

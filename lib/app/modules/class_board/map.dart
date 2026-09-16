@@ -4,6 +4,7 @@ import 'dart:ui' as ui;
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import 'class_board.dart';
 
 const Offset _grandOffset = Offset((14 + 198) / 2, -(76 - 108) / 2);

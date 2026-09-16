@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:chaldea/utils/basic.dart';
 import 'package:chaldea/utils/extension.dart';
+
 import '../db.dart';
 import '_helper.dart';
 import 'common.dart';
@@ -120,6 +121,10 @@ class ConstGameData {
     _fixBuffActions();
     // sameQuestRemap: multiple keys may map to same value
     for (final (k, v) in sameQuestRemap.items) {
+      if (k == v) {
+        assert(false, 'remap same quest id $k->$v');
+        continue;
+      }
       (sameQuestRemapList[v] ??= {}).addAll([k, v]);
     }
     for (final vv in sameQuestRemapList.values.toList()) {
@@ -204,11 +209,11 @@ class ConstGameData {
     return info;
   }
 
-  int getClassIdRelation(final int attacker, final int defender) {
+  int getClassIdRelation(int attacker, int defender) {
     return classRelation[classInfo[attacker]?.relationId]?[classInfo[defender]?.relationId] ?? 1000;
   }
 
-  int getAttributeRelation(final ServantSubAttribute attacker, final ServantSubAttribute defender) {
+  int getAttributeRelation(ServantSubAttribute attacker, ServantSubAttribute defender) {
     return attributeRelation[attacker]?[defender] ?? 1000;
   }
 

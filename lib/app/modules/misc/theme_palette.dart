@@ -5,6 +5,7 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/misc/showcase/showcase_home_page.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/theme.dart';
+
 import '../home/subpage/theme_color.dart';
 
 class DarkLightThemePalette extends StatefulWidget {

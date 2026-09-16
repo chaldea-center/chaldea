@@ -10,6 +10,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/audio.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import 'map_filter.dart';
 
 extension _SpotCenter on NiceSpot {

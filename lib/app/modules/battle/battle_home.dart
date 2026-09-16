@@ -4,6 +4,7 @@ import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '../../../packages/language.dart';
 import '../home/elements/random_image.dart';
 import '../home/subpage/feedback_page.dart';

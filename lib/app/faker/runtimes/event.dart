@@ -6,6 +6,7 @@ import 'package:chaldea/app/modules/master_mission/solver/solver.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
+
 import '_base.dart';
 
 const int kMaxRandomMissionCount = 20;

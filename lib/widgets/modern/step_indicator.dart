@@ -39,10 +39,8 @@ class StepIndicator extends StatelessWidget {
       alignment: Alignment.center,
       child: Text(
         '$step',
-        style: Theme.of(context).textTheme.labelMedium?.copyWith(
-          color: done ? cs.onPrimary : cs.onSurfaceVariant,
-          fontWeight: FontWeight.w600,
-        ),
+        style: Theme.of(context).textTheme.labelMedium
+            ?.copyWith(color: done ? cs.onPrimary : cs.onSurfaceVariant, fontWeight: FontWeight.w600),
       ),
     );
   }

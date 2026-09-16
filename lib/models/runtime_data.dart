@@ -7,6 +7,7 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/screenshot.dart';
+
 import '../app/routes/delegate.dart';
 import '../app/tools/app_update.dart';
 import '../packages/app_info.dart';

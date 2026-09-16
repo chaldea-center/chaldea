@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:chaldea/models/models.dart';
+
 import '../models/battle.dart';
 
 // FuncType.shortenBuffturn:
@@ -11,10 +12,10 @@ class BuffTurnCount {
   const BuffTurnCount._();
 
   static void changeBuffValue(
-    final BattleData battleData,
-    final FuncType funcType,
-    final DataVals dataVals,
-    final List<BattleServantData> targets,
+    BattleData battleData,
+    FuncType funcType,
+    DataVals dataVals,
+    List<BattleServantData> targets,
   ) {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.threshold) {
@@ -37,11 +38,11 @@ class BuffTurnCount {
   }
 
   static bool _changeBuffValue(
-    final BattleData battleData,
-    final BattleServantData svt,
-    final int changeValue,
-    final DataVals dataVals,
-    final bool isTurn,
+    BattleData battleData,
+    BattleServantData svt,
+    int changeValue,
+    DataVals dataVals,
+    bool isTurn,
   ) {
     final List<int> targetIndiv = dataVals.TargetList ?? [];
     if (targetIndiv.isEmpty) return false;

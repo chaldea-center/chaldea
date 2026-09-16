@@ -538,9 +538,8 @@ class _MethodCard extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: Theme.of(
-                        context,
-                      ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600, color: cs.onSurface),
+                      style: Theme.of(context).textTheme.bodyMedium
+                          ?.copyWith(fontWeight: FontWeight.w600, color: cs.onSurface),
                     ),
                     const SizedBox(height: 2),
                     Text(

@@ -9,11 +9,7 @@ class SkillChargeTurn {
     return targetIndex >= 0 && targetIndex != skillIndex;
   }
 
-  static void shortenSkill(
-    final BattleData battleData,
-    final DataVals dataVals,
-    final List<BattleServantData> targets,
-  ) {
+  static void shortenSkill(BattleData battleData, DataVals dataVals, List<BattleServantData> targets) {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.threshold) {
       return;
@@ -28,7 +24,7 @@ class SkillChargeTurn {
     }
   }
 
-  static void extendSkill(final BattleData battleData, final DataVals dataVals, final List<BattleServantData> targets) {
+  static void extendSkill(BattleData battleData, DataVals dataVals, List<BattleServantData> targets) {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.threshold) {
       return;

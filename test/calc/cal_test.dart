@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:chaldea/app/tools/gamedata_loader.dart';
+
 import '../test_init.dart';
 
 void main() async {

@@ -2,6 +2,7 @@ import 'package:chaldea/app/tools/localized_base.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import 'daily_bonus.dart';
 import 'setting_tab.dart';
 import 'table_tab.dart';

@@ -1,5 +1,6 @@
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '_dialog.dart';
 
 class TailoredExecutionConfirm extends StatelessWidget {

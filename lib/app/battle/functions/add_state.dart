@@ -7,22 +7,23 @@ import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/models/gamedata/individuality.dart';
 import 'package:chaldea/utils/utils.dart';
+
 import '../interactions/td_type_change_selector.dart';
 
 class AddState {
   AddState._();
 
   static Future<void> addState(
-    final BattleData battleData,
-    final Buff buff,
-    final int funcId,
-    final DataVals dataVals,
-    final BattleServantData? activator,
-    final List<BattleServantData> targets, {
-    final bool isShortBuff = false,
-    final SelectTreasureDeviceInfo? selectTreasureDeviceInfo,
-    final SkillType? skillType,
-    final SkillInfoType? skillInfoType,
+    BattleData battleData,
+    Buff buff,
+    int funcId,
+    DataVals dataVals,
+    BattleServantData? activator,
+    List<BattleServantData> targets, {
+    bool isShortBuff = false,
+    SelectTreasureDeviceInfo? selectTreasureDeviceInfo,
+    SkillType? skillType,
+    SkillInfoType? skillInfoType,
   }) async {
     final isPassiveSkillInfo = {
       SkillInfoType.svtEquip,
@@ -150,19 +151,19 @@ class AddState {
     }
   }
 
-  static bool checkSameBuffLimitNum(final BattleServantData target, final DataVals dataVals) {
+  static bool checkSameBuffLimitNum(BattleServantData target, DataVals dataVals) {
     return dataVals.SameBuffLimitNum == null ||
         dataVals.SameBuffLimitNum! > target.countBuffWithTrait([dataVals.SameBuffLimitTargetIndividuality!]);
   }
 
   static Future<bool> shouldAddState(
-    final BattleData battleData,
-    final DataVals dataVals,
-    final BattleServantData? activator,
-    final BattleServantData target,
-    final BuffData buffData,
-    final bool isCommandCode,
-    final bool isPassiveSkillInfo,
+    BattleData battleData,
+    DataVals dataVals,
+    BattleServantData? activator,
+    BattleServantData target,
+    BuffData buffData,
+    bool isCommandCode,
+    bool isPassiveSkillInfo,
   ) async {
     if (dataVals.ForceAddState == 1 || isCommandCode) {
       return true;
@@ -298,15 +299,15 @@ class AddState {
   }
 
   static Future<void> addStateByAvailableMasterSkill(
-    final BattleData battleData,
-    final Buff? buff,
-    final int funcId,
-    final DataVals dataVals,
-    final BattleServantData? activator,
-    final List<BattleServantData> targets, {
-    final bool isShortBuff = false,
-    final SkillType? skillType,
-    final SkillInfoType? skillInfoType,
+    BattleData battleData,
+    Buff? buff,
+    int funcId,
+    DataVals dataVals,
+    BattleServantData? activator,
+    List<BattleServantData> targets, {
+    bool isShortBuff = false,
+    SkillType? skillType,
+    SkillInfoType? skillInfoType,
   }) async {
     final availableSkillCount = battleData.masterSkillInfo
         .where((skillInfo) => _isMatchingAvailableMasterSkill(skillInfo, dataVals.TypeIndividualityEachFunc))
@@ -336,10 +337,7 @@ class AddState {
     }
   }
 
-  static bool _isMatchingAvailableMasterSkill(
-    final BattleSkillInfoData skillInfo,
-    final List<List<int>>? targetSkillIndivArray,
-  ) {
+  static bool _isMatchingAvailableMasterSkill(BattleSkillInfoData skillInfo, List<List<int>>? targetSkillIndivArray) {
     if (skillInfo.chargeTurn > 0) return false;
     if (targetSkillIndivArray == null || targetSkillIndivArray.isEmpty) return true;
 

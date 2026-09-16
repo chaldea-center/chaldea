@@ -10,6 +10,7 @@ import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/extension.dart';
 import 'package:chaldea/utils/utils.dart';
+
 import '../../packages/language.dart';
 import '../api/api.dart';
 import '../gamedata/common.dart';

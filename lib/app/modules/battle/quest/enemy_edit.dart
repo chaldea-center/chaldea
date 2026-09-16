@@ -11,6 +11,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import 'trait_edit.dart';
 
 class QuestEnemyEditPage extends StatefulWidget {
@@ -498,8 +499,8 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
     required String title,
     Widget? subtitle,
     required int value,
-    required final int base, // 10: 1000->100 or 100%
-    required final bool isPercent,
+    required int base, // 10: 1000->100 or 100%
+    required bool isPercent,
     required ValueChanged<int> onChanged,
   }) {
     String format(int v) {

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
+
 import '../test_init.dart';
 
 void main() async {
@@ -15,7 +16,7 @@ void main() async {
 }
 
 /// helper method to list important bit of a servant, so scripts not yet implemented can be easily spotted.
-void checkSvtData(final String path, final Servant svtData) {
+void checkSvtData(String path, Servant svtData) {
   final file = File('$path/${svtData.collectionNo}.txt');
   final List<String> checkStrings = [];
   checkStrings.add('Checking data for servant [${svtData.id}] - [${svtData.collectionNo}]: ${svtData.lName.cn}');
@@ -90,18 +91,14 @@ void checkSvtData(final String path, final Servant svtData) {
   file.writeAsString(checkStrings.join('\n'));
 }
 
-void checkByType(final String path) {
+void checkByType(String path) {
   final Map<String, List<String>> servantScripts = {};
   final Map<String, List<String>> skillScripts = {};
   final Map<String, List<String>> funcTargets = {};
   final Map<String, Map<String, List<String>>> funcTypeToDataVals = {};
   final Map<String, Map<String, List<String>>> buffTypeToScripts = {};
 
-  void logSkills(
-    final Map<String, dynamic>? skillScriptMap,
-    final List<NiceFunction> skillFunctions,
-    final String identifier,
-  ) {
+  void logSkills(Map<String, dynamic>? skillScriptMap, List<NiceFunction> skillFunctions, String identifier) {
     if (skillScriptMap != null && skillScriptMap.isNotEmpty) {
       for (final entry in skillScriptMap.entries) {
         if (!skillScripts.containsKey(entry.key)) {

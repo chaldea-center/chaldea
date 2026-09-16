@@ -2,6 +2,7 @@ import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '_dialog.dart';
 
 class FuncActSetSelector extends StatelessWidget {
@@ -9,7 +10,7 @@ class FuncActSetSelector extends StatelessWidget {
   final Map<int, List<NiceFunction>> actSets;
   const FuncActSetSelector({super.key, required this.battleData, required this.actSets});
 
-  static Future<int?> show(BattleData battleData, final Map<int, List<NiceFunction>> actSets) {
+  static Future<int?> show(BattleData battleData, Map<int, List<NiceFunction>> actSets) {
     if (!battleData.mounted) return Future.value();
     return showUserConfirm<int?>(
       context: battleData.context!,

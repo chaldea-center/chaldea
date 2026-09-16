@@ -26,6 +26,7 @@ import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/notification.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '_shared/history.dart';
 import 'battle_mission_value_page.dart';
 import 'details/dialogs.dart';

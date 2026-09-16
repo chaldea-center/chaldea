@@ -11,6 +11,7 @@ import 'package:chaldea/packages/analysis/analysis.dart';
 import 'package:chaldea/packages/method_channel/method_channel_chaldea.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/extension.dart';
+
 import '../../packages/split_route/split_route.dart';
 import 'root_delegate.dart';
 import 'routes.dart';

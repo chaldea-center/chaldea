@@ -2,6 +2,7 @@ import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/generated/l10n.dart' show S;
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '../../app/app.dart';
 import '../../app/tools/gamedata_loader.dart';
 import '../db.dart';

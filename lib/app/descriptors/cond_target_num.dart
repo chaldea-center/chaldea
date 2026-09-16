@@ -4,6 +4,7 @@ import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import 'descriptor_base.dart';
 import 'mission_cond_detail.dart';
 import 'multi_entry.dart';

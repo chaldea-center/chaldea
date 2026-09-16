@@ -377,7 +377,7 @@ class _ServantSelectorNoOption extends StatelessWidget {
   SvtFilterData get svtFilterData => db.runtimeData.svtFilters.current;
 
   @override
-  Widget build(final BuildContext context) {
+  Widget build(BuildContext context) {
     List<Widget> children = [];
 
     // svt icon

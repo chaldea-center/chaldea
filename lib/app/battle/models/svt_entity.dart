@@ -12,6 +12,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/individuality.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
+
 import 'ai.dart';
 
 class BattleServantData {
@@ -150,7 +151,7 @@ class BattleServantData {
     return 'BattleServantData(${fieldIndex + 1}-$lBattleName)';
   }
 
-  factory BattleServantData.fromEnemy(final QuestEnemy enemy, final int uniqueId, int? eventId, {Servant? niceSvt}) {
+  factory BattleServantData.fromEnemy(QuestEnemy enemy, int uniqueId, int? eventId, {Servant? niceSvt}) {
     final svt = BattleServantData._(
       isPlayer: false,
       isGrandSvt: enemy.enemyScript.isGrandSvt == 1 && db.gameData.grandGraphDetails.containsKey(enemy.svt.classId),
@@ -200,8 +201,8 @@ class BattleServantData {
   // Must handle error
   static Future<BattleServantData> fromPlayerSvtData(
     PlayerSvtData settings,
-    final int uniqueId, {
-    final int startingPosition = 0,
+    int uniqueId, {
+    int startingPosition = 0,
     required bool isUseGrandBoard,
   }) async {
     settings = settings.copy();
@@ -302,7 +303,7 @@ class BattleServantData {
     return svt;
   }
 
-  Future<void> loadEnemySvtData(final BattleData battleData) async {
+  Future<void> loadEnemySvtData(BattleData battleData) async {
     if (niceEnemy == null) return;
     final svtId = niceEnemy!.svt.id;
     if (niceSvt != null && niceSvt!.id == svtId) return;
@@ -398,14 +399,14 @@ class BattleServantData {
     }
   }
 
-  Future<void> loadAi(final BattleData battleData) async {
+  Future<void> loadAi(BattleData battleData) async {
     svtAi = SvtAiManager(niceEnemy?.ai);
     if (battleData.options.simulateAi) {
       await svtAi.fetchAiData();
     }
   }
 
-  Future<void> initScript(final BattleData battleData) async {
+  Future<void> initScript(BattleData battleData) async {
     await loadAi(battleData);
 
     if (niceEnemy != null) {
@@ -431,7 +432,7 @@ class BattleServantData {
     }
   }
 
-  Future<void> activateClassPassive(final BattleData battleData) async {
+  Future<void> activateClassPassive(BattleData battleData) async {
     final List<BaseSkill> passives = [];
 
     if (isPlayer) {
@@ -507,7 +508,7 @@ class BattleServantData {
     }
   }
 
-  Future<void> activateEquip(final BattleData battleData) async {
+  Future<void> activateEquip(BattleData battleData) async {
     await equip1?.activateCE(battleData, this);
 
     if (battleData.isUseGrandBoard && isPlayer && isGrandSvt) {
@@ -524,7 +525,7 @@ class BattleServantData {
     }
   }
 
-  Future<void> activateExtraPassive(final BattleData battleData) async {
+  Future<void> activateExtraPassive(BattleData battleData) async {
     if (isPlayer) {
       // need skill num check, some may active duplicated skills
       final extraPassives = NiceSkill.getSvtEventSkills(
@@ -547,7 +548,7 @@ class BattleServantData {
     }
   }
 
-  Future<void> activateAdditionalPassive(final BattleData battleData) async {
+  Future<void> activateAdditionalPassive(BattleData battleData) async {
     if (isPlayer) {
       for (int index = 0; index < playerSvtData!.customPassives.length; index++) {
         final skill = playerSvtData!.customPassives[index];
@@ -558,7 +559,7 @@ class BattleServantData {
     }
   }
 
-  void updateActProcessing(final List<BuffData> buffs) {
+  void updateActProcessing(List<BuffData> buffs) {
     if (hp > 0) {
       int hpToLose = 0;
       for (final buff in buffs) {
@@ -582,7 +583,7 @@ class BattleServantData {
     }
   }
 
-  void postAddStateProcessing(final BuffData buff, final DataVals dataVals) {
+  void postAddStateProcessing(BuffData buff, DataVals dataVals) {
     if (!buff.checkAct()) return;
 
     if (hp > 0) {
@@ -602,7 +603,7 @@ class BattleServantData {
     }
   }
 
-  void postSubStateProcessing(final List<BuffData> buffs) {
+  void postSubStateProcessing(List<BuffData> buffs) {
     if (hp > 0) {
       int hpToLose = 0;
       for (final buff in buffs) {
@@ -623,7 +624,7 @@ class BattleServantData {
     }
   }
 
-  String getSkillName(final int index) {
+  String getSkillName(int index) {
     if (skillInfoList.length <= index || index < 0) {
       return 'Invalid skill index: $index';
     }
@@ -728,7 +729,7 @@ class BattleServantData {
     );
   }
 
-  Future<CommandCardData?> getCounterCard(final BattleData battleData) async {
+  Future<CommandCardData?> getCounterCard(BattleData battleData) async {
     // buff.vals.UseTreasureDevice: =0 means skill?
     final buff = battleBuff.validBuffs.lastWhereOrNull((buff) => buff.vals.CounterId != null);
     if (buff == null) return null;
@@ -810,7 +811,7 @@ class BattleServantData {
     );
   }
 
-  int checkOverwriteSvtCardType(final int baseCardType) {
+  int checkOverwriteSvtCardType(int baseCardType) {
     final overwriteSvtCardTypeBuff = collectBuffsPerAction(
       battleBuff.validBuffs,
       BuffAction.overwriteSvtCardType,
@@ -827,7 +828,7 @@ class BattleServantData {
     }
   }
 
-  int getNPGain(final int cardType) {
+  int getNPGain(int cardType) {
     if (!isPlayer) {
       return 0;
     }
@@ -895,13 +896,13 @@ class BattleServantData {
   }
 
   static List<int> fetchSelfTraits(
-    final BuffAction buffAction,
-    final BuffData buff,
-    final BattleServantData self, {
-    final CommandCardData? cardData,
-    final bool isAttack = true,
-    final DataVals? dataVals,
-    final List<int>? addTraits,
+    BuffAction buffAction,
+    BuffData buff,
+    BattleServantData self, {
+    CommandCardData? cardData,
+    bool isAttack = true,
+    DataVals? dataVals,
+    List<int>? addTraits,
   }) {
     switch (buffAction) {
       case BuffAction.avoidanceIndividuality:
@@ -1026,14 +1027,14 @@ class BattleServantData {
   }
 
   static List<int>? fetchOpponentTraits(
-    final BuffAction buffAction,
-    final BuffData buff,
-    final BattleServantData? opponent, {
-    final BattleServantData? self,
-    final CommandCardData? cardData,
-    final bool isAttack = true,
-    final DataVals? dataVals,
-    final List<int>? addTraits,
+    BuffAction buffAction,
+    BuffData buff,
+    BattleServantData? opponent, {
+    BattleServantData? self,
+    CommandCardData? cardData,
+    bool isAttack = true,
+    DataVals? dataVals,
+    List<int>? addTraits,
   }) {
     List<int>? results;
     switch (buffAction) {
@@ -1168,7 +1169,7 @@ class BattleServantData {
     return results;
   }
 
-  List<int> getTraits({final List<int>? addTraits, final bool isIncludeNpEffectIndiv = true}) {
+  List<int> getTraits({List<int>? addTraits, bool isIncludeNpEffectIndiv = true}) {
     final List<int> allTraits = [];
     allTraits.addAll(getBasicSvtTraits());
 
@@ -1219,14 +1220,14 @@ class BattleServantData {
     return allTraits;
   }
 
-  int countTrait(final List<int> traits) {
+  int countTrait(List<int> traits) {
     return countAnyTraits(getTraits(), traits);
   }
 
   List<int> getBuffTraits({
-    final bool activeOnly = false,
-    final bool ignoreIndivUnreleaseable = false,
-    final bool includeIgnoreIndiv = false,
+    bool activeOnly = false,
+    bool ignoreIndivUnreleaseable = false,
+    bool includeIgnoreIndiv = false,
   }) {
     final List<BuffData> buffs = getBuffsWithTraits(
       [], // get all
@@ -1238,10 +1239,10 @@ class BattleServantData {
   }
 
   int countBuffWithTrait(
-    final List<int> traits, {
-    final bool activeOnly = false,
-    final bool ignoreIndivUnreleaseable = false,
-    final bool includeIgnoreIndiv = false,
+    List<int> traits, {
+    bool activeOnly = false,
+    bool ignoreIndivUnreleaseable = false,
+    bool includeIgnoreIndiv = false,
   }) {
     return getBuffsWithTraits(
       traits,
@@ -1252,10 +1253,10 @@ class BattleServantData {
   }
 
   List<BuffData> getBuffsWithTraits(
-    final List<int> traits, {
-    final bool activeOnly = false,
-    final bool ignoreIndivUnreleaseable = false,
-    final bool includeIgnoreIndiv = false,
+    List<int> traits, {
+    bool activeOnly = false,
+    bool ignoreIndivUnreleaseable = false,
+    bool includeIgnoreIndiv = false,
   }) {
     final buffList = activeOnly ? battleBuff.getActiveList() : battleBuff.validBuffs;
     return buffList.where((buff) {
@@ -1265,7 +1266,7 @@ class BattleServantData {
     }).toList();
   }
 
-  void changeNPLineCount(final int change) {
+  void changeNPLineCount(int change) {
     if (!isEnemy) {
       return;
     }
@@ -1274,7 +1275,7 @@ class BattleServantData {
     npLineCount = npLineCount.clamp(0, niceEnemy!.chargeTurn);
   }
 
-  void changeNP(final int change, {Ref<bool>? maxLimited}) {
+  void changeNP(int change, {Ref<bool>? maxLimited}) {
     if (!isPlayer || playerSvtData?.td == null) {
       return;
     }
@@ -1289,7 +1290,7 @@ class BattleServantData {
     }
   }
 
-  static int getNPCap(final int npLevel) {
+  static int getNPCap(int npLevel) {
     final capRate = npLevel == 1
         ? 1
         : npLevel < 5
@@ -1298,11 +1299,11 @@ class BattleServantData {
     return ConstData.constants.fullTdPoint * capRate;
   }
 
-  bool isKilledBy(final BattleServantData? activator, final CommandCardData? currentCard) {
+  bool isKilledBy(BattleServantData? activator, CommandCardData? currentCard) {
     return activator != null && currentCard != null && lastHitBy == activator && lastHitByCard == currentCard;
   }
 
-  void heal(final int heal) {
+  void heal(int heal) {
     if (hasBuffNoProbabilityCheck(BuffAction.donotRecovery)) {
       return;
     }
@@ -1312,16 +1313,16 @@ class BattleServantData {
     }
   }
 
-  void setHp(final int newHp) {
+  void setHp(int newHp) {
     hp = maxHp < newHp ? maxHp : newHp;
   }
 
-  void gainHp(final int gain) {
+  void gainHp(int gain) {
     final newHp = hp + gain;
     hp = maxHp < newHp ? maxHp : newHp;
   }
 
-  void lossHp(final int loss, {final bool lethal = false}) {
+  void lossHp(int loss, {bool lethal = false}) {
     final prevHp = hp;
     hp -= loss;
     if (prevHp > 0 && hp <= 0 && !lethal) {
@@ -1329,12 +1330,12 @@ class BattleServantData {
     }
   }
 
-  void receiveDamage(final int hitDamage) {
+  void receiveDamage(int hitDamage) {
     hp -= hitDamage;
   }
 
   // since Laplace allows minus HP, need to change it to lower limit for accumulation damage calculation
-  int _getHpForAccumulationDamage(final int hp) {
+  int _getHpForAccumulationDamage(int hp) {
     final minHp = shiftDeckIndex < shiftNpcIds.length - 1 ? 1 : 0;
     return max(hp, minHp);
   }
@@ -1344,7 +1345,7 @@ class BattleServantData {
   }
 
   // solely used for DamageReflection calculations
-  void procAccumulationDamage(final int previousHp) {
+  void procAccumulationDamage(int previousHp) {
     _accumulationDamage += _getHpForAccumulationDamage(previousHp) - _getHpForAccumulationDamage(hp);
     _accumulationDamage = _accumulationDamage.clamp(0, maxHp);
   }
@@ -1355,7 +1356,7 @@ class BattleServantData {
     lastHitByFunc = null;
   }
 
-  void addReducedHp(final int damage) {
+  void addReducedHp(int damage) {
     reducedHp += damage;
   }
 
@@ -1363,11 +1364,11 @@ class BattleServantData {
     reducedHp = 0;
   }
 
-  bool hasNextShift(final BattleData battleData) {
+  bool hasNextShift(BattleData battleData) {
     return getEnemyShift(battleData, shiftDeckIndex + 1) != null;
   }
 
-  QuestEnemy? getEnemyShift(final BattleData battleData, final int shiftTo) {
+  QuestEnemy? getEnemyShift(BattleData battleData, int shiftTo) {
     if (isEnemy) {
       if (shiftTo == -1) {
         return baseEnemy;
@@ -1380,7 +1381,7 @@ class BattleServantData {
     return null;
   }
 
-  Future<void> shift(final BattleData battleData) async {
+  Future<void> shift(BattleData battleData) async {
     shiftDeckIndex += 1;
     final nextShift = getEnemyShift(battleData, shiftDeckIndex);
     if (nextShift == null) {
@@ -1397,7 +1398,7 @@ class BattleServantData {
     battleBuff.clearPassive(uniqueId);
   }
 
-  Future<void> skillShift(final BattleData battleData, QuestEnemy shiftSvt) async {
+  Future<void> skillShift(BattleData battleData, QuestEnemy shiftSvt) async {
     shiftDeckIndex += 1;
     niceEnemy = shiftSvt;
     await loadAi(battleData);
@@ -1409,7 +1410,7 @@ class BattleServantData {
     battleBuff.clearPassive(uniqueId);
   }
 
-  Future<void> changeServant(final BattleData battleData, QuestEnemy changeSvt) async {
+  Future<void> changeServant(BattleData battleData, QuestEnemy changeSvt) async {
     changeIndex = changeIndex;
     niceEnemy = changeSvt;
     baseAtk = changeSvt.atk;
@@ -1421,7 +1422,7 @@ class BattleServantData {
     await battleData.initActorSkills([this]);
   }
 
-  Future<void> transformAlly(final BattleData battleData, final Servant targetSvt, final DataVals dataVals) async {
+  Future<void> transformAlly(BattleData battleData, Servant targetSvt, DataVals dataVals) async {
     final targetSvtId = dataVals.Value!;
     niceSvt = targetSvt;
     final limitCount = dataVals.SetLimitCount;
@@ -1505,7 +1506,7 @@ class BattleServantData {
     }
   }
 
-  Future<void> transformEnemy(final BattleData battleData, final QuestEnemy targetEnemy) async {
+  Future<void> transformEnemy(BattleData battleData, QuestEnemy targetEnemy) async {
     niceEnemy = targetEnemy;
     skillInfoList = [
       BattleSkillInfoData(
@@ -1546,7 +1547,7 @@ class BattleServantData {
     }
   }
 
-  bool isAlive(final BattleData battleData, {final NiceFunction? function}) {
+  bool isAlive(BattleData battleData, {NiceFunction? function}) {
     if (hp > 0) {
       return true;
     }
@@ -1564,7 +1565,7 @@ class BattleServantData {
         hasBuffNoProbabilityCheck(BuffAction.donotNobleCondMismatch, card: getNPCard());
   }
 
-  bool isSkillSealed(final int skillIndex) {
+  bool isSkillSealed(int skillIndex) {
     if (skillInfoList.length <= skillIndex || skillIndex < 0) {
       return false;
     }
@@ -1581,7 +1582,7 @@ class BattleServantData {
     return false;
   }
 
-  bool isSkillCondFailed(final BattleData battleData, final int skillIndex) {
+  bool isSkillCondFailed(BattleData battleData, int skillIndex) {
     if (skillInfoList.length <= skillIndex || skillIndex < 0) {
       return false;
     }
@@ -1592,7 +1593,7 @@ class BattleServantData {
         !BattleSkillInfoData.checkSkillScript(battleData, this, skillInfo.skillScript, skillInfo.skillLv);
   }
 
-  bool canUseSkillIgnoreCoolDown(final BattleData battleData, final int skillIndex) {
+  bool canUseSkillIgnoreCoolDown(BattleData battleData, int skillIndex) {
     if (skillInfoList.length <= skillIndex || skillIndex < 0) {
       return false;
     }
@@ -1600,7 +1601,7 @@ class BattleServantData {
     return !isSkillSealed(skillIndex) && !isSkillCondFailed(battleData, skillIndex);
   }
 
-  bool canSkillCoolDown(final BattleData battleData, final int skillIndex) {
+  bool canSkillCoolDown(BattleData battleData, int skillIndex) {
     if (skillInfoList.length <= skillIndex || skillIndex < 0) {
       return false;
     }
@@ -1616,13 +1617,13 @@ class BattleServantData {
     return hp > 0 && !hasBuffNoProbabilityCheck(BuffAction.donotAct);
   }
 
-  bool canCommandCard(final CommandCardData card) {
+  bool canCommandCard(CommandCardData card) {
     if (!canAttack()) return false;
 
     return !hasBuffNoProbabilityCheck(BuffAction.donotActCommandtype, card: card);
   }
 
-  bool canSelectNP(final BattleData battleData) {
+  bool canSelectNP(BattleData battleData) {
     if (!canNP()) return false;
 
     final currentNp = getCurrentNP();
@@ -1634,7 +1635,7 @@ class BattleServantData {
     return npCard != null && isNpFull() && canAttack() && canCommandCard(npCard) && !isNPSealed();
   }
 
-  bool checkNPScript(final BattleData battleData) {
+  bool checkNPScript(BattleData battleData) {
     bool checkNpScript = true;
     if (isPlayer) {
       checkNpScript = BattleSkillInfoData.checkSkillScript(battleData, this, getCurrentNP()?.script, tdLv);
@@ -1652,7 +1653,7 @@ class BattleServantData {
     return true;
   }
 
-  Future<bool> activateSkill(final BattleData battleData, final int skillIndex) async {
+  Future<bool> activateSkill(BattleData battleData, int skillIndex) async {
     BattleSkillInfoData? skillInfo = skillInfoList.getOrNull(skillIndex);
     if (skillInfo == null || skillInfo.chargeTurn > 0) return false;
 
@@ -1688,7 +1689,7 @@ class BattleServantData {
     return activated;
   }
 
-  Future<void> activateCommandCode(final BattleData battleData, final int cardIndex) async {
+  Future<void> activateCommandCode(BattleData battleData, int cardIndex) async {
     final skillInfos = commandCodeSkills.getOrNull(cardIndex);
     if (skillInfos == null) return;
 
@@ -1729,7 +1730,7 @@ class BattleServantData {
     return td;
   }
 
-  Future<void> activateNP(final BattleData battleData, CommandCardData card, final int extraOverchargeLvl) async {
+  Future<void> activateNP(BattleData battleData, CommandCardData card, int extraOverchargeLvl) async {
     battleData.battleLogger.action('$lBattleName ${S.current.battle_np_card}');
 
     final niceTD = getCurrentNP();
@@ -1790,7 +1791,7 @@ class BattleServantData {
     }
   }
 
-  List<BuffData> getAllBuffs(final BattleData battleData, {BuffsOrder? buffsOrder = BuffsOrder.activeFirst}) {
+  List<BuffData> getAllBuffs(BattleData battleData, {BuffsOrder? buffsOrder = BuffsOrder.activeFirst}) {
     final selfBuffs = switch (buffsOrder) {
       null => battleBuff.validBuffsActiveFirst,
       BuffsOrder.activeFirst => battleBuff.validBuffsActiveFirst,
@@ -1800,7 +1801,7 @@ class BattleServantData {
     return [...selfBuffs, ...battleData.getFieldBuffs(isPlayer)];
   }
 
-  Future<List<NiceFunction>> updateNpFunctions(final BattleData battleData, final NiceTd niceTd) async {
+  Future<List<NiceFunction>> updateNpFunctions(BattleData battleData, NiceTd niceTd) async {
     final List<NiceFunction> updatedFunctions = niceTd.functions.toList();
 
     final allBuffs = getAllBuffs(battleData);
@@ -1844,7 +1845,7 @@ class BattleServantData {
 
   // difference is this is not async
   // not checking anything for maxHpBuffs for now
-  int getMaxHpBuffValue({final bool percent = false}) {
+  int getMaxHpBuffValue({bool percent = false}) {
     final List<BuffAction> buffActions = percent
         ? [BuffAction.maxhpRate, BuffAction.baseHpRate]
         : [BuffAction.maxhpValue, BuffAction.baseHpValue];
@@ -1880,11 +1881,7 @@ class BattleServantData {
   }
 
   // difference is this immediately returns the first buff value instead of summing over all buffs
-  Future<int?> getMultiAttackBuffValue(
-    final BattleData battleData,
-    final CommandCardData card,
-    final BattleServantData opponent,
-  ) async {
+  Future<int?> getMultiAttackBuffValue(BattleData battleData, CommandCardData card, BattleServantData opponent) async {
     final actionDetails = ConstData.buffActions[BuffAction.multiattack];
     if (actionDetails == null) {
       return null;
@@ -1993,11 +1990,11 @@ class BattleServantData {
 
   // for actions that doesn't follow standard procedure & plusActions
   Future<int> getBuffValueFixedTraits(
-    final BattleData battleData,
-    final BuffAction buffAction, {
-    required final List<int> selfTraits,
-    final List<int>? opponentTraits,
-    final BattleServantData? opponent,
+    BattleData battleData,
+    BuffAction buffAction, {
+    required List<int> selfTraits,
+    List<int>? opponentTraits,
+    BattleServantData? opponent,
   }) async {
     final actionDetails = ConstData.buffActions[buffAction];
     // not actionable if no actionDetails present
@@ -2041,11 +2038,7 @@ class BattleServantData {
   }
 
   // separate method for buffRate to avoid stackOverflow
-  Future<int> getBuffRateValue(
-    final BattleData battleData,
-    final List<int> buffTraits, {
-    final BattleServantData? opponent,
-  }) async {
+  Future<int> getBuffRateValue(BattleData battleData, List<int> buffTraits, {BattleServantData? opponent}) async {
     final actionDetails = ConstData.buffActions[BuffAction.buffRate];
     // not actionable if no actionDetails present
     if (actionDetails == null) {
@@ -2078,7 +2071,7 @@ class BattleServantData {
 
   // this is too complicated since it also touches preventDeathByDamage & turnendHpReduceToRegain & there are two
   // types of plus actions (kinda) funcHpReduce & funcHpReduceValue
-  Future<int> getBuffValueForTurnEndHpReduce(final BattleData battleData, {final bool isValueForHeal = false}) async {
+  Future<int> getBuffValueForTurnEndHpReduce(BattleData battleData, {bool isValueForHeal = false}) async {
     final actionDetails = ConstData.buffActions[BuffAction.turnendHpReduce];
     if (actionDetails == null) {
       return 0;
@@ -2170,10 +2163,10 @@ class BattleServantData {
   // so assuming these buffs do not check for probability.
   // E.g. a stun buff having 60% chance doesn't make sense
   bool hasBuffNoProbabilityCheck(
-    final BuffAction buffAction, {
-    final BattleServantData? opponent,
-    final CommandCardData? card,
-    final List<int>? addTraits,
+    BuffAction buffAction, {
+    BattleServantData? opponent,
+    CommandCardData? card,
+    List<int>? addTraits,
   }) {
     for (final buff in collectBuffsPerAction(battleBuff.validBuffs, buffAction)) {
       final List<int> selfTraits = fetchSelfTraits(buffAction, buff, this, cardData: card, addTraits: addTraits);
@@ -2194,23 +2187,23 @@ class BattleServantData {
   }
 
   Future<bool> hasBuff(
-    final BattleData battleData,
-    final BuffAction buffAction, {
-    final BattleServantData? opponent,
-    final CommandCardData? card,
-    final List<int>? addTraits,
+    BattleData battleData,
+    BuffAction buffAction, {
+    BattleServantData? opponent,
+    CommandCardData? card,
+    List<int>? addTraits,
   }) async {
     return await getBuff(battleData, buffAction, opponent: opponent, card: card, addTraits: addTraits, useBuff: true) !=
         null;
   }
 
   Future<BuffData?> getBuff(
-    final BattleData battleData,
-    final BuffAction buffAction, {
-    final BattleServantData? opponent,
-    final CommandCardData? card,
-    final List<int>? addTraits,
-    final bool useBuff = true,
+    BattleData battleData,
+    BuffAction buffAction, {
+    BattleServantData? opponent,
+    CommandCardData? card,
+    List<int>? addTraits,
+    bool useBuff = true,
   }) async {
     final allBuffs = getAllBuffs(battleData);
     for (final buff in collectBuffsPerAction(allBuffs, buffAction)) {
@@ -2235,10 +2228,10 @@ class BattleServantData {
   }
 
   Future<BuffData?> getBuffConvert(
-    final BattleData battleData,
-    final BuffData buffData,
-    final Buff buff,
-    final BattleServantData? activator,
+    BattleData battleData,
+    BuffData buffData,
+    Buff buff,
+    BattleServantData? activator,
   ) async {
     final allBuffs = getAllBuffs(battleData);
     for (final convertBuff in collectBuffsPerAction(allBuffs, BuffAction.buffConvert)) {
@@ -2255,15 +2248,15 @@ class BattleServantData {
   }
 
   Future<bool> activateBuff(
-    final BattleData battleData,
-    final BuffAction buffAction, {
-    final BattleServantData? opponent,
-    final CommandCardData? card,
-    final int? overchargeState,
-    final BattleSkillInfoData? skillInfo,
-    final List<NiceFunction>? receivedFunctionsList,
-    final int? consumedNp,
-    final BuffsOrder? buffsOrder,
+    BattleData battleData,
+    BuffAction buffAction, {
+    BattleServantData? opponent,
+    CommandCardData? card,
+    int? overchargeState,
+    BattleSkillInfoData? skillInfo,
+    List<NiceFunction>? receivedFunctionsList,
+    int? consumedNp,
+    BuffsOrder? buffsOrder,
   }) async {
     return await activateBuffs(
       battleData,
@@ -2305,15 +2298,15 @@ class BattleServantData {
   }
 
   Future<bool> activateBuffs(
-    final BattleData battleData,
-    final Iterable<BuffAction> buffActions, {
-    final BattleServantData? opponent,
-    final CommandCardData? card,
-    final int? overchargeState,
-    final BattleSkillInfoData? skillInfo,
-    final List<NiceFunction>? receivedFunctionsList,
-    final int? consumedNp,
-    final BuffsOrder? buffsOrder,
+    BattleData battleData,
+    Iterable<BuffAction> buffActions, {
+    BattleServantData? opponent,
+    CommandCardData? card,
+    int? overchargeState,
+    BattleSkillInfoData? skillInfo,
+    List<NiceFunction>? receivedFunctionsList,
+    int? consumedNp,
+    BuffsOrder? buffsOrder,
   }) async {
     bool activated = false;
     final allBuffs = getAllBuffs(battleData, buffsOrder: buffsOrder);
@@ -2401,7 +2394,7 @@ class BattleServantData {
 
   // could have removed this method if not for the fact that BuffType.delayFunction
   // does not have a corresponding BuffAction
-  Future<bool> activateDelayFunction(final BattleData battleData, final Iterable<BuffData> buffs) async {
+  Future<bool> activateDelayFunction(BattleData battleData, Iterable<BuffData> buffs) async {
     bool activated = false;
     final List<int> selfTraits = getTraits();
     for (final buff in buffs.toList()) {
@@ -2437,11 +2430,11 @@ class BattleServantData {
   }
 
   Future<int> getClassRelation(
-    final BattleData battleData,
-    final int curRelation,
-    final BattleServantData opponent,
-    final CommandCardData? card,
-    final bool isDef,
+    BattleData battleData,
+    int curRelation,
+    BattleServantData opponent,
+    CommandCardData? card,
+    bool isDef,
   ) async {
     int relation = curRelation;
     final allBuffs = getAllBuffs(battleData);
@@ -2497,11 +2490,11 @@ class BattleServantData {
     return relation;
   }
 
-  bool isBuffStackable(final int buffGroup) {
+  bool isBuffStackable(int buffGroup) {
     return battleBuff.validBuffs.every((buff) => buff.canStack(buffGroup));
   }
 
-  void addBuff(final BuffData buffData, {final bool isPassive = false, final bool isCommandCode = false}) {
+  void addBuff(BuffData buffData, {bool isPassive = false, bool isCommandCode = false}) {
     if (isCommandCode) {
       battleBuff.commandCodeList.add(buffData);
     } else {
@@ -2513,7 +2506,7 @@ class BattleServantData {
     battleBuff.commandCodeList.clear();
   }
 
-  void updateActState(final BattleData battleData) {
+  void updateActState(BattleData battleData) {
     final Map<int, bool> curBuffActState = {};
     final List<BuffData> indivBuffs = [];
     final List<BuffData> otherBuffs = [];
@@ -2564,11 +2557,11 @@ class BattleServantData {
     battleBuff.commandCodeList.removeWhere((buff) => buff.checkBuffClear(battleData));
   }
 
-  Future<void> enterField(final BattleData battleData) async {
+  Future<void> enterField(BattleData battleData) async {
     await activateBuff(battleData, BuffAction.functionEntry);
   }
 
-  Future<void> death(final BattleData battleData) async {
+  Future<void> death(BattleData battleData) async {
     // DataVals.OpponentOnly? revengeOpp : revenge
     if (await activateBuff(battleData, BuffAction.functionDead)) {
       for (final svt in battleData.nonnullActors) {
@@ -2589,11 +2582,11 @@ class BattleServantData {
     }
   }
 
-  Future<void> startOfMyTurn(final BattleData battleData) async {
+  Future<void> startOfMyTurn(BattleData battleData) async {
     await activateBuff(battleData, BuffAction.functionSelfturnstart);
   }
 
-  Future<void> endOfMyTurn(final BattleData battleData) async {
+  Future<void> endOfMyTurn(BattleData battleData) async {
     battleBuff.turnProgress();
     final allBuffs = getAllBuffs(battleData);
     final lastSelfTurnProgressFunctions = collectBuffsPerType(allBuffs, BuffType.lastSelfturnprogressFunction);
@@ -2725,7 +2718,7 @@ class BattleServantData {
     battleData.checkActorStatus();
   }
 
-  Future<void> endOfYourTurn(final BattleData battleData) async {
+  Future<void> endOfYourTurn(BattleData battleData) async {
     clearReducedHp();
     attacked = false;
 
@@ -2740,7 +2733,7 @@ class BattleServantData {
     battleData.checkActorStatus();
   }
 
-  Future<bool> activateGuts(final BattleData battleData) async {
+  Future<bool> activateGuts(BattleData battleData) async {
     BuffData? gutsToApply;
     final BuffAction gutsActionToCheck = hasNextShift(battleData) ? BuffAction.shiftGuts : BuffAction.guts;
     final allBuffs = getAllBuffs(battleData);

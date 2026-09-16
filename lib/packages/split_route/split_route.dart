@@ -27,6 +27,7 @@ import 'package:chaldea/app/routes/delegate.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/widgets/inherit_selection_area.dart';
+
 import '../../utils/constants.dart' show kAppKey;
 import '../logger.dart';
 

@@ -4,6 +4,7 @@ import 'package:chaldea/models/gamedata/mst_data.dart';
 import 'package:chaldea/models/userdata/filter_data.dart';
 import 'package:chaldea/utils/constants.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '../runtime.dart';
 
 class UserStatusFlagSetPage extends StatefulWidget {

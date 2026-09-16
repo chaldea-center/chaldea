@@ -4,6 +4,7 @@ import 'package:chaldea/models/gamedata/mst_data.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import 'svt_option_editor.dart';
 
 class FormationCard extends StatelessWidget {
@@ -27,7 +28,7 @@ class FormationCard extends StatelessWidget {
   });
 
   @override
-  Widget build(final BuildContext context) {
+  Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,7 +39,7 @@ class FormationCard extends StatelessWidget {
     );
   }
 
-  Widget _buildServantIcons(BuildContext context, final SvtSaveData? storedData) {
+  Widget _buildServantIcons(BuildContext context, SvtSaveData? storedData) {
     String svtInfo = '';
     final svtCollection = storedData?.supportType.isSupport == true ? null : userSvtCollections?[storedData?.svtId];
     if (storedData != null) {

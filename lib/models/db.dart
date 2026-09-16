@@ -17,6 +17,7 @@ import 'package:chaldea/app/tools/item_center.dart';
 import 'package:chaldea/models/runtime_data.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/image/image_viewer.dart';
+
 import '../packages/app_info.dart';
 import '../packages/language.dart';
 import '../packages/method_channel/method_channel_chaldea.dart';

@@ -5,6 +5,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/material.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import 'script_reader.dart';
 
 class ScriptReaderEntryPage extends StatefulWidget {

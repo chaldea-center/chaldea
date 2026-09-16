@@ -4,6 +4,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/packages/analysis/analysis.dart';
 import 'package:chaldea/utils/url.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import 'input_tab.dart';
 import 'scheme.dart';
 import 'solution_tab.dart';

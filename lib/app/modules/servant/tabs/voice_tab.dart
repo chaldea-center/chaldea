@@ -367,10 +367,8 @@ class VoiceGroupAccordion extends StatelessWidget {
                     '· $name',
                     maxLines: 2,
                     maxFontSize: 12,
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
+                    style: Theme.of(context).textTheme.bodyLarge
+                        ?.copyWith(fontWeight: FontWeight.bold, color: Theme.of(context).colorScheme.primary),
                   ),
                   for (final cond in line.conds)
                     if (![VoiceCondType.levelUp, VoiceCondType.event, VoiceCondType.birthDay].contains(cond.condType) &&

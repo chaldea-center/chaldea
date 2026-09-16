@@ -5,6 +5,7 @@ import 'package:chaldea/packages/ads/ads.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/material.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '../feedback_page.dart';
 
 class AdSettingPage extends StatefulWidget {
@@ -190,9 +191,8 @@ class _AdSettingPageState extends State<AdSettingPage> {
     if (result == true) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Tracking authorized")));
     } else if (result == false) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Denied - Only non-personalized ads will be shown")));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text("Denied - Only non-personalized ads will be shown")));
     }
   }
 

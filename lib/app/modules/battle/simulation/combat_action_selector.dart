@@ -402,14 +402,14 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
     );
   }
 
-  int getNpCardIndex(final BattleServantData svt) {
+  int getNpCardIndex(BattleServantData svt) {
     return combatActions
         .map((action) => action != null && action.cardData.isTD ? action.actor : null)
         .toList()
         .indexOf(svt);
   }
 
-  int getCardIndex(final BattleServantData svt, final CommandCardData cardData) {
+  int getCardIndex(BattleServantData svt, CommandCardData cardData) {
     return combatActions
         .map(
           (action) => action != null && action.cardData.cardIndex == cardData.cardIndex && !action.cardData.isTD

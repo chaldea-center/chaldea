@@ -10,11 +10,11 @@ class GainHP {
   static final percentFuncTypes = {FuncType.gainHpPer, FuncType.lossHpPer, FuncType.lossHpPerSafe};
 
   static Future<void> gainHP(
-    final BattleData battleData,
-    final DataVals dataVals,
-    final BattleServantData? activator,
-    final Iterable<BattleServantData> targets,
-    final FuncType funcType,
+    BattleData battleData,
+    DataVals dataVals,
+    BattleServantData? activator,
+    Iterable<BattleServantData> targets,
+    FuncType funcType,
   ) async {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.threshold) {
@@ -40,11 +40,11 @@ class GainHP {
   }
 
   static Future<void> lossHP(
-    final BattleData battleData,
-    final DataVals dataVals,
-    final BattleServantData? activator,
-    final Iterable<BattleServantData> targets,
-    final FuncType funcType,
+    BattleData battleData,
+    DataVals dataVals,
+    BattleServantData? activator,
+    Iterable<BattleServantData> targets,
+    FuncType funcType,
   ) async {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.threshold) {
@@ -82,11 +82,11 @@ class GainHP {
 
   // basically the same as lossHp
   static Future<void> damageValue(
-    final BattleData battleData,
-    final DataVals dataVals,
-    final BattleServantData? activator,
-    final Iterable<BattleServantData> targets,
-    final FuncType funcType,
+    BattleData battleData,
+    DataVals dataVals,
+    BattleServantData? activator,
+    Iterable<BattleServantData> targets,
+    FuncType funcType,
   ) async {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.threshold) {

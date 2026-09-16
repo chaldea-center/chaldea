@@ -3,6 +3,7 @@ import 'dart:math' show max;
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/basic.dart' show Maths;
 import 'package:chaldea/utils/extension.dart' show range;
+
 import 'ce_pool.dart';
 
 /// Extra playable servant ids that are not in the normal collection numbering.

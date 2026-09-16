@@ -12,6 +12,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/video_player.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '../../enemy/quest_enemy.dart';
 
 class QuestWave extends StatelessWidget {

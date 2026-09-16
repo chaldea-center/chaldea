@@ -10,6 +10,7 @@ import 'package:material_ui/material_ui.dart';
 
 import 'package:chaldea/app/tools/app_window.dart';
 import 'package:chaldea/packages/home_widget.dart';
+
 import 'app/chaldea.dart';
 import 'app/modules/common/blank_page.dart';
 import 'app/modules/home/bootstrap/startup_failed_page.dart';

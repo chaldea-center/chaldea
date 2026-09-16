@@ -10,11 +10,11 @@ class SubState {
   SubState._();
 
   static Future<void> subState(
-    final BattleData battleData,
-    final List<int> affectTraits,
-    final DataVals dataVals,
-    final BattleServantData? activator,
-    final List<BattleServantData> targets,
+    BattleData battleData,
+    List<int> affectTraits,
+    DataVals dataVals,
+    BattleServantData? activator,
+    List<BattleServantData> targets,
   ) async {
     for (final target in targets) {
       final removeFromStart = dataVals.Value != null && dataVals.Value! > 0;
@@ -92,13 +92,13 @@ class SubState {
   }
 
   static Future<bool> shouldSubState(
-    final BattleData battleData,
-    final BuffData buff,
-    final List<int> affectTraits,
-    final DataVals dataVals,
-    final BattleServantData? activator,
-    final BattleServantData target, {
-    final BuffData? substituteAddState,
+    BattleData battleData,
+    BuffData buff,
+    List<int> affectTraits,
+    DataVals dataVals,
+    BattleServantData? activator,
+    BattleServantData target, {
+    BuffData? substituteAddState,
   }) async {
     if (!Individuality.checkSignedIndivPartialMatch(self: buff.getTraits(), signedTarget: affectTraits)) {
       return false;

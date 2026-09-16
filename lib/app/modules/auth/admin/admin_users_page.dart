@@ -163,9 +163,8 @@ class _AdminUsersPageState extends State<AdminUsersPage> {
             child: Center(
               child: Text(
                 '${_users.length} / $_total',
-                style: Theme.of(
-                  context,
-                ).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
+                style: Theme.of(context).textTheme.bodySmall
+                    ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant),
               ),
             ),
           ),

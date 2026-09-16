@@ -15,6 +15,7 @@ import 'package:chaldea/packages/file_plus/file_plus.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import 'dev_page.dart';
 
 class AboutPage extends StatefulWidget {

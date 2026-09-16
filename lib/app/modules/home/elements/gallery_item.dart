@@ -21,6 +21,7 @@ import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/extension.dart';
+
 import '../../../faker/account/accounts.dart';
 import '../../april_fool/april_fool_home.dart';
 import '../../bgm/bgm_list.dart';

@@ -9,10 +9,10 @@ class DamageNpCounter {
   DamageNpCounter._();
 
   static void damageNpCounter(
-    final BattleData battleData,
-    final DataVals dataVals,
-    final BattleServantData? activator,
-    final Iterable<BattleServantData> targets,
+    BattleData battleData,
+    DataVals dataVals,
+    BattleServantData? activator,
+    Iterable<BattleServantData> targets,
   ) {
     if (activator == null) {
       // cannot find accumulation damage

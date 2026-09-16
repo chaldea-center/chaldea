@@ -8,6 +8,7 @@ import 'package:chaldea/app/modules/ffo/ffo_card.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/utils/utils.dart';
+
 import 'schema.dart';
 
 class FFOSummonPage extends StatefulWidget {

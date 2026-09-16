@@ -7,6 +7,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '../../tools/glpk_solver.dart';
 
 bool _isPercentTypeBonus(int itemId) {

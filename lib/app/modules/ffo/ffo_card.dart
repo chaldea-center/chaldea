@@ -15,6 +15,7 @@ import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/userdata/remote_config.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '../../app.dart';
 import 'part_list.dart';
 import 'schema.dart';

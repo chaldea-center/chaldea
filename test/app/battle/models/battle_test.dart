@@ -9,6 +9,7 @@ import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/battle/utils/buff_utils.dart';
 import 'package:chaldea/models/gamedata/individuality.dart';
 import 'package:chaldea/models/models.dart';
+
 import '../../../test_init.dart';
 
 void main() async {
@@ -545,7 +546,7 @@ void main() async {
       return battle;
     }
 
-    Future<void> executeNp(final BattleData battle) async {
+    Future<void> executeNp(BattleData battle) async {
       final kingprotea = battle.targetedPlayer!..np = 10000;
       final np = kingprotea.getCurrentNP()!;
       final npCard = kingprotea.getNPCard()!;

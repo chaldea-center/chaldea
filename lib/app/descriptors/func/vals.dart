@@ -116,7 +116,7 @@ class ValDsc extends StatelessWidget {
     );
   }
 
-  static void _addInt(final List<String> parts, int? value, {String Function(String)? post}) {
+  static void _addInt(List<String> parts, int? value, {String Function(String)? post}) {
     if (value == null) return;
     String text = value.toString();
     // if (maxValue != null) text = '$text~$maxValue';
@@ -135,7 +135,7 @@ class ValDsc extends StatelessWidget {
     }
   }
 
-  static void _addPercent(final List<String> parts, int? value, int base, {String Function(String)? post}) {
+  static void _addPercent(List<String> parts, int? value, int base, {String Function(String)? post}) {
     if (value == null) return;
     String text = '${_toPercent(value, base)}';
     // if (maxValue != null) text = '$text~${_toPercent(maxValue, base)}';
@@ -366,12 +366,12 @@ class ValDsc extends StatelessWidget {
   final empty = '';
 
   static void describeBuff(
-    final List<String> parts,
-    final Buff buff,
-    final DataVals vals, {
-    final DataVals? originalVals,
-    final bool inList = false,
-    final bool ignoreCount = false,
+    List<String> parts,
+    Buff buff,
+    DataVals vals, {
+    DataVals? originalVals,
+    bool inList = false,
+    bool ignoreCount = false,
   }) {
     final base = buff.percentBase;
     final triggers = kBuffValueTriggerTypes[buff.type];

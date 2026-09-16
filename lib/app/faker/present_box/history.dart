@@ -7,6 +7,7 @@ import 'package:chaldea/models/gamedata/mappings.dart';
 import 'package:chaldea/models/gamedata/mst_data.dart';
 import 'package:chaldea/models/gamedata/quest.dart';
 import 'package:chaldea/utils/extension.dart';
+
 import '../runtime.dart';
 
 class UserPresentHistoryPage extends StatefulWidget {

@@ -9,6 +9,7 @@ import 'package:hive/src/box/default_compaction_strategy.dart';
 import 'package:hive/src/box/default_key_comparator.dart';
 
 import 'package:chaldea/utils/basic.dart';
+
 import '../models/db.dart';
 import '../packages/logger.dart';
 

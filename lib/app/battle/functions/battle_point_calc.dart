@@ -11,12 +11,12 @@ class BattlePointCalc {
   BattlePointCalc._();
 
   static void changeBattlePoint(
-    final BattleData battleData,
-    final DataVals dataVals,
-    final List<BattleServantData> targets,
-    final int? overchargeState,
-    final List<int>? ignoreBattlePoints, {
-    required final bool isAddition,
+    BattleData battleData,
+    DataVals dataVals,
+    List<BattleServantData> targets,
+    int? overchargeState,
+    List<int>? ignoreBattlePoints, {
+    required bool isAddition,
   }) {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.threshold) {
@@ -70,7 +70,7 @@ class BattlePointCalc {
     }
   }
 
-  static int? getBattlePointMax(final BattleServantData target, final int battlePointId) {
+  static int? getBattlePointMax(BattleServantData target, int battlePointId) {
     final battlePoint = getBattlePointDefinition(target, battlePointId);
     final script = battlePoint?.script;
     if (script == null) return null;
@@ -102,7 +102,7 @@ class BattlePointCalc {
     return maxValue;
   }
 
-  static BattlePoint? getBattlePointDefinition(final BattleServantData target, final int battlePointId) {
+  static BattlePoint? getBattlePointDefinition(BattleServantData target, int battlePointId) {
     final battlePoint = ConstData.battlePoints[battlePointId];
     if (battlePoint == null) return null;
 
@@ -120,7 +120,7 @@ class BattlePointCalc {
     return battlePoint;
   }
 
-  static bool canReceiveBattlePoint(final BattleServantData target, final int battlePointId) {
+  static bool canReceiveBattlePoint(BattleServantData target, int battlePointId) {
     final battlePoint = getBattlePointDefinition(target, battlePointId);
     if (battlePoint == null) return false;
     if (battlePoint.flags.contains(BattlePointFlag.notTargetOtherPlayer) &&
@@ -130,14 +130,14 @@ class BattlePointCalc {
     return true;
   }
 
-  static BattlePointData getOrCreateBattlePoint(final BattleServantData target, final int battlePointId) {
+  static BattlePointData getOrCreateBattlePoint(BattleServantData target, int battlePointId) {
     return target.curBattlePoints[battlePointId] ??= BattlePointData(
       value: 0,
       maxValue: getBattlePointMax(target, battlePointId),
     );
   }
 
-  static int determineBattlePointPhase(final BattleServantData target, final int battlePointId) {
+  static int determineBattlePointPhase(BattleServantData target, int battlePointId) {
     final battlePoint = BattlePointCalc.getBattlePointDefinition(target, battlePointId);
     if (battlePoint == null) return 0;
 
@@ -167,12 +167,12 @@ class BattlePointCalc {
     }
   }
 
-  static int getMaxBattlePointPhase(final BattleServantData target, int battlePointId) {
+  static int getMaxBattlePointPhase(BattleServantData target, int battlePointId) {
     final battlePoint = BattlePointCalc.getBattlePointDefinition(target, battlePointId);
     return Maths.max(battlePoint?.phases.map((e) => e.phase) ?? <int>[], 0);
   }
 
-  static int getBattlePointRate(final BattleServantData target, final int battlePointId) {
+  static int getBattlePointRate(BattleServantData target, int battlePointId) {
     final maxValue = BattlePointCalc.getBattlePointMax(target, battlePointId);
     if (maxValue == null || maxValue <= 0) return 0;
     return ((target.curBattlePoints[battlePointId]?.value ?? 0) * 1000 ~/ maxValue).clamp(0, 1000);

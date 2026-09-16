@@ -6,6 +6,7 @@ import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
+
 import '../../../widgets/searchable_list_state.dart';
 import '../common/filter_page_base.dart';
 import '../event/detail/shop.dart';

@@ -1,16 +1,17 @@
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/models/gamedata/individuality.dart';
+
 import 'gain_np.dart';
 
 class GainNpTargetSum {
   GainNpTargetSum._();
 
   static void gainNpTargetSum(
-    final BattleData battleData,
-    final DataVals dataVals,
-    final Iterable<BattleServantData> targets,
-    final List<int>? targetTraits,
+    BattleData battleData,
+    DataVals dataVals,
+    Iterable<BattleServantData> targets,
+    List<int>? targetTraits,
   ) {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.threshold) {

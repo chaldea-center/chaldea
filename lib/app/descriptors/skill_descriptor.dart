@@ -6,6 +6,7 @@ import 'package:chaldea/app/modules/common/misc.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '../../generated/l10n.dart';
 import '../modules/skill/skill_detail.dart';
 import '../modules/skill/td_detail.dart';

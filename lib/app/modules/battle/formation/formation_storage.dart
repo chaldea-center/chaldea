@@ -7,6 +7,7 @@ import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/userdata/battle.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '../../common/filter_page_base.dart';
 import '../teams/filter.dart';
 import '../utils.dart';
@@ -41,7 +42,7 @@ class _FormationEditorState extends State<FormationEditor>
   String get scrollRestorationId => 'formation_storage';
 
   @override
-  Widget build(final BuildContext context) {
+  Widget build(BuildContext context) {
     settings.validate();
     userData.validate();
     if (sorting) {

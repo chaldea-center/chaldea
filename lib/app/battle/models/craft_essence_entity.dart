@@ -21,7 +21,7 @@ class BattleCEData {
     return BattleCEData(craftEssence, isLimitBreak, level);
   }
 
-  Future<void> activateCE(final BattleData battleData, final BattleServantData activator) async {
+  Future<void> activateCE(BattleData battleData, BattleServantData activator) async {
     final skillGroups = craftEssence.getActivatedSkills(isLimitBreak);
     final eventId = battleData.niceQuest?.war?.eventId;
     final event = battleData.niceQuest?.war?.event;

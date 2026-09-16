@@ -6,6 +6,7 @@ import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
+
 import '../models/battle.dart';
 
 class BattleCancelException implements Exception {
@@ -22,19 +23,19 @@ class BattleCancelException implements Exception {
 class BattleLogger {
   final List<BattleLog> logs = [];
 
-  void _log(final BattleLogType type, final String log) {
+  void _log(BattleLogType type, String log) {
     logs.add(BattleLog(type, log));
   }
 
-  void action(final String log) {
+  void action(String log) {
     _log(BattleLogType.action, log);
   }
 
-  void function(final String log) {
+  void function(String log) {
     _log(BattleLogType.function, log);
   }
 
-  void debug(final String log) {
+  void debug(String log) {
     _log(BattleLogType.debug, log);
   }
 
@@ -90,7 +91,7 @@ class BattleRecordManager {
     records.add(BattleProgressTurnRecord(turn));
   }
 
-  void skillActivation(final BattleData battleData, final int? svt, final int skill) {
+  void skillActivation(BattleData battleData, int? svt, int skill) {
     records.add(
       BattleSkillActivationRecord(
         playerTarget: battleData.playerTargetIndex,
@@ -136,7 +137,7 @@ class BattleRecordManager {
 
   List<_BattleCardTempData> _cardHistory = [];
 
-  void initiateAttacks(final BattleData battleData, final List<CombatAction> combatActions) {
+  void initiateAttacks(BattleData battleData, List<CombatAction> combatActions) {
     records.add(
       BattleAttacksInitiationRecord(
         playerTarget: battleData.playerTargetIndex,
@@ -201,7 +202,7 @@ class BattleRecordManager {
   }
 
   // move to somewhere else
-  void determineUploadEligibility(final QuestPhase questPhase, final BattleOptions options) {
+  void determineUploadEligibility(QuestPhase questPhase, BattleOptions options) {
     if (questPhase.id <= 0) {
       reasons.setReplay('${S.current.general_custom}: ${S.current.quest} ${questPhase.id}');
     }
@@ -630,13 +631,13 @@ class BattleSkillActivationRecord extends BattleRecord {
   final BattleRecordData recordData;
 
   BattleSkillActivationRecord({
-    required final int playerTarget,
-    required final int enemyTarget,
-    required final int random,
-    required final int threshold,
-    required final bool tailoredExecution,
-    required final int? svt,
-    required final int skill,
+    required int playerTarget,
+    required int enemyTarget,
+    required int random,
+    required int threshold,
+    required bool tailoredExecution,
+    required int? svt,
+    required int skill,
   }) : recordData = BattleRecordData.skill(
          options: BattleActionOptions(
            playerTarget: playerTarget,

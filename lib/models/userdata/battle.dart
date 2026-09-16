@@ -8,6 +8,7 @@ import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/utils/basic.dart';
 import 'package:chaldea/utils/url.dart';
+
 import '../../utils/atlas.dart';
 import '../../utils/extension.dart';
 import '../db.dart';
@@ -87,7 +88,7 @@ class BattleSimUserData {
     }
   }
 
-  Set<int> pingedCEsWithEventAndBond(final Quest? quest, final Servant? svt) {
+  Set<int> pingedCEsWithEventAndBond(Quest? quest, Servant? svt) {
     final event = quest?.war?.event;
     Set<int> pinged = pingedCEs.toSet();
     if (event != null) {
@@ -280,11 +281,11 @@ class BattleShareData {
     return false;
   }
 
-  bool usedMysticCodeSkill(final int checkIndex) {
+  bool usedMysticCodeSkill(int checkIndex) {
     return actions.any((action) => action.usedMysticCode(checkIndex));
   }
 
-  bool containsTdCardType(final int cardType) {
+  bool containsTdCardType(int cardType) {
     return actions.any((action) => action.containsTdCardType(cardType));
   }
 
@@ -1321,11 +1322,11 @@ class BattleRecordData {
 
   Map<String, dynamic> toJson() => _$BattleRecordDataToJson(this);
 
-  bool usedMysticCode(final int checkIndex) {
+  bool usedMysticCode(int checkIndex) {
     return type == BattleRecordDataType.skill && svt == null && skill == checkIndex;
   }
 
-  bool containsTdCardType(final int cardType) {
+  bool containsTdCardType(int cardType) {
     return attacks?.any((cardAction) => cardAction.isTD && CardType.matches(cardAction.cardType, cardType)) ?? false;
   }
 

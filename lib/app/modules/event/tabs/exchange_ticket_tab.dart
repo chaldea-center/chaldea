@@ -214,9 +214,8 @@ class _ExchangeTicketTabState extends State<ExchangeTicketTab> {
                       maxLines: 1,
                       minFontSize: 6,
                       group: _autoSizeGroup,
-                      style: Theme.of(
-                        context,
-                      ).textTheme.bodyMedium?.copyWith(color: leftNum >= 0 ? Colors.grey : Colors.redAccent),
+                      style: Theme.of(context).textTheme.bodyMedium
+                          ?.copyWith(color: leftNum >= 0 ? Colors.grey : Colors.redAccent),
                     ),
                   ],
                 ),

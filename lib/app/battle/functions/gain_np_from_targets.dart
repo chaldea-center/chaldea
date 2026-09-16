@@ -1,17 +1,18 @@
 import 'package:chaldea/app/battle/functions/function_executor.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
+
 import '../utils/battle_utils.dart';
 
 class GainNpFromTargets {
   GainNpFromTargets._();
 
   static Future<void> gainNpFromTargets(
-    final BattleData battleData,
-    final DataVals dataVals,
-    final BattleServantData receiver,
-    final BattleServantData? targetedAlly,
-    final BattleServantData? targetedEnemy,
+    BattleData battleData,
+    DataVals dataVals,
+    BattleServantData receiver,
+    BattleServantData? targetedAlly,
+    BattleServantData? targetedEnemy,
   ) async {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.threshold) {

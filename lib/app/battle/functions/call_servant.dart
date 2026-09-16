@@ -5,11 +5,7 @@ import 'package:chaldea/utils/extension.dart';
 class CallServant {
   CallServant._();
 
-  static Future<void> callServant(
-    final BattleData battleData,
-    final DataVals dataVals,
-    final BattleServantData? activator,
-  ) async {
+  static Future<void> callServant(BattleData battleData, DataVals dataVals, BattleServantData? activator) async {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.threshold) {
       return;

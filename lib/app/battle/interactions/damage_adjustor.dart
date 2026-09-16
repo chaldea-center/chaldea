@@ -4,6 +4,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/catcher/catcher_util.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '../models/battle.dart';
 import '../utils/battle_exception.dart';
 import '_dialog.dart';
@@ -30,12 +31,12 @@ class DamageAdjustor extends StatefulWidget {
   State<DamageAdjustor> createState() => _DamageAdjustorState();
 
   static Future<int> show(
-    final BattleData battleData,
-    final BattleServantData activator,
-    final BattleServantData target,
-    final DamageParameters damageParameters,
-    final CommandCardData currentCard,
-    final int? multiAttack,
+    BattleData battleData,
+    BattleServantData activator,
+    BattleServantData target,
+    DamageParameters damageParameters,
+    CommandCardData currentCard,
+    int? multiAttack,
   ) async {
     int damage = 0;
     try {

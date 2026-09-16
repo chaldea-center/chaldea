@@ -15,6 +15,7 @@ import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/region_based.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '../common/filter_group.dart';
 
 class SkillDetailPage extends StatefulWidget {

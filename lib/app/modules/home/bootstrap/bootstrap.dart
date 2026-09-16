@@ -21,6 +21,7 @@ import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import 'startup_failed_page.dart';
 
 class BootstrapPage extends StatefulWidget {
@@ -402,9 +403,8 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
               ),
               IconButton(
                 onPressed: () async {
-                  await Navigator.of(
-                    context,
-                  ).push(MaterialPageRoute(builder: (context) => const NetworkSettingsPage()));
+                  await Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (context) => const NetworkSettingsPage()));
                   if (mounted) setState(() {});
                 },
                 icon: Icon(DirectionalIcons.keyboard_arrow_forward(context)),

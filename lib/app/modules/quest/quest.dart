@@ -9,6 +9,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '../battle/teams/teams_query_page.dart';
 import '../common/filter_group.dart';
 import '../mc/mc_quest.dart';

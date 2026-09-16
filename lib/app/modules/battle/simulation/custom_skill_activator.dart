@@ -9,6 +9,7 @@ import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/models/userdata/filter_data.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '../formation/select_skill_page.dart';
 
 class CustomSkillActivator extends StatefulWidget {
@@ -38,7 +39,7 @@ class _CustomSkillActivatorState extends State<CustomSkillActivator> {
   }
 
   @override
-  Widget build(final BuildContext context) {
+  Widget build(BuildContext context) {
     errorMsg = skill == null ? S.current.battle_no_skill_selected : null;
     if (skill != null && skill!.functions.isNotEmpty) skillLv = min(skillLv, skill!.functions.first.svals.length);
     final List<BattleServantData> actors = isAlly ? widget.battleData.nonnullPlayers : widget.battleData.nonnullEnemies;
@@ -161,9 +162,8 @@ class _CustomSkillActivatorState extends State<CustomSkillActivator> {
                   Expanded(
                     child: Text(
                       errorMsg ?? "",
-                      style: Theme.of(
-                        context,
-                      ).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.error),
+                      style: Theme.of(context).textTheme.bodySmall
+                          ?.copyWith(color: Theme.of(context).colorScheme.error),
                       textAlign: TextAlign.center,
                     ),
                   ),

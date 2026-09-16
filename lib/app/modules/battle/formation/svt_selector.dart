@@ -8,6 +8,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import 'svt_option_editor.dart';
 
 class _DragSvtData {
@@ -48,7 +49,7 @@ class ServantSelector extends StatelessWidget {
   CraftFilterData get craftFilterData => db.runtimeData.ceFilters.current;
 
   @override
-  Widget build(final BuildContext context) {
+  Widget build(BuildContext context) {
     List<Widget> children = [];
 
     TextStyle notSelectedStyle = TextStyle(color: Theme.of(context).textTheme.bodySmall?.color);

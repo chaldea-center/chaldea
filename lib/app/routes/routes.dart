@@ -31,6 +31,7 @@ import 'package:chaldea/app/modules/trait/trait_list.dart';
 import 'package:chaldea/app/modules/war/wars_page.dart';
 import 'package:chaldea/models/gamedata/common.dart';
 import 'package:chaldea/models/gamedata/event.dart';
+
 import '../../models/gamedata/ai.dart';
 import '../../models/gamedata/const_data.dart';
 import '../../packages/split_route/split_route.dart';

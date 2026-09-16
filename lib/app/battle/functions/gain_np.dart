@@ -8,10 +8,10 @@ class GainNp {
   GainNp._();
 
   static void gainNp(
-    final BattleData battleData,
-    final DataVals dataVals,
-    final Iterable<BattleServantData> targets, {
-    final bool isNegative = false,
+    BattleData battleData,
+    DataVals dataVals,
+    Iterable<BattleServantData> targets, {
+    bool isNegative = false,
   }) {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.threshold) {
@@ -26,10 +26,10 @@ class GainNp {
   }
 
   static void gainMultiplyNp(
-    final BattleData battleData,
-    final DataVals dataVals,
-    final Iterable<BattleServantData> targets, {
-    final bool isNegative = false,
+    BattleData battleData,
+    DataVals dataVals,
+    Iterable<BattleServantData> targets, {
+    bool isNegative = false,
   }) {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.threshold) {
@@ -44,11 +44,11 @@ class GainNp {
   }
 
   static void gainNpFromConsumed(
-    final BattleData battleData,
-    final DataVals dataVals,
-    final int consumedNp,
-    final Iterable<BattleServantData> targets, {
-    final bool isNegative = false,
+    BattleData battleData,
+    DataVals dataVals,
+    int consumedNp,
+    Iterable<BattleServantData> targets, {
+    bool isNegative = false,
   }) {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.threshold) {
@@ -68,11 +68,11 @@ class GainNp {
   }
 
   static void gainNpPerIndividual(
-    final BattleData battleData,
-    final DataVals dataVals,
-    final BattleServantData? actor,
-    final Iterable<BattleServantData> targets,
-    final List<int>? targetTraits,
+    BattleData battleData,
+    DataVals dataVals,
+    BattleServantData? actor,
+    Iterable<BattleServantData> targets,
+    List<int>? targetTraits,
   ) {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.threshold) {
@@ -106,10 +106,10 @@ class GainNp {
   }
 
   static void gainNpPerBuffIndividual(
-    final BattleData battleData,
-    final DataVals dataVals,
-    final Iterable<BattleServantData> targets,
-    final List<int> targetTraits,
+    BattleData battleData,
+    DataVals dataVals,
+    Iterable<BattleServantData> targets,
+    List<int> targetTraits,
   ) {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.threshold) {
@@ -133,9 +133,9 @@ class GainNp {
   }
 
   static List<BattleServantData> getCountTargets(
-    final BattleData battleData,
-    final BattleServantData currentTarget,
-    final int countType,
+    BattleData battleData,
+    BattleServantData currentTarget,
+    int countType,
   ) {
     final List<BattleServantData> countTargets = [];
 
@@ -165,10 +165,10 @@ class GainNp {
   }
 
   static void gainNpCriticalStarSum(
-    final BattleData battleData,
-    final DataVals dataVals,
-    final Iterable<BattleServantData> targets, {
-    final bool isNegative = false,
+    BattleData battleData,
+    DataVals dataVals,
+    Iterable<BattleServantData> targets, {
+    bool isNegative = false,
   }) {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.threshold) {

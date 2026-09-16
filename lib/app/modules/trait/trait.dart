@@ -3,6 +3,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import 'tabs/buff_tab.dart';
 import 'tabs/enemy_tab.dart';
 import 'tabs/event.dart';

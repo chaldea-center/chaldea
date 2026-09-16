@@ -3,15 +3,16 @@ import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/utils/extension.dart';
+
 import '../../../models/db.dart';
 
 class TransformServant {
   TransformServant._();
 
   static Future<void> transformServant(
-    final BattleData battleData,
-    final DataVals dataVals,
-    final Iterable<BattleServantData> targets,
+    BattleData battleData,
+    DataVals dataVals,
+    Iterable<BattleServantData> targets,
   ) async {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.threshold) {

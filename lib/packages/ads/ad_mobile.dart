@@ -4,6 +4,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/extension.dart';
+
 import '../platform/platform.dart';
 import './interface.dart';
 

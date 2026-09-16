@@ -14,6 +14,7 @@ import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/svg.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '../../../models/userdata/version.dart';
 
 class _ApkData {

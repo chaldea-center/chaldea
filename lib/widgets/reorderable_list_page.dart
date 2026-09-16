@@ -1,6 +1,7 @@
 import 'package:material_ui/material_ui.dart';
 
 import 'package:chaldea/generated/l10n.dart';
+
 import 'custom_dialogs.dart';
 
 class ReorderableListPage<T> extends StatefulWidget {

@@ -3,6 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:photo_zoom/photo_zoom.dart';
 
 import 'package:chaldea/utils/extension.dart';
+
 import 'image_viewer.dart';
 
 double get _kBackGestureWidth => 40.0;

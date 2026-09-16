@@ -4,6 +4,7 @@ import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/packages/float.dart';
 import 'package:chaldea/utils/extension.dart';
+
 import '../../../utils/basic.dart';
 import '../models/command_card.dart' show BattleChainType;
 import 'battle_logger.dart';
@@ -12,7 +13,7 @@ const kBattleFuncMiss = 'MISS';
 const kBattleFuncNoEffect = 'NO EFFECT';
 const kBattleFuncGUARD = 'GUARD';
 
-double toModifier(final int value) {
+double toModifier(int value) {
   return 0.001 * value;
 }
 
@@ -23,7 +24,7 @@ Float toModifierFloat(int value) {
 /// Referencing:
 /// https://apps.atlasacademy.io/fgo-docs/deeper/battle/damage.html
 /// DamageMod caps are applied when gathering the parameters.
-int calculateDamage(final DamageParameters param) {
+int calculateDamage(DamageParameters param) {
   if (!ConstData.classInfo.containsKey(param.attackerClass)) {
     throw BattleException('Invalid class: ${param.attackerClass}');
   }
@@ -109,7 +110,7 @@ int calculateDamage(final DamageParameters param) {
   return totalDamage.ofMax(0).floor();
 }
 
-int calculateDamageNoError(final DamageParameters param) {
+int calculateDamageNoError(DamageParameters param) {
   try {
     return calculateDamage(param);
   } catch (e, s) {
@@ -123,7 +124,7 @@ int calculateDamageNoError(final DamageParameters param) {
 /// https://atlasacademy.github.io/fgo-docs/deeper/battle/np.html
 /// Float arithmetic used due to:
 /// https://atlasacademy.github.io/fgo-docs/deeper/battle/32-bit-float.html
-int calculateAttackNpGain(final AttackNpGainParameters param) {
+int calculateAttackNpGain(AttackNpGainParameters param) {
   if (!ConstData.cardInfo.containsKey(param.currentCardType)) {
     throw 'Invalid current card type: ${param.currentCardType}';
   }
@@ -158,7 +159,7 @@ int calculateAttackNpGain(final AttackNpGainParameters param) {
 /// https://atlasacademy.github.io/fgo-docs/deeper/battle/np.html
 /// Float arithmetic used due to:
 /// https://atlasacademy.github.io/fgo-docs/deeper/battle/32-bit-float.html
-int calculateDefendNpGain(final DefendNpGainParameters param) {
+int calculateDefendNpGain(DefendNpGainParameters param) {
   final Float attackerNpRate = toModifierFloat(param.attackerNpRate);
   final Float npGainBuff = toModifierFloat(param.npGainBuff);
   final Float defenseNpGainBuff = toModifierFloat(param.defenseNpGainBuff);
@@ -171,7 +172,7 @@ int calculateDefendNpGain(final DefendNpGainParameters param) {
 
 /// Referencing:
 /// https://atlasacademy.github.io/fgo-docs/deeper/battle/critstars.html
-int calculateStar(final StarParameters param) {
+int calculateStar(StarParameters param) {
   if (!ConstData.cardInfo.containsKey(param.currentCardType)) {
     throw 'Invalid current card type: ${param.currentCardType}';
   }
@@ -210,7 +211,7 @@ int calculateStar(final StarParameters param) {
   return dropRate.toInt().clamp(0, ConstData.constants.starRateMax);
 }
 
-bool shouldIgnoreFirstCardBonus(final bool isNP, final int firstCardType) {
+bool shouldIgnoreFirstCardBonus(bool isNP, int firstCardType) {
   return isNP ||
       !ConstData.cardInfo.containsKey(firstCardType) ||
       CardType.matches(firstCardType, CardType.blank.value);
@@ -237,8 +238,7 @@ class DamageParameters {
   int cardResist = 1000; // cardMod = target.commandDef
   int attackBuff = 1000; // atkMod = actor.atk
   int defenseBuff = 1000; // defMod = target.defence or target.defencePierce
-  int damageBuff =
-      0; // powerMod = actor.damage + actor.damageIndividuality + actor.damageIndividualityActiveonly + actor.damageEventPoint
+  int damageBuff = 0; // powerMod = actor.damage + actor.damageIndividuality + actor.damageIndividualityActiveonly + actor.damageEventPoint
   int damageDefBuff = 0; // selfDamageMod = target.selfDamage, can rename after I see an instance of this buff
   int criticalDamageBuff = 0; // critDamageMod = actor.criticalDamage
   int criticalDamageDefBuff = 0; // BuffAction.criticalDmgDef
@@ -545,7 +545,7 @@ class BattleUtils {
     return const {0: 1, 1: 2, 2: 2, 3: 3, 4: 3}[limitCount] ?? limitCount;
   }
 
-  static List<NiceTd> getShownTds(final Servant svt, final int limitCount) {
+  static List<NiceTd> getShownTds(Servant svt, int limitCount) {
     // only case where we different groups of noblePhantasms exist are for tdTypeChanges or enemy tds
     final List<NiceTd> shownTds = svt.groupedNoblePhantasms[1]?.toList() ?? <NiceTd>[];
 
@@ -555,7 +555,7 @@ class BattleUtils {
     return shownTds;
   }
 
-  static List<NiceSkill> getShownSkills(final Servant svt, final int limitCount, final int skillNum) {
+  static List<NiceSkill> getShownSkills(Servant svt, int limitCount, int skillNum) {
     final List<NiceSkill> shownSkills = [];
     for (final skill in svt.groupedActiveSkills[skillNum] ?? <NiceSkill>[]) {
       if (shownSkills.every((storeSkill) => storeSkill.id != skill.id)) {

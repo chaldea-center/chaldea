@@ -15,6 +15,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/animation_on_scroll.dart';
 import 'package:chaldea/widgets/carousel_util.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '../common/not_found.dart';
 import '../item/item_select.dart';
 import '../quest/quest_list.dart';

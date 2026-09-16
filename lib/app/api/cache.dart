@@ -13,11 +13,16 @@ import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/packages/rate_limiter.dart';
 import 'package:chaldea/utils/hive_extention.dart';
 import 'package:chaldea/utils/utils.dart';
+
 import '../../models/models.dart';
 
 const kExpireCacheOnly = Duration(days: -999);
-typedef DispatchErrorCallback =
-    void Function(RequestOptions options, Response? response, dynamic error, dynamic stackTrace);
+typedef DispatchErrorCallback = void Function(
+  RequestOptions options,
+  Response? response,
+  dynamic error,
+  dynamic stackTrace,
+);
 
 extension _RequestOptionsX on RequestOptions {
   static String getHashKey(String method, String url, dynamic data) {

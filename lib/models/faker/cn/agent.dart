@@ -13,6 +13,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/models/userdata/version.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/extension.dart';
+
 import '../quiz/cat_mouse.dart' show CatMouseGame;
 import '../quiz/crypt_data.dart';
 import '../shared/agent.dart';

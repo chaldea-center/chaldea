@@ -12,6 +12,7 @@ import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/tile_items.dart';
+
 import '../root/global_fab.dart';
 import 'subpage/about_page.dart';
 import 'subpage/account_page.dart';

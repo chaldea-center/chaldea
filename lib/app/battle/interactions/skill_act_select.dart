@@ -4,6 +4,7 @@ import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '../utils/battle_logger.dart';
 import '_dialog.dart';
 
@@ -23,12 +24,7 @@ class SkillActSelectDialog extends StatelessWidget {
     required this.completer,
   });
 
-  static Future<int> show(
-    final BattleData battleData,
-    final BattleServantData? activator,
-    final BaseSkill skill,
-    final int skillLevel,
-  ) {
+  static Future<int> show(BattleData battleData, BattleServantData? activator, BaseSkill skill, int skillLevel) {
     if (!battleData.mounted) return Future.value(-1);
     return showUserConfirm<int>(
       context: battleData.context!,

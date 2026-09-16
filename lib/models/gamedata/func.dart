@@ -5,6 +5,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/func/func_detail.dart';
 import 'package:chaldea/utils/utils.dart';
+
 import '../../app/tools/gamedata_loader.dart';
 import '../db.dart';
 import '../userdata/filter_data.dart';

@@ -10,6 +10,7 @@ import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '../summon_simulator_page.dart';
 import 'gacha_banner.dart';
 import 'gacha_parser.dart';

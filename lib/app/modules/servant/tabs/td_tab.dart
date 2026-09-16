@@ -7,6 +7,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '../../../descriptors/cond_target_value.dart';
 import '_transform_tabber.dart';
 
@@ -200,7 +201,7 @@ class SvtTdTab extends StatelessWidget {
     }
   }
 
-  static Widget releaseCondition(final Servant svt, final NiceTd td, final OverrideTDData? overrideTDData) {
+  static Widget releaseCondition(Servant svt, NiceTd td, OverrideTDData? overrideTDData) {
     final tdSvt = td.svt;
     bool notMain = ['91', '94'].contains(tdSvt.condQuestId.toString().padRight(2).substring(0, 2));
     final quest = db.gameData.quests[tdSvt.condQuestId];

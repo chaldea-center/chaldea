@@ -1,5 +1,6 @@
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/utils/extension.dart';
+
 import '../faker/jp/network.dart';
 import '../gamedata/common.dart';
 import '../gamedata/item.dart';

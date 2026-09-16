@@ -10,6 +10,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/split_route/split_route.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import 'filter_page.dart';
 import 'gacha/gacha_list.dart';
 import 'gacha/gacha_prob_calc.dart';
@@ -166,9 +167,8 @@ class _SummonListPageState extends State<SummonListPage>
           title,
           Text(
             summon.lName.l,
-            style: Theme.of(
-              context,
-            ).textTheme.bodySmall?.copyWith(fontStyle: summon.isOutdated() ? FontStyle.italic : null),
+            style: Theme.of(context).textTheme.bodySmall
+                ?.copyWith(fontStyle: summon.isOutdated() ? FontStyle.italic : null),
             textAlign: TextAlign.center,
           ),
         ],

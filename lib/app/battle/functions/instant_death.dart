@@ -9,13 +9,13 @@ class InstantDeath {
   InstantDeath._();
 
   static Future<void> instantDeath(
-    final BattleData battleData,
-    final DataVals dataVals,
-    final NiceFunction func,
-    final BattleServantData? activator,
-    final List<BattleServantData> targets, {
-    final CommandCardData? card,
-    final bool defaultToPlayer = true,
+    BattleData battleData,
+    DataVals dataVals,
+    NiceFunction func,
+    BattleServantData? activator,
+    List<BattleServantData> targets, {
+    CommandCardData? card,
+    bool defaultToPlayer = true,
   }) async {
     final force = func.funcType == FuncType.forceInstantDeath;
     final record = BattleInstantDeathRecord(forceInstantDeath: force, activator: activator, targets: []);
@@ -78,14 +78,14 @@ class InstantDeath {
   }
 
   static Future<bool> shouldInstantDeath(
-    final BattleData battleData,
-    final DataVals dataVals,
-    final BattleServantData? activator,
-    final BattleServantData target,
-    final bool isForceInstantDeath,
+    BattleData battleData,
+    DataVals dataVals,
+    BattleServantData? activator,
+    BattleServantData target,
+    bool isForceInstantDeath,
     InstantDeathParameters? params, {
-    final CommandCardData? card,
-    final BuffData? substituteInstantDeath,
+    CommandCardData? card,
+    BuffData? substituteInstantDeath,
   }) async {
     params ??= InstantDeathParameters();
     params.isForce = isForceInstantDeath;

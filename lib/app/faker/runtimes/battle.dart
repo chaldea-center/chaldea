@@ -8,6 +8,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '_base.dart';
 
 class FakerRuntimeBattle extends FakerRuntimeBase {
@@ -828,7 +829,7 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
     return true;
   }
 
-  Future<void> seedWait(final int maxBuyCount) async {
+  Future<void> seedWait(int maxBuyCount) async {
     int boughtCount = 0;
     while (boughtCount < maxBuyCount) {
       const int apUnit = 40, seedUnit = 1;

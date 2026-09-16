@@ -8,6 +8,7 @@ import 'package:github/github.dart';
 
 import 'package:chaldea/models/userdata/local_settings.dart';
 import 'package:chaldea/utils/utils.dart';
+
 import 'backend.dart';
 
 extension _GithubSettingX on GithubSetting {

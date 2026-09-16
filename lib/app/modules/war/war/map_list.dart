@@ -2,6 +2,7 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import 'war_map.dart';
 
 class WarMapListPage extends StatelessWidget {

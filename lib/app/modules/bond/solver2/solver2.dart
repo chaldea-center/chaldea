@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:chaldea/app/battle/models/user.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/extension.dart';
+
 import '../solver/ce_pool.dart';
 import '../solver/solver.dart' show BondSolverException;
 import '../solver/svt_pool.dart';

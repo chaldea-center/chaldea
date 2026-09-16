@@ -4,11 +4,7 @@ import 'package:chaldea/models/gamedata/gamedata.dart';
 class MoveToLastSubMember {
   MoveToLastSubMember._();
 
-  static void moveToLastSubMember(
-    final BattleData battleData,
-    final DataVals dataVals,
-    final List<BattleServantData> targets,
-  ) {
+  static void moveToLastSubMember(BattleData battleData, DataVals dataVals, List<BattleServantData> targets) {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.threshold) {
       return;

@@ -8,6 +8,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/game_card.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '../../app/app.dart';
 import '../../app/modules/enemy/quest_enemy.dart';
 import '../db.dart';

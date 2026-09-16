@@ -5,6 +5,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '../../event/tabs/exchange_ticket_tab.dart';
 
 class ItemObtainEventTab extends StatefulWidget {

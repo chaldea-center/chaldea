@@ -7,6 +7,7 @@ import 'package:chaldea/app/modules/event/event_detail_page.dart';
 import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/utils/utils.dart';
+
 import '../../app/modules/master_mission/master_mission.dart';
 import '../../app/modules/shop/shop.dart';
 import '_helper.dart';

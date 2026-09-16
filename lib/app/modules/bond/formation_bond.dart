@@ -12,6 +12,7 @@ import 'package:chaldea/models/gamedata/individuality.dart' show Individuality;
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '../battle/formation/team.dart';
 
 const int _kMaxSvtNum = 6;

@@ -18,6 +18,7 @@ import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/screenshot.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '../bond_detail_page.dart';
 import '../quest_farming.dart';
 import 'details.dart';
@@ -586,8 +587,7 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
               if (isPush) ...[
                 CenterWidgetSpan(
                   child: CachedImage(
-                    imageUrl:
-                        'https://static.atlasacademy.io/file/aa-fgo-extract-jp/Terminal/Info/CommonUIAtlas/icon_push.png',
+                    imageUrl: 'https://static.atlasacademy.io/file/aa-fgo-extract-jp/Terminal/Info/CommonUIAtlas/icon_push.png',
                     width: 18,
                     height: 18,
                     placeholder: _blankPlaceholder,
@@ -598,8 +598,7 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
               if (isFavorite) ...[
                 CenterWidgetSpan(
                   child: CachedImage(
-                    imageUrl:
-                        'https://static.atlasacademy.io/file/aa-fgo-extract-jp/Terminal/Info/CommonUIAtlas/icon_choice.png',
+                    imageUrl: 'https://static.atlasacademy.io/file/aa-fgo-extract-jp/Terminal/Info/CommonUIAtlas/icon_choice.png',
                     width: 18,
                     height: 18,
                     placeholder: _blankPlaceholder,
@@ -677,8 +676,7 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
                         width: 16,
                         child: Center(
                           child: CachedImage(
-                            imageUrl:
-                                'https://static.atlasacademy.io/file/aa-fgo-extract-jp/Battle/Common/CommonUIAtlas/icon_np_on.png',
+                            imageUrl: 'https://static.atlasacademy.io/file/aa-fgo-extract-jp/Battle/Common/CommonUIAtlas/icon_np_on.png',
                             width: 16,
                             height: 16,
                           ),
@@ -701,8 +699,7 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
                         width: 16,
                         child: Center(
                           child: CachedImage(
-                            imageUrl:
-                                'https://static.atlasacademy.io/file/aa-fgo-extract-jp/Terminal/Info/CommonUIAtlas/img_bond_category.png',
+                            imageUrl: 'https://static.atlasacademy.io/file/aa-fgo-extract-jp/Terminal/Info/CommonUIAtlas/img_bond_category.png',
                             width: 14,
                             height: 14,
                           ),
@@ -1605,8 +1602,7 @@ class _FgoAnnualReportRealPageState extends State<FgoAnnualReportRealPage> {
       child: Column(
         children: [
           CachedImage(
-            imageUrl:
-                'https://static.atlasacademy.io/file/aa-fgo-extract-jp/GrandServantList/DownloadGrandServantListAtlas1/Name_BG_Pattern_Line.png',
+            imageUrl: 'https://static.atlasacademy.io/file/aa-fgo-extract-jp/GrandServantList/DownloadGrandServantListAtlas1/Name_BG_Pattern_Line.png',
             height: 30,
             placeholder: _blankPlaceholder,
           ),

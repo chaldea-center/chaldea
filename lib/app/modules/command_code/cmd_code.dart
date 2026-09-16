@@ -9,6 +9,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '../common/extra_assets_page.dart';
 import '../common/not_found.dart';
 import '../creator/chara_detail.dart';

@@ -5,12 +5,12 @@ class AddFieldChangeToField {
   AddFieldChangeToField._();
 
   static void addFieldChangeToField(
-    final BattleData battleData,
-    final Buff buff,
-    final DataVals dataVals,
-    final BattleServantData? activator,
-    final List<BattleServantData> targets, {
-    final bool isShortBuff = false,
+    BattleData battleData,
+    Buff buff,
+    DataVals dataVals,
+    BattleServantData? activator,
+    List<BattleServantData> targets, {
+    bool isShortBuff = false,
   }) {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.threshold) {

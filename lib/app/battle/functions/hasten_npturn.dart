@@ -7,11 +7,11 @@ class HastenNpturn {
   HastenNpturn._();
 
   static Future<void> hastenNpturn(
-    final BattleData battleData,
-    final DataVals dataVals,
-    final BattleServantData? activator,
-    final Iterable<BattleServantData> targets, {
-    final bool isNegative = false,
+    BattleData battleData,
+    DataVals dataVals,
+    BattleServantData? activator,
+    Iterable<BattleServantData> targets, {
+    bool isNegative = false,
   }) async {
     final functionRate = dataVals.Rate ?? 1000;
 
@@ -32,12 +32,12 @@ class HastenNpturn {
   }
 
   static Future<void> hastenNpturnFromConsumed(
-    final BattleData battleData,
-    final DataVals dataVals,
-    final int consumed,
-    final BattleServantData? activator,
-    final Iterable<BattleServantData> targets, {
-    final bool isNegative = false,
+    BattleData battleData,
+    DataVals dataVals,
+    int consumed,
+    BattleServantData? activator,
+    Iterable<BattleServantData> targets, {
+    bool isNegative = false,
   }) async {
     final functionRate = dataVals.Rate ?? 1000;
 

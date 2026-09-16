@@ -2,6 +2,7 @@ import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import 'item_stat.dart';
 import 'servant_details.dart';
 import 'svt_class_stat.dart';

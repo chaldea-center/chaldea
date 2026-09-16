@@ -13,6 +13,7 @@ import 'package:pool/pool.dart';
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/packages/language.dart' show Language;
 import 'package:chaldea/utils/utils.dart';
+
 import '../../generated/l10n.dart';
 import '../../models/models.dart';
 import '../../packages/app_info.dart';

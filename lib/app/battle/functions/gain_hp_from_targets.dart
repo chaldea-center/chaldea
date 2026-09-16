@@ -9,11 +9,11 @@ class GainHpFromTargets {
   GainHpFromTargets._();
 
   static Future<void> gainHpFromTargets(
-    final BattleData battleData,
-    final DataVals dataVals,
-    final BattleServantData receiver,
-    final BattleServantData? targetedAlly,
-    final BattleServantData? targetedEnemy,
+    BattleData battleData,
+    DataVals dataVals,
+    BattleServantData receiver,
+    BattleServantData? targetedAlly,
+    BattleServantData? targetedEnemy,
   ) async {
     final functionRate = dataVals.Rate ?? 1000;
     if (functionRate < battleData.options.threshold) {

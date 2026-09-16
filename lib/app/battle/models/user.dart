@@ -6,6 +6,7 @@ import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart' show SilentException;
 import 'package:chaldea/utils/extension.dart';
+
 import '../utils/battle_utils.dart';
 
 class PlayerSvtData {
@@ -49,7 +50,7 @@ class PlayerSvtData {
   PlayerSvtData.base();
 
   @visibleForTesting
-  PlayerSvtData.id(final int svtId) {
+  PlayerSvtData.id(int svtId) {
     svt = db.gameData.servantsById[svtId]!;
     skills = kActiveSkillNums.map((e) => svt!.groupedActiveSkills[e]?.first).toList();
     td = svt!.groupedNoblePhantasms[1]?.first;
@@ -244,7 +245,7 @@ class PlayerSvtData {
     }
   }
 
-  void onSelectCE(final CraftEssence selectedCE, SvtEquipTarget equipTarget) {
+  void onSelectCE(CraftEssence selectedCE, SvtEquipTarget equipTarget) {
     final equip = getEquip(equipTarget);
     switch (equipTarget) {
       case SvtEquipTarget.normal:
@@ -280,13 +281,13 @@ class PlayerSvtData {
   bool get isEmpty => svt == null && equip1.ce == null;
 
   @visibleForTesting
-  void setSkillStrengthenLvs(final List<int> skillStrengthenLvs) {
+  void setSkillStrengthenLvs(List<int> skillStrengthenLvs) {
     skills = kActiveSkillNums
         .map((e) => svt!.groupedActiveSkills[e]?.getOrNull(skillStrengthenLvs[e - 1] - 1))
         .toList();
   }
 
-  void setNpStrengthenLv(final int npStrengthenLv) {
+  void setNpStrengthenLv(int npStrengthenLv) {
     td = svt!.groupedNoblePhantasms[1]?[npStrengthenLv - 1];
   }
 
@@ -328,7 +329,7 @@ class PlayerSvtData {
       ..classBoardData = classBoardData.copy();
   }
 
-  static Future<PlayerSvtData> fromStoredData(final SvtSaveData? storedData) async {
+  static Future<PlayerSvtData> fromStoredData(SvtSaveData? storedData) async {
     if (storedData == null) return PlayerSvtData.base();
     Servant? svt = db.gameData.servantsById[storedData.svtId];
     if (svt == null && storedData.svtId != null && storedData.svtId != 0) {
@@ -491,7 +492,7 @@ class MysticCodeData {
     return MysticCodeSaveData(mysticCodeId: mysticCode?.id, level: level);
   }
 
-  void loadStoredData(final MysticCodeSaveData storedData) {
+  void loadStoredData(MysticCodeSaveData storedData) {
     mysticCode = db.gameData.mysticCodes[storedData.mysticCodeId];
     level = storedData.level;
   }

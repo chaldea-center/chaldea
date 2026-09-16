@@ -11,6 +11,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
+
 import 'ffo_card.dart';
 
 enum FfoPartWhere {

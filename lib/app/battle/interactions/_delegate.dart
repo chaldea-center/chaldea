@@ -2,6 +2,7 @@ import 'package:tuple/tuple.dart';
 
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/extension.dart';
+
 import '../models/battle.dart';
 
 class BattleDelegate {

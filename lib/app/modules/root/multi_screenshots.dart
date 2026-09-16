@@ -14,6 +14,7 @@ import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/screenshot.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '../../routes/root_delegate.dart';
 import 'window_manager.dart';
 
@@ -150,9 +151,8 @@ class _MultiScreenshotsState extends State<MultiScreenshots> {
       child: Screenshot(
         controller: getController(index),
         child: MediaQuery(
-          data: MediaQuery.of(
-            context,
-          ).copyWith(size: Size(curSpec.width / curSpec.deviceRatio, curSpec.height / curSpec.deviceRatio)),
+          data: MediaQuery.of(context)
+              .copyWith(size: Size(curSpec.width / curSpec.deviceRatio, curSpec.height / curSpec.deviceRatio)),
           child: WindowThumb(root: root, index: index, absorbPointer: false, gesture: false, showTitle: showTitle),
         ),
       ),

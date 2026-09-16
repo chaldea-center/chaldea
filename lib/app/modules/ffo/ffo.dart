@@ -8,6 +8,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import 'summon_page.dart';
 
 class FreedomOrderPage extends StatefulWidget {

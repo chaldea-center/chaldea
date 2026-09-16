@@ -16,6 +16,7 @@ import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
+
 import '../../../tools/icon_cache_manager.dart';
 
 class GameDataPage extends StatefulWidget {
