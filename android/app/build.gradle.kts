@@ -1,4 +1,3 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.konan.properties.Properties
 import java.io.FileInputStream
 
@@ -27,13 +26,14 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
-    }
-
     buildFeatures {
         compose = true
         viewBinding = true
+        resValues = true
+    }
+
+    packaging {
+        jniLibs.useLegacyPackaging = true
     }
 
     flavorDimensions += "app"
@@ -55,6 +55,8 @@ android {
         applicationId = "cc.narumi.chaldea"
         minSdk = 24
         targetSdk = flutter.targetSdkVersion
+        // Split APK builds add an ABI offset to the pubspec version code.
+        // Pass -P force-version-code-ignoring-abi=true to retain the exact value.
         versionCode = flutter.versionCode
         versionName = flutter.versionName
         multiDexEnabled = true
@@ -87,7 +89,7 @@ android {
             isShrinkResources = false
 
             proguardFiles(
-                getDefaultProguardFile("proguard-android.txt"),
+                getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }
@@ -102,6 +104,12 @@ android {
     }
     lint {
         checkReleaseBuilds = false
+    }
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
     }
 }
 

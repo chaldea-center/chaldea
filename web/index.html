@@ -115,6 +115,8 @@
       } else if (!window.globalThis) {
         setErrorMessage("Please upgrade browser<br>请升级浏览器")
       } else {
+        // Load the customized Flutter bootstrap after host redirects and browser checks.
+        // See https://docs.flutter.dev/platform-integration/web/initialization.
         (function(){
           var head = document.getElementsByTagName('head')[0];
           var flutter_js_script = document.createElement("script");
