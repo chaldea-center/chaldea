@@ -704,6 +704,7 @@ enum WarOverwriteType {
   materialFolderName,
   materialHeaderImgId,
   materialGalleryHeaderImgId,
+  standFigureVisible,
 }
 
 enum WarStartType { none, script, quest }

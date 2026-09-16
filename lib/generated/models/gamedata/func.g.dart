@@ -339,8 +339,8 @@ const _$FuncTypeEnumMap = {
   FuncType.damageFuncType165: 'damageFuncType165',
   FuncType.subBattlePoint: 'subBattlePoint',
   FuncType.setBattleMissionValueAsMax: 'setBattleMissionValueAsMax',
-  FuncType.addStateFuncType169: 'addStateFuncType169',
-  FuncType.addStateFuncType170: 'addStateFuncType170',
+  FuncType.addStateUserEquipSkillAvailable: 'addStateUserEquipSkillAvailable',
+  FuncType.addStateShortUserEquipSkillAvailable: 'addStateShortUserEquipSkillAvailable',
 };
 
 const _$FuncApplyTargetEnumMap = {

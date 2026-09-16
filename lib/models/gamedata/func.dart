@@ -655,8 +655,8 @@ enum FuncType {
   damageFuncType165(165),
   subBattlePoint(166),
   setBattleMissionValueAsMax(168),
-  addStateFuncType169(169),
-  addStateFuncType170(170);
+  addStateUserEquipSkillAvailable(169),
+  addStateShortUserEquipSkillAvailable(170);
 
   final int value;
   const FuncType(this.value);
@@ -667,8 +667,8 @@ enum FuncType {
     addFieldChangeToField,
     addStateToField,
     addStateShortToField,
-    addStateFuncType169,
-    addStateFuncType170,
+    addStateUserEquipSkillAvailable,
+    addStateShortUserEquipSkillAvailable,
   ];
   static const kValsNotBuffOrTraitFuncTypes = [
     FuncType.addBattleValue,

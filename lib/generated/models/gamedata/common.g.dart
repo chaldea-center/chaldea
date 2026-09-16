@@ -511,4 +511,6 @@ const _$CondTypeEnumMap = {
   CondType.svtHpReachNum: 'svtHpReachNum',
   CondType.svtAtkReachNum: 'svtAtkReachNum',
   CondType.favoriteSvtIdEqual: 'favoriteSvtIdEqual',
+  CondType.eventBallotSubmitted: 'eventBallotSubmitted',
+  CondType.eventBallotNotSubmitted: 'eventBallotNotSubmitted',
 };

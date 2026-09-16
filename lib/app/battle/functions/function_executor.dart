@@ -612,8 +612,8 @@ class FunctionExecutor {
         case FuncType.changeEnemyStatusUiType:
         case FuncType.setBattleMissionValueAsMax:
           break;
-        case FuncType.addStateFuncType169:
-        case FuncType.addStateFuncType170:
+        case FuncType.addStateUserEquipSkillAvailable:
+        case FuncType.addStateShortUserEquipSkillAvailable:
           await AddState.addStateByAvailableMasterSkill(
             battleData,
             function.buff,
@@ -621,7 +621,7 @@ class FunctionExecutor {
             dataVals,
             activator,
             targets,
-            isShortBuff: function.funcType == FuncType.addStateFuncType170,
+            isShortBuff: function.funcType == FuncType.addStateShortUserEquipSkillAvailable,
             skillInfoType: skillInfoType,
             skillType: skillType,
           );

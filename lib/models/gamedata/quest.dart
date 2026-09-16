@@ -2465,7 +2465,8 @@ enum QuestGroupType {
   battleGroup(15),
   shareQuestInfo(16),
   alloutBattleQuest(17),
-  eventFortification(18);
+  eventFortification(18),
+  unknown19(19);
 
   const QuestGroupType(this.value);
   final int value;

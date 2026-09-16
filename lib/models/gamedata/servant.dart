@@ -2007,6 +2007,7 @@ class SvtOverwrite {
 class BattlePoint {
   int id;
   String name;
+  @JsonKey(unknownEnumValue: BattlePointFlag.none)
   List<BattlePointFlag> flags;
   List<BattlePointPhase> phases;
   List<SvtBattlePoint> svts;
@@ -2268,6 +2269,7 @@ enum BattlePointFlag {
   hideUiGaugeWhenCantAddPoint,
   hideUiGaugeWhenCantAddPointAndFollowerSupport,
   battlePointCheckAsPercentage,
+  resetValueOnContinue,
 }
 
 enum SvtCardPositionDamageRatesSlideType { none, front, back }

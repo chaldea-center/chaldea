@@ -1263,6 +1263,7 @@ const _$QuestGroupTypeEnumMap = {
   QuestGroupType.shareQuestInfo: 'shareQuestInfo',
   QuestGroupType.alloutBattleQuest: 'alloutBattleQuest',
   QuestGroupType.eventFortification: 'eventFortification',
+  QuestGroupType.unknown19: 'unknown19',
 };
 
 MstQuestGroup _$MstQuestGroupFromJson(Map json) => MstQuestGroup(

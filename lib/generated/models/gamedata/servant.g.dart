@@ -1279,7 +1279,11 @@ const _$ServantOverwriteTypeEnumMap = {
 BattlePoint _$BattlePointFromJson(Map json) => BattlePoint(
   id: (json['id'] as num).toInt(),
   name: json['name'] as String? ?? '',
-  flags: (json['flags'] as List<dynamic>?)?.map((e) => $enumDecode(_$BattlePointFlagEnumMap, e)).toList() ?? const [],
+  flags:
+      (json['flags'] as List<dynamic>?)
+          ?.map((e) => $enumDecode(_$BattlePointFlagEnumMap, e, unknownValue: BattlePointFlag.none))
+          .toList() ??
+      const [],
   phases:
       (json['phases'] as List<dynamic>?)
           ?.map((e) => BattlePointPhase.fromJson(Map<String, dynamic>.from(e as Map)))
@@ -1309,6 +1313,7 @@ const _$BattlePointFlagEnumMap = {
   BattlePointFlag.hideUiGaugeWhenCantAddPoint: 'hideUiGaugeWhenCantAddPoint',
   BattlePointFlag.hideUiGaugeWhenCantAddPointAndFollowerSupport: 'hideUiGaugeWhenCantAddPointAndFollowerSupport',
   BattlePointFlag.battlePointCheckAsPercentage: 'battlePointCheckAsPercentage',
+  BattlePointFlag.resetValueOnContinue: 'resetValueOnContinue',
 };
 
 BattlePointPhase _$BattlePointPhaseFromJson(Map json) => BattlePointPhase(
