@@ -198,6 +198,7 @@ class ServerFeedbackHandler extends ReportHandler {
         "Cannot set properties of",
         "is not a constructor",
         "Instance of 'minified",
+        "ImageCodecException: Timed out decoding image",
       ].any(errorAndStackTrace.contains)) {
         return true;
       }
