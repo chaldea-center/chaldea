@@ -12,6 +12,7 @@ import 'package:chaldea/widgets/widgets.dart';
 
 import '../../modules/servant/filter.dart';
 import '../runtime.dart';
+import 'user_svt_filter_data.dart';
 
 class SelectUserSvtPage extends StatefulWidget {
   final FakerRuntime runtime;
@@ -53,10 +54,10 @@ class _SelectUserSvtPageState extends State<SelectUserSvtPage> {
   static final _svtFilters = RouterValues<SvtFilterData>(
     () => SvtFilterData(sortKeys: [SvtCompare.bondLv, ...SvtCompare.kRarityFirstKeys], sortReversed: [false]),
   );
-  static final _userSvtFilters = RouterValues(() => _UserSvtFilterData());
+  static final _userSvtFilters = RouterValues(() => UserServantFilterData());
 
   late final SvtFilterData filterData = _svtFilters.of(context);
-  late final _UserSvtFilterData userSvtFilterData = _userSvtFilters.of(context);
+  late final UserServantFilterData userSvtFilterData = _userSvtFilters.of(context);
 
   Map<int, ({Event event, Set<int> svtIds})> eventSvtIds = {};
 
@@ -104,32 +105,32 @@ class _SelectUserSvtPageState extends State<SelectUserSvtPage> {
       final coinNum = mstData.userSvtCoin[userSvt.svtId]?.num ?? 0;
       final combineTypes = userSvtFilterData.availableCombines.options.where((combineType) {
         switch (combineType) {
-          case _CombineType.level:
+          case UserSvtCombineType.level:
             return userSvt.lv < (userSvt.maxLv ?? svt.lvMax);
-          case _CombineType.fou3:
+          case UserSvtCombineType.fou3:
             return userSvt.adjustAtk < 100 || userSvt.adjustHp < 100;
-          case _CombineType.ascension:
+          case UserSvtCombineType.ascension:
             return userSvt.limitCount < Maths.max<int>(svt.limits.keys, 0);
-          case _CombineType.grail:
+          case UserSvtCombineType.grail:
             return userSvt.lv >= 100 && userSvt.lv < 120 && coinNum >= 30;
-          case _CombineType.skill:
+          case UserSvtCombineType.skill:
             return userSvt.skillLvs.any((e) => e < 9);
-          case _CombineType.append2:
+          case UserSvtCombineType.append2:
             final appendLv = mstData.getSvtAppendSkillLvs(userSvt)[1];
             return appendLv == 0 && coinNum >= 120 || (appendLv > 0 && appendLv < 9);
-          case _CombineType.appendAny:
+          case UserSvtCombineType.appendAny:
             return mstData
                 .getSvtAppendSkillLvs(userSvt)
                 .any((appendLv) => appendLv == 0 && coinNum >= 120 || (appendLv > 0 && appendLv < 9));
-          case _CombineType.bondLimit:
+          case UserSvtCombineType.bondLimit:
             final collection = mstData.userSvtCollection[userSvt.svtId];
             return collection != null &&
                 collection.friendshipRank < kBondLvMax &&
                 collection.friendshipRank == collection.maxFriendshipRank;
-          case _CombineType.bondLessThan10:
+          case UserSvtCombineType.bondLessThan10:
             final collection = mstData.userSvtCollection[userSvt.svtId];
             return collection != null && collection.friendshipRank < kBondLvDefaultMax;
-          case _CombineType.ccUnlock:
+          case UserSvtCombineType.ccUnlock:
             return mstData.userSvtCommandCode[userSvt.svtId]?.userCommandCodeIds.any((e) => e == -1) ?? true;
         }
       }).toList();
@@ -189,14 +190,14 @@ class _SelectUserSvtPageState extends State<SelectUserSvtPage> {
                 },
                 planMode: false,
                 extraFilters: (_, update) => [
-                  FilterGroup<_CombineType>(
+                  FilterGroup<UserSvtCombineType>(
                     title: Text('Available Combine Type'),
                     showMatchAll: true,
                     showInvert: true,
-                    options: _CombineType.values,
+                    options: UserSvtCombineType.values,
                     values: userSvtFilterData.availableCombines,
                     optionBuilder: (v) => Text(switch (v) {
-                      _CombineType.bondLessThan10 => 'bond<10',
+                      UserSvtCombineType.bondLessThan10 => 'bond<10',
                       _ => v.name,
                     }),
                     onFilterChanged: (value, _) {
@@ -302,18 +303,3 @@ class _SelectUserSvtPageState extends State<SelectUserSvtPage> {
     );
   }
 }
-
-class _UserSvtFilterData with FilterDataMixin {
-  final availableCombines = FilterGroupData<_CombineType>();
-  int eventId = 0;
-  @override
-  List<FilterGroupData> get groups => [availableCombines];
-
-  @override
-  void reset() {
-    super.reset();
-    eventId = 0;
-  }
-}
-
-enum _CombineType { level, fou3, ascension, grail, skill, append2, appendAny, bondLimit, bondLessThan10, ccUnlock }

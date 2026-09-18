@@ -25,6 +25,7 @@ import '../mission/mission_receive.dart';
 import '../runtime.dart';
 import '../shop/ex_room_shop.dart';
 import '../shop/shop_event_list.dart';
+import '../storage/svt_storage.dart';
 import 'history.dart';
 
 class _ButtonData {
@@ -164,6 +165,14 @@ class _FakerMenuDialogState extends State<FakerMenuDialog> with FakerRuntimeStat
           buildGroup(
             title: S.current.event,
             buttons: [
+              _ButtonData(
+                icon: Icons.storage,
+                name: S.current.svt_second_archive,
+                enabled: isLoggedIn,
+                onTap: () {
+                  router.pushPage(SvtStoragePage(runtime: runtime));
+                },
+              ),
               _ButtonData(
                 icon: Icons.diversity_3,
                 name: 'Friends',

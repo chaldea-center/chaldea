@@ -10,6 +10,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 import '../runtime.dart';
+import 'user_svt_filter_data.dart';
 
 const int _kBondEquipEventId = -9;
 
@@ -50,7 +51,7 @@ class _SelectUserSvtEquipPageState extends State<SelectUserSvtEquipPage> {
   static final _svtFilters = RouterValues<CraftFilterData>(
     () => CraftFilterData(sortKeys: CraftCompare.kRarityFirstKeys),
   );
-  static final _userSvtFilters = RouterValues(() => _UserSvtFilterData());
+  static final _userSvtFilters = RouterValues(() => UserSvtEquipFilterData());
 
   late final filterData = _svtFilters.of(context);
   late final userSvtFilterData = _userSvtFilters.of(context);
@@ -258,19 +259,5 @@ class _SelectUserSvtEquipPageState extends State<SelectUserSvtEquipPage> {
         },
       ),
     );
-  }
-}
-
-class _UserSvtFilterData with FilterDataMixin {
-  final maxLimitBreak = FilterGroupData<bool>();
-  final locked = FilterGroupData<bool>(options: {true});
-  int eventId = 0;
-  @override
-  List<FilterGroupData> get groups => [maxLimitBreak, locked];
-
-  @override
-  void reset() {
-    super.reset();
-    eventId = 0;
   }
 }
