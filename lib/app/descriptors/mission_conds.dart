@@ -36,7 +36,7 @@ class MissionCondsDescriptor extends StatelessWidget {
             textScaler: const TextScaler.linear(0.9),
             style: TextStyle(
               color: isClearCond
-                  ? Theme.of(context).colorScheme.primaryContainer
+                  ? Theme.of(context).colorScheme.secondary
                   : Theme.of(context).textTheme.bodySmall?.color,
               fontWeight: isClearCond ? FontWeight.bold : null,
             ),

@@ -93,7 +93,7 @@ class _StartupLoadingPageState extends State<StartupLoadingPage> {
                               _loader.interrupt();
                               setState(() {});
                             },
-                            color: Theme.of(context).colorScheme.primaryContainer,
+                            color: Theme.of(context).colorScheme.primary,
                             icon: const Icon(Icons.clear),
                             iconSize: 12,
                           ),

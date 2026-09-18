@@ -221,8 +221,7 @@ class FilterOption<T> extends StatelessWidget {
     final themeData = Theme.of(context);
     bool darkMode = themeData.brightness == Brightness.dark;
     final selectedColor =
-        this.selectedColor ??
-        (themeData.useMaterial3 && darkMode ? themeData.colorScheme.primaryContainer : themeData.colorScheme.primary);
+        this.selectedColor ?? (darkMode ? themeData.colorScheme.primaryContainer : themeData.colorScheme.primary);
     return ConstrainedBox(
       constraints: constraints ?? const BoxConstraints(maxHeight: 30),
       child: OutlinedButton(

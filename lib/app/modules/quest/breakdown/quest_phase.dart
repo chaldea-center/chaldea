@@ -359,7 +359,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
             icon: const Icon(Icons.calculate, size: 18),
             padding: EdgeInsets.zero,
             constraints: const BoxConstraints(),
-            color: Theme.of(context).colorScheme.primaryContainer,
+            color: Theme.of(context).colorScheme.primary,
             tooltip: S.current.battle_simulation,
           ),
       ],
@@ -1096,7 +1096,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
                     SharedBuilder.textButtonSpan(
                       context: context,
                       text: '{${s.shortId()}}',
-                      style: TextStyle(color: Theme.of(context).colorScheme.primaryContainer),
+                      style: TextStyle(color: Theme.of(context).colorScheme.primary),
                       onTap: () {
                         s.routeTo(region: widget.region);
                       },

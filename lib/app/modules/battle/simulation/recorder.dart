@@ -133,7 +133,7 @@ class _BattleRecorderPanelState extends State<BattleRecorderPanel> {
             });
           },
           icon: const FaIcon(FontAwesomeIcons.tableColumns, size: 16),
-          color: showTwoColumn ? Theme.of(context).colorScheme.primaryContainer : Theme.of(context).disabledColor,
+          color: showTwoColumn ? Theme.of(context).colorScheme.primary : Theme.of(context).disabledColor,
           tooltip: 'Two Columns',
           visualDensity: VisualDensity.standard,
         ),
@@ -145,7 +145,7 @@ class _BattleRecorderPanelState extends State<BattleRecorderPanel> {
               });
             },
             icon: const FaIcon(FontAwesomeIcons.dragon, size: 16),
-            color: showQuest ? Theme.of(context).colorScheme.primaryContainer : Theme.of(context).disabledColor,
+            color: showQuest ? Theme.of(context).colorScheme.primary : Theme.of(context).disabledColor,
             tooltip: 'Show Quest',
             visualDensity: VisualDensity.standard,
           ),
@@ -157,7 +157,7 @@ class _BattleRecorderPanelState extends State<BattleRecorderPanel> {
               });
             },
             icon: const Icon(Icons.groups_3),
-            color: showTeam ? Theme.of(context).colorScheme.primaryContainer : Theme.of(context).disabledColor,
+            color: showTeam ? Theme.of(context).colorScheme.primary : Theme.of(context).disabledColor,
             tooltip: 'Show Team',
             visualDensity: VisualDensity.standard,
           ),
@@ -168,7 +168,7 @@ class _BattleRecorderPanelState extends State<BattleRecorderPanel> {
             });
           },
           icon: const Icon(Icons.text_fields),
-          color: showDetail ? Theme.of(context).colorScheme.primaryContainer : Theme.of(context).disabledColor,
+          color: showDetail ? Theme.of(context).colorScheme.primary : Theme.of(context).disabledColor,
           tooltip: 'Show svt/skill name',
           visualDensity: VisualDensity.standard,
         ),
@@ -176,7 +176,7 @@ class _BattleRecorderPanelState extends State<BattleRecorderPanel> {
           onPressed: onTapScreenshot,
           icon: const Icon(Icons.camera_alt),
           tooltip: S.current.screenshots,
-          color: Theme.of(context).colorScheme.primaryContainer,
+          color: Theme.of(context).colorScheme.primary,
           visualDensity: VisualDensity.standard,
         ),
       ],
