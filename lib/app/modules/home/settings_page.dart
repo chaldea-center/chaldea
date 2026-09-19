@@ -199,18 +199,6 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                 ),
               ),
-              if (!const [Language.chs, Language.cht, Language.en].contains(Language.current))
-                Card(
-                  color: Theme.of(context).colorScheme.primaryContainer,
-                  margin: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                    child: Text(
-                      'We are seeking translators!',
-                      style: TextStyle(color: Theme.of(context).colorScheme.onPrimaryContainer),
-                    ),
-                  ),
-                ),
               ListTile(
                 title: Text(S.current.appearance),
                 trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),

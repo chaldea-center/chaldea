@@ -78,11 +78,12 @@ class _FakerMenuDialogState extends State<FakerMenuDialog> with FakerRuntimeStat
                 [
                   '[${runtime.agent.user.serverName}] ${runtime.agent.user.userGame?.friendCode}',
                   if ((gameTop.hash, gameTop.timestamp) == (timerData.hash, timerData.timestamp))
-                    fmtVer('data: ', gameTop.hash, gameTop.timestamp)
+                    fmtVer('hash:  ', gameTop.hash, gameTop.timestamp)
                   else ...[
                     fmtVer('top = ', gameTop.hash, gameTop.timestamp),
                     fmtVer('timer=', timerData.hash ?? "", timerData.timestamp),
                   ],
+                  'data=${gameTop.dataVer} date=${gameTop.dateVer > 100000 ? gameTop.dateVer.sec2date().toCustomString(year: false, second: false) : gameTop.dateVer}',
                 ].join('\n'),
                 style: Theme.of(context).textTheme.bodySmall?.merge(kMonoStyle),
               ),

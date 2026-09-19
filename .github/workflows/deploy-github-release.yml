@@ -76,8 +76,8 @@ jobs:
           sudo apt-get install -y libgtk-3-dev libx11-dev pkg-config cmake ninja-build libblkid-dev
           sudo apt-get install -y libayatana-appindicator3-dev
 
-      # JDK 17 is the minimum required by AGP 8.12 / Gradle 9 and matches
-      # compileOptions + kotlinOptions jvmTarget in android/app/build.gradle.kts.
+      # JDK 17 is required by AGP 9.1 / Gradle 9 and matches the Java and
+      # Kotlin compiler JVM targets in android/app/build.gradle.kts.
       - name: Install Android dependencies
         if: matrix.target == 'android'
         uses: actions/setup-java@v5
@@ -168,11 +168,20 @@ jobs:
           cp ${env:GITHUB_WORKSPACE}/windows/README.md ./README.txt
           Copy-Item "${env:GITHUB_WORKSPACE}/res/release_docs/安装与升级说明-InstallAndUpgrade.txt" .
           Write-Output "== Files to package (Windows) =="
+          function Format-Bytes([long]$bytes) {
+            if ($bytes -ge 1GB) { return '{0:N2} GB' -f ($bytes / 1GB) }
+            if ($bytes -ge 1MB) { return '{0:N2} MB' -f ($bytes / 1MB) }
+            if ($bytes -ge 1KB) { return '{0:N1} KB' -f ($bytes / 1KB) }
+            return "$bytes B"
+          }
+          $base = (Get-Location).Path
           Get-ChildItem -Recurse -Force | Sort-Object FullName | ForEach-Object {
+            $relative = [System.IO.Path]::GetRelativePath($base, $_.FullName)
             if ($_.PSIsContainer) {
-              "[DIR ] $($_.FullName)"
+              "[DIR ] $relative"
             } else {
-              "[FILE] $($_.Length) $($_.FullName)"
+              $size = Format-Bytes $_.Length
+              "[FILE] {0,11}  {1}" -f $size, $relative
             }
           }
           Write-Output "================================"

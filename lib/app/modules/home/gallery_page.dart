@@ -62,20 +62,24 @@ class _GalleryPageState extends State<GalleryPage> {
                     return SimpleDialog(
                       title: Text(S.current.update),
                       children: [
-                        SimpleDialogOption(
-                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                          child: Text(S.current.carousel),
-                          onPressed: () async {
+                        ListTile(
+                          dense: true,
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          title: Text(S.current.carousel),
+                          subtitle: Text(db.settings.carousel.updateTime?.toDateTimeString() ?? '-'),
+                          onTap: () async {
                             Navigator.pop(context);
                             EasyLoading.showToast('${S.current.tooltip_refresh_sliders} ...');
                             await AppNewsCarousel.resolveSliderImageUrls(true);
                             if (mounted) setState(() {});
                           },
                         ),
-                        SimpleDialogOption(
-                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                          child: Text(S.current.gamedata),
-                          onPressed: () async {
+                        ListTile(
+                          dense: true,
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          title: Text(S.current.gamedata),
+                          subtitle: Text(db.gameData.version.dateTime.toStringShort()),
+                          onTap: () async {
                             Navigator.pop(context);
                             EasyLoading.showToast('${S.current.update_dataset} ...');
                             final data = await GameDataLoader.instance.reload();
