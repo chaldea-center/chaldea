@@ -1227,6 +1227,7 @@ Map<String, dynamic> _$SvtScriptToJson(SvtScript instance) => <String, dynamic>{
 
 SvtScriptExtendData _$SvtScriptExtendDataFromJson(Map json) => SvtScriptExtendData(
   faceSize: json['faceSize'],
+  faceSizeRect: (json['faceSizeRect'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
   myroomForm: (json['myroomForm'] as num?)?.toInt(),
   combineResultMultipleForm: (json['combineResultMultipleForm'] as num?)?.toInt(),
   photoSvtPosition: (json['photoSvtPosition'] as List<dynamic>?)?.map((e) => (e as num).toInt()).toList(),
@@ -1234,11 +1235,12 @@ SvtScriptExtendData _$SvtScriptExtendDataFromJson(Map json) => SvtScriptExtendDa
 );
 
 Map<String, dynamic> _$SvtScriptExtendDataToJson(SvtScriptExtendData instance) => <String, dynamic>{
-  'faceSize': instance.faceSize,
-  'myroomForm': instance.myroomForm,
-  'combineResultMultipleForm': instance.combineResultMultipleForm,
-  'photoSvtPosition': instance.photoSvtPosition,
-  'photoSvtScale': instance.photoSvtScale,
+  'faceSize': ?instance.faceSize,
+  'faceSizeRect': ?instance.faceSizeRect,
+  'myroomForm': ?instance.myroomForm,
+  'combineResultMultipleForm': ?instance.combineResultMultipleForm,
+  'photoSvtPosition': ?instance.photoSvtPosition,
+  'photoSvtScale': ?instance.photoSvtScale,
 };
 
 SvtOverwriteValue _$SvtOverwriteValueFromJson(Map json) => SvtOverwriteValue(

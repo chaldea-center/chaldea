@@ -1925,18 +1925,21 @@ class SvtScript {
     this.limitCount,
   });
 
-  bool get isHeight1024 => (extendData?.faceSize ?? 256) != 256;
-  bool get isHeight768 => (extendData?.faceSize ?? 256) == 256;
+  // bool get isHeight1024 => (extendData?.faceSize ?? 256) != 256;
+  // bool get isHeight768 => (extendData?.faceSize ?? 256) == 256;
 
   factory SvtScript.fromJson(Map<String, dynamic> json) => _$SvtScriptFromJson(json);
 
   Map<String, dynamic> toJson() => _$SvtScriptToJson(this);
+
+  List<int> getFaceSize() => extendData?.getFaceSize() ?? SvtScriptExtendData.kDefaultFaceSize;
 }
 
-@JsonSerializable()
+@JsonSerializable(includeIfNull: false)
 class SvtScriptExtendData {
+  static const kDefaultFaceSize = [256, 256];
   Object? faceSize; // default 256, int or list[int] (multi chara)
-  // faceSizeRect
+  List<int>? faceSizeRect;
   int? myroomForm;
   int? combineResultMultipleForm;
   // conds?: { condType: number; value: number }[];
@@ -1947,8 +1950,25 @@ class SvtScriptExtendData {
   // offsets<x,y>
   // List<int>? TerminalOffset
   // List<int>? BattleBondOffset
+
+  List<int> getFaceSize() {
+    final faceSizeRect = this.faceSizeRect;
+    if (faceSizeRect != null && faceSizeRect.length >= 2 && faceSizeRect[0] > 0 && faceSizeRect[1] > 0) {
+      return [faceSizeRect[0], faceSizeRect[1]];
+    }
+    final faceSize = this.faceSize;
+    if (faceSize is int && faceSize > 0) return [faceSize, faceSize];
+    if (faceSize is List && faceSize.length >= 2) {
+      final width = faceSize[0];
+      final height = faceSize[1];
+      if (width is int && height is int && width > 0 && height > 0) return [width, height];
+    }
+    return kDefaultFaceSize;
+  }
+
   SvtScriptExtendData({
     this.faceSize,
+    this.faceSizeRect,
     this.myroomForm,
     this.combineResultMultipleForm,
     this.photoSvtPosition,

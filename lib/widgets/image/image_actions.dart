@@ -9,6 +9,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cached_network_image_platform_interface/cached_network_image_platform_interface.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:image/image.dart' as img_util;
 import 'package:material_ui/material_ui.dart';
 import 'package:pasteboard/pasteboard.dart';
 import 'package:path/path.dart';
@@ -16,7 +17,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:saver_gallery/saver_gallery.dart';
 import 'package:uuid/uuid.dart';
 
-import 'package:chaldea/app/modules/tools/custom_chara_figure.dart';
+import 'package:chaldea/app/modules/tools/chara_figure/custom_chara_figure.dart';
+import 'package:chaldea/app/modules/tools/chara_figure/source.dart';
 import 'package:chaldea/app/tools/icon_cache_manager.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
@@ -45,6 +47,14 @@ class ImageActions {
     assert(srcFp != null || data != null);
     if (context == null) return Future.value();
     if (srcFp == null && data == null) return Future.value();
+    img_util.Image? image;
+    try {
+      if (data != null) {
+        image = img_util.decodeImage(data);
+      }
+    } catch (e) {
+      //
+    }
     // Built-in sheet + DraggableScrollableSheet.
     //
     // The sheet-level drag gesture always loses the gesture arena to any
@@ -61,6 +71,18 @@ class ImageActions {
       builder: (context) {
         List<Widget> children = [
           ...extraHeaders,
+          if (data != null)
+            ConstrainedBox(
+              constraints: BoxConstraints(maxHeight: 200),
+              child: FittedBox(
+                fit: .fitHeight,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(border: .all(color: Colors.blue)),
+                  child: Image.memory(data, fit: .fitHeight),
+                ),
+              ),
+            ),
+          if (image != null) ListTile(dense: true, title: Text('Size ${image.width}×${image.height}')),
           if (url != null)
             ListTile(
               dense: true,
@@ -114,12 +136,12 @@ class ImageActions {
                 }
               },
             ),
-          if (url != null && RegExp(r'/CharaFigure/\d+/').hasMatch(url))
+          if (url != null && CharaFigureSource.tryParse(url) != null)
             ListTile(
               leading: const Icon(Icons.face_retouching_natural_outlined),
               title: Text(S.current.custom_chara_figure),
               onTap: () {
-                router.pushPage(CustomCharaFigurePage(figure: url));
+                router.pushPage(CustomCharaFigurePage(source: CharaFigureSource.tryParse(url)!));
               },
             ),
         ];
@@ -355,6 +377,21 @@ class ImageActions {
       return resolveImage(provider, context: context);
     }
     return resolveImage(provider);
+  }
+
+  static Future<void> evictImageUrl(String url) async {
+    if (AtlasIconLoader.i.shouldCacheImage(url)) {
+      final fp = AtlasIconLoader.i.atlasUrlToFp(url, allowWeb: true);
+      if (fp != null) {
+        await FileImage(File(fp)).evict();
+      }
+      await AtlasIconLoader.i.deleteFromDisk(url);
+      return;
+    }
+    await CachedNetworkImageProvider(
+      CachedImage.corsProxyImage(url),
+      imageRenderMethodForWeb: ImageRenderMethodForWeb.HttpGet,
+    ).evict();
   }
 
   // resolve one frame
