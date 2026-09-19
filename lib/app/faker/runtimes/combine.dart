@@ -1,27 +1,61 @@
 import 'dart:math';
 
 import 'package:chaldea/models/gamedata/mst_data.dart';
+import 'package:chaldea/models/gamedata/mst_tables.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 
 import '_base.dart';
 
+class SvtEquipLimitBreakGroup {
+  final UserServantEntity target;
+  final int totalCount;
+  final List<UserServantEntity> copies;
+  final List<UserServantEntity> materials;
+
+  SvtEquipLimitBreakGroup({required this.target, required this.totalCount, required List<UserServantEntity> copies})
+    : copies = List.unmodifiable(copies),
+      materials = List.unmodifiable(copies.where((card) => card.limitCount == 0 && card.lv == 1));
+
+  int get maxMaterialCount => 4 - target.limitCount;
+
+  bool isMaterial(UserServantEntity card) => materials.contains(card);
+
+  List<UserServantEntity> selectedFrom(Set<int> selectedIds) {
+    return materials.where((card) => selectedIds.contains(card.id)).take(maxMaterialCount).toList();
+  }
+}
+
 class FakerRuntimeCombine extends FakerRuntimeBase {
   FakerRuntimeCombine(super.runtime);
 
-  Future<void> svtEquipCombine({required int targetUserSvtId, required List<int> combineMaterials}) async {
+  Future<void> svtEquipCombine({
+    required int targetUserSvtId,
+    required List<int> combineMaterials,
+    bool limitBreakOnly = false,
+  }) async {
     final target = mstData.userSvt[targetUserSvtId];
     final targetCE = target?.dbCE;
     if (target == null) {
       throw SilentException('Unknown target CE userSvtId: $targetUserSvtId');
     }
     final maxLv = target.maxLv;
-    if (maxLv != null && target.lv >= maxLv) {
+    if (!limitBreakOnly && maxLv != null && target.lv >= maxLv) {
       throw SilentException('Already max lv $maxLv');
     }
     if (targetCE == null) {
       throw SilentException('Unknown target CE: $targetUserSvtId');
+    }
+    if (limitBreakOnly &&
+        (target.limitCount < 0 ||
+            target.limitCount >= 4 ||
+            target.isWithdraw() ||
+            !target.isLocked() ||
+            combineMaterials.isEmpty ||
+            combineMaterials.toSet().length != combineMaterials.length ||
+            combineMaterials.length > 4 - target.limitCount)) {
+      throw SilentException('Invalid limit-break target or material count');
     }
     for (final userSvtId in combineMaterials) {
       if (userSvtId == targetUserSvtId) {
@@ -38,11 +72,117 @@ class FakerRuntimeCombine extends FakerRuntimeBase {
       if (userSvt.isLocked()) {
         throw SilentException('Unlock CE first: $userSvtId');
       }
-      if (userSvt.isChoice()) {
+      if (!limitBreakOnly && userSvt.isChoice()) {
         throw SilentException('CE in choice! $userSvtId');
+      }
+      if (limitBreakOnly &&
+          (userSvt.svtId != target.svtId || userSvt.limitCount != 0 || userSvt.lv != 1 || userSvt.isWithdraw())) {
+        throw SilentException('Invalid limit-break material: $userSvtId');
       }
     }
     await agent.servantEquipCombine(baseUserSvtId: targetUserSvtId, materialSvtIds: combineMaterials.toList());
+  }
+
+  List<SvtEquipLimitBreakGroup> getSvtEquipLimitBreakGroups() {
+    final totalCounts = <int, int>{};
+    for (final card in mstData.userSvt) {
+      totalCounts.update(card.svtId, (count) => count + 1, ifAbsent: () => 1);
+    }
+    final ownedMaxLimitSvtIds = {
+      for (final card in mstData.userSvtAndStorage)
+        if (card.limitCount == 4) card.svtId,
+    };
+    final bySvtId = <int, List<UserServantEntity>>{};
+    for (final card in mstData.userSvt) {
+      final ce = card.dbCE;
+      if (ce == null ||
+          ce.flags.contains(SvtFlag.svtEquipExp) ||
+          card.isWithdraw() ||
+          ce.rarity < 2 ||
+          ce.rarity > 5 ||
+          card.limitCount < 0 ||
+          card.limitCount >= 4) {
+        continue;
+      }
+      if (ce.rarity == 3 && ce.obtain == CEObtain.permanent && ownedMaxLimitSvtIds.contains(card.svtId)) continue;
+      bySvtId.putIfAbsent(card.svtId, () => []).add(card);
+    }
+    final groups = <SvtEquipLimitBreakGroup>[];
+    for (final cards in bySvtId.values) {
+      cards.sort((a, b) {
+        if (a.isLocked() != b.isLocked()) return a.isLocked() ? -1 : 1;
+        final limit = b.limitCount.compareTo(a.limitCount);
+        if (limit != 0) return limit;
+        final level = b.lv.compareTo(a.lv);
+        if (level != 0) return level;
+        return a.createdAt.compareTo(b.createdAt);
+      });
+      final target = cards.first;
+      final copies = cards.skip(1).where((card) => target.limitCount + card.limitCount < 4).toList();
+      copies.sort((a, b) {
+        final isMaterialA = a.limitCount == 0 && a.lv == 1;
+        final isMaterialB = b.limitCount == 0 && b.lv == 1;
+        if (isMaterialA != isMaterialB) return isMaterialA ? -1 : 1;
+        if (a.isLocked() != b.isLocked()) return a.isLocked() ? 1 : -1;
+        return b.createdAt.compareTo(a.createdAt);
+      });
+      final group = SvtEquipLimitBreakGroup(target: target, totalCount: totalCounts[target.svtId] ?? 0, copies: copies);
+      if (group.materials.isNotEmpty) groups.add(group);
+    }
+    groups.sort((a, b) {
+      final count = b.materials.length.compareTo(a.materials.length);
+      if (count != 0) return count;
+      final rarity = (b.target.dbCE?.rarity ?? 0).compareTo(a.target.dbCE?.rarity ?? 0);
+      if (rarity != 0) return rarity;
+      final limit = b.target.limitCount.compareTo(a.target.limitCount);
+      if (limit != 0) return limit;
+      final level = b.target.lv.compareTo(a.target.lv);
+      return level != 0 ? level : a.target.svtId.compareTo(b.target.svtId);
+    });
+    return groups;
+  }
+
+  Future<void> svtEquipLimitBreak({required SvtEquipLimitBreakGroup preview, required Set<int> materialIds}) async {
+    final current = getSvtEquipLimitBreakGroups().firstWhereOrNull(
+      (group) => group.target.svtId == preview.target.svtId,
+    );
+    if (current == null || current.target.id != preview.target.id) {
+      throw SilentException('礼装状态已变化，请刷新后重新选择强化');
+    }
+    final selected = current.selectedFrom(materialIds);
+    if (selected.length != materialIds.length || selected.isEmpty) {
+      throw SilentException('强化材料已变化，请刷新后重新选择强化');
+    }
+
+    if (!current.target.isLocked()) {
+      await agent.cardStatusSync(
+        changeUserSvtIds: [current.target.id],
+        revokeUserSvtIds: [],
+        isStorage: false,
+        isLock: true,
+        isChoice: false,
+      );
+      runtime.update();
+    }
+
+    final unlockIds = selected.where((card) => card.isLocked()).map((card) => card.id).toList();
+    if (unlockIds.isNotEmpty) {
+      await agent.cardStatusSync(
+        changeUserSvtIds: [],
+        revokeUserSvtIds: unlockIds,
+        isStorage: false,
+        isLock: true,
+        isChoice: false,
+      );
+      runtime.update();
+    }
+
+    await svtEquipCombine(
+      targetUserSvtId: current.target.id,
+      combineMaterials: selected.map((card) => card.id).toList(),
+      limitBreakOnly: true,
+    );
+    runtime.update();
   }
 
   Future<void> loopSvtEquipCombine([int count = 1]) async {
