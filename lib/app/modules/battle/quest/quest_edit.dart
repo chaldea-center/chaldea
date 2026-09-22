@@ -112,7 +112,7 @@ class _QuestEditPageState extends State<QuestEditPage> {
           },
           icon: const Icon(Icons.replay),
           label: Text(S.current.clear),
-          style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.errorContainer),
+          style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.error),
         ),
         FilledButton.icon(onPressed: onConfirm, icon: const Icon(Icons.check), label: Text(S.current.confirm)),
       ],

@@ -140,7 +140,7 @@ class _QuestEnemyEditPageState extends State<QuestEnemyEditPage> {
                 Navigator.pop(context);
                 widget.onClear!();
               },
-              style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.errorContainer),
+              style: FilledButton.styleFrom(backgroundColor: Theme.of(context).colorScheme.error),
               child: Text(S.current.remove),
             ),
         ],

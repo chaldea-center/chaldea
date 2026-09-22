@@ -334,11 +334,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
           onTap: () {
             ReportTeamDialog(record: record, isMyTeam: record.userId == curUserId).showDialog(context);
           },
-          child: Icon(
-            Icons.report_outlined,
-            size: 18,
-            color: Theme.of(context).colorScheme.errorContainer.withAlpha(204),
-          ),
+          child: Icon(Icons.report_outlined, size: 18, color: Theme.of(context).colorScheme.error.withAlpha(204)),
         ),
         const SizedBox(width: 24),
       ],

@@ -204,7 +204,7 @@ class UserDeckListPageState extends State<UserDeckListPage> {
           titleWidget: Text(
             '[${deck.id}] No.${deck.deckNo} ${deck.name}',
             style: isActiveDeck(deck)
-                ? TextStyle(color: Theme.of(context).colorScheme.errorContainer)
+                ? TextStyle(color: Theme.of(context).colorScheme.error)
                 : TextStyle(fontSize: Theme.of(context).textTheme.bodySmall?.fontSize),
           ),
         ),
@@ -266,7 +266,7 @@ class UserDeckListPageState extends State<UserDeckListPage> {
             titleWidget: Text(
               '${param?.eventId == deck.eventId ? "※ " : ""}[${deck.eventId}] No.${deck.deckNo}',
               style: isActiveDeck(deck)
-                  ? TextStyle(color: Theme.of(context).colorScheme.errorContainer)
+                  ? TextStyle(color: Theme.of(context).colorScheme.error)
                   : TextStyle(fontSize: Theme.of(context).textTheme.bodySmall?.fontSize),
             ),
           ),

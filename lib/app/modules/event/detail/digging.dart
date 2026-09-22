@@ -118,7 +118,7 @@ class _EventDiggingTabState extends State<EventDiggingTab> {
                       option: ImageWithTextOption(
                         fontSize: 10,
                         shadowColor: notEnough ? Colors.white : null,
-                        textStyle: TextStyle(color: notEnough ? Theme.of(context).colorScheme.errorContainer : null),
+                        textStyle: TextStyle(color: notEnough ? Theme.of(context).colorScheme.error : null),
                       ),
                     );
                   }),
@@ -141,7 +141,7 @@ class _EventDiggingTabState extends State<EventDiggingTab> {
         Container(
           decoration: BoxDecoration(
             border: Border.all(
-              color: reward.rewardSize == 2 ? Theme.of(context).colorScheme.errorContainer : Colors.transparent,
+              color: reward.rewardSize == 2 ? Theme.of(context).colorScheme.error : Colors.transparent,
               width: 2,
             ),
             borderRadius: BorderRadius.circular(8),

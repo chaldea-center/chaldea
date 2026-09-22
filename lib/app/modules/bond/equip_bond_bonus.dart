@@ -429,7 +429,7 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
               final conditional = limitCounts.length != allLimitCounts.length && limitCounts.isNotEmpty;
               Widget child = Container(
                 decoration: BoxDecoration(
-                  color: conditional ? Theme.of(context).colorScheme.errorContainer.withAlpha(191) : null,
+                  color: conditional ? Theme.of(context).colorScheme.error : null,
                   borderRadius: BorderRadius.circular(4),
                 ),
                 padding: const EdgeInsets.all(1),

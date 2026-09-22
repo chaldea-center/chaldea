@@ -1059,7 +1059,7 @@ class _TeamUploadDialogState extends State<_TeamUploadDialog> {
             title: Text('${S.current.upload} - ${S.current.warning}'),
             content: Text(
               warnings.map((e) => '- $e').join('\n'),
-              style: TextStyle(color: Theme.of(context).colorScheme.errorContainer),
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
             ),
           );
         },

@@ -88,7 +88,7 @@ class _TraitEditPageState extends State<TraitEditPage> {
         },
         icon: const Icon(Icons.clear),
         tooltip: S.current.remove,
-        color: Theme.of(context).colorScheme.errorContainer,
+        color: Theme.of(context).colorScheme.error,
       ),
     );
   }

@@ -156,7 +156,7 @@ class _TraitServantTabState extends State<TraitServantTab> {
   Widget gridItem(BuildContext context, Servant svt) {
     return Container(
       decoration: BoxDecoration(
-        color: isCommonTrait(svt) ? null : Theme.of(context).colorScheme.errorContainer.withAlpha(191),
+        color: isCommonTrait(svt) ? null : Theme.of(context).colorScheme.error,
         borderRadius: BorderRadius.circular(4),
       ),
       padding: const EdgeInsets.all(2),
