@@ -685,6 +685,7 @@ class Servant extends BasicServant {
       battleName,
       ...ascensionAdd.overWriteServantName.all.values,
       ...ascensionAdd.overWriteServantBattleName.all.values,
+      ...ascensionAdd.overwriteSvtDetailName.all.values,
       ...svtChange.map((e) => e.name),
       ...svtChange.map((e) => e.battleName),
     };
@@ -1350,6 +1351,9 @@ class AscensionAddEntry<T> {
       return null as T;
     } else if (T == List<int>) {
       return (obj as List<dynamic>).map((e) => (e as num).toInt()).toList() as T;
+    } else if (T == List<OverwriteValue>) {
+      return (obj as List<dynamic>).map((e) => OverwriteValue.fromJson(Map<String, dynamic>.from(e as Map))).toList()
+          as T;
     } else if (T == List<NiceTrait>) {
       return (obj as List<dynamic>).map((e) => NiceTrait.fromJson(Map<String, dynamic>.from(e as Map))).toList() as T;
     } else if (T == List<CommonRelease>) {
@@ -1370,6 +1374,8 @@ class AscensionAddEntry<T> {
       return value;
     } else if (value is List<NiceTrait>) {
       return value.map((e) => e.toJson()).toList();
+    } else if (value is List<OverwriteValue>) {
+      return value.map((e) => e.toJson()).toList();
     } else if (value is List<CommonRelease>) {
       return value.map((e) => e.toJson()).toList();
     } else if (value is ServantSubAttribute) {
@@ -1379,6 +1385,18 @@ class AscensionAddEntry<T> {
   }
 
   Map<String, dynamic> toJson() => _$AscensionAddEntryToJson(this, _toJsonT);
+}
+
+@JsonSerializable()
+class OverwriteValue {
+  int id;
+  String value;
+
+  OverwriteValue({required this.id, required this.value});
+
+  factory OverwriteValue.fromJson(Map<String, dynamic> json) => _$OverwriteValueFromJson(json);
+
+  Map<String, dynamic> toJson() => _$OverwriteValueToJson(this);
 }
 
 @JsonSerializable()
@@ -1392,6 +1410,8 @@ class AscensionAdd {
   AscensionAddEntry<int> voicePrefix;
   AscensionAddEntry<String> overWriteServantName;
   AscensionAddEntry<String> overWriteServantBattleName;
+  AscensionAddEntry<String> overwriteSvtDetailName;
+  AscensionAddEntry<List<OverwriteValue>> overwriteSkillName;
   AscensionAddEntry<String> overWriteTDName;
   AscensionAddEntry<String> overWriteTDRuby;
   AscensionAddEntry<String> overWriteTDFileName;
@@ -1419,6 +1439,8 @@ class AscensionAdd {
     this.voicePrefix = const AscensionAddEntry(),
     this.overWriteServantName = const AscensionAddEntry(),
     this.overWriteServantBattleName = const AscensionAddEntry(),
+    this.overwriteSvtDetailName = const AscensionAddEntry(),
+    this.overwriteSkillName = const AscensionAddEntry(),
     this.overWriteTDName = const AscensionAddEntry(),
     this.overWriteTDRuby = const AscensionAddEntry(),
     this.overWriteTDFileName = const AscensionAddEntry(),

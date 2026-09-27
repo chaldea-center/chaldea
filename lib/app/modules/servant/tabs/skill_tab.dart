@@ -127,7 +127,7 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
           : svt.classPassive),
       ...extraPassiveFixed,
     ]) {
-      children.add(SkillDescriptor(skill: skill, showEnemy: !svt.isUserSvt));
+      children.add(_buildDescriptor(skill));
     }
     final overwritePassiveIds = svt.ascensionAdd.overwriteClassPassive.all.values.expand((e) => e).toSet();
     if (svt.type != SvtType.heroine && overwritePassiveIds.isNotEmpty) {
@@ -139,7 +139,7 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
             loader: () async => db.gameData.baseSkills[skillId] ?? await AtlasApi.skill(skillId),
             builder: (context, skill) {
               if (skill == null) return ListTile(title: Text("${S.current.skill} $skillId"));
-              return SkillDescriptor(skill: skill, showEnemy: !svt.isUserSvt);
+              return _buildDescriptor(skill);
             },
           ),
         );
@@ -149,9 +149,8 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
     if (svt.appendPassive.isNotEmpty) children.add(SHeader(S.current.append_skill));
     for (final appendSkill in svt.appendPassive) {
       children.add(
-        SkillDescriptor(
-          skill: appendSkill.skill,
-          showEnemy: !svt.isUserSvt,
+        _buildDescriptor(
+          appendSkill.skill,
           level: status.favorite ? status.appendSkills.getOrNull(appendSkill.num - 100) : -1,
         ),
       );
@@ -167,7 +166,7 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
           contentBuilder: (context) {
             return Column(
               mainAxisSize: MainAxisSize.min,
-              children: [for (final skill in passives) SkillDescriptor(skill: skill, showEnemy: !svt.isUserSvt)],
+              children: [for (final skill in passives) _buildDescriptor(skill)],
             );
           },
         ),
@@ -182,9 +181,23 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
     return skill.svt.condQuestId > 0 || SvtSkillTab.hasUnusualLimitCond(skill);
   }
 
+  Widget _buildDescriptor(BaseSkill skill, {int? level}) {
+    final overwrites = OverwriteSkillData.fromAscensionAdd(
+      svt.ascensionAdd,
+      skill.id,
+    ).where((entry) => entry.skillName != skill.name).toList();
+    return SkillDescriptor(
+      skill: skill,
+      level: level,
+      showEnemy: !svt.isUserSvt,
+      overwrites: overwrites,
+      overwriteServant: svt,
+    );
+  }
+
   Widget _buildSkill(List<NiceSkill> skills, int? level) {
     if (skills.length == 1 && skills.first.svt.condQuestId <= 0) {
-      return SkillDescriptor(skill: skills.first, level: level, showEnemy: !svt.isUserSvt);
+      return _buildDescriptor(skills.first, level: level);
     }
     final hasAnyCond = skills.any(_checkHasCond);
     NiceSkill initSkill = svt.getDefaultSkill(skills, db.curUser.region) ?? skills.last;
@@ -236,7 +249,7 @@ class _SvtSkillTabState extends State<SvtSkillTab> {
           mainAxisSize: MainAxisSize.min,
           children: [
             toggle,
-            SkillDescriptor(skill: skill, showEnemy: !svt.isUserSvt, level: level),
+            _buildDescriptor(skill, level: level),
           ],
         );
       },

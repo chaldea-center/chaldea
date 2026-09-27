@@ -24,6 +24,8 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescri
   final bool showExtraPassiveCond;
   final bool showEvent;
   final Region? region;
+  final List<OverwriteSkillData> overwrites;
+  final Servant? overwriteServant;
 
   const SkillDescriptor({
     super.key,
@@ -38,6 +40,8 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescri
     this.showExtraPassiveCond = true,
     this.showEvent = true,
     this.region,
+    this.overwrites = const [],
+    this.overwriteServant,
   });
 
   const SkillDescriptor.only({
@@ -52,6 +56,8 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescri
     this.showExtraPassiveCond = true,
     this.showEvent = true,
     this.region,
+    this.overwrites = const [],
+    this.overwriteServant,
   }) : showPlayer = isPlayer,
        showEnemy = !isPlayer;
 
@@ -75,66 +81,7 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescri
   Widget build(BuildContext context) {
     final cds = skill.coolDown.toSet().toList()..sort2((e) => -e);
 
-    final header = CustomTile(
-      contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 6, 16, 6),
-      leading: db.getIconImage(skill.icon ?? Atlas.common.unknownSkillIcon, width: 33, aspectRatio: 1),
-      title: Text.rich(
-        TextSpan(
-          text: skill.lName.l,
-          children: [
-            if (skill.skillAdd.isNotEmpty)
-              CenterWidgetSpan(
-                child: InkWell(
-                  onTap: () => showDialog(context: context, useRootNavigator: false, builder: _skillAddDialog),
-                  child: Icon(Icons.info_outline, size: 16, color: Theme.of(context).hintColor),
-                ),
-              ),
-            if (skill is NiceSkill && (skill as NiceSkill).extraPassive.isNotEmpty)
-              CenterWidgetSpan(
-                child: InkWell(
-                  onTap: () => showDialog(
-                    context: context,
-                    useRootNavigator: false,
-                    builder: (context) => _extraPassiveDialog(context, skill as NiceSkill),
-                  ),
-                  child: Icon(Icons.info_outline, size: 16, color: Theme.of(context).hintColor),
-                ),
-              ),
-          ],
-        ),
-      ),
-      subtitle: Transl.isJP || hideDetail || (skill.lName.l == skill.name && skill.lName.m?.ofRegion() == null)
-          ? null
-          : Text(skill.name),
-      trailing: cds.isEmpty || (cds.length == 1 && cds.single <= 0)
-          ? null
-          : cds.length == 1
-          ? Text('   CD: ${cds.single}')
-          : Text.rich(
-              TextSpan(
-                text: '   CD: ',
-                children: divideList([
-                  for (final cd in cds)
-                    TextSpan(
-                      text: cd.toString(),
-                      style: skill.coolDown.getOrNull((level ?? 0) - 1) == cd
-                          ? TextStyle(color: AppTheme.ofExtra(context).accent)
-                          : null,
-                    ),
-                ], const TextSpan(text: '→')),
-              ),
-            ),
-      onTap: jumpToDetail
-          ? () => skill.routeTo(
-              region: region,
-              child: SkillDetailPage(
-                skill: skill,
-                region: region,
-                initView: FuncApplyTarget.fromBool(showPlayer: showPlayer, showEnemy: showEnemy),
-              ),
-            )
-          : null,
-    );
+    final header = _buildHeader(context, cds);
     const divider = Divider(indent: 16, endIndent: 16, height: 2, thickness: 1);
     final detailText = skill.lDetail ?? '???';
 
@@ -145,6 +92,20 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescri
       children: [
         ?costumeReleaseWidget,
         header,
+        if (overwrites.isNotEmpty)
+          _AscensionOverwriteSection(
+            key: ValueKey('skill-overwrites-${skill.id}'),
+            previewName: Transl.skillNames(overwrites.first.skillName).l,
+            indent: 16,
+            children: [
+              for (final entry in overwrites)
+                _buildOverwriteEntry(
+                  context,
+                  _overwriteCondition(overwriteServant, entry.ascensions, entry.costumes),
+                  _buildHeader(context, cds, overwriteName: entry.skillName),
+                ),
+            ],
+          ),
         if (!hideDetail) ...[
           Padding(
             padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 4),
@@ -169,6 +130,73 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescri
     );
 
     return InheritSelectionArea(child: child);
+  }
+
+  Widget _buildHeader(BuildContext context, List<int> cds, {String? overwriteName}) {
+    final isOverwrite = overwriteName != null;
+    final name = isOverwrite ? Transl.skillNames(overwriteName).l : skill.lName.l;
+    return CustomTile(
+      contentPadding: const EdgeInsetsDirectional.fromSTEB(16, 6, 16, 6),
+      leading: db.getIconImage(skill.icon ?? Atlas.common.unknownSkillIcon, width: 33, aspectRatio: 1),
+      title: Text.rich(
+        TextSpan(
+          text: name,
+          children: [
+            if (!isOverwrite && skill.skillAdd.isNotEmpty)
+              CenterWidgetSpan(
+                child: InkWell(
+                  onTap: () => showDialog(context: context, useRootNavigator: false, builder: _skillAddDialog),
+                  child: Icon(Icons.info_outline, size: 16, color: Theme.of(context).hintColor),
+                ),
+              ),
+            if (!isOverwrite && skill is NiceSkill && (skill as NiceSkill).extraPassive.isNotEmpty)
+              CenterWidgetSpan(
+                child: InkWell(
+                  onTap: () => showDialog(
+                    context: context,
+                    useRootNavigator: false,
+                    builder: (context) => _extraPassiveDialog(context, skill as NiceSkill),
+                  ),
+                  child: Icon(Icons.info_outline, size: 16, color: Theme.of(context).hintColor),
+                ),
+              ),
+          ],
+        ),
+      ),
+      subtitle: isOverwrite
+          ? (skill.ruby.isEmpty ? null : Text(skill.ruby))
+          : Transl.isJP || hideDetail || (skill.lName.l == skill.name && skill.lName.m?.ofRegion() == null)
+          ? null
+          : Text(skill.name),
+      trailing: cds.isEmpty || (cds.length == 1 && cds.single <= 0)
+          ? null
+          : cds.length == 1
+          ? Text('   CD: ${cds.single}')
+          : Text.rich(
+              TextSpan(
+                text: '   CD: ',
+                children: divideList([
+                  for (final cd in cds)
+                    TextSpan(
+                      text: cd.toString(),
+                      style: skill.coolDown.getOrNull((level ?? 0) - 1) == cd
+                          ? TextStyle(color: AppTheme.ofExtra(context).accent)
+                          : null,
+                    ),
+                ], const TextSpan(text: '→')),
+              ),
+            ),
+      onTap: !isOverwrite && jumpToDetail
+          ? () => skill.routeTo(
+              region: region,
+              child: SkillDetailPage(
+                skill: skill,
+                region: region,
+                initView: FuncApplyTarget.fromBool(showPlayer: showPlayer, showEnemy: showEnemy),
+              ),
+            )
+          : null,
+    );
   }
 
   Widget _skillAddDialog(BuildContext context) {
@@ -298,45 +326,184 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescri
   }
 }
 
-class OverrideTDData {
+class OverwriteSkillData {
+  final String skillName;
+  final List<int> ascensions = [];
+  final List<int> costumes = [];
+
+  OverwriteSkillData(this.skillName);
+
+  static List<OverwriteSkillData> fromAscensionAdd(AscensionAdd data, int skillId) {
+    final results = <OverwriteSkillData>[];
+
+    void add(int key, List<OverwriteValue> names, bool isCostume) {
+      final name = names.firstWhereOrNull((e) => e.id == skillId)?.value;
+      if (name == null || name.isEmpty) return;
+      OverwriteSkillData? result = results.firstWhereOrNull((e) => e.skillName == name);
+      if (result == null) {
+        result = OverwriteSkillData(name);
+        results.add(result);
+      }
+      (isCostume ? result.costumes : result.ascensions).add(key);
+    }
+
+    for (final key in data.overwriteSkillName.ascension.keys.toList()..sort()) {
+      add(key, data.overwriteSkillName.ascension[key]!, false);
+    }
+    for (final key in data.overwriteSkillName.costume.keys.toList()..sort()) {
+      add(key, data.overwriteSkillName.costume[key]!, true);
+    }
+    return results;
+  }
+}
+
+class OverwriteTDData {
   final String? tdName;
   final String? tdRuby;
   final String? tdFileName;
   final String? tdRank;
   final String? tdTypeText;
 
-  final List<int> keys;
+  final List<int> ascensions = [];
+  final List<int> costumes = [];
 
-  OverrideTDData({
+  OverwriteTDData({
     required this.tdName,
     required this.tdRuby,
     required this.tdFileName,
     required this.tdRank,
     required this.tdTypeText,
-  }) : keys = [];
+  });
 
-  static List<OverrideTDData> fromAscensionAdd(AscensionAdd data) {
-    List<OverrideTDData> tds = [];
-    for (final key in data.overWriteTDName.all.keys) {
-      final v = OverrideTDData(
-        tdName: data.overWriteTDName.all[key],
-        tdRuby: data.overWriteTDRuby.all[key],
-        tdFileName: data.overWriteTDFileName.all[key],
-        tdRank: data.overWriteTDRank.all[key],
-        tdTypeText: data.overWriteTDTypeText.all[key],
+  static List<OverwriteTDData> fromAscensionAdd(AscensionAdd data) {
+    final results = <OverwriteTDData>[];
+
+    void add(int key, bool isCostume) {
+      String? get(AscensionAddEntry<String> entry) => isCostume ? entry.costume[key] : entry.ascension[key];
+      final value = OverwriteTDData(
+        tdName: get(data.overWriteTDName),
+        tdRuby: get(data.overWriteTDRuby),
+        tdFileName: get(data.overWriteTDFileName),
+        tdRank: get(data.overWriteTDRank),
+        tdTypeText: get(data.overWriteTDTypeText),
       );
-      v.keys.add(key);
-      final td = tds.firstWhereOrNull((e) => e._hashCode == v._hashCode);
-      if (td == null) {
-        tds.add(v);
-      } else {
-        td.keys.add(key);
-      }
+      final result = results.firstWhereOrNull((e) => e._sameValues(value)) ?? value;
+      if (identical(result, value)) results.add(value);
+      (isCostume ? result.costumes : result.ascensions).add(key);
     }
-    return tds;
+
+    final ascensions = <int>{
+      ...data.overWriteTDName.ascension.keys,
+      ...data.overWriteTDRuby.ascension.keys,
+      ...data.overWriteTDFileName.ascension.keys,
+      ...data.overWriteTDRank.ascension.keys,
+      ...data.overWriteTDTypeText.ascension.keys,
+    }.toList()..sort();
+    final costumes = <int>{
+      ...data.overWriteTDName.costume.keys,
+      ...data.overWriteTDRuby.costume.keys,
+      ...data.overWriteTDFileName.costume.keys,
+      ...data.overWriteTDRank.costume.keys,
+      ...data.overWriteTDTypeText.costume.keys,
+    }.toList()..sort();
+    for (final key in ascensions) {
+      add(key, false);
+    }
+    for (final key in costumes) {
+      add(key, true);
+    }
+    return results;
   }
 
-  int get _hashCode => Object.hash(tdName, tdRuby, tdFileName, tdRank, tdTypeText);
+  bool _sameValues(OverwriteTDData other) =>
+      tdName == other.tdName &&
+      tdRuby == other.tdRuby &&
+      tdFileName == other.tdFileName &&
+      tdRank == other.tdRank &&
+      tdTypeText == other.tdTypeText;
+}
+
+String _overwriteCondition(Servant? servant, List<int> ascensions, List<int> costumes) {
+  return [
+    if (ascensions.isNotEmpty) '${S.current.ascension_short} ${ascensions.join('&')}',
+    if (costumes.isNotEmpty)
+      '${S.current.costume} ${costumes.map((id) => servant?.costume[id]?.lName.l ?? id.toString()).join(' & ')}',
+  ].join(' · ');
+}
+
+Widget _buildOverwriteEntry(BuildContext context, String condition, Widget header, {String? fileName}) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      Padding(
+        padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 16, 0),
+        child: Text(condition, style: Theme.of(context).textTheme.labelSmall),
+      ),
+      header,
+      // if (fileName != null)
+      //   Padding(
+      //     padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 8),
+      //     child: Text('${S.current.filename}: $fileName', style: Theme.of(context).textTheme.bodySmall),
+      //   ),
+    ],
+  );
+}
+
+class _AscensionOverwriteSection extends StatefulWidget {
+  final String previewName;
+  final double indent;
+  final List<Widget> children;
+
+  const _AscensionOverwriteSection({
+    super.key,
+    required this.previewName,
+    required this.indent,
+    required this.children,
+  });
+
+  @override
+  State<_AscensionOverwriteSection> createState() => _AscensionOverwriteSectionState();
+}
+
+class _AscensionOverwriteSectionState extends State<_AscensionOverwriteSection> {
+  bool expanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        InkWell(
+          onTap: () => setState(() => expanded = !expanded),
+          child: Padding(
+            padding: EdgeInsetsDirectional.fromSTEB(widget.indent, 4, 16, 4),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    '${S.current.ascension_info_changes}: ${widget.previewName}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.labelSmall
+                        ?.copyWith(color: Theme.of(context).colorScheme.primary),
+                  ),
+                ),
+                Icon(expanded ? Icons.expand_less : Icons.expand_more, size: 18),
+              ],
+            ),
+          ),
+        ),
+        if (expanded)
+          ...divideTiles(
+            widget.children,
+            divider: const Divider(indent: 16, endIndent: 16, height: 4),
+            top: true,
+            bottom: true,
+          ),
+      ],
+    );
+  }
 }
 
 class TdDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescriptorMixin {
@@ -346,7 +513,8 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescripto
   final bool showPlayer;
   final bool showEnemy;
   final bool showNone;
-  final OverrideTDData? overrideData;
+  final List<OverwriteTDData> overwrites;
+  final Servant? overwriteServant;
   final bool jumpToDetail;
   final Region? region;
   final bool isBaseTd;
@@ -359,7 +527,8 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescripto
     this.showPlayer = true,
     this.showEnemy = false,
     this.showNone = false,
-    this.overrideData,
+    this.overwrites = const [],
+    this.overwriteServant,
     this.jumpToDetail = true,
     this.region,
     this.isBaseTd = false,
@@ -372,7 +541,8 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescripto
     this.level,
     this.oc,
     this.showNone = false,
-    this.overrideData,
+    this.overwrites = const [],
+    this.overwriteServant,
     this.jumpToDetail = true,
     this.region,
     this.isBaseTd = false,
@@ -392,51 +562,8 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescripto
     if (baseTrait != null && td.getIndividuality().every((e) => e != baseTrait.value)) {
       ref.add('cardTrait');
     }
-    final tdType = Transl.tdTypes(overrideData?.tdTypeText ?? td.type);
-    final tdRank = overrideData?.tdRank ?? td.rank;
-    final tdName = Transl.tdNames(overrideData?.tdName ?? td.name);
-    final tdRuby = Transl.tdRuby(overrideData?.tdRuby ?? td.ruby);
     const divider = Divider(indent: 16, endIndent: 16, height: 2, thickness: 1);
-    final header = CustomTile(
-      leading: Column(
-        children: <Widget>[
-          CommandCardWidget(card: td.svt.card, width: 90),
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 110 * 0.9),
-            child: Text('${tdType.l} $tdRank', style: const TextStyle(fontSize: 14), textAlign: TextAlign.center),
-          ),
-        ],
-      ),
-      title: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            tdRuby.l,
-            textScaler: const TextScaler.linear(0.95),
-            style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color),
-          ),
-          Text(tdName.l, style: const TextStyle(fontWeight: FontWeight.w600)),
-          if (!Transl.isJP) ...[
-            Text(
-              tdRuby.jp,
-              textScaler: const TextScaler.linear(0.95),
-              style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color),
-            ),
-            Text(tdName.jp, style: const TextStyle(fontWeight: FontWeight.w600)),
-          ],
-        ],
-      ),
-      onTap: jumpToDetail
-          ? () => td.routeTo(
-              region: region,
-              child: TdDetailPage(
-                td: td,
-                region: region,
-                initView: FuncApplyTarget.fromBool(showPlayer: showPlayer, showEnemy: showEnemy),
-              ),
-            )
-          : null,
-    );
+    final header = _buildHeader(context);
     final detailText = td.lDetail ?? '???';
 
     final costumeReleaseWidget = getEquipCostumeConditions(context, td.npSvts);
@@ -445,6 +572,21 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescripto
       children: [
         ?costumeReleaseWidget,
         header,
+        if (overwrites.isNotEmpty)
+          _AscensionOverwriteSection(
+            key: ValueKey('td-overwrites-${td.id}'),
+            previewName: _overwritePreview(overwrites.first),
+            indent: 16,
+            children: [
+              for (final entry in overwrites)
+                _buildOverwriteEntry(
+                  context,
+                  _overwriteCondition(overwriteServant, entry.ascensions, entry.costumes),
+                  _buildHeader(context, overwrite: entry),
+                  fileName: entry.tdFileName,
+                ),
+            ],
+          ),
         Padding(
           padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 4),
           child: Text(detailText, style: Theme.of(context).textTheme.bodySmall),
@@ -518,6 +660,61 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescripto
       ],
     );
     return InheritSelectionArea(child: child);
+  }
+
+  Widget _buildHeader(BuildContext context, {OverwriteTDData? overwrite}) {
+    final tdType = Transl.tdTypes(overwrite?.tdTypeText ?? td.type);
+    final tdRank = overwrite?.tdRank ?? td.rank;
+    final tdName = Transl.tdNames(overwrite?.tdName ?? td.name);
+    final tdRuby = Transl.tdRuby(overwrite?.tdRuby ?? td.ruby);
+    return CustomTile(
+      leading: Column(
+        children: <Widget>[
+          CommandCardWidget(card: td.svt.card, width: 90),
+          ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 110 * 0.9),
+            child: Text('${tdType.l} $tdRank', style: const TextStyle(fontSize: 14), textAlign: TextAlign.center),
+          ),
+        ],
+      ),
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text(
+            tdRuby.l,
+            textScaler: const TextScaler.linear(0.95),
+            style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color),
+          ),
+          Text(tdName.l, style: const TextStyle(fontWeight: FontWeight.w600)),
+          if (!Transl.isJP) ...[
+            Text(
+              tdRuby.jp,
+              textScaler: const TextScaler.linear(0.95),
+              style: TextStyle(color: Theme.of(context).textTheme.bodySmall?.color),
+            ),
+            Text(tdName.jp, style: const TextStyle(fontWeight: FontWeight.w600)),
+          ],
+        ],
+      ),
+      onTap: overwrite == null && jumpToDetail
+          ? () => td.routeTo(
+              region: region,
+              child: TdDetailPage(
+                td: td,
+                region: region,
+                initView: FuncApplyTarget.fromBool(showPlayer: showPlayer, showEnemy: showEnemy),
+              ),
+            )
+          : null,
+    );
+  }
+
+  String _overwritePreview(OverwriteTDData entry) {
+    if (entry.tdName != null && entry.tdName != td.name) return Transl.tdNames(entry.tdName!).l;
+    if (entry.tdRuby != null && entry.tdRuby != td.ruby) return Transl.tdRuby(entry.tdRuby!).l;
+    if (entry.tdRank != null && entry.tdRank != td.rank) return 'Rank ${entry.tdRank}';
+    if (entry.tdTypeText != null && entry.tdTypeText != td.type) return Transl.tdTypes(entry.tdTypeText!).l;
+    return entry.tdFileName ?? td.lName.l;
   }
 }
 

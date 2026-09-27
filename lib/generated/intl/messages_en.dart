@@ -143,6 +143,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "append_skill_short": MessageLookupByLibrary.simpleMessage("Append"),
     "april_fool": MessageLookupByLibrary.simpleMessage("April Fool"),
     "ascension": MessageLookupByLibrary.simpleMessage("Ascension"),
+    "ascension_info_changes": MessageLookupByLibrary.simpleMessage("Ascension info changes"),
     "ascension_short": MessageLookupByLibrary.simpleMessage("Ascen"),
     "ascension_stage": MessageLookupByLibrary.simpleMessage("Ascension Stage"),
     "ascension_stage_short": MessageLookupByLibrary.simpleMessage("Stage"),

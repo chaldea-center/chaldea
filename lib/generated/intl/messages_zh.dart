@@ -133,6 +133,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "append_skill_short": MessageLookupByLibrary.simpleMessage("追加"),
     "april_fool": MessageLookupByLibrary.simpleMessage("愚人节"),
     "ascension": MessageLookupByLibrary.simpleMessage("灵基"),
+    "ascension_info_changes": MessageLookupByLibrary.simpleMessage("再临信息变化"),
     "ascension_short": MessageLookupByLibrary.simpleMessage("灵基"),
     "ascension_stage": MessageLookupByLibrary.simpleMessage("再临阶段"),
     "ascension_stage_short": MessageLookupByLibrary.simpleMessage("阶段"),

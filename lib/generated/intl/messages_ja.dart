@@ -89,6 +89,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "append_skill_short": MessageLookupByLibrary.simpleMessage("アペンド"),
     "april_fool": MessageLookupByLibrary.simpleMessage("エイプリルフール"),
     "ascension": MessageLookupByLibrary.simpleMessage("霊基"),
+    "ascension_info_changes": MessageLookupByLibrary.simpleMessage("再臨情報の変化"),
     "ascension_short": MessageLookupByLibrary.simpleMessage("霊基"),
     "ascension_up": MessageLookupByLibrary.simpleMessage("霊基再臨"),
     "attach_from_files": MessageLookupByLibrary.simpleMessage("ファイルから"),

@@ -241,6 +241,17 @@ class S {
     return Intl.message('Ascension', name: 'ascension', desc: '', locale: localeName, args: []);
   }
 
+  /// `Ascension info changes`
+  String get ascension_info_changes {
+    return Intl.message(
+      'Ascension info changes',
+      name: 'ascension_info_changes',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Ascen`
   String get ascension_short {
     return Intl.message('Ascen', name: 'ascension_short', desc: '', locale: localeName, args: []);

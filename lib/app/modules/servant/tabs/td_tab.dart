@@ -21,27 +21,17 @@ class SvtTdTab extends StatelessWidget {
   Widget build(BuildContext context) {
     List<Widget> children = [];
     final status = svt.status.cur;
-    final overrideData = OverrideTDData.fromAscensionAdd(svt.ascensionAdd);
+    final overrideData = OverwriteTDData.fromAscensionAdd(svt.ascensionAdd);
 
-    void addOneGroup(int tdNum, List<NiceTd> tds) {
+    void addOneGroup(List<NiceTd> tds) {
       if (tds.isEmpty) return;
       List<NiceTd> shownTds = [];
-      List<OverrideTDData?> overrideTds = [];
       for (final td in tds) {
         if (shownTds.every((e) => e.id != td.id)) {
-          // ?
           shownTds.add(td);
-          overrideTds.add(null);
         }
       }
-      // not secure
-      if (overrideData.isNotEmpty && tds.isNotEmpty) {
-        for (final oTd in overrideData) {
-          shownTds.add(tds.last);
-          overrideTds.add(oTd);
-        }
-      }
-      children.add(_buildTds(context, shownTds, status.favorite ? status.npLv : null, overrideTds));
+      children.add(_buildTds(context, shownTds, status.favorite ? status.npLv : null, overrideData));
     }
 
     final groupedNoblePhantasms = overwriteViewData != null && overwriteViewData!.tds.isNotEmpty
@@ -73,11 +63,11 @@ class SvtTdTab extends StatelessWidget {
             tds1.add(td);
           }
         }
-        addOneGroup(tdNum, tds1);
-        addOneGroup(tdNum, tds2);
+        addOneGroup(tds1);
+        addOneGroup(tds2);
         continue;
       }
-      addOneGroup(tdNum, tds);
+      addOneGroup(tds);
     }
 
     if (svt.extra.tdAnimations.isNotEmpty && kDebugMode) {
@@ -104,22 +94,17 @@ class SvtTdTab extends StatelessWidget {
     return ListView.builder(itemCount: children.length, itemBuilder: (context, index) => children[index]);
   }
 
-  Widget _buildTds(BuildContext context, List<NiceTd> tds, int? level, List<OverrideTDData?> overrideTds) {
-    assert(tds.length == overrideTds.length);
+  Widget _buildTds(BuildContext context, List<NiceTd> tds, int? level, List<OverwriteTDData> overwrites) {
     if (tds.length == 1 && tds.first.svt.condQuestId <= 0) {
       return TdDescriptor(
         td: tds.first,
         showEnemy: !svt.isUserSvt,
         level: level,
-        overrideData: overrideTds.getOrNull(0),
+        overwrites: overwrites,
+        overwriteServant: svt,
       );
     }
-    bool _checkHasCond(int index) {
-      final td = tds[index], oTdData = overrideTds.getOrNull(index);
-      return td.svt.condQuestId > 0 || oTdData != null;
-    }
-
-    final hasAnyCond = tds.indexed.any((e) => _checkHasCond(e.$1));
+    final hasAnyCond = tds.any((td) => td.svt.condQuestId > 0);
 
     NiceTd initTd = _getDefaultTd(tds) ?? tds.last;
     return ValueStatefulBuilder<int>(
@@ -127,7 +112,6 @@ class SvtTdTab extends StatelessWidget {
       builder: (context, value) {
         final tdIndex = value.value;
         final td = tds[tdIndex];
-        final oTdData = overrideTds.getOrNull(tdIndex);
 
         final toggle = Row(
           crossAxisAlignment: CrossAxisAlignment.end,
@@ -139,9 +123,8 @@ class SvtTdTab extends StatelessWidget {
                 options: List.generate(tds.length, (index) => index),
                 optionBuilder: (v) {
                   final _td = tds[v];
-                  String name = overrideTds.getOrNull(v)?.tdName ?? _td.name;
-                  name = Transl.tdNames(name).l;
-                  final rank = overrideTds.getOrNull(v)?.tdRank ?? _td.rank;
+                  String name = Transl.tdNames(_td.name).l;
+                  final rank = _td.rank;
                   if (!['なし', '无', 'None', '無', '없음'].contains(rank)) {
                     name = '$name $rank';
                   }
@@ -157,16 +140,13 @@ class SvtTdTab extends StatelessWidget {
             ),
             if (hasAnyCond)
               Visibility(
-                visible: td.svt.condQuestId > 0 || oTdData != null,
+                visible: td.svt.condQuestId > 0,
                 maintainSize: true,
                 maintainAnimation: true,
                 maintainState: true,
                 child: InkWell(
-                  onTap: () => showDialog(
-                    context: context,
-                    useRootNavigator: false,
-                    builder: (_) => releaseCondition(svt, td, oTdData),
-                  ),
+                  onTap: () =>
+                      showDialog(context: context, useRootNavigator: false, builder: (_) => releaseCondition(td)),
                   child: const Padding(
                     padding: .symmetric(vertical: 2, horizontal: 8),
                     child: Icon(Icons.info_outline),
@@ -180,7 +160,13 @@ class SvtTdTab extends StatelessWidget {
           children: [
             const SizedBox(height: 4),
             toggle,
-            TdDescriptor(td: td, showEnemy: !svt.isUserSvt, level: level, overrideData: overrideTds.getOrNull(tdIndex)),
+            TdDescriptor(
+              td: td,
+              showEnemy: !svt.isUserSvt,
+              level: level,
+              overwrites: overwrites,
+              overwriteServant: svt,
+            ),
           ],
         );
       },
@@ -201,17 +187,12 @@ class SvtTdTab extends StatelessWidget {
     }
   }
 
-  static Widget releaseCondition(Servant svt, NiceTd td, OverrideTDData? overrideTDData) {
+  static Widget releaseCondition(NiceTd td) {
     final tdSvt = td.svt;
     bool notMain = ['91', '94'].contains(tdSvt.condQuestId.toString().padRight(2).substring(0, 2));
     final quest = db.gameData.quests[tdSvt.condQuestId];
     final jpTime = quest?.openedAt,
         localTime = db.gameData.mappingData.questRelease[tdSvt.condQuestId]?.ofRegion(db.curUser.region);
-    final keys = overrideTDData?.keys ?? [];
-    List<int> ascensions = [], costumes = [];
-    for (final key in keys) {
-      key < 10 ? ascensions.add(key) : costumes.add(key);
-    }
     return SimpleConfirmDialog(
       title: Text(td.lName.l),
       showCancel: false,
@@ -224,11 +205,6 @@ class SvtTdTab extends StatelessWidget {
               condType: notMain ? CondType.questClear : CondType.questClearPhase,
               target: tdSvt.condQuestId,
               value: tdSvt.condQuestPhase,
-            ),
-          if (ascensions.isNotEmpty) Text('${S.current.ascension_short} ${ascensions.join('&')}'),
-          if (costumes.isNotEmpty)
-            Text(
-              ['${S.current.costume}:', for (final c in costumes) svt.costume[c]?.lName.l ?? c.toString()].join(' '),
             ),
           if (jpTime != null) Text('JP: ${jpTime.sec2date().toDateString()}'),
           if (db.curUser.region != Region.jp && localTime != null)

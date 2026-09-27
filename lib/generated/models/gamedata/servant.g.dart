@@ -653,6 +653,14 @@ Map<String, dynamic> _$AscensionAddEntryToJson<T>(AscensionAddEntry<T> instance,
       'costume': instance.costume.map((k, e) => MapEntry(k.toString(), toJsonT(e))),
     };
 
+OverwriteValue _$OverwriteValueFromJson(Map json) =>
+    OverwriteValue(id: (json['id'] as num).toInt(), value: json['value'] as String);
+
+Map<String, dynamic> _$OverwriteValueToJson(OverwriteValue instance) => <String, dynamic>{
+  'id': instance.id,
+  'value': instance.value,
+};
+
 AscensionAdd _$AscensionAddFromJson(Map json) => AscensionAdd(
   attribute: json['attribute'] == null
       ? const AscensionAddEntry()
@@ -669,6 +677,12 @@ AscensionAdd _$AscensionAddFromJson(Map json) => AscensionAdd(
   overWriteServantBattleName: json['overWriteServantBattleName'] == null
       ? const AscensionAddEntry()
       : AscensionAddEntry<String>.fromJson(Map<String, dynamic>.from(json['overWriteServantBattleName'] as Map)),
+  overwriteSvtDetailName: json['overwriteSvtDetailName'] == null
+      ? const AscensionAddEntry()
+      : AscensionAddEntry<String>.fromJson(Map<String, dynamic>.from(json['overwriteSvtDetailName'] as Map)),
+  overwriteSkillName: json['overwriteSkillName'] == null
+      ? const AscensionAddEntry()
+      : AscensionAddEntry<List<OverwriteValue>>.fromJson(Map<String, dynamic>.from(json['overwriteSkillName'] as Map)),
   overWriteTDName: json['overWriteTDName'] == null
       ? const AscensionAddEntry()
       : AscensionAddEntry<String>.fromJson(Map<String, dynamic>.from(json['overWriteTDName'] as Map)),
@@ -735,6 +749,8 @@ Map<String, dynamic> _$AscensionAddToJson(AscensionAdd instance) => <String, dyn
   'voicePrefix': instance.voicePrefix.toJson(),
   'overWriteServantName': instance.overWriteServantName.toJson(),
   'overWriteServantBattleName': instance.overWriteServantBattleName.toJson(),
+  'overwriteSvtDetailName': instance.overwriteSvtDetailName.toJson(),
+  'overwriteSkillName': instance.overwriteSkillName.toJson(),
   'overWriteTDName': instance.overWriteTDName.toJson(),
   'overWriteTDRuby': instance.overWriteTDRuby.toJson(),
   'overWriteTDFileName': instance.overWriteTDFileName.toJson(),
