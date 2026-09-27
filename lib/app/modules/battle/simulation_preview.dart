@@ -1275,17 +1275,10 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   /// Mutable maps/lists are deep-copied so the temp page never mutates persisted state.
   FormationBondOption _tempFormationBondOption() {
     final saved = db.userData.curUser.formationBondOption;
-    return FormationBondOption(
-      teamFormation: options.formation.copy().toFormationData(),
-      quest: questPhase == null ? null : BattleQuestInfo.quest(questPhase!),
-      enableEvent: saved.enableEvent,
-      campaigns: {for (final (eventId, eventCampaigns) in saved.campaigns.items) eventId: Map.of(eventCampaigns)},
-      // fixedDate: saved.fixedDate,
-      // svt bonus is based on pos, since formation is overridden, svtBonus has no value to copy
-      // svtBonus: [for (final bonus in saved.svtBonus) FormationBondSvtBonus.fromJson(bonus.toJson())],
-      frontlineBonus: saved.frontlineBonus,
-      teapotTimes: saved.teapotTimes,
-    );
+    return FormationBondOption.fromJson(saved.toJson())
+      ..teamFormation = options.formation.copy().toFormationData()
+      ..quest = questPhase == null ? null : BattleQuestInfo.quest(questPhase!)
+      ..svtBonus = List.generate(6, (_) => FormationBondSvtBonus());
   }
 
   void onTapSharedTeams(QuestPhase quest) async {

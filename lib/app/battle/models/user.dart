@@ -278,7 +278,7 @@ class PlayerSvtData {
     }
   }
 
-  bool get isEmpty => svt == null && equip1.ce == null;
+  bool get isEmpty => svt == null && equip1.ce == null && !supportType.isSupport;
 
   @visibleForTesting
   void setSkillStrengthenLvs(List<int> skillStrengthenLvs) {

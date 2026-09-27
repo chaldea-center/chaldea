@@ -764,37 +764,44 @@ Map<String, dynamic> _$BattleAttackRecordDataToJson(BattleAttackRecordData insta
   'cardType': const CardTypeConverter().toJson(instance.cardType),
 };
 
-FormationBondOption _$FormationBondOptionFromJson(Map json) =>
-    $checkedCreate('FormationBondOption', json, ($checkedConvert) {
-      final val = FormationBondOption(
-        teamFormation: $checkedConvert(
-          'teamFormation',
-          (v) => v == null ? null : BattleTeamFormation.fromJson(Map<String, dynamic>.from(v as Map)),
-        ),
-        quest: $checkedConvert(
-          'quest',
-          (v) => v == null ? null : BattleQuestInfo.fromJson(Map<String, dynamic>.from(v as Map)),
-        ),
-        enableEvent: $checkedConvert('enableEvent', (v) => v as bool? ?? true),
-        campaigns: $checkedConvert(
-          'campaigns',
-          (v) => (v as Map?)?.map(
-            (k, e) =>
-                MapEntry(int.parse(k as String), (e as Map).map((k, e) => MapEntry(int.parse(k as String), e as bool))),
-          ),
-        ),
-        fixedDate: $checkedConvert('fixedDate', (v) => (v as num?)?.toInt()),
-        svtBonus: $checkedConvert(
-          'svtBonus',
-          (v) => (v as List<dynamic>?)
-              ?.map((e) => FormationBondSvtBonus.fromJson(Map<String, dynamic>.from(e as Map)))
-              .toList(),
-        ),
-        frontlineBonus: $checkedConvert('frontlineBonus', (v) => v as bool? ?? true),
-        teapotTimes: $checkedConvert('teapotTimes', (v) => (v as num?)?.toInt() ?? 1),
-      );
-      return val;
-    });
+FormationBondOption _$FormationBondOptionFromJson(Map json) => $checkedCreate('FormationBondOption', json, (
+  $checkedConvert,
+) {
+  final val = FormationBondOption(
+    teamFormation: $checkedConvert(
+      'teamFormation',
+      (v) => v == null ? null : BattleTeamFormation.fromJson(Map<String, dynamic>.from(v as Map)),
+    ),
+    quest: $checkedConvert(
+      'quest',
+      (v) => v == null ? null : BattleQuestInfo.fromJson(Map<String, dynamic>.from(v as Map)),
+    ),
+    enableEvent: $checkedConvert('enableEvent', (v) => v as bool? ?? true),
+    campaigns: $checkedConvert(
+      'campaigns',
+      (v) => (v as Map?)?.map(
+        (k, e) =>
+            MapEntry(int.parse(k as String), (e as Map).map((k, e) => MapEntry(int.parse(k as String), e as bool))),
+      ),
+    ),
+    fixedDate: $checkedConvert('fixedDate', (v) => (v as num?)?.toInt()),
+    svtBonus: $checkedConvert(
+      'svtBonus',
+      (v) => (v as List<dynamic>?)
+          ?.map((e) => FormationBondSvtBonus.fromJson(Map<String, dynamic>.from(e as Map)))
+          .toList(),
+    ),
+    frontlineBonus: $checkedConvert('frontlineBonus', (v) => v as bool? ?? true),
+    teapotTimes: $checkedConvert('teapotTimes', (v) => (v as num?)?.toInt() ?? 1),
+    maxCost: $checkedConvert('maxCost', (v) => (v as num?)?.toInt()),
+    favoriteOnly: $checkedConvert('favoriteOnly', (v) => v as bool? ?? true),
+    excludeUnreleased: $checkedConvert('excludeUnreleased', (v) => v as bool? ?? true),
+    maxBond: $checkedConvert('maxBond', (v) => (v as num?)?.toInt() ?? 15),
+    excludedSvts: $checkedConvert('excludedSvts', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
+    excludedCes: $checkedConvert('excludedCes', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
+  );
+  return val;
+});
 
 Map<String, dynamic> _$FormationBondOptionToJson(FormationBondOption instance) => <String, dynamic>{
   'teamFormation': instance.teamFormation.toJson(),
@@ -805,6 +812,12 @@ Map<String, dynamic> _$FormationBondOptionToJson(FormationBondOption instance) =
   'svtBonus': instance.svtBonus.map((e) => e.toJson()).toList(),
   'frontlineBonus': instance.frontlineBonus,
   'teapotTimes': instance.teapotTimes,
+  'maxCost': instance.maxCost,
+  'favoriteOnly': instance.favoriteOnly,
+  'excludeUnreleased': instance.excludeUnreleased,
+  'maxBond': instance.maxBond,
+  'excludedSvts': instance.excludedSvts.toList(),
+  'excludedCes': instance.excludedCes.toList(),
 };
 
 FormationBondSvtBonus _$FormationBondSvtBonusFromJson(Map json) =>
@@ -823,30 +836,4 @@ Map<String, dynamic> _$FormationBondSvtBonusToJson(FormationBondSvtBonus instanc
   'addRate': instance.addRate,
   'isBond15': instance.isBond15,
   'isBondReachLimit': instance.isBondReachLimit,
-};
-
-BondSolverOptions _$BondSolverOptionsFromJson(Map json) => $checkedCreate('BondSolverOptions', json, ($checkedConvert) {
-  final val = BondSolverOptions(
-    maxCost: $checkedConvert('maxCost', (v) => (v as num?)?.toInt()),
-    favoriteOnly: $checkedConvert('favoriteOnly', (v) => v as bool? ?? true),
-    excludeUnreleased: $checkedConvert('excludeUnreleased', (v) => v as bool? ?? true),
-    maxBond: $checkedConvert('maxBond', (v) => (v as num?)?.toInt() ?? 10),
-    excludedSvts: $checkedConvert('excludedSvts', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
-    excludedCes: $checkedConvert('excludedCes', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
-    formationOption: $checkedConvert(
-      'formationOption',
-      (v) => v == null ? null : FormationBondOption.fromJson(Map<String, dynamic>.from(v as Map)),
-    ),
-  );
-  return val;
-});
-
-Map<String, dynamic> _$BondSolverOptionsToJson(BondSolverOptions instance) => <String, dynamic>{
-  'maxCost': instance.maxCost,
-  'favoriteOnly': instance.favoriteOnly,
-  'excludeUnreleased': instance.excludeUnreleased,
-  'maxBond': instance.maxBond,
-  'excludedSvts': instance.excludedSvts.toList(),
-  'excludedCes': instance.excludedCes.toList(),
-  'formationOption': instance.formationOption.toJson(),
 };

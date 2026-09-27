@@ -1,2148 +1,1389 @@
+import 'dart:async';
+import 'dart:isolate';
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart' show compute, kIsWeb;
+
 import 'package:chaldea/app/battle/models/user.dart';
+import 'package:chaldea/models/gamedata/individuality.dart' show Individuality;
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/utils/extension.dart';
 
-import 'ce_pool.dart';
-import 'svt_pool.dart';
+import '../bond_effect_corrections.dart';
+import 'bond_effect.dart';
+import 'search.dart';
 
-const int _kMaxSvtNum = 6;
+part 'ce_first.dart';
 
-/// Hard cap on DFS node expansions. Beyond it the best-so-far solution is
-/// returned with `provenOptimal = false`.
-const int _kNodeCap = 1200000;
-
-/// Tighter cap for the second phase (targeted-CE verification): the first
-/// phase already solved the no-targeted subspace exactly, so this phase only
-/// hunts for strictly better targeted-wearing solutions.
-const int _kPhase2NodeCap = 60000;
-
-/// Maximum number of equal-value solutions kept for tie grouping.
-const int _kTieCap = 20;
-
-/// DFS levels that run on the async (yielding) path: levels `0.._kAsyncDepth-1`.
-/// The tree is deep and narrow (branching factor ~10), so the top levels hold
-/// only ~10^d nodes while the exponential mass lives in the deeper levels.
-/// Making only these levels async costs a few hundred async calls instead of
-/// ~1.3M, which is what keeps the search fast.
-const int _kAsyncDepth = 3;
-
-/// Time handed back to the event loop at each yield point. Long enough to let
-/// a frame be scheduled, short enough not to stall the search.
-const Duration _kYieldPause = Duration(milliseconds: 5);
-
-/// Temporary diagnostics flag for bound tuning.
-const bool _kDebugBound = bool.fromEnvironment('BOND_SOLVER_DEBUG');
-
-/// Thrown for invalid solver inputs (e.g. two support slots in one formation).
-class BondSolverException implements Exception {
-  final String message;
-  const BondSolverException(this.message);
-
-  @override
-  String toString() => 'BondSolverException: $message';
+/// A concrete CE choice in a solved formation.
+class BondSolvedCe {
+  final int id;
+  final bool limitBreak;
+  const BondSolvedCe(this.id, this.limitBreak);
 }
 
-/// One slot's outcome inside a [BondSolutionCandidate].
-class BondSlotSolution {
+class BondSolvedSlot {
   final int position;
-
-  /// Chosen servant equivalence class (free own slots only).
-  final BondSvtClass? svtClass;
-
-  /// Chosen equip1 CE class (free own slots / fixed-servant free-CE slots).
-  final BondCeClass? ceClass;
-
-  /// Chosen equip3 CE class (fixed grand slots with a free equip3).
-  final BondCeClass? ce3Class;
-
-  /// Support CE candidate chosen for a free support slot.
-  final SupportCeCandidate? supportCe;
-
-  /// Pinned servant id (fixed slots).
-  final int? fixedSvtId;
-
-  /// Pinned equip1 CE id (fixed slots).
-  final int? fixedCeId;
-
-  /// Pinned equip3 CE id (fixed grand slots).
-  final int? fixedCe3Id;
-
+  final int? servantId;
+  final int? limitCount;
+  final BondSolvedCe? equip1;
+  final BondSolvedCe? equip3;
   final bool isSupport;
+  final bool fixedServant;
+  final int bond;
+  final int cost;
+  final List<int> servantCandidates;
+  final List<int> equip1Candidates;
+  final List<int> equip3Candidates;
+  final Map<int, int> servantVariants;
+  final Map<int, bool> equip1Variants;
+  final Map<int, bool> equip3Variants;
 
-  /// Bond gained by this slot, teapot ×1. 0 for support / bond-limit / empty.
-  final int slotBond;
-
-  /// Cost paid by this slot (servant + equip1 CE; support always 0).
-  final int slotCost;
-
-  const BondSlotSolution({
+  const BondSolvedSlot({
     required this.position,
-    this.svtClass,
-    this.ceClass,
-    this.ce3Class,
-    this.supportCe,
-    this.fixedSvtId,
-    this.fixedCeId,
-    this.fixedCe3Id,
-    this.isSupport = false,
-    required this.slotBond,
-    required this.slotCost,
+    required this.servantId,
+    required this.limitCount,
+    required this.equip1,
+    required this.equip3,
+    required this.isSupport,
+    required this.fixedServant,
+    required this.bond,
+    required this.cost,
+    required this.servantCandidates,
+    required this.equip1Candidates,
+    required this.equip3Candidates,
+    this.servantVariants = const {},
+    this.equip1Variants = const {},
+    this.equip3Variants = const {},
   });
 }
 
-/// One (possibly tied) optimal team at equivalence-class level.
-class BondSolutionCandidate {
+class BondSolvedTeam {
   final int totalBond;
   final int totalCost;
+  final List<BondSolvedSlot> slots;
+  const BondSolvedTeam(this.totalBond, this.totalCost, this.slots);
 
-  /// Team-wide rate scalar T actually accumulated in this solution
-  /// (per-slot capping is applied inside the bond formula).
-  final int teamRate;
+  /// Copies the source team and clears free-slot bond flags in the supplied option.
+  BattleTeamSetup applyTo(BattleTeamSetup source, FormationBondOption option) {
+    final applied = source.copy();
+    for (final slot in slots) {
+      final deck = applied.svts[slot.position];
+      if (slot.isSupport) {
+        deck.svt = null;
+        _setEquip(deck.equip1, slot.equip1);
+        if (slot.equip3 != null) _setEquip(deck.equip3, slot.equip3);
+        continue;
+      }
+      if (slot.servantId == null) {
+        applied.svts[slot.position] = PlayerSvtData.base();
+        continue;
+      }
+      if (!slot.fixedServant) {
+        option.svtBonus[slot.position]
+          ..isBond15 = false
+          ..isBondReachLimit = false;
+        final svt = db.gameData.servantsById[slot.servantId];
+        if (svt == null) throw StateError('missing servant ${slot.servantId}');
+        applied.svts[slot.position] = PlayerSvtData.svt(svt)..limitCount = slot.limitCount ?? 4;
+      }
+      final target = applied.svts[slot.position];
+      _setEquip(target.equip1, slot.equip1);
+      if (slot.equip3 != null) _setEquip(target.equip3, slot.equip3);
+    }
+    return applied;
+  }
 
-  /// Team-wide flat value scalar V accumulated in this solution.
-  final int teamValue;
+  static void _setEquip(SvtEquipData equip, BondSolvedCe? chosen) {
+    if (equip.ce?.id == chosen?.id && equip.limitBreak == (chosen?.limitBreak ?? false)) return;
+    final ce = chosen == null ? null : db.gameData.craftEssencesById[chosen.id];
+    if (chosen != null && ce == null) throw StateError('missing craft essence ${chosen.id}');
+    equip
+      ..ce = ce
+      ..limitBreak = chosen?.limitBreak ?? false
+      ..lv = ce?.lvMax ?? 0;
+  }
+}
 
-  final List<BondSlotSolution> slots;
+String _teamSignature(BondSolvedTeam team) => [
+  for (final slot in team.slots)
+    '${slot.position}:${slot.servantId}:${slot.limitCount}:'
+        '${slot.equip1?.id}:${slot.equip1?.limitBreak}:'
+        '${slot.equip3?.id}:${slot.equip3?.limitBreak}',
+].join('|');
 
-  const BondSolutionCandidate({
-    required this.totalBond,
-    required this.totalCost,
-    required this.teamRate,
-    required this.teamValue,
-    required this.slots,
-  });
+/// Expand exact effect-class witnesses into a bounded set of concrete teams.
+/// Every substitute belongs to the same class (or has the same exact slot
+/// score in the CE-first path), so the score and COST remain unchanged.
+List<BondSolvedTeam> _concreteRepresentatives(BondSolvedTeam best, List<BondSolvedTeam> groups, {int maxTeams = 20}) {
+  final teams = <BondSolvedTeam>[];
+  final seen = <String>{};
+  void add(BondSolvedTeam team) {
+    if (team.totalBond == best.totalBond && seen.add(_teamSignature(team))) teams.add(team);
+  }
+
+  add(best);
+  for (final group in groups) {
+    if (teams.length == maxTeams) break;
+    add(group);
+  }
+  final seeds = List<BondSolvedTeam>.of(teams);
+  final choices = <Iterator<BondSolvedTeam>>[];
+  for (final seed in seeds) {
+    for (var p = 0; p < seed.slots.length; p++) {
+      for (var kind = 0; kind < 3; kind++) {
+        choices.add(_substituteOneMember(seed, p, kind).iterator);
+      }
+    }
+  }
+  while (teams.length < maxTeams) {
+    var advanced = false;
+    for (final choice in choices) {
+      if (!choice.moveNext()) continue;
+      advanced = true;
+      add(choice.current);
+      if (teams.length == maxTeams) break;
+    }
+    if (!advanced) break;
+  }
+  return List.unmodifiable(teams);
+}
+
+Iterable<BondSolvedTeam> _substituteOneMember(BondSolvedTeam team, int index, int kind) sync* {
+  final original = team.slots[index];
+  BondSolvedTeam? replaced(int? servantId, int? limit, BondSolvedCe? ce1, BondSolvedCe? ce3) {
+    final slot = BondSolvedSlot(
+      position: original.position,
+      servantId: servantId,
+      limitCount: limit,
+      equip1: ce1,
+      equip3: ce3,
+      isSupport: original.isSupport,
+      fixedServant: original.fixedServant,
+      bond: original.bond,
+      cost: original.cost,
+      servantCandidates: original.servantCandidates,
+      equip1Candidates: original.equip1Candidates,
+      equip3Candidates: original.equip3Candidates,
+      servantVariants: original.servantVariants,
+      equip1Variants: original.equip1Variants,
+      equip3Variants: original.equip3Variants,
+    );
+    final slots = List<BondSolvedSlot>.of(team.slots)..[index] = slot;
+    final ownedServants = <int>{};
+    final ownedCes = <int>{};
+    for (final member in slots) {
+      if (member.isSupport) continue;
+      if (member.servantId != null && !ownedServants.add(member.servantId!)) return null;
+      for (final ce in [member.equip1, member.equip3]) {
+        if (ce != null && !ownedCes.add(ce.id)) return null;
+      }
+    }
+    return BondSolvedTeam(team.totalBond, team.totalCost, slots);
+  }
+
+  if (kind == 0 && !original.fixedServant && !original.isSupport && original.servantId != null) {
+    for (final entry in original.servantVariants.entries) {
+      if (entry.key == original.servantId) continue;
+      final team = replaced(entry.key, entry.value, original.equip1, original.equip3);
+      if (team != null) yield team;
+    }
+  } else if (kind == 1 && original.equip1 != null) {
+    for (final entry in original.equip1Variants.entries) {
+      if (entry.key == original.equip1!.id) continue;
+      final team = replaced(
+        original.servantId,
+        original.limitCount,
+        BondSolvedCe(entry.key, entry.value),
+        original.equip3,
+      );
+      if (team != null) yield team;
+    }
+  } else if (kind == 2 && original.equip3 != null) {
+    for (final entry in original.equip3Variants.entries) {
+      if (entry.key == original.equip3!.id) continue;
+      final team = replaced(
+        original.servantId,
+        original.limitCount,
+        original.equip1,
+        BondSolvedCe(entry.key, entry.value),
+      );
+      if (team != null) yield team;
+    }
+  }
 }
 
 class BondSolverResult {
-  /// Maximum total bond, teapot ×1. Multiply by the teapot setting for display.
-  final int totalBond;
-  final int totalCost;
-  final int teamRate;
-  final int teamValue;
-
-  /// false when the iteration cap was hit (result may be suboptimal).
+  final BondSolvedTeam? best;
+  final List<BondSolvedTeam> ties;
+  final List<int> tieGroupCounts;
   final bool provenOptimal;
-  final List<String> warnings;
-
-  /// Tied optimal solutions (capped at [_kTieCap]).
-  final List<BondSolutionCandidate> candidates;
-
-  /// Cost already consumed by pinned servants/CEs before the search.
+  final bool allTiesCollected;
+  final int visitedNodes;
+  final int elapsedMilliseconds;
+  final int maxCost;
   final int fixedCost;
+  final int servantClassCount;
+  final int ownedCeClassCount;
+  final int placementInvariantCeClassCount;
+  final int receiverProfileCount;
+  final int itemCount;
 
-  /// Cost budget available to the search (maxCost - fixedCost).
-  final int budget;
-
-  /// DFS node expansions used (diagnostics for tuning).
-  final int nodeCount;
+  /// Number of feasible CE combinations prepared by the CE-first search.
+  /// Null for the general branch-and-bound search.
+  final int? possibleCombinations;
 
   const BondSolverResult({
-    required this.totalBond,
-    required this.totalCost,
-    required this.teamRate,
-    required this.teamValue,
+    required this.best,
+    required this.ties,
+    required this.tieGroupCounts,
     required this.provenOptimal,
-    required this.warnings,
-    required this.candidates,
+    required this.allTiesCollected,
+    required this.visitedNodes,
+    required this.elapsedMilliseconds,
+    required this.maxCost,
     required this.fixedCost,
-    required this.budget,
-    required this.nodeCount,
+    required this.servantClassCount,
+    required this.ownedCeClassCount,
+    required this.placementInvariantCeClassCount,
+    required this.receiverProfileCount,
+    required this.itemCount,
+    this.possibleCombinations,
   });
 }
 
-class _NodeCapExceeded implements Exception {
-  const _NodeCapExceeded();
-}
-
-// ==================================================================================
-// Internal search models
-// ==================================================================================
-
-/// Slot value is deferred: the final rate depends on team-wide contributions
-/// from later assignments, so only `rateExcl`/`valueExcl` are accumulated
-/// during the DFS and the floor chain is applied exactly once at each leaf.
-class _Deferred {
-  final int position;
-  final int base;
-  final int front;
-
-  /// receiver identity for targeted team effects (exactly one is non-null)
-  final BondSvtClass? svtClass;
-  final List<int>? fixedTraits;
-
-  /// targeted-class receipt cache for fixed-trait receivers (ci → rate)
-  final Map<int, int>? fixedTargetedRecv;
-
-  /// optimistic sum of receipts from ALL targeted classes for this receiver
-  final int targetedAll;
-
-  int rateExcl = 0;
-  int valueExcl = 0;
-  int targetedWorn = 0;
-
-  _Deferred({
-    required this.position,
-    required this.base,
-    required this.front,
-    this.svtClass,
-    this.fixedTraits,
-    this.fixedTargetedRecv,
-    required this.targetedAll,
-  });
-}
-
-/// One selectable choice for a search slot.
-class _Item {
-  /// free own slots: chosen servant class (null = leave slot empty)
-  final BondSvtClass? svt;
-  final int svtIdx; // -1 when svt == null
-
-  /// owned CE classes worn by this slot (equip1 then equip3)
-  final List<BondCeClass> ces;
-
-  /// indices (with multiplicity) into the CE class list, for capacity checks
-  final List<int> ceConsumes;
-
-  /// support slot: chosen support CE candidate (equip1)
-  final SupportCeCandidate? supportCe;
-
-  final int cost;
-
-  /// complete self-scope rate/value of the slot under this item
-  /// (event self + campaign + custom + fixed-source receipt + CE self effects)
-  final int selfRate;
-  final int selfValue;
-
-  final int flatRate;
-  final int flatValue;
-
-  /// CE class indices (owned) whose targeted effects fire with this item
-  final List<int> targetedCeIdxs;
-
-  /// optimistic sum of targeted receipts for this item's own receiver
-  final int targetedAll;
-
-  /// optimistic DP value (unfloored, optimistic rate); set during bound build
-  double dpValue = 0;
-
-  _Item({
-    this.svt,
-    this.svtIdx = -1,
-    required this.ces,
-    required this.ceConsumes,
-    this.supportCe,
-    required this.cost,
-    required this.selfRate,
-    required this.selfValue,
-    required this.flatRate,
-    required this.flatValue,
-    required this.targetedCeIdxs,
-    required this.targetedAll,
-  });
-}
-
-/// A slot the DFS searches over.
-class _SearchSlot {
-  final int position;
-
-  /// free own slot (servant + CE searched)
-  final bool isFreeOwn;
-
-  /// whether this slot produces a bond value (false: support / bond-reach-limit)
-  final bool producesValue;
-
-  final int base;
-  final int front;
-
-  // fixed-servant slots with free CE dimensions:
-  final List<int>? fixedTraits;
-  final Map<int, int>? fixedTargetedRecvMap;
-  final bool isSupport;
-  final int? fixedSvtId;
-  final int? fixedCeId;
-  final int? fixedCe3Id;
-  final int fixedTargetedAll;
-  final int fixedSlotCost; // servant + pinned-equip1 cost (searched CE cost extra)
-
-  final List<_Item> items;
-
-  /// symmetry group id among consecutive free-own slots (-1: none)
-  final int group;
-
-  /// dp[budget] bound for slots from this level on; assigned in bound build
-  List<double> dp = const [];
-  double dpTail = 0;
-
-  _SearchSlot({
-    required this.position,
-    required this.isFreeOwn,
-    required this.producesValue,
-    required this.base,
-    required this.front,
-    this.fixedTraits,
-    this.fixedTargetedRecvMap,
-    this.isSupport = false,
-    this.fixedSvtId,
-    this.fixedCeId,
-    this.fixedCe3Id,
-    this.fixedTargetedAll = 0,
-    this.fixedSlotCost = 0,
-    required this.items,
-    required this.group,
-  });
-}
-
-class _TieRecord {
-  final List<_Item> choices;
-  final List<int> values;
-  final int tCur;
-  final int vCur;
-  const _TieRecord(this.choices, this.values, this.tCur, this.vCur);
-}
-
-class _Int2 {
-  int a = 0, b = 0;
-}
-
-class _FixedOwn {
-  final int position;
-  final int svtId;
-  final List<int> traits;
-  final int baseRate;
-  final int baseValue;
-  final int front;
-  final bool producesValue;
-  final int slotCost;
-  final int? pinnedCeId;
-  final int? pinnedCe3Id;
-  final bool freeE1;
-  final bool freeE3;
-
-  const _FixedOwn({
-    required this.position,
-    required this.svtId,
-    required this.traits,
-    required this.baseRate,
-    required this.baseValue,
-    required this.front,
-    required this.producesValue,
-    required this.slotCost,
-    this.pinnedCeId,
-    this.pinnedCe3Id,
-    required this.freeE1,
-    required this.freeE3,
-  });
-
-  bool get needsSearch => freeE1 || freeE3;
-}
-
-// ==================================================================================
-// Solver
-// ==================================================================================
-
+/// Converts game data into effect-equivalent search choices, then invokes the
+/// exact search core. The quest and formation are read only during preparation;
+/// [solveAsync] moves the prepared search problem to a background isolate.
 class FormationBondSolver {
-  FormationBondSolver._({
-    required this.option,
-    required this.quest,
-    required this.formation,
-    required this.solverOptions,
-    required this.region,
-    required this.yieldInterval,
-  });
+  FormationBondSolver._(this.option, this.quest, this.formation, this.region, this.pruneDominatedCes);
 
   final FormationBondOption option;
-  final QuestPhase? quest;
+  final QuestPhase quest;
   final BattleTeamSetup formation;
-  final BondSolverOptions solverOptions;
   final Region region;
+  final bool pruneDominatedCes;
 
-  /// When set, the search periodically awaits so the UI isolate can render a
-  /// frame. `null` (the default) runs the search fully synchronously — tests
-  /// rely on that, since real pauses would add wall-clock time to every run.
-  ///
-  /// Only the top [_kAsyncDepth] DFS levels participate; deeper levels stay
-  /// synchronous, so the cost is a few hundred async calls, not ~1.3M.
-  final Duration? yieldInterval;
+  final List<_SvtVariant> _svtVariants = [];
+  final List<_CeVariant> _ceVariants = [];
+  final List<CeBondEffect> _allEffects = [];
+  final List<List<int>> _profiles = [];
+  final Map<String, int> _profileBySignature = {};
+  final Map<String, int> _profileByRawTraits = {};
+  final List<_SvtClass> _svtClasses = [];
+  final List<_CeClass> _ownedCeClasses = [];
+  final List<_CeClass> _supportCeClasses = [];
+  final Map<int, List<CeBondEffect>> _eventCache = {};
+  final Map<String, _CeVariant> _ceCache = {};
 
-  /// Runs the solver. Always computes with teapot ×1 — multiply the result by
-  /// the user's teapot setting for display only.
-  ///
-  /// Pass [yieldInterval] to keep the UI responsive during a long search; the
-  /// caller must then block input (see `EasyLoadingMaskType.clear`), because
-  /// yielding lets the event loop run while the solver still holds references
-  /// to [formation] / [option] / the global game data.
-  static Future<BondSolverResult> solve({
+  late final int _eventId = quest.logicEventId ?? 0;
+  late final List<int> _questTraits = quest.questIndividuality;
+  late final List<Restriction> _questIndivRestrictions = [
+    for (final entry in quest.restrictions)
+      if (entry.restriction.type == RestrictionType.individuality) entry.restriction,
+  ];
+  late int _maxCost;
+  late int _fixedCost;
+  late int _itemCount;
+
+  static BondSolverResult solve({
     required FormationBondOption option,
-    QuestPhase? quest,
+    required QuestPhase quest,
     required BattleTeamSetup formation,
-    required BondSolverOptions solverOptions,
-    Region region = Region.jp,
-    Duration? yieldInterval,
-  }) async {
-    return FormationBondSolver._(
-      option: option,
-      quest: quest,
-      formation: formation,
-      solverOptions: solverOptions,
-      region: region,
-      yieldInterval: yieldInterval,
-    )._run();
-  }
-
-  // ---- context ----
-  late int eventId;
-  late List<int> questIndivs;
-  late bool hasQuest;
-  late int rateCap;
-  late int baseValue;
-  late int maxCost;
-  late int initialBudget;
-
-  late CeBondPool cePool;
-  late SvtBondPool svtPool;
-  final List<(Event, EventCampaign)> enabledCampaigns = [];
-
-  final List<String> warnings = [];
-
-  // ---- fixed slot data ----
-  final List<PlayerSvtData> decks = [];
-  bool supportInFront = false;
-  int supportPosition = -1;
-  bool hasSupportSlot = false;
-  int tConst = 0;
-  int vConst = 0;
-  final List<CeBondEffect> fixedSourceEffects = [];
-  int fixedCost = 0;
-
-  final List<_Deferred> deferred = [];
-  final List<_FixedOwn> fixedOwnSlots = [];
-  bool supportEquipSearched = false;
-
-  /// number of fixed-slot deferred entries (search-created ones follow);
-  /// used to reset [deferred] between phases after a node-cap interruption
-  int _fixedDeferredCount = 0;
-
-  // ---- class data ----
-  late List<BondSvtClass> svtClasses; // after split + reduction
-  late List<int> svtRem;
-  late List<int> svtFixedRecvRate;
-  late List<int> svtFixedRecvValue;
-  late List<int> svtTargetedAll;
-  late List<BondCeClass> ceClasses; // pool order
-  late List<int> ceRem;
-  late List<List<CeBondEffect>> ceTargeted;
-
-  // ---- search state ----
-  final List<_SearchSlot> searchSlots = [];
-  int tUpper = 0;
-  int maxV = 0;
-
-  // bound helpers (precomputed in _buildBounds)
-  double sumMult = 0; // Σ producing slots' base × (1 + front/1000)
-  double maxMult = 0; // max producing slot's base × (1 + front/1000)
-  int maxFlatItem = 0; // max flat rate a single future item can contribute
-  int _maxCeFlatRate = 0;
-  int _maxSvtTeamRate = 0;
-  int wornRateSum = 0; // Σ rates of currently worn targeted classes
-  final List<int> flatCapSuffix = []; // Σ max flat per item over slots k..n-1
-
-  // ---- cooperative yielding (only when [yieldInterval] is set) ----
-  final Stopwatch _yieldClock = Stopwatch();
-  int _lastYieldMs = 0;
-
-  int nodeCount = 0;
-  int budgetLeft = 0;
-  int tCur = 0;
-  int vCur = 0;
-  final Set<int> wornTargeted = {};
-  int bestTotal = -1;
-  final List<_TieRecord> ties = [];
-  bool tieCapped = false;
-  final List<int> _leafValues = List.filled(_kMaxSvtNum, 0);
-  final List<int> _leafSetPositions = [];
-  final List<_Item> _choices = [];
-  final List<bool> _appliedNewlyWorn = [];
-  final List<bool> _appliedCreatedDeferred = [];
-
-  // ================================================================================
-
-  Future<BondSolverResult> _run() async {
-    eventId = quest?.logicEventId ?? 0;
-    questIndivs = quest?.questIndividuality ?? const [];
-    hasQuest = quest != null;
-    rateCap = ConstData.constants.maxFriendShipUpRatio;
-    baseValue = quest?.bond ?? 0;
-    maxCost = solverOptions.maxCost ?? ConstData.maxUserCost;
-
-    _classifySlots();
-    _buildPools();
-    _computeFixedConstants(); // pass 1: constants + fixed-source effects
-    _createFixedDeferred(); // pass 2: deferred entries with final tConst/vConst
-    _prepareClasses(); // split by fixed-source effects, per-class vectors
-    _initCapacities();
-    _reduceSvtClasses();
-
-    // snapshot of the full class state (restored for the final phase)
-    final fullClasses = svtClasses;
-    final fullRem = svtRem;
-    final fullRecvRate = svtFixedRecvRate;
-    final fullRecvValue = svtFixedRecvValue;
-    final fullTargetedAll = svtTargetedAll;
-    final fullCeRem = ceRem;
-
-    final hasTargetedItems = ceTargeted.any((effects) => effects.isNotEmpty);
-    var provenOptimal = true;
-    if (hasTargetedItems) {
-      // Phase 1: exact search in the "no targeted CE worn" subspace. There the
-      // servants' targeted-receipt vectors are irrelevant, so classes collapse
-      // by their remaining dimensions — a dramatically smaller item space.
-      _setupSearchPhase(
-        classes: fullClasses,
-        rem: fullRem,
-        recvRate: fullRecvRate,
-        recvValue: fullRecvValue,
-        targetedAll: fullTargetedAll,
-        ceRem0: fullCeRem,
-        includeTargetedItems: false,
-        dedupSvt: true,
-      );
-      provenOptimal = await _searchPhase(provenOptimal, nodeCap: _kNodeCap);
-      // Phase 2: full space, seeded with the phase-1 incumbent so the DFS only
-      // looks for strictly better (targeted-wearing) solutions.
-      _setupSearchPhase(
-        classes: fullClasses,
-        rem: fullRem,
-        recvRate: fullRecvRate,
-        recvValue: fullRecvValue,
-        targetedAll: fullTargetedAll,
-        ceRem0: fullCeRem,
-        includeTargetedItems: true,
-        dedupSvt: false,
-      );
-      provenOptimal = await _searchPhase(provenOptimal, nodeCap: _kPhase2NodeCap);
-    } else {
-      _setupSearchPhase(
-        classes: fullClasses,
-        rem: fullRem,
-        recvRate: fullRecvRate,
-        recvValue: fullRecvValue,
-        targetedAll: fullTargetedAll,
-        ceRem0: fullCeRem,
-        includeTargetedItems: true,
-        dedupSvt: false,
-      );
-      provenOptimal = await _searchPhase(provenOptimal, nodeCap: _kNodeCap);
-    }
-
-    if (tieCapped) warnings.add('more optimal solutions exist (tie list capped at $_kTieCap)');
-    if (ties.isEmpty) {
-      throw const BondSolverException('no solution found');
-    }
-    return _assembleResult(provenOptimal);
-  }
-
-  /// (Re)builds search slots/bounds for one phase; `dedupSvt` merges servant
-  /// classes whose targeted-receipt vectors differ (valid only when targeted
-  /// items are excluded from the search).
-  void _setupSearchPhase({
-    required List<BondSvtClass> classes,
-    required List<int> rem,
-    required List<int> recvRate,
-    required List<int> recvValue,
-    required List<int> targetedAll,
-    required List<int> ceRem0,
-    required bool includeTargetedItems,
-    required bool dedupSvt,
+    required Region region,
+    int? maxNodes,
+    int maxTies = 20,
+    bool pruneDominatedCes = true,
+    bool useCeFirst = true,
   }) {
-    searchSlots.clear();
-    flatCapSuffix.clear();
-    tUpper = 0;
-    maxV = 0;
-    sumMult = 0;
-    maxMult = 0;
-
-    if (dedupSvt) {
-      // merge by every dimension except ceTeamTargetRate
-      final keys = <String, BondSvtClass>{};
-      final mergedRem = <String, int>{};
-      final mergedRecvRate = <String, int>{};
-      final mergedRecvValue = <String, int>{};
-      for (final (i, cls) in classes.indexed) {
-        final key =
-            '${cls.cost}|${cls.ownEventRate}|${cls.ownEventValue}|${cls.campaignRate}'
-            '|${cls.flatTeamEventRate}|${cls.flatTeamEventValue}'
-            '|${recvRate[i]}|${recvValue[i]}'
-            '|${cls.ceSelfRate.join(',')}|${cls.ceSelfValue.join(',')}';
-        final existing = keys[key];
-        if (existing == null) {
-          keys[key] = _copySvtClass(cls, List.of(cls.members), ceTeamTargetRate: List<int>.filled(ceClasses.length, 0));
-          mergedRem[key] = rem[i];
-          mergedRecvRate[key] = recvRate[i];
-          mergedRecvValue[key] = recvValue[i];
-        } else {
-          existing.members.addAll(cls.members);
-          mergedRem[key] = mergedRem[key]! + rem[i];
-        }
-      }
-      svtClasses = [for (final c in keys.values) c];
-      svtRem = [for (final k in keys.keys) mergedRem[k]!];
-      svtFixedRecvRate = [for (final k in keys.keys) mergedRecvRate[k]!];
-      svtFixedRecvValue = [for (final k in keys.keys) mergedRecvValue[k]!];
-      svtTargetedAll = List<int>.filled(svtClasses.length, 0);
-    } else {
-      svtClasses = classes;
-      svtRem = rem;
-      svtFixedRecvRate = recvRate;
-      svtFixedRecvValue = recvValue;
-      svtTargetedAll = targetedAll;
-    }
-    ceRem = List<int>.of(ceRem0);
-    _includeTargetedItems = includeTargetedItems;
-    _buildSearchSlots();
-    _buildBounds();
+    final stopwatch = Stopwatch()..start();
+    return FormationBondSolver._(
+      option,
+      quest,
+      formation.copy(),
+      region,
+      pruneDominatedCes,
+    )._solve(maxNodes: maxNodes, maxTies: maxTies, useCeFirst: useCeFirst, stopwatch: stopwatch);
   }
 
-  bool _includeTargetedItems = true;
-  int _phaseNodeCap = _kNodeCap;
-  int _phaseNodeStart = 0;
-
-  /// Runs one DFS phase; resets the mutable search state beforehand.
-  /// [nodeCap] limits this phase's expansions.
-  Future<bool> _searchPhase(bool provenOptimal, {required int nodeCap}) async {
-    budgetLeft = initialBudget;
-    tCur = 0;
-    vCur = 0;
-    wornTargeted.clear();
-    wornRateSum = 0;
-    // A node-cap hit unwinds _dfs through the exception, skipping every _undo,
-    // so deferred entries created along the interrupted path survive into the
-    // next phase — truncate back to the fixed-slot baseline (see solver2's
-    // identical fix for the full diagnosis).
-    deferred.removeRange(_fixedDeferredCount, deferred.length);
-    _phaseNodeCap = nodeCap;
-    _phaseNodeStart = nodeCount;
-    if (yieldInterval != null) {
-      _yieldClock
-        ..reset()
-        ..start();
-      _lastYieldMs = 0;
+  static Future<BondSolverResult> solveAsync({
+    required FormationBondOption option,
+    required QuestPhase quest,
+    required BattleTeamSetup formation,
+    required Region region,
+    int? maxNodes,
+    int maxTies = 20,
+    bool pruneDominatedCes = true,
+    bool useCeFirst = true,
+  }) async {
+    final stopwatch = Stopwatch()..start();
+    final solver = FormationBondSolver._(option, quest, formation.copy(), region, pruneDominatedCes);
+    final problem = solver._prepareProblem();
+    final ceFirst = useCeFirst ? solver._prepareCeFirst() : null;
+    if (ceFirst != null) {
+      final search = await compute(_runCeFirstSearch, _CeFirstSearchInput(ceFirst, maxNodes, maxTies));
+      return solver._ceFirstResult(search, stopwatch, maxCandidates: maxTies);
     }
+    final search = await compute(_runPreparedBondSearch, _SearchInput(problem, maxNodes, maxTies));
+    return solver._result(search, stopwatch, maxCandidates: maxTies);
+  }
+
+  /// Emits feasible improvements before the optimality proof finishes. The
+  /// worker isolate is stopped when the stream subscription is cancelled.
+  static Stream<BondSolverResult> solveProgressively({
+    required FormationBondOption option,
+    required QuestPhase quest,
+    required BattleTeamSetup formation,
+    required Region region,
+    bool pruneDominatedCes = true,
+  }) async* {
+    final stopwatch = Stopwatch()..start();
+    final solver = FormationBondSolver._(option, quest, formation.copy(), region, pruneDominatedCes);
+    final problem = solver._prepareProblem();
+    final ceFirst = solver._prepareCeFirst();
+    if (kIsWeb) {
+      // Web has no worker isolate. Keep the same provisional/final contract.
+      if (ceFirst != null) {
+        final provisional = _CeFirstSearch(ceFirst).solve(maxEvaluations: 8);
+        yield solver._ceFirstResult(provisional, stopwatch);
+        if (!provisional.provenOptimal) {
+          yield solver._ceFirstResult(_CeFirstSearch(ceFirst).solve(), stopwatch);
+        }
+      } else {
+        final provisional = BondSearch.solve(problem, maxNodes: 1200000);
+        yield solver._result(provisional, stopwatch);
+        if (!provisional.provenOptimal) {
+          yield solver._result(BondSearch.solve(problem), stopwatch);
+        }
+      }
+      return;
+    }
+
+    final messages = ReceivePort();
+    final worker = await Isolate.spawn(_runProgressiveBondSearch, _ProgressInput(messages.sendPort, problem, ceFirst));
     try {
-      if (yieldInterval == null) {
-        _dfs(0, 0);
-      } else {
-        await _dfsAsync(0, 0);
-      }
-    } on _NodeCapExceeded {
-      if (provenOptimal) {
-        warnings.add(
-          'iteration cap reached ($nodeCap nodes in this phase); '
-          'result may be suboptimal (a targeted-CE combination could beat it)',
-        );
-      }
-      return false;
-    }
-    return provenOptimal;
-  }
-
-  // ================================================================================
-  // Slot classification & pools
-  // ================================================================================
-
-  void _classifySlots() {
-    decks.addAll(formation.svts.take(_kMaxSvtNum));
-    while (decks.length < _kMaxSvtNum) {
-      decks.add(PlayerSvtData.base());
-    }
-    final supportIdx = decks.indexWhere((d) => d.supportType.isSupport);
-    if (supportIdx >= 0) {
-      if (decks.where((d) => d.supportType.isSupport).length > 1) {
-        throw const BondSolverException('at most one support slot is allowed in the formation');
-      }
-      hasSupportSlot = true;
-      supportPosition = supportIdx;
-      supportInFront = supportIdx < 3;
-    }
-  }
-
-  void _buildPools() {
-    cePool = CeBondPool.build(
-      quest: quest,
-      eventId: eventId,
-      region: region,
-      excludedCes: solverOptions.excludedCes,
-      excludeUnreleased: solverOptions.excludeUnreleased,
-    );
-
-    for (final (evId, eventCampaigns) in option.campaigns.items) {
-      final event = db.gameData.events[evId];
-      if (event == null) continue;
-      for (final (idx, enabled) in eventCampaigns.items) {
-        if (!enabled) continue;
-        EventCampaign? campaign;
-        for (final c in event.campaigns) {
-          if (c.idx == idx) {
-            campaign = c;
-            break;
-          }
-        }
-        if (campaign != null) enabledCampaigns.add((event, campaign));
-      }
-    }
-
-    svtPool = SvtBondPool.build(
-      quest: quest,
-      cePool: cePool,
-      region: region,
-      favoriteOnly: solverOptions.favoriteOnly,
-      excludeUnreleased: solverOptions.excludeUnreleased,
-      maxBond: solverOptions.maxBond,
-      excludedSvts: solverOptions.excludedSvts,
-      enabledCampaigns: enabledCampaigns,
-      enableEvent: option.enableEvent,
-    );
-    warnings.addAll(svtPool.warnings);
-
-    final hasFreeOwn = decks.any((d) => d.svt == null && !d.supportType.isSupport);
-    if (hasFreeOwn && svtPool.classes.isEmpty) {
-      warnings.add('no servant candidates (check favorite/bond/release filters)');
-    }
-
-    ceClasses = cePool.ownedClasses;
-    ceTargeted = [
-      for (final c in ceClasses)
-        c.effects
-            .where(
-              (e) =>
-                  e.scope == BondEffectScope.team &&
-                  e.hasTargetCondition &&
-                  e.wearerActIndiv.isEmpty &&
-                  e.wearerRequiredIndiv == 0,
-            )
-            .toList(),
-    ];
-
-    // rare-effect warnings
-    var warnedTargetedValue = false;
-    for (final c in ceClasses) {
-      for (final e in c.effects) {
-        if (e.scope == BondEffectScope.team &&
-            e.hasTargetCondition &&
-            e.wearerActIndiv.isEmpty &&
-            e.wearerRequiredIndiv == 0 &&
-            e.value > 0) {
-          if (!warnedTargetedValue) {
-            warnedTargetedValue = true;
-            warnings.add('targeted team bond VALUE from free-worn CEs is ignored (rare)');
-          }
-          break;
+      await for (final message in messages) {
+        final parts = message as List<Object?>;
+        switch (parts[0]) {
+          case 'ce':
+            yield solver._ceFirstResult(parts[1]! as _CeFirstResult, stopwatch);
+          case 'general':
+            yield solver._result(parts[1]! as BondSearchResult, stopwatch);
+          case 'error':
+            throw StateError(parts[1] as String);
+          case 'done':
+            return;
         }
       }
-    }
-    if (cePool.supportCandidates.any((c) => c.targetedEffects.isNotEmpty)) {
-      warnings.add('targeted effects of support CE candidates are ignored (rare)');
-    }
-  }
-
-  // ================================================================================
-  // Fixed constants (pass 1)
-  // ================================================================================
-
-  /// Self-scope effects of one effect list against fixed traits.
-  void _accumulateSelf(List<CeBondEffect> effects, List<int> traits, _Int2 acc) {
-    for (final e in effects) {
-      if (e.scope != BondEffectScope.self) continue;
-      if (e.wearerMatches(traits) && e.targetMatches(traits)) {
-        acc.a += e.rate;
-        acc.b += e.value;
-      }
+    } finally {
+      messages.close();
+      worker.kill(priority: Isolate.immediate);
     }
   }
 
-  /// Team-scope effects of one effect list with a KNOWN wearer (pinned CE /
-  /// fixed servant event passive): flat → team scalars, targeted → fixed-source.
-  void _accumulateTeamFromKnownWearer(List<CeBondEffect> effects, List<int> wearerTraits) {
-    for (final e in effects) {
-      if (e.scope != BondEffectScope.team) continue;
-      if (!e.wearerMatches(wearerTraits)) continue;
-      if (e.hasTargetCondition) {
-        fixedSourceEffects.add(e);
-      } else {
-        tConst += e.rate;
-        vConst += e.value;
-      }
+  BondSolverResult _solve({
+    int? maxNodes,
+    required int maxTies,
+    required bool useCeFirst,
+    required Stopwatch stopwatch,
+  }) {
+    final problem = _prepareProblem();
+    final ceFirst = useCeFirst ? _prepareCeFirst() : null;
+    if (ceFirst != null) {
+      return _ceFirstResult(
+        _CeFirstSearch(ceFirst, maxTies: maxTies).solve(maxEvaluations: maxNodes),
+        stopwatch,
+        maxCandidates: maxTies,
+      );
     }
+    final search = BondSearch.solve(problem, maxNodes: maxNodes, maxTies: maxTies);
+    return _result(search, stopwatch, maxCandidates: maxTies);
   }
 
-  void _computeFixedConstants() {
-    bool warnedMash = false;
-    bool warnedSupportEquip3 = false;
+  BondSearchProblem _prepareProblem() {
+    if (option.svtBonus.length < 6) throw StateError('formation bond bonuses must contain six positions');
+    final decks = formation.svts.take(6).toList();
     for (final (position, deck) in decks.indexed) {
-      final svt = deck.svt;
-      final isSupport = deck.supportType.isSupport;
-      final front =
-          (option.frontlineBonus && position < 3 ? 200 : 0) + (option.frontlineBonus && supportInFront ? 40 : 0);
-      final isGrand = quest?.isUseGrandBoard == true && deck.grandSvt;
+      if (deck.supportType.isSupport || deck.svt == null) continue;
+      if (!_matchesQuestRestrictions(_traits(deck.svt!, deck.limitCount))) {
+        throw StateError('fixed servant at position ${position + 1} does not meet quest restrictions');
+      }
+    }
+    final maxCost = _maxCost = option.maxCost ?? ConstData.userLevel[ConstData.maxUserLevel]?.maxCost ?? -1;
+    if (maxCost < 0) throw StateError('master-level cost table is unavailable');
+    final needsFreeServant = decks.any((d) => !d.supportType.isSupport && d.svt == null);
+    final needsFreeCe = decks.any(
+      (d) =>
+          d.equip1.ce == null ||
+          (quest.isUseGrandBoard && d.grandSvt && !d.supportType.isSupport && d.svt != null && d.equip3.ce == null),
+    );
+    final released = needsFreeServant || needsFreeCe ? _releasedIds() : null;
 
-      if (isSupport) {
-        // Support slot: produces no bond value and costs nothing. Only its
-        // team-scope effects (event passives + pinned CEs) matter.
-        final traits = svt == null ? const <int>[] : List<int>.of(svt.getIndividuality(eventId, deck.limitCount));
-        final eventSkills = (option.enableEvent && quest != null && svt != null)
-            ? SvtBondPool.resolveEventSkills(svt, quest!)
-            : const <NiceSkill>[];
-        final eventEffects = CeBondPool.extractBondEffects(
-          eventSkills,
-          eventId: eventId,
-          questIndivs: questIndivs,
-          hasQuest: hasQuest,
-          supportWearerTraits: traits,
-        );
-        for (final e in eventEffects) {
-          if (e.scope != BondEffectScope.team) continue;
-          if (e.hasTargetCondition) {
-            fixedSourceEffects.add(e);
-          } else {
-            tConst += e.rate;
-            vConst += e.value;
+    if (needsFreeServant) _loadFreeServants(released);
+    if (needsFreeCe) _loadFreeCes(released);
+    _loadFixedEffects(decks);
+    _buildProfiles(decks);
+    _buildSvtClasses();
+    _buildCeClasses();
+    _pruneOwnedCeClasses(decks);
+
+    final positions = <BondSearchPosition>[];
+    final supportFrontCount = option.frontlineBonus ? decks.take(3).where((d) => d.supportType.isSupport).length : 0;
+    var fixedCost = 0;
+    var symmetryGroup = 0;
+    final freeGroupByProfile = <String, int>{};
+    for (final (p, deck) in decks.indexed) {
+      final isSupport = deck.supportType.isSupport;
+      final fixedSvt = !isSupport && deck.svt != null;
+      final grand = quest.isUseGrandBoard && deck.grandSvt && (fixedSvt || isSupport);
+      final front = option.frontlineBonus && !isSupport ? (p < 3 ? 200 : 0) + 40 * supportFrontCount : 0;
+      final items = isSupport ? _supportItems(deck, grand) : _ownItems(p, deck, grand);
+      if (items.isEmpty) throw StateError('no candidate at position ${p + 1}');
+
+      int? group;
+      if (!fixedSvt && !isSupport && deck.equip1.ce == null) {
+        final bonus = option.svtBonus[p];
+        final key = '$front|${bonus.addRate}|${bonus.addValue}';
+        group = freeGroupByProfile.putIfAbsent(key, () => symmetryGroup++);
+      }
+      positions.add(BondSearchPosition(frontlineRate: front, items: items, symmetryGroup: group));
+      if (!isSupport) {
+        if (fixedSvt) fixedCost += _svtCost(deck.svt!, deck.limitCount);
+        fixedCost += deck.equip1.ce?.cost ?? 0;
+      }
+    }
+
+    _fixedCost = fixedCost;
+    _itemCount = positions.fold<int>(0, (sum, position) => sum + position.items.length);
+    return BondSearchProblem(
+      baseBond: quest.bond,
+      rateCap: ConstData.constants.maxFriendShipUpRatio,
+      maxCost: maxCost,
+      receiverProfileCount: _profiles.length,
+      positions: positions,
+      servantClassCapacities: [for (final cls in _svtClasses) cls.limits.length],
+      ownedCeClassCapacities: [for (final cls in _ownedCeClasses) cls.limitBreaks.length],
+    );
+  }
+
+  BondSolverResult _result(BondSearchResult search, Stopwatch stopwatch, {int maxCandidates = 20}) {
+    final best = search.best == null ? null : _expand(search.best!);
+    return BondSolverResult(
+      best: best,
+      ties: best == null
+          ? const []
+          : _concreteRepresentatives(best, [for (final tie in search.ties) _expand(tie)], maxTeams: maxCandidates),
+      tieGroupCounts: search.tieGroupCounts,
+      provenOptimal: search.provenOptimal,
+      allTiesCollected: search.allTiesCollected,
+      visitedNodes: search.visitedNodes,
+      elapsedMilliseconds: stopwatch.elapsedMilliseconds,
+      maxCost: _maxCost,
+      fixedCost: _fixedCost,
+      servantClassCount: _svtClasses.length,
+      ownedCeClassCount: _ownedCeClasses.length,
+      placementInvariantCeClassCount: _ownedCeClasses.where((ce) => ce.placementInvariant).length,
+      receiverProfileCount: _profiles.length,
+      itemCount: _itemCount,
+    );
+  }
+
+  BondSolverResult _ceFirstResult(_CeFirstResult search, Stopwatch stopwatch, {int maxCandidates = 20}) {
+    return BondSolverResult(
+      best: search.best,
+      ties: search.best == null
+          ? const []
+          : _concreteRepresentatives(search.best!, search.ties, maxTeams: maxCandidates),
+      tieGroupCounts: search.tieGroupCounts,
+      provenOptimal: search.provenOptimal,
+      allTiesCollected: false,
+      visitedNodes: search.evaluatedCombinations,
+      elapsedMilliseconds: stopwatch.elapsedMilliseconds,
+      maxCost: _maxCost,
+      fixedCost: _fixedCost,
+      servantClassCount: _svtClasses.length,
+      ownedCeClassCount: _ownedCeClasses.length,
+      placementInvariantCeClassCount: _ownedCeClasses.where((ce) => ce.placementInvariant).length,
+      receiverProfileCount: _profiles.length,
+      itemCount: _itemCount,
+      possibleCombinations: search.possibleCombinations,
+    );
+  }
+
+  _CeFirstProblem? _prepareCeFirst() {
+    if (_ownedCeClasses.any((ce) => !ce.placementInvariant)) return null;
+    if (_svtClasses.any(
+      (svt) => svt.eventEffect.teamRates.any((v) => v != 0) || svt.eventEffect.teamValues.any((v) => v != 0),
+    )) {
+      return null;
+    }
+    final decks = formation.svts.take(6).toList();
+    final fixedServantIds = <int>{};
+    final fixedCeIds = <int>{};
+    for (final deck in decks) {
+      if (deck.supportType.isSupport) continue;
+      if (deck.svt != null && !fixedServantIds.add(deck.svt!.id)) return null;
+      final grand = quest.isUseGrandBoard && deck.grandSvt && deck.svt != null;
+      for (final equip in [deck.equip1, if (grand) deck.equip3]) {
+        if (equip.ce != null && !fixedCeIds.add(equip.ce!.id)) return null;
+      }
+    }
+    final ownCes = <_CeFirstCe>[];
+    for (final ce in _ownedCeClasses) {
+      final ids = Map<int, bool>.of(ce.limitBreaks)..removeWhere((id, _) => fixedCeIds.contains(id));
+      if (ids.isEmpty) continue;
+      final effect = ce.byWearer.first;
+      ownCes.add(_CeFirstCe(ce.cost, effect.teamRates, effect.teamValues, ids));
+    }
+    final baseRates = List<int>.filled(_profiles.length, 0);
+    final baseValues = List<int>.filled(_profiles.length, 0);
+    void addSource(_Contribution effect) {
+      for (var r = 0; r < _profiles.length; r++) {
+        baseRates[r] += effect.teamRates[r];
+        baseValues[r] += effect.teamValues[r];
+      }
+    }
+
+    final supportFrontCount = option.frontlineBonus ? decks.take(3).where((d) => d.supportType.isSupport).length : 0;
+    final positions = <_CeFirstPosition>[];
+    for (final (p, deck) in decks.indexed) {
+      final support = deck.supportType.isSupport;
+      final fixedServant = !support && deck.svt != null;
+      final grand = quest.isUseGrandBoard && deck.grandSvt && (fixedServant || support);
+      final fixedCe1 = deck.equip1.ce == null ? null : BondSolvedCe(deck.equip1.ce!.id, deck.equip1.limitBreak);
+      final fixedCe3 = !grand || deck.equip3.ce == null
+          ? null
+          : BondSolvedCe(deck.equip3.ce!.id, deck.equip3.limitBreak);
+      final front = option.frontlineBonus && !support ? (p < 3 ? 200 : 0) + 40 * supportFrontCount : 0;
+      final first = (quest.bond * (1 + front / 1000)).floor();
+      if (support) {
+        if (deck.equip1.ce != null) {
+          addSource(_contribution(_ceVariant(deck.equip1.ce!, deck.equip1.limitBreak).supportEffects, const []));
+        }
+        if (fixedCe3 != null) {
+          addSource(_contribution(_ceVariant(deck.equip3.ce!, deck.equip3.limitBreak).supportEffects, const []));
+        }
+        final choices = <_CeFirstSupportChoice>[
+          _CeFirstSupportChoice(List.filled(_profiles.length, 0), List.filled(_profiles.length, 0), null),
+        ];
+        if (fixedCe1 == null) {
+          for (final ce in _supportCeClasses) {
+            final id = ce.limitBreaks.keys.firstOrNull;
+            if (id == null) continue;
+            final effect = ce.byWearer.first;
+            choices.add(
+              _CeFirstSupportChoice(
+                effect.teamRates,
+                effect.teamValues,
+                BondSolvedCe(id, ce.limitBreaks[id]!),
+                ce.limitBreaks,
+              ),
+            );
           }
         }
-        for (final equip in [deck.equip1, if (isGrand) deck.equip3]) {
-          final ce = equip.ce;
-          if (ce == null) continue;
-          final effects = CeBondPool.extractBondEffects(
-            ce.getActivatedSkills(equip.limitBreak).values.expand((e) => e),
-            eventId: eventId,
-            questIndivs: questIndivs,
-            hasQuest: hasQuest,
-            supportWearerTraits: traits,
-          );
-          for (final e in effects) {
-            if (e.scope != BondEffectScope.team) continue;
-            if (e.hasTargetCondition) {
-              fixedSourceEffects.add(e);
-            } else {
-              tConst += e.rate;
-              vConst += e.value;
+        final competitiveChoices = <_CeFirstSupportChoice>[];
+        for (var i = 0; i < choices.length; i++) {
+          var dominated = false;
+          for (var j = 0; j < choices.length; j++) {
+            if (i != j && _supportChoiceDominates(choices[j], choices[i])) {
+              dominated = true;
+              break;
             }
           }
+          if (!dominated) competitiveChoices.add(choices[i]);
         }
-        if (isGrand && deck.equip3.ce == null && !warnedSupportEquip3) {
-          warnedSupportEquip3 = true;
-          warnings.add('solving a free equip3 on the support slot is not supported');
-        }
+        positions.add(
+          _CeFirstPosition(
+            support: true,
+            fixedServant: false,
+            bondLimit: false,
+            freeCe1: false,
+            freeCe3: false,
+            first: 0,
+            fixedCe1: fixedCe1,
+            fixedCe3: fixedCe3,
+            fixedCe1Cost: 0,
+            servants: const [],
+            supportChoices: competitiveChoices,
+          ),
+        );
         continue;
       }
 
-      if (svt == null) continue; // free own slot — handled by the search
-
-      // ---- fixed own servant ----
-      final traits = List<int>.of(svt.getIndividuality(eventId, deck.limitCount));
-      final bonus = _svtBonus(position);
-      final producesValue = !bonus.isBondReachLimit;
-      final acc = _Int2();
-
-      // custom per-slot bonus (applies whenever the slot holds a servant)
-      acc.a += bonus.addRate;
-      acc.b += bonus.addValue;
-
-      // event passives: self-scope → constants; team-scope → team scalars/sources
-      if (option.enableEvent && quest != null) {
-        final resolved = SvtBondPool.resolveEventSkills(svt, quest!);
-        final effects = CeBondPool.extractBondEffects(
-          resolved,
-          eventId: eventId,
-          questIndivs: questIndivs,
-          hasQuest: hasQuest,
-        );
-        for (final e in effects) {
-          if (e.scope == BondEffectScope.self) {
-            if (e.wearerMatches(traits) && e.targetMatches(traits)) {
-              acc.a += e.rate;
-              acc.b += e.value;
-            }
-          } else if (e.scope == BondEffectScope.team) {
-            if (svt.collectionNo == 1) {
-              // Mash main-story team bond passives are ignored by the solver
-              if (!warnedMash) {
-                warnedMash = true;
-                warnings.add('Mash main-story team bond passives are ignored');
-              }
-              continue;
-            }
-            if (e.hasTargetCondition) {
-              fixedSourceEffects.add(e);
-            } else {
-              tConst += e.rate;
-              vConst += e.value;
-            }
+      final svtClasses = fixedServant ? [_fixedSvtClass(deck)] : _svtClasses;
+      if (svtClasses.isEmpty) return null;
+      final c1 = fixedCe1 == null ? null : _fixedCeClass(deck.equip1);
+      final c3 = fixedCe3 == null ? null : _fixedCeClass(deck.equip3);
+      if (!fixedServant && c1 != null && svtClasses.isNotEmpty) {
+        final reference = c1.byWearer[svtClasses.first.profile];
+        for (final svt in svtClasses.skip(1)) {
+          final other = c1.byWearer[svt.profile];
+          if (!_sameInts(reference.teamRates, other.teamRates) || !_sameInts(reference.teamValues, other.teamValues)) {
+            return null;
           }
         }
       }
-
-      // campaign bonus
-      for (final (_, campaign) in enabledCampaigns) {
-        if (!campaign.targetIds.contains(svt.id)) continue;
-        switch (campaign.calcType) {
-          case EventCombineCalc.addition:
-            acc.a += math.max(0, campaign.value);
-          case EventCombineCalc.multiplication:
-            acc.a += math.max(0, campaign.value - 1000);
-          case EventCombineCalc.fixedValue:
-          case EventCombineCalc.none:
-            break;
+      if (fixedServant) addSource(svtClasses.single.eventEffect);
+      if (c1 != null) addSource(c1.byWearer[svtClasses.first.profile]);
+      if (c3 != null) addSource(c3.byWearer[svtClasses.first.profile]);
+      final bonus = option.svtBonus[p];
+      if (fixedServant && bonus.isBond15) {
+        for (var r = 0; r < baseRates.length; r++) {
+          baseRates[r] += 250;
         }
       }
-
-      // pinned CEs: self effects → constants; team effects → team scalars/sources
-      for (final equip in [deck.equip1, if (isGrand) deck.equip3]) {
-        final ce = equip.ce;
-        if (ce == null) continue;
-        final effects = CeBondPool.extractBondEffects(
-          ce.getActivatedSkills(equip.limitBreak).values.expand((e) => e),
-          eventId: eventId,
-          questIndivs: questIndivs,
-          hasQuest: hasQuest,
-        );
-        _accumulateSelf(effects, traits, acc);
-        _accumulateTeamFromKnownWearer(effects, traits);
+      final servants = <_CeFirstServant>[];
+      for (final svt in svtClasses) {
+        final ce1Effect = c1?.byWearer[svt.profile];
+        final ce3Effect = c3?.byWearer[svt.profile];
+        final selfRate =
+            svt.campaignRate +
+            svt.eventEffect.selfRate +
+            (ce1Effect?.selfRate ?? 0) +
+            (ce3Effect?.selfRate ?? 0) +
+            bonus.addRate;
+        final selfValue =
+            svt.eventEffect.selfValue + (ce1Effect?.selfValue ?? 0) + (ce3Effect?.selfValue ?? 0) + bonus.addValue;
+        for (final entry in svt.limits.entries) {
+          if (!fixedServant && fixedServantIds.contains(entry.key)) continue;
+          servants.add(_CeFirstServant(entry.key, entry.value, svt.cost, svt.profile, selfRate, selfValue));
+        }
       }
-
-      if (bonus.isBond15) tConst += 250;
-
-      final svtCost = svt.getAscended(deck.limitCount, (a) => a.overwriteCost) ?? svt.cost;
-      final ceCost = deck.equip1.ce?.cost ?? 0;
-      fixedCost += svtCost + ceCost;
-
-      fixedOwnSlots.add(
-        _FixedOwn(
-          position: position,
-          svtId: svt.id,
-          traits: traits,
-          baseRate: acc.a,
-          baseValue: acc.b,
-          front: front,
-          producesValue: producesValue,
-          slotCost: svtCost + ceCost,
-          pinnedCeId: deck.equip1.ce?.id,
-          pinnedCe3Id: isGrand ? deck.equip3.ce?.id : null,
-          freeE1: deck.equip1.ce == null,
-          freeE3: isGrand && deck.equip3.ce == null,
+      positions.add(
+        _CeFirstPosition(
+          support: false,
+          fixedServant: fixedServant,
+          bondLimit: fixedServant && bonus.isBondReachLimit,
+          freeCe1: fixedCe1 == null,
+          freeCe3: grand && fixedCe3 == null,
+          first: first,
+          fixedCe1: fixedCe1,
+          fixedCe3: fixedCe3,
+          fixedCe1Cost: deck.equip1.ce?.cost ?? 0,
+          servants: servants,
+          supportChoices: const [],
         ),
       );
     }
-    initialBudget = maxCost - fixedCost;
-  }
-
-  /// Targeted-class receipt cache for a fixed-trait receiver (ci → rate).
-  Map<int, int>? _buildFixedRecvMap(List<int> traits) {
-    Map<int, int>? map;
-    for (final (ci, effects) in ceTargeted.indexed) {
-      if (effects.isEmpty) continue;
-      var r = 0;
-      for (final e in effects) {
-        if (e.targetMatches(traits)) r += e.rate;
-      }
-      if (r != 0) (map ??= {})[ci] = r;
+    var combinations = _multisetCount(ownCes.length, positions.where((p) => p.freeCe1).length);
+    combinations *= _multisetCount(ownCes.length, positions.where((p) => p.freeCe3).length);
+    for (final position in positions.where((p) => p.support)) {
+      combinations *= position.supportChoices.length;
+      if (combinations > 250000) return null;
     }
-    return map;
-  }
-
-  void _createFixedDeferred() {
-    for (final fs in fixedOwnSlots) {
-      if (!fs.producesValue) continue;
-      var recvRate = 0, recvValue = 0;
-      for (final e in fixedSourceEffects) {
-        if (e.targetMatches(fs.traits)) {
-          recvRate += e.rate;
-          recvValue += e.value;
-        }
-      }
-      final recvMap = _buildFixedRecvMap(fs.traits);
-      var targetedAll = 0;
-      recvMap?.forEach((_, r) => targetedAll += r);
-      deferred.add(
-        _Deferred(
-            position: fs.position,
-            base: baseValue,
-            front: fs.front,
-            fixedTraits: fs.traits,
-            fixedTargetedRecv: recvMap,
-            targetedAll: targetedAll,
-          )
-          ..rateExcl = tConst + fs.baseRate + recvRate
-          ..valueExcl = vConst + fs.baseValue + recvValue,
-      );
-    }
-    _fixedDeferredCount = deferred.length;
-  }
-
-  // ================================================================================
-  // Class preparation
-  // ================================================================================
-
-  void _prepareClasses() {
-    // Split classes whose members disagree on any fixed-source targeted effect,
-    // so "receives effect" is unambiguous per class.
-    var classes = List<BondSvtClass>.of(svtPool.classes);
-    for (final effect in fixedSourceEffects) {
-      if (effect.rate <= 0 && effect.value <= 0) continue;
-      final next = <BondSvtClass>[];
-      for (final cls in classes) {
-        final matched = cls.members.where((m) => effect.targetMatches(m.traits)).toList();
-        if (matched.isEmpty || matched.length == cls.members.length) {
-          next.add(cls);
-          continue;
-        }
-        final unmatched = cls.members.where((m) => !matched.contains(m)).toList();
-        next.add(_copySvtClass(cls, matched));
-        next.add(_copySvtClass(cls, unmatched));
-      }
-      classes = next;
-    }
-    svtClasses = classes;
-
-    svtFixedRecvRate = List<int>.filled(classes.length, 0);
-    svtFixedRecvValue = List<int>.filled(classes.length, 0);
-    svtTargetedAll = List<int>.filled(classes.length, 0);
-    for (final (i, cls) in classes.indexed) {
-      // after splitting every member agrees on each fixed-source effect
-      final m = cls.members.first;
-      for (final e in fixedSourceEffects) {
-        if (e.targetMatches(m.traits)) {
-          svtFixedRecvRate[i] += e.rate;
-          svtFixedRecvValue[i] += e.value;
-        }
-      }
-      for (final effects in ceTargeted) {
-        for (final e in effects) {
-          if (e.targetMatches(m.traits)) svtTargetedAll[i] += e.rate;
-        }
-      }
-    }
-  }
-
-  static BondSvtClass _copySvtClass(BondSvtClass cls, List<BondSvtMember> members, {List<int>? ceTeamTargetRate}) {
-    return BondSvtClass(
-      cost: cls.cost,
-      ownEventRate: cls.ownEventRate,
-      ownEventValue: cls.ownEventValue,
-      campaignRate: cls.campaignRate,
-      flatTeamEventRate: cls.flatTeamEventRate,
-      flatTeamEventValue: cls.flatTeamEventValue,
-      ceSelfRate: cls.ceSelfRate,
-      ceSelfValue: cls.ceSelfValue,
-      ceTeamActive: cls.ceTeamActive,
-      ceTeamTargetRate: ceTeamTargetRate ?? cls.ceTeamTargetRate,
-      members: members,
+    if (combinations > 250000) return null;
+    return _CeFirstProblem(
+      maxCost: _maxCost,
+      rateCap: ConstData.constants.maxFriendShipUpRatio,
+      fixedCost: _fixedCost,
+      fixedRates: baseRates,
+      fixedValues: baseValues,
+      positions: positions,
+      ownCes: ownCes,
     );
   }
 
-  void _initCapacities() {
-    ceRem = [for (final c in ceClasses) c.capacity];
-    svtRem = [for (final s in svtClasses) s.capacity];
-
-    // pinned CE ids consume owned-class capacity (support slots never do —
-    // the follower's CE never conflicts with owned copies)
-    final ceIdToClass = <int, int>{};
-    for (final (ci, c) in ceClasses.indexed) {
-      for (final id in c.memberIds) {
-        ceIdToClass[id] = ci;
-      }
+  bool _supportChoiceDominates(_CeFirstSupportChoice stronger, _CeFirstSupportChoice weaker) {
+    var strict = false;
+    for (var r = 0; r < _profiles.length; r++) {
+      if (stronger.rates[r] < weaker.rates[r] || stronger.values[r] < weaker.values[r]) return false;
+      strict |= stronger.rates[r] > weaker.rates[r] || stronger.values[r] > weaker.values[r];
     }
-    for (final fs in fixedOwnSlots) {
-      for (final id in [fs.pinnedCeId, fs.pinnedCe3Id]) {
-        if (id == null) continue;
-        final ci = ceIdToClass[id];
-        if (ci != null) ceRem[ci]--;
-      }
-    }
+    return strict;
+  }
 
-    // pinned own servants consume servant-class capacity (a servant, in any
-    // ascension slice, appears at most once per team)
-    for (final fs in fixedOwnSlots) {
-      for (final (si, cls) in svtClasses.indexed) {
-        for (final m in cls.members) {
-          if (m.svt.id == fs.svtId) {
-            svtRem[si]--;
-            break;
-          }
-        }
+  int _multisetCount(int classes, int slots) {
+    var result = 1;
+    for (var i = 1; i <= slots; i++) {
+      result = result * (classes + i) ~/ i;
+      if (result > 250000) return result;
+    }
+    return result;
+  }
+
+  Set<int>? _releasedIds() {
+    if (!option.excludeUnreleased || region == Region.jp) return null;
+    final ids = db.gameData.mappingData.entityRelease.ofRegion(region);
+    if (ids == null || ids.isEmpty) {
+      throw StateError('release table for ${region.name} is unavailable');
+    }
+    return ids.toSet();
+  }
+
+  void _loadFreeServants(Set<int>? released) {
+    for (final svt in db.gameData.servantsById.values) {
+      if (svt.collectionNo <= 0 || !svt.isUserSvt) continue;
+      if (option.excludedSvts.contains(svt.id)) continue;
+      if (released != null && !released.contains(svt.id)) continue;
+      if (option.favoriteOnly && !svt.status.favorite) continue;
+      if (option.maxBond > 0 && svt.status.bond >= option.maxBond) continue;
+      final effects = _eventEffects(svt);
+      final campaign = _campaignRate(svt.id);
+      final limits = <int>{
+        0,
+        1,
+        2,
+        3,
+        4,
+        ...svt.costume.keys,
+        ...svt.ascensionAdd.individuality2.all.keys,
+        ...svt.ascensionAdd.overwriteCost.all.keys,
+      };
+      final seen = <String>{};
+      for (final limit in limits) {
+        final traits = _traits(svt, limit);
+        if (!_matchesQuestRestrictions(traits)) continue;
+        final cost = _svtCost(svt, limit);
+        final key = '$cost|${traits.join(',')}';
+        if (!seen.add(key)) continue;
+        _svtVariants.add(_SvtVariant(svt, limit, cost, traits, effects, campaign));
       }
     }
   }
 
-  // ================================================================================
-  // Reductions
-  // ================================================================================
+  void _loadFreeCes(Set<int>? released) {
+    for (final ce in db.gameData.craftEssencesById.values) {
+      if (ce.collectionNo <= 0 || (ce.region != null && ce.region != region)) continue;
+      if (option.excludedCes.contains(ce.id)) continue;
+      if (released != null && ce.region == null && !released.contains(ce.id)) continue;
+      for (final lb in [false, true]) {
+        final variant = _ceVariant(ce, lb);
+        final ownEligible =
+            variant.ownEffects.isNotEmpty &&
+            variant.ownEffects.every(
+              (effect) =>
+                  effect.scope == BondEffectScope.team &&
+                  effect.wearerActIndiv.isEmpty &&
+                  effect.wearerRequiredIndiv == 0,
+            );
+        final supportEffects = variant.supportEffects
+            .where(
+              (effect) =>
+                  effect.scope == BondEffectScope.team &&
+                  effect.wearerActIndiv.isEmpty &&
+                  effect.wearerRequiredIndiv == 0,
+            )
+            .toList();
+        if (!ownEligible && supportEffects.isEmpty) continue;
+        _ceVariants.add(_CeVariant(ce, lb, ownEligible ? variant.ownEffects : const [], supportEffects));
+      }
+    }
+  }
 
-  /// Drops servant classes dominated by another class whose remaining capacity
-  /// can absorb any usage (≤ 6 slots). Mixed-team usage could otherwise exhaust
-  /// a smaller-capacity dominator, so the guard is required for exactness.
-  void _reduceSvtClasses() {
-    final n = svtClasses.length;
-    if (n <= 1) return;
-    final keep = List<bool>.filled(n, true);
-    for (int b = 0; b < n; b++) {
-      for (int a = 0; a < n; a++) {
-        if (a == b || !keep[a] || svtRem[a] < _kMaxSvtNum) continue;
-        if (_svtDominates(a, b)) {
-          keep[b] = false;
+  void _loadFixedEffects(List<PlayerSvtData> decks) {
+    final seenSvtIds = <int>{};
+    for (final variant in _svtVariants) {
+      if (seenSvtIds.add(variant.svt.id)) _allEffects.addAll(variant.eventEffects);
+    }
+    for (final deck in decks) {
+      if (!deck.supportType.isSupport && deck.svt != null) {
+        _allEffects.addAll(_eventEffects(deck.svt!));
+      }
+      final grand = quest.isUseGrandBoard && deck.grandSvt && (deck.svt != null || deck.supportType.isSupport);
+      for (final equip in [deck.equip1, if (grand) deck.equip3]) {
+        if (equip.ce == null) continue;
+        final variant = _ceVariant(equip.ce!, equip.limitBreak);
+        _allEffects.addAll(variant.ownEffects);
+        _allEffects.addAll(variant.supportEffects);
+      }
+    }
+    for (final variant in _ceVariants) {
+      _allEffects.addAll(variant.ownEffects);
+      _allEffects.addAll(variant.supportEffects);
+    }
+    final unique = <String, CeBondEffect>{};
+    for (final effect in _allEffects) {
+      final key =
+          '${effect.wearerActIndiv.join(',')}|${effect.wearerRequiredIndiv}'
+          '|${effect.targetOrAll.map((e) => e.join(',')).join(';')}|${effect.targetPartial.join(',')}';
+      unique.putIfAbsent(key, () => effect);
+    }
+    _allEffects
+      ..clear()
+      ..addAll(unique.values);
+  }
+
+  void _buildProfiles(List<PlayerSvtData> decks) {
+    void enroll(List<int> traits) {
+      final raw = (traits.toSet().toList()..sort()).join(',');
+      if (_profileByRawTraits.containsKey(raw)) return;
+      final signature = StringBuffer();
+      for (final effect in _allEffects) {
+        signature
+          ..write(effect.wearerMatches(traits) ? '1' : '0')
+          ..write(effect.targetMatches(traits) ? '1' : '0');
+      }
+      final profile = _profileBySignature.putIfAbsent(signature.toString(), () {
+        _profiles.add(traits);
+        return _profiles.length - 1;
+      });
+      _profileByRawTraits[raw] = profile;
+    }
+
+    enroll(const []);
+    for (final variant in _svtVariants) {
+      enroll(variant.traits);
+    }
+    for (final deck in decks) {
+      if (!deck.supportType.isSupport && deck.svt != null) {
+        enroll(_traits(deck.svt!, deck.limitCount));
+      }
+    }
+  }
+
+  int _profileOf(List<int> traits) {
+    final raw = (traits.toSet().toList()..sort()).join(',');
+    return _profileByRawTraits[raw]!;
+  }
+
+  void _buildSvtClasses() {
+    final byKey = <String, _SvtClass>{};
+    for (final variant in _svtVariants) {
+      final profile = _profileOf(variant.traits);
+      final effect = _contribution(variant.eventEffects, _profiles[profile]);
+      final key = '${variant.cost}|$profile|${variant.campaignRate}|${effect.signature}';
+      final existing = byKey[key];
+      if (existing == null) {
+        byKey[key] = _SvtClass(variant.cost, profile, variant.campaignRate, effect, {
+          variant.svt.id: variant.limitCount,
+        });
+      } else {
+        existing.limits.putIfAbsent(variant.svt.id, () => variant.limitCount);
+      }
+    }
+    _svtClasses.addAll(byKey.values);
+    for (final (i, cls) in _svtClasses.indexed) {
+      cls.searchIndex = i;
+    }
+  }
+
+  void _buildCeClasses() {
+    final owned = <String, _CeClass>{};
+    final support = <String, _CeClass>{};
+    for (final variant in _ceVariants) {
+      final ownEffects = [for (final traits in _profiles) _contribution(variant.ownEffects, traits)];
+      if (ownEffects.any((e) => !e.isZero)) {
+        final key = '${variant.ce.cost}|${ownEffects.map((e) => e.signature).join(';')}';
+        final cls = owned.putIfAbsent(key, () => _CeClass(variant.ce.cost, ownEffects, {}));
+        cls.limitBreaks[variant.ce.id] = cls.limitBreaks[variant.ce.id] == true || variant.lb;
+      }
+      final rawSupportEffect = _contribution(variant.supportEffects, const []);
+      final supportEffect = _Contribution(0, 0, rawSupportEffect.teamRates, rawSupportEffect.teamValues);
+      if (supportEffect.teamRates.any((v) => v != 0) || supportEffect.teamValues.any((v) => v != 0)) {
+        final key = supportEffect.signature;
+        final cls = support.putIfAbsent(key, () => _CeClass(0, [supportEffect], {}));
+        cls.limitBreaks[variant.ce.id] = cls.limitBreaks[variant.ce.id] == true || variant.lb;
+      }
+    }
+    _ownedCeClasses.addAll(owned.values);
+    _supportCeClasses.addAll(support.values);
+  }
+
+  /// A CE can be removed only when enough distinct, individually dominating
+  /// CE IDs remain to replace it in every possible owned slot at once.
+  void _pruneOwnedCeClasses(List<PlayerSvtData> decks) {
+    final maxOwnedCeSlots = decks.fold<int>(0, (count, deck) {
+      if (deck.supportType.isSupport) return count;
+      return count + 1 + (quest.isUseGrandBoard && deck.grandSvt && deck.svt != null ? 1 : 0);
+    });
+    if (pruneDominatedCes && maxOwnedCeSlots > 0) {
+      var changed = true;
+      while (changed) {
+        changed = false;
+        for (final weaker in List<_CeClass>.of(_ownedCeClasses)) {
+          final replacementIds = <int>{};
+          for (final stronger in _ownedCeClasses) {
+            if (identical(stronger, weaker) || !_ceDominates(stronger, weaker)) continue;
+            replacementIds.addAll(stronger.limitBreaks.keys);
+          }
+          // A team using weaker has at most maxOwnedCeSlots - 1 other IDs.
+          // Hence one of these replacements is guaranteed to be unused.
+          if (replacementIds.length < maxOwnedCeSlots) continue;
+          _ownedCeClasses.remove(weaker);
+          changed = true;
           break;
         }
       }
     }
-    if (keep.every((k) => k)) return;
-    final keptClasses = <BondSvtClass>[],
-        keptRem = <int>[],
-        keptRecvRate = <int>[],
-        keptRecvValue = <int>[],
-        keptTargetedAll = <int>[];
-    for (final (i, k) in keep.indexed) {
-      if (!k) continue;
-      keptClasses.add(svtClasses[i]);
-      keptRem.add(svtRem[i]);
-      keptRecvRate.add(svtFixedRecvRate[i]);
-      keptRecvValue.add(svtFixedRecvValue[i]);
-      keptTargetedAll.add(svtTargetedAll[i]);
+    for (final (i, cls) in _ownedCeClasses.indexed) {
+      cls.searchIndex = i;
     }
-    svtClasses = keptClasses;
-    svtRem = keptRem;
-    svtFixedRecvRate = keptRecvRate;
-    svtFixedRecvValue = keptRecvValue;
-    svtTargetedAll = keptTargetedAll;
   }
 
-  bool _svtDominates(int a, int b) {
-    final ca = svtClasses[a], cb = svtClasses[b];
-    if (ca.cost > cb.cost ||
-        ca.ownEventRate < cb.ownEventRate ||
-        ca.ownEventValue < cb.ownEventValue ||
-        ca.campaignRate < cb.campaignRate ||
-        ca.flatTeamEventRate < cb.flatTeamEventRate ||
-        ca.flatTeamEventValue < cb.flatTeamEventValue ||
-        svtFixedRecvRate[a] < svtFixedRecvRate[b] ||
-        svtFixedRecvValue[a] < svtFixedRecvValue[b] ||
-        svtTargetedAll[a] < svtTargetedAll[b]) {
-      return false;
-    }
-    for (final i in range(ceClasses.length)) {
-      if (ca.ceSelfRate[i] < cb.ceSelfRate[i] ||
-          ca.ceSelfValue[i] < cb.ceSelfValue[i] ||
-          ca.ceTeamTargetRate[i] < cb.ceTeamTargetRate[i]) {
+  bool _ceDominates(_CeClass stronger, _CeClass weaker) {
+    if (!stronger.placementInvariant || stronger.cost > weaker.cost) return false;
+    final replacement = stronger.byWearer.first;
+    for (final (wearer, old) in weaker.byWearer.indexed) {
+      for (var target = 0; target < _profiles.length; target++) {
+        if (replacement.teamRates[target] < old.teamRates[target] ||
+            replacement.teamValues[target] < old.teamValues[target]) {
+          return false;
+        }
+      }
+      if (replacement.teamRates[wearer] < old.teamRates[wearer] + old.selfRate ||
+          replacement.teamValues[wearer] < old.teamValues[wearer] + old.selfValue) {
         return false;
       }
     }
     return true;
   }
 
-  // ================================================================================
-  // Search slots & items
-  // ================================================================================
-
-  FormationBondSvtBonus _svtBonus(int position) {
-    final list = option.svtBonus;
-    if (position < list.length) return list[position];
-    return FormationBondSvtBonus();
-  }
-
-  void _buildSearchSlots() {
-    int groupSeq = 0;
-    int lastGroup = -1;
-    ({int front, int rate, int value})? lastProfile;
-    final receivers = _receiversForDominance();
-
-    for (final (position, deck) in decks.indexed) {
-      if (deck.supportType.isSupport) {
-        _buildSupportSlot(position, deck);
-        lastProfile = null;
-        continue;
-      }
-      final fs = _fixedOwnAt(position);
-      if (fs != null) {
-        _buildFixedCeSlot(fs, receivers);
-        lastProfile = null;
-        continue;
-      }
-
-      // ---- free own slot ----
-      final bonus = _svtBonus(position);
-      final front =
-          (option.frontlineBonus && position < 3 ? 200 : 0) + (option.frontlineBonus && supportInFront ? 40 : 0);
-      final profile = (front: front, rate: bonus.addRate, value: bonus.addValue);
-      final grouped = lastProfile != null && _sameProfile(lastProfile, profile);
-      final group = grouped ? lastGroup : groupSeq++;
-      lastGroup = group;
-      lastProfile = profile;
-
-      final items = <_Item>[];
-      for (final (si, s) in svtClasses.indexed) {
-        if (svtRem[si] <= 0) continue;
-        final baseSelfRate = s.ownEventRate + s.campaignRate + bonus.addRate + svtFixedRecvRate[si];
-        final baseSelfValue = s.ownEventValue + bonus.addValue + svtFixedRecvValue[si];
-        // no CE
-        items.add(
-          _Item(
-            svt: s,
-            svtIdx: si,
-            ces: const [],
-            ceConsumes: const [],
-            cost: s.cost,
-            selfRate: baseSelfRate,
-            selfValue: baseSelfValue,
-            flatRate: s.flatTeamEventRate,
-            flatValue: s.flatTeamEventValue,
-            targetedCeIdxs: const [],
-            targetedAll: svtTargetedAll[si],
-          ),
-        );
-        for (final (ci, c) in ceClasses.indexed) {
-          if (ceRem[ci] <= 0) continue;
-          if (!_includeTargetedItems && ceTargeted[ci].isNotEmpty) continue;
-          items.add(
-            _Item(
-              svt: s,
-              svtIdx: si,
-              ces: [c],
-              ceConsumes: [ci],
-              cost: s.cost + c.cost,
-              selfRate: baseSelfRate + s.ceSelfRate[ci],
-              selfValue: baseSelfValue + s.ceSelfValue[ci],
-              flatRate: s.flatTeamEventRate + c.flatTeamRate,
-              flatValue: s.flatTeamEventValue + c.flatTeamValue,
-              targetedCeIdxs: ceTargeted[ci].isEmpty ? const [] : [ci],
-              targetedAll: svtTargetedAll[si],
+  List<BondSearchItem> _supportItems(PlayerSvtData deck, bool grand) {
+    final fixed3 = grand && deck.equip3.ce != null
+        ? _contribution(_ceVariant(deck.equip3.ce!, deck.equip3.limitBreak).supportEffects, const [])
+        : _Contribution.zero(_profiles.length);
+    final choices = deck.equip1.ce == null
+        ? <_CeClass?>[null, ..._supportCeClasses]
+        : <_CeClass?>[
+            _CeClass(
+              0,
+              [_contribution(_ceVariant(deck.equip1.ce!, deck.equip1.limitBreak).supportEffects, const [])],
+              {deck.equip1.ce!.id: deck.equip1.limitBreak},
             ),
-          );
-        }
-      }
-      // leave the slot empty
-      items.add(_emptyItem());
-      final reduced = _reduceItemsPerSvt(items, receivers);
-      searchSlots.add(
-        _SearchSlot(
-          position: position,
-          isFreeOwn: true,
-          producesValue: true,
-          base: baseValue,
-          front: front,
-          items: reduced,
-          group: group,
-        ),
-      );
-    }
-  }
-
-  _FixedOwn? _fixedOwnAt(int position) {
-    for (final fs in fixedOwnSlots) {
-      if (fs.position == position) return fs;
-    }
-    return null;
-  }
-
-  bool _sameProfile(({int front, int rate, int value}) a, ({int front, int rate, int value}) b) =>
-      a.front == b.front && a.rate == b.rate && a.value == b.value;
-
-  _Item _emptyItem() => _Item(
-    ces: const [],
-    ceConsumes: const [],
-    cost: 0,
-    selfRate: 0,
-    selfValue: 0,
-    flatRate: 0,
-    flatValue: 0,
-    targetedCeIdxs: const [],
-    targetedAll: 0,
-  );
-
-  /// Support slot with a free equip1: items are support CE candidates
-  /// (cost 0, no capacity conflicts, may duplicate owned CEs).
-  void _buildSupportSlot(int position, PlayerSvtData deck) {
-    if (deck.equip1.ce != null) return; // pinned support CE — constant
-    supportEquipSearched = true;
-    final isGrand = quest?.isUseGrandBoard == true && deck.grandSvt;
-    if (isGrand && deck.equip3.ce == null) {
-      warnings.add('solving a free equip3 on the support slot is not supported');
-    }
-    final items = <_Item>[];
-    for (final candidate in cePool.supportCandidates) {
-      if (candidate.flatTeamRate <= 0 && candidate.flatTeamValue <= 0) continue;
+          ];
+    final items = <BondSearchItem>[];
+    for (final (order, ce) in choices.indexed) {
+      final effect = _add(fixed3, ce?.byWearer.first ?? _Contribution.zero(_profiles.length));
+      final ceId = ce?.limitBreaks.keys.firstOrNull;
       items.add(
-        _Item(
-          ces: const [],
-          ceConsumes: const [],
-          supportCe: candidate,
+        BondSearchItem(
           cost: 0,
+          receiverProfile: null,
           selfRate: 0,
           selfValue: 0,
-          flatRate: candidate.flatTeamRate,
-          flatValue: candidate.flatTeamValue,
-          targetedCeIdxs: const [],
-          targetedAll: 0,
-        ),
-      );
-    }
-    items.add(_emptyItem());
-    final reduced = items
-        .where(
-          (item) => !items.any(
-            (o) =>
-                !identical(o, item) &&
-                o.flatRate >= item.flatRate &&
-                o.flatValue >= item.flatValue &&
-                (o.flatRate > item.flatRate || o.flatValue > item.flatValue),
-          ),
-        )
-        .toList();
-    searchSlots.add(
-      _SearchSlot(
-        position: position,
-        isFreeOwn: false,
-        producesValue: false,
-        base: 0,
-        front: 0,
-        isSupport: true,
-        fixedSvtId: deck.svt?.id,
-        fixedCe3Id: isGrand ? deck.equip3.ce?.id : null,
-        items: reduced,
-        group: -1,
-      ),
-    );
-  }
-
-  /// Fixed own servant with at least one free CE dimension (equip1 / grand equip3).
-  /// Both dimensions are enumerated exactly (≤ 18×18 combinations).
-  void _buildFixedCeSlot(_FixedOwn fs, List<Object> receivers) {
-    if (!fs.needsSearch) return;
-    final e1Options = fs.freeE1 ? _fixedCeOptions(fs, equip1: true) : [_ceNoneOption()];
-    final e3Options = fs.freeE3 ? _fixedCeOptions(fs, equip1: false) : [_ceNoneOption()];
-    final recvMap = _buildFixedRecvMap(fs.traits);
-    var targetedAll = 0;
-    recvMap?.forEach((_, r) => targetedAll += r);
-
-    final items = <_Item>[];
-    for (final e1 in e1Options) {
-      for (final e3 in e3Options) {
-        final ces = [...e1.ces, ...e3.ces];
-        if (ces.isEmpty) continue; // "no CE in both dims" = constant, skip item
-        final consumes = [...e1.consumes, ...e3.consumes];
-        final targeted = [...e1.targeted, ...e3.targeted];
-        items.add(
-          _Item(
-            ces: ces,
-            ceConsumes: consumes,
-            cost: e1.cost,
-            selfRate: fs.baseRate + e1.selfRate + e3.selfRate,
-            selfValue: fs.baseValue + e1.selfValue + e3.selfValue,
-            flatRate: e1.flatRate + e3.flatRate,
-            flatValue: e1.flatValue + e3.flatValue,
-            targetedCeIdxs: targeted,
-            targetedAll: targetedAll,
-          ),
-        );
-      }
-    }
-    // "no CE at all" item (servant only)
-    items.add(
-      _Item(
-        ces: const [],
-        ceConsumes: const [],
-        cost: 0,
-        selfRate: fs.baseRate,
-        selfValue: fs.baseValue,
-        flatRate: 0,
-        flatValue: 0,
-        targetedCeIdxs: const [],
-        targetedAll: targetedAll,
-      ),
-    );
-    final reduced = _dominanceFilter(items, receivers);
-    searchSlots.add(
-      _SearchSlot(
-        position: fs.position,
-        isFreeOwn: false,
-        producesValue: fs.producesValue,
-        base: baseValue,
-        front: fs.front,
-        fixedTraits: fs.traits,
-        fixedTargetedRecvMap: recvMap,
-        fixedSvtId: fs.svtId,
-        fixedCeId: fs.pinnedCeId,
-        fixedCe3Id: fs.pinnedCe3Id,
-        fixedTargetedAll: targetedAll,
-        fixedSlotCost: fs.slotCost,
-        items: reduced,
-        group: -1,
-      ),
-    );
-  }
-
-  List<
-    ({
-      List<BondCeClass> ces,
-      List<int> consumes,
-      int cost,
-      int selfRate,
-      int selfValue,
-      int flatRate,
-      int flatValue,
-      List<int> targeted,
-    })
-  >
-  _fixedCeOptions(_FixedOwn fs, {required bool equip1}) {
-    final options =
-        <
-          ({
-            List<BondCeClass> ces,
-            List<int> consumes,
-            int cost,
-            int selfRate,
-            int selfValue,
-            int flatRate,
-            int flatValue,
-            List<int> targeted,
-          })
-        >[];
-    for (final (ci, c) in ceClasses.indexed) {
-      if (ceRem[ci] <= 0) continue;
-      if (!_includeTargetedItems && ceTargeted[ci].isNotEmpty) continue;
-      final self = _ceSelfEffects(c, fs.traits);
-      options.add((
-        ces: [c],
-        consumes: [ci],
-        cost: equip1 ? c.cost : 0,
-        selfRate: self.a,
-        selfValue: self.b,
-        flatRate: c.flatTeamRate,
-        flatValue: c.flatTeamValue,
-        targeted: ceTargeted[ci].isEmpty ? const <int>[] : [ci],
-      ));
-    }
-    options.add(_ceNoneOption());
-    return options;
-  }
-
-  ({
-    List<BondCeClass> ces,
-    List<int> consumes,
-    int cost,
-    int selfRate,
-    int selfValue,
-    int flatRate,
-    int flatValue,
-    List<int> targeted,
-  })
-  _ceNoneOption() => (
-    ces: const [],
-    consumes: const [],
-    cost: 0,
-    selfRate: 0,
-    selfValue: 0,
-    flatRate: 0,
-    flatValue: 0,
-    targeted: const [],
-  );
-
-  _Int2 _ceSelfEffects(BondCeClass c, List<int> traits) {
-    final acc = _Int2();
-    _accumulateSelf(c.effects, traits, acc);
-    return acc;
-  }
-
-  /// Receiver list for targeted-effect dominance comparison:
-  /// reduced servant classes + fixed producing slots' traits.
-  List<Object> _receiversForDominance() {
-    return [
-      ...svtClasses,
-      for (final fs in fixedOwnSlots)
-        if (fs.producesValue) fs.traits,
-    ];
-  }
-
-  /// Per-s CE dominance for free own slots: drop (s, c1) when another CE choice
-  /// (or none) is at least as good in every dimension and capacity-safe.
-  List<_Item> _reduceItemsPerSvt(List<_Item> items, List<Object> receivers) {
-    final bySvt = <int, List<_Item>>{};
-    for (final item in items) {
-      bySvt.putIfAbsent(item.svtIdx, () => []).add(item);
-    }
-    final result = <_Item>[];
-    for (final list in bySvt.values) {
-      result.addAll(_dominanceFilter(list, receivers));
-    }
-    return result;
-  }
-
-  List<_Item> _dominanceFilter(List<_Item> items, List<Object> receivers) {
-    final kept = <_Item>[];
-    for (final item in items) {
-      var dominated = false;
-      for (final other in items) {
-        if (identical(other, item)) continue;
-        if (!_capacitySafe(other, item)) continue;
-        if (other.cost <= item.cost &&
-            other.selfRate >= item.selfRate &&
-            other.selfValue >= item.selfValue &&
-            other.flatRate >= item.flatRate &&
-            other.flatValue >= item.flatValue &&
-            _targetedVecGe(other, item, receivers)) {
-          dominated = true;
-          break;
-        }
-      }
-      if (!dominated) kept.add(item);
-    }
-    return kept;
-  }
-
-  bool _capacitySafe(_Item dominator, _Item item) {
-    if (item.ceConsumes.isEmpty) return true;
-    final needed = _multiplicity(item.ceConsumes);
-    final provided = _multiplicity(dominator.ceConsumes);
-    for (final (ci, count) in needed.items) {
-      final p = provided[ci] ?? 0;
-      if (p >= count) continue;
-      // extra copies must be coverable by remaining capacity: rem ≥ 6 means
-      // the class can supply any usage a 6-slot team can demand
-      if (ceRem[ci] < _kMaxSvtNum) return false;
-    }
-    return true;
-  }
-
-  /// Whether dominator's targeted receipts cover the item's for every receiver.
-  bool _targetedVecGe(_Item dominator, _Item item, List<Object> receivers) {
-    if (item.targetedCeIdxs.isEmpty) return true;
-    if (dominator.targetedCeIdxs.isEmpty) return false;
-    for (final r in receivers) {
-      if (_itemReceipt(dominator, r) < _itemReceipt(item, r)) return false;
-    }
-    return true;
-  }
-
-  int _itemReceipt(_Item item, Object receiver) {
-    var total = 0;
-    for (final ci in item.targetedCeIdxs) {
-      total += _recvTargetedRate(ci, receiver);
-    }
-    return total;
-  }
-
-  Map<int, int> _multiplicity(List<int> idxs) {
-    final map = <int, int>{};
-    for (final ci in idxs) {
-      map[ci] = (map[ci] ?? 0) + 1;
-    }
-    return map;
-  }
-
-  /// Targeted-only rate one CE class grants to a receiver (class or fixed traits).
-  int _recvTargetedRate(int ci, Object receiver) {
-    if (receiver is BondSvtClass) {
-      return receiver.ceTeamTargetRate[ci] - ceClasses[ci].flatTeamRate;
-    } else if (receiver is List<int>) {
-      var total = 0;
-      for (final e in ceTargeted[ci]) {
-        if (e.targetMatches(receiver)) total += e.rate;
-      }
-      return total;
-    }
-    return 0;
-  }
-
-  // ================================================================================
-  // Bounds
-  // ================================================================================
-
-  void _buildBounds() {
-    final n = searchSlots.length;
-
-    // slot multipliers for rate→value conversion bounds
-    for (final (position, deck) in decks.indexed) {
-      if (deck.supportType.isSupport) continue;
-      final isFixed = deck.svt != null;
-      final bonus = _svtBonus(position);
-      if (isFixed && bonus.isBondReachLimit) continue;
-      final front =
-          (option.frontlineBonus && position < 3 ? 200 : 0) + (option.frontlineBonus && supportInFront ? 40 : 0);
-      final mult = baseValue * (1 + front / 1000);
-      sumMult += mult;
-      maxMult = math.max(maxMult, mult);
-    }
-
-    // T upper bound: greedy best per-copy flat rates (CE classes + support
-    // candidates when actually searched) + svt team rates
-    final copyRates = <int>[];
-    for (final (ci, c) in ceClasses.indexed) {
-      if (c.flatTeamRate > 0) {
-        for (final _ in range(math.min(ceRem[ci], n))) {
-          copyRates.add(c.flatTeamRate);
-        }
-      }
-    }
-    if (supportEquipSearched) {
-      for (final cand in cePool.supportCandidates) {
-        if (cand.flatTeamRate > 0) copyRates.add(cand.flatTeamRate);
-      }
-    }
-    copyRates.sort((a, b) => b.compareTo(a));
-    int greedyCe = 0;
-    for (final i in range(math.min(copyRates.length, n))) {
-      greedyCe += copyRates[i];
-    }
-    int maxSvtTeam = 0;
-    for (final s in svtClasses) {
-      maxSvtTeam = math.max(maxSvtTeam, s.flatTeamEventRate);
-    }
-    _maxSvtTeamRate = maxSvtTeam;
-    tUpper = tConst + greedyCe + n * maxSvtTeam;
-
-    // max flat rate one future item can contribute (equip1 + equip3 + svt team)
-    int maxCeFlat = 0, maxSupportFlat = 0;
-    for (final c in ceClasses) {
-      maxCeFlat = math.max(maxCeFlat, c.flatTeamRate);
-    }
-    _maxCeFlatRate = maxCeFlat;
-    if (supportEquipSearched) {
-      for (final cand in cePool.supportCandidates) {
-        maxSupportFlat = math.max(maxSupportFlat, cand.flatTeamRate);
-      }
-    }
-    maxFlatItem = math.max(2 * maxCeFlat + maxSvtTeam, maxSupportFlat);
-
-    int maxCeV = 0, maxSupportV = 0;
-    for (final c in ceClasses) {
-      maxCeV = math.max(maxCeV, c.flatTeamValue);
-    }
-    for (final cand in cePool.supportCandidates) {
-      maxSupportV = math.max(maxSupportV, cand.flatTeamValue);
-    }
-    int maxSvtV = 0;
-    for (final s in svtClasses) {
-      maxSvtV = math.max(maxSvtV, s.flatTeamEventValue);
-    }
-    maxV = math.max(maxCeV + maxSvtV, maxSupportV);
-
-    // suffix sums: per-slot flat caps
-    flatCapSuffix.length = 0;
-    flatCapSuffix.add(0);
-    for (int k = n - 1; k >= 0; k--) {
-      final slot = searchSlots[k];
-      final cap = slot.isFreeOwn ? _maxCeFlatRate + _maxSvtTeamRate : 2 * _maxCeFlatRate + _maxSvtTeamRate;
-      flatCapSuffix.insert(0, flatCapSuffix.first + cap);
-    }
-
-    // per-item optimistic DP values (unfloored, rate at optimistic maximum),
-    // then sort items by DP value descending so the DFS dives into promising
-    // branches first and improves the incumbent early
-    for (final slot in searchSlots) {
-      for (final item in slot.items) {
-        item.dpValue = _dpValueOf(slot, item);
-      }
-      final list = slot.items;
-      final indexed = [for (final (i, it) in list.indexed) (i, it)];
-      indexed.sort((a, b) {
-        final c = b.$2.dpValue.compareTo(a.$2.dpValue);
-        return c != 0 ? c : a.$1.compareTo(b.$1);
-      });
-      list
-        ..clear()
-        ..addAll([for (final e in indexed) e.$2]);
-    }
-
-    // DP tables per search slot (MCKP relaxation ignoring capacities/counts)
-    final budgetSize = math.max(initialBudget, 0) + 1;
-    final dp = List.generate(n + 1, (_) => List<double>.filled(budgetSize, 0.0));
-    final maxBudget = math.max(initialBudget, 0);
-    for (int k = n - 1; k >= 0; k--) {
-      final slot = searchSlots[k];
-      final pairs = [
-        for (final item in slot.items)
-          if (item.cost <= maxBudget) (item.cost, item.dpValue),
-      ]..sort((a, b) => a.$1.compareTo(b.$1));
-      final pareto = <(int, double)>[];
-      double best = double.negativeInfinity;
-      for (final (cost, value) in pairs) {
-        if (value > best) {
-          pareto.add((cost, value));
-          best = value;
-        }
-      }
-      final next = dp[k + 1];
-      for (final b in range(budgetSize)) {
-        double v = 0;
-        for (final (cost, value) in pareto) {
-          if (cost > b) break;
-          final rest = next[b - cost];
-          if (value + rest > v) v = value + rest;
-        }
-        dp[k][b] = v;
-      }
-    }
-    for (int k = 0; k < n; k++) {
-      final nRem = n - k;
-      searchSlots[k].dp = dp[k];
-      searchSlots[k].dpTail = (nRem * (nRem - 1)).toDouble() * maxV;
-    }
-  }
-
-  double _dpValueOf(_SearchSlot slot, _Item item) {
-    if (!slot.producesValue) return 0;
-    if (slot.isFreeOwn && item.svt == null) return 0; // empty slot
-    final rate = math.min(item.selfRate + tUpper, rateCap);
-    final own = slot.base * (1 + slot.front / 1000) * (1 + rate / 1000) + item.selfValue + item.flatValue;
-    // The item's targeted effects credit every receiver; attribute the FULL
-    // team gain to the wearer so the DP can trade targeted CEs off against
-    // value/rate CEs consistently (replaces a loose team-wide optimism term).
-    if (item.targetedCeIdxs.isEmpty) return own;
-    var targetedRate = 0;
-    for (final ci in item.targetedCeIdxs) {
-      targetedRate += _targetedClassRates[ci];
-    }
-    return own + targetedRate * sumMult / 1000;
-  }
-
-  // ================================================================================
-  // DFS
-  // ================================================================================
-
-  void _dfs(int k, int symStart) {
-    if (k == searchSlots.length) {
-      _leaf();
-      return;
-    }
-    nodeCount++;
-    if (nodeCount - _phaseNodeStart > _phaseNodeCap) throw const _NodeCapExceeded();
-
-    final slot = searchSlots[k];
-    final threshold = (tieCapped ? bestTotal + 1 : bestTotal).toDouble();
-    final nRem = searchSlots.length - k;
-    // Node bound components:
-    //  - optimistic (unfloored) value of already-initialized slots, with the
-    //    future flat rate capped by the number of remaining assignments
-    //  - DP relaxation bound for the remaining slots (targeted gains folded
-    //    into item DP values)
-    //  - team value inherited by not-yet-created deferred entries (vCur)
-    //  - W: receipts of already-worn targeted classes for remaining slots
-    final assigned = _assignedBound(k, nRem);
-    final worn = _wornGain(nRem);
-    final bound = assigned + slot.dp[_budgetIndex(budgetLeft)] + slot.dpTail + nRem * vCur + worn;
-    if (_kDebugBound && nodeCount < 200) {
-      // ignore: avoid_print
-      print(
-        'DBG k=$k nRem=$nRem assigned=$assigned dp=${slot.dp[_budgetIndex(budgetLeft)]} '
-        'tail=${slot.dpTail} vcur=$nRem*$vCur W=$worn '
-        'bound=$bound threshold=$threshold best=$bestTotal items=${slot.items.length}',
-      );
-    }
-    if (bound < threshold) return;
-
-    final nextSlot = k + 1 < searchSlots.length ? searchSlots[k + 1] : null;
-    final nextDp = nextSlot == null ? 0.0 : nextSlot.dp[_budgetIndex(budgetLeft)] + nextSlot.dpTail;
-    // constants for the early-break bound (items are sorted by dpValue desc,
-    // so once the leading item cannot reach the threshold, none can)
-    final breakConst = assigned + (vConst + vCur) + (nRem - 1) * maxV + nextDp + (nRem - 1) * (vCur + maxV) + worn;
-
-    final items = slot.items;
-    for (int i = symStart; i < items.length; i++) {
-      final item = items[i];
-      if (breakConst + item.dpValue < threshold) break;
-      // cost 0 stays selectable even when the fixed part already exceeds budget
-      if (item.cost > math.max(budgetLeft, 0)) continue;
-      if (!_capacityOk(item)) continue;
-      // per-item pre-filter (tighter than the break: uses the item's own cost)
-      if (nextSlot != null) {
-        final pre =
-            assigned +
-            item.dpValue +
-            (vConst + vCur) +
-            (nRem - 1) * maxV +
-            nextSlot.dp[_budgetIndex(budgetLeft - item.cost)] +
-            nextSlot.dpTail +
-            (nRem - 1) * (vCur + item.flatValue + maxV) +
-            worn;
-        if (pre < threshold) continue;
-      }
-
-      _apply(k, slot, item);
-      int nextSym = 0;
-      if (nextSlot != null && nextSlot.isFreeOwn && slot.isFreeOwn && slot.group >= 0 && nextSlot.group == slot.group) {
-        nextSym = i;
-      }
-      _dfs(k + 1, nextSym);
-      _undo(k, slot, item);
-    }
-  }
-
-  /// Async twin of [_dfs] for the top [_kAsyncDepth] levels: identical search,
-  /// but it awaits between sibling subtrees so the UI isolate can render frames
-  /// while a long search runs. Deeper levels recurse through [_dfs].
-  ///
-  /// The two loops must stay in step — a divergence here silently changes
-  /// results. The only intentional differences are the recursion call (async vs
-  /// sync) and the yield check; the debug bound print is not duplicated.
-  Future<void> _dfsAsync(int k, int symStart) async {
-    if (k == searchSlots.length) {
-      _leaf();
-      return;
-    }
-    nodeCount++;
-    if (nodeCount - _phaseNodeStart > _phaseNodeCap) throw const _NodeCapExceeded();
-
-    final slot = searchSlots[k];
-    final threshold = (tieCapped ? bestTotal + 1 : bestTotal).toDouble();
-    final nRem = searchSlots.length - k;
-    final assigned = _assignedBound(k, nRem);
-    final worn = _wornGain(nRem);
-    final bound = assigned + slot.dp[_budgetIndex(budgetLeft)] + slot.dpTail + nRem * vCur + worn;
-    if (bound < threshold) return;
-
-    final nextSlot = k + 1 < searchSlots.length ? searchSlots[k + 1] : null;
-    final nextDp = nextSlot == null ? 0.0 : nextSlot.dp[_budgetIndex(budgetLeft)] + nextSlot.dpTail;
-    final breakConst = assigned + (vConst + vCur) + (nRem - 1) * maxV + nextDp + (nRem - 1) * (vCur + maxV) + worn;
-
-    final items = slot.items;
-    for (int i = symStart; i < items.length; i++) {
-      final item = items[i];
-      if (breakConst + item.dpValue < threshold) break;
-      if (item.cost > math.max(budgetLeft, 0)) continue;
-      if (!_capacityOk(item)) continue;
-      if (nextSlot != null) {
-        final pre =
-            assigned +
-            item.dpValue +
-            (vConst + vCur) +
-            (nRem - 1) * maxV +
-            nextSlot.dp[_budgetIndex(budgetLeft - item.cost)] +
-            nextSlot.dpTail +
-            (nRem - 1) * (vCur + item.flatValue + maxV) +
-            worn;
-        if (pre < threshold) continue;
-      }
-
-      _apply(k, slot, item);
-      int nextSym = 0;
-      if (nextSlot != null && nextSlot.isFreeOwn && slot.isFreeOwn && slot.group >= 0 && nextSlot.group == slot.group) {
-        nextSym = i;
-      }
-      if (k + 1 < _kAsyncDepth) {
-        await _dfsAsync(k + 1, nextSym);
-      } else {
-        _dfs(k + 1, nextSym);
-      }
-      _undo(k, slot, item);
-      // Yield with the search state fully unwound for this item.
-      if (_shouldYield()) await _yieldFrame();
-    }
-  }
-
-  bool _shouldYield() {
-    final interval = yieldInterval;
-    if (interval == null) return false;
-    return _yieldClock.elapsedMilliseconds - _lastYieldMs >= interval.inMilliseconds;
-  }
-
-  Future<void> _yieldFrame() async {
-    await Future<void>.delayed(_kYieldPause);
-    _lastYieldMs = _yieldClock.elapsedMilliseconds;
-  }
-
-  int _budgetIndex(int b) => math.max(b, 0).clamp(0, math.max(initialBudget, 0));
-
-  bool _capacityOk(_Item item) {
-    if (item.svtIdx >= 0 && svtRem[item.svtIdx] <= 0) return false;
-    for (final ci in item.ceConsumes) {
-      if (ceRem[ci] <= 0) return false;
-    }
-    return true;
-  }
-
-  /// Σ over initialized deferred slots of their optimistic (unfloored) value.
-  /// Future flat rate is capped by the per-slot flat caps of remaining items;
-  /// future targeted receipts are covered team-wide by [_targetedGain].
-  double _assignedBound(int k, int nRem) {
-    final tFuture = math.min(tUpper - tCur, flatCapSuffix[k]);
-    double sum = 0;
-    for (final d in deferred) {
-      final rate = math.min(d.rateExcl + tFuture, rateCap);
-      sum += d.base * (1 + d.front / 1000) * (1 + rate / 1000) + d.valueExcl + nRem * maxV;
-    }
-    return sum;
-  }
-
-  /// Receipts of already-worn targeted classes for not-yet-assigned slots.
-  /// Each remaining slot gains at most Σ(worn rates) × maxMult / 1000.
-  double _wornGain(int nRem) => nRem * wornRateSum * maxMult / 1000;
-
-  void _apply(int k, _SearchSlot slot, _Item item) {
-    while (_choices.length <= k) {
-      _choices.add(item);
-      _appliedNewlyWorn.add(false);
-      _appliedCreatedDeferred.add(false);
-    }
-    _choices[k] = item;
-    budgetLeft -= item.cost;
-    if (item.svtIdx >= 0) svtRem[item.svtIdx]--;
-    for (final ci in item.ceConsumes) {
-      ceRem[ci]--;
-    }
-
-    final fr = item.flatRate, fv = item.flatValue;
-    if (fr != 0 || fv != 0) {
-      tCur += fr;
-      vCur += fv;
-      for (final d in deferred) {
-        d.rateExcl += fr;
-        d.valueExcl += fv;
-      }
-    }
-    var newlyWorn = false;
-    if (item.targetedCeIdxs.isNotEmpty) {
-      for (final ci in item.targetedCeIdxs) {
-        if (wornTargeted.add(ci)) {
-          newlyWorn = true;
-          wornRateSum += _targetedClassRates[ci];
-        }
-      }
-      for (final d in deferred) {
-        for (final ci in item.targetedCeIdxs) {
-          final r = _recvTargetedRateForDeferred(ci, d);
-          d.rateExcl += r;
-          d.targetedWorn += r;
-        }
-      }
-    }
-    _appliedNewlyWorn[k] = newlyWorn;
-
-    var created = false;
-    if (slot.producesValue && (!slot.isFreeOwn || item.svt != null)) {
-      var wornRecv = 0;
-      if (item.svt != null) {
-        for (final ci in wornTargeted) {
-          wornRecv += item.svt!.ceTeamTargetRate[ci] - ceClasses[ci].flatTeamRate;
-        }
-      } else {
-        final cache = slot.fixedTargetedRecvMap;
-        for (final ci in wornTargeted) {
-          wornRecv += cache?[ci] ?? 0;
-        }
-      }
-      deferred.add(
-        _Deferred(
-            position: slot.position,
-            base: slot.base,
-            front: slot.front,
-            svtClass: item.svt,
-            fixedTraits: slot.fixedTraits,
-            fixedTargetedRecv: slot.fixedTargetedRecvMap,
-            targetedAll: slot.isFreeOwn ? item.targetedAll : slot.fixedTargetedAll,
-          )
-          ..rateExcl = tConst + tCur + item.selfRate + wornRecv
-          ..valueExcl = vConst + vCur + item.selfValue
-          ..targetedWorn = wornRecv,
-      );
-      created = true;
-    }
-    _appliedCreatedDeferred[k] = created;
-  }
-
-  int _recvTargetedRateForDeferred(int ci, _Deferred d) {
-    if (d.svtClass != null) {
-      return d.svtClass!.ceTeamTargetRate[ci] - ceClasses[ci].flatTeamRate;
-    }
-    return d.fixedTargetedRecv?[ci] ?? 0;
-  }
-
-  late final List<int> _targetedClassRates = [
-    for (final effects in ceTargeted)
-      () {
-        var rate = 0;
-        for (final e in effects) {
-          rate += e.rate;
-        }
-        return rate;
-      }(),
-  ];
-
-  void _undo(int k, _SearchSlot slot, _Item item) {
-    if (_appliedCreatedDeferred[k]) {
-      deferred.removeLast();
-      _appliedCreatedDeferred[k] = false;
-    }
-    if (item.targetedCeIdxs.isNotEmpty) {
-      for (final d in deferred) {
-        for (final ci in item.targetedCeIdxs) {
-          final r = _recvTargetedRateForDeferred(ci, d);
-          d.rateExcl -= r;
-          d.targetedWorn -= r;
-        }
-      }
-      if (_appliedNewlyWorn[k]) {
-        wornTargeted.removeAll(item.targetedCeIdxs);
-        for (final ci in item.targetedCeIdxs) {
-          wornRateSum -= _targetedClassRates[ci];
-        }
-        _appliedNewlyWorn[k] = false;
-      }
-    }
-    final fr = item.flatRate, fv = item.flatValue;
-    if (fr != 0 || fv != 0) {
-      tCur -= fr;
-      vCur -= fv;
-      for (final d in deferred) {
-        d.rateExcl -= fr;
-        d.valueExcl -= fv;
-      }
-    }
-    for (final ci in item.ceConsumes) {
-      ceRem[ci]++;
-    }
-    if (item.svtIdx >= 0) svtRem[item.svtIdx]++;
-    budgetLeft += item.cost;
-  }
-
-  void _leaf() {
-    var total = 0;
-    _leafSetPositions.clear();
-    for (final d in deferred) {
-      final v = _bondOf(d.base, d.front, d.rateExcl, d.valueExcl);
-      total += v;
-      _leafValues[d.position] = v;
-      _leafSetPositions.add(d.position);
-    }
-    if (total > bestTotal) {
-      bestTotal = total;
-      ties.clear();
-      ties.add(_snapshot());
-      tieCapped = false;
-    } else if (total == bestTotal && !tieCapped) {
-      ties.add(_snapshot());
-      if (ties.length >= _kTieCap) tieCapped = true;
-    }
-    for (final p in _leafSetPositions) {
-      _leafValues[p] = 0;
-    }
-  }
-
-  _TieRecord _snapshot() {
-    final choices = List<_Item>.of(_choices.take(searchSlots.length));
-    final values = List<int>.of(_leafValues);
-    return _TieRecord(choices, values, tCur, vCur);
-  }
-
-  /// Exact per-slot bond formula — mirrors `calcFormationBondResults`:
-  /// floor(base × (1 + front/1000)), then floor(× (1 + min(rate, cap)/1000)) + value.
-  /// The expressions are kept character-identical so double rounding matches.
-  int _bondOf(int base, int front, int rate, int value) {
-    int v = (base * (1 + front / 1000)).floor();
-    v = (v * (1 + math.min(rate, rateCap) / 1000)).floor();
-    return v + value;
-  }
-
-  // ================================================================================
-  // Result assembly
-  // ================================================================================
-
-  BondSolverResult _assembleResult(bool provenOptimal) {
-    final candidates = <BondSolutionCandidate>[];
-    for (final tie in ties) {
-      final slots = <BondSlotSolution>[];
-      // fixed own slots without searched CE dimensions
-      for (final fs in fixedOwnSlots) {
-        if (fs.needsSearch) continue; // represented by its search slot below
-        slots.add(
-          BondSlotSolution(
-            position: fs.position,
-            fixedSvtId: fs.svtId,
-            fixedCeId: fs.pinnedCeId,
-            fixedCe3Id: fs.pinnedCe3Id,
-            slotBond: fs.producesValue ? tie.values[fs.position] : 0,
-            slotCost: fs.slotCost,
-          ),
-        );
-      }
-      // support slot (only when its CE is pinned — searched support below)
-      if (hasSupportSlot && !supportEquipSearched) {
-        final deck = decks[supportPosition];
-        slots.add(
-          BondSlotSolution(
-            position: supportPosition,
+          teamRates: effect.teamRates,
+          teamValues: effect.teamValues,
+          wornCeCount: (ceId == null ? 0 : 1) + (grand && deck.equip3.ce != null ? 1 : 0),
+          symmetryOrder: order,
+          payload: _ItemPayload(
             isSupport: true,
-            fixedSvtId: deck.svt?.id,
-            fixedCeId: deck.equip1.ce?.id,
-            fixedCe3Id: deck.equip3.ce?.id,
-            slotBond: 0,
-            slotCost: 0,
+            fixedServant: false,
+            servantLimits: const {},
+            ce1LimitBreaks: ce?.limitBreaks ?? const {},
+            ce3LimitBreaks: grand && deck.equip3.ce != null ? {deck.equip3.ce!.id: deck.equip3.limitBreak} : const {},
+            supportCe1: ceId,
           ),
-        );
-      }
-      // search slots
-      var cost = fixedCost;
-      for (final (k, slot) in searchSlots.indexed) {
-        final item = tie.choices[k];
-        cost += item.cost;
-        if (slot.isFreeOwn) {
-          slots.add(
-            BondSlotSolution(
-              position: slot.position,
-              svtClass: item.svt,
-              ceClass: item.ces.isEmpty ? null : item.ces.first,
-              slotBond: item.svt == null ? 0 : tie.values[slot.position],
-              slotCost: item.cost,
-            ),
+        ),
+      );
+    }
+    return items;
+  }
+
+  List<BondSearchItem> _ownItems(int position, PlayerSvtData deck, bool grand) {
+    final fixedSvt = deck.svt != null;
+    final svts = fixedSvt ? [_fixedSvtClass(deck)] : _svtClasses;
+    final ce1 = deck.equip1.ce == null
+        ? <_CeClass?>[null, ..._ownedCeClasses]
+        : <_CeClass?>[_fixedCeClass(deck.equip1)];
+    final ce3 = grand
+        ? (deck.equip3.ce == null ? <_CeClass?>[null, ..._ownedCeClasses] : <_CeClass?>[_fixedCeClass(deck.equip3)])
+        : <_CeClass?>[null];
+    final bonus = option.svtBonus[position];
+    final items = <BondSearchItem>[];
+    var order = 0;
+    for (final svt in svts) {
+      for (final c1 in ce1) {
+        for (final c3 in ce3) {
+          final effect = _add(
+            _add(svt.eventEffect, c1?.byWearer[svt.profile] ?? _Contribution.zero(_profiles.length)),
+            c3?.byWearer[svt.profile] ?? _Contribution.zero(_profiles.length),
           );
-        } else if (slot.isSupport) {
-          slots.add(
-            BondSlotSolution(
-              position: slot.position,
-              isSupport: true,
-              fixedSvtId: slot.fixedSvtId,
-              fixedCe3Id: slot.fixedCe3Id,
-              supportCe: item.supportCe,
-              slotBond: 0,
-              slotCost: 0,
-            ),
-          );
-        } else {
-          // fixed servant + searched CE(s)
-          slots.add(
-            BondSlotSolution(
-              position: slot.position,
-              fixedSvtId: slot.fixedSvtId,
-              fixedCeId: slot.fixedCeId,
-              fixedCe3Id: slot.fixedCe3Id,
-              ceClass: item.ces.isEmpty ? null : item.ces.first,
-              ce3Class: item.ces.length > 1 ? item.ces.last : null,
-              slotBond: slot.producesValue ? tie.values[slot.position] : 0,
-              slotCost: slot.fixedSlotCost + item.cost,
+          final teamRates = List<int>.of(effect.teamRates);
+          if (fixedSvt && bonus.isBond15) {
+            for (var r = 0; r < teamRates.length; r++) {
+              teamRates[r] += 250;
+            }
+          }
+          final ceIds = <Set<int>>[];
+          if (c1 != null) ceIds.add(c1.limitBreaks.keys.toSet());
+          if (c3 != null) ceIds.add(c3.limitBreaks.keys.toSet());
+          items.add(
+            BondSearchItem(
+              cost: svt.cost + (c1?.cost ?? 0),
+              receiverProfile: fixedSvt && bonus.isBondReachLimit ? null : svt.profile,
+              selfRate: svt.campaignRate + effect.selfRate + bonus.addRate,
+              selfValue: effect.selfValue + bonus.addValue,
+              teamRates: teamRates,
+              teamValues: effect.teamValues,
+              servantIds: svt.limits.keys.toSet(),
+              ownedCeIds: ceIds,
+              servantClassIndex: svt.searchIndex,
+              ownedCeClassIndices: [
+                if (c1?.searchIndex != null) c1!.searchIndex!,
+                if (c3?.searchIndex != null) c3!.searchIndex!,
+              ],
+              symmetryOrder: order++,
+              payload: _ItemPayload(
+                isSupport: false,
+                fixedServant: fixedSvt,
+                servantLimits: svt.limits,
+                ce1LimitBreaks: c1?.limitBreaks ?? const {},
+                ce3LimitBreaks: c3?.limitBreaks ?? const {},
+              ),
             ),
           );
         }
       }
-      slots.sort((a, b) => a.position.compareTo(b.position));
-      candidates.add(
-        BondSolutionCandidate(
-          totalBond: bestTotal,
-          totalCost: cost,
-          teamRate: tConst + tie.tCur,
-          teamValue: vConst + tie.vCur,
-          slots: slots,
+    }
+    if (!fixedSvt && deck.equip1.ce == null) {
+      items.add(
+        BondSearchItem(
+          cost: 0,
+          receiverProfile: null,
+          selfRate: 0,
+          selfValue: 0,
+          teamRates: List.filled(_profiles.length, 0),
+          teamValues: List.filled(_profiles.length, 0),
+          symmetryOrder: order,
+          payload: const _ItemPayload(
+            isSupport: false,
+            fixedServant: false,
+            servantLimits: {},
+            ce1LimitBreaks: {},
+            ce3LimitBreaks: {},
+          ),
         ),
       );
     }
-    final best = candidates.first;
-    return BondSolverResult(
-      totalBond: bestTotal,
-      totalCost: best.totalCost,
-      teamRate: best.teamRate,
-      teamValue: best.teamValue,
-      provenOptimal: provenOptimal,
-      warnings: warnings,
-      candidates: candidates,
-      fixedCost: fixedCost,
-      budget: initialBudget,
-      nodeCount: nodeCount,
+    return items;
+  }
+
+  _SvtClass _fixedSvtClass(PlayerSvtData deck) {
+    final svt = deck.svt!;
+    final traits = _traits(svt, deck.limitCount);
+    final profile = _profileOf(traits);
+    return _SvtClass(
+      _svtCost(svt, deck.limitCount),
+      profile,
+      _campaignRate(svt.id),
+      _contribution(_eventEffects(svt), traits),
+      {svt.id: deck.limitCount},
     );
+  }
+
+  _CeClass _fixedCeClass(SvtEquipData equip) {
+    final variant = _ceVariant(equip.ce!, equip.limitBreak);
+    return _CeClass(
+      equip.ce!.cost,
+      [for (final traits in _profiles) _contribution(variant.ownEffects, traits)],
+      {equip.ce!.id: equip.limitBreak},
+    );
+  }
+
+  BondSolvedTeam _expand(BondSearchWitness witness) {
+    final slots = <BondSolvedSlot>[];
+    for (final (p, item) in witness.items.indexed) {
+      final payload = item.payload! as _ItemPayload;
+      final svtId = witness.servantIds[p];
+      final chosenCes = witness.ownedCeIds[p];
+      var ci = 0;
+      BondSolvedCe? ce1, ce3;
+      if (payload.isSupport) {
+        final id = payload.supportCe1;
+        if (id != null) ce1 = BondSolvedCe(id, payload.ce1LimitBreaks[id]!);
+        final id3 = payload.ce3LimitBreaks.keys.firstOrNull;
+        if (id3 != null) ce3 = BondSolvedCe(id3, payload.ce3LimitBreaks[id3]!);
+      } else {
+        if (payload.ce1LimitBreaks.isNotEmpty) {
+          final id = chosenCes[ci++];
+          ce1 = BondSolvedCe(id, payload.ce1LimitBreaks[id]!);
+        }
+        if (payload.ce3LimitBreaks.isNotEmpty) {
+          final id = chosenCes[ci++];
+          ce3 = BondSolvedCe(id, payload.ce3LimitBreaks[id]!);
+        }
+      }
+      slots.add(
+        BondSolvedSlot(
+          position: p,
+          servantId: svtId,
+          limitCount: svtId == null ? null : payload.servantLimits[svtId],
+          equip1: ce1,
+          equip3: ce3,
+          isSupport: payload.isSupport,
+          fixedServant: payload.fixedServant,
+          bond: witness.slotBonds[p],
+          cost: item.cost,
+          servantCandidates: payload.servantLimits.keys.toList()..sort(),
+          equip1Candidates: payload.ce1LimitBreaks.keys.toList()..sort(),
+          equip3Candidates: payload.ce3LimitBreaks.keys.toList()..sort(),
+          servantVariants: payload.servantLimits,
+          equip1Variants: payload.ce1LimitBreaks,
+          equip3Variants: payload.ce3LimitBreaks,
+        ),
+      );
+    }
+    return BondSolvedTeam(witness.totalBond, witness.totalCost, slots);
+  }
+
+  List<int> _traits(Servant svt, int limit) {
+    final traits = List<int>.of(svt.getAscended(limit, (a) => a.individuality2) ?? svt.traits);
+    for (final add in svt.traitAdd) {
+      if (add.eventId != 0 && add.eventId != _eventId) continue;
+      if (add.limitCount != -1 && svt.battleCharaToLimitCount(limit) != add.limitCount) continue;
+      traits.addAll(add.trait);
+    }
+    return traits.toSet().toList()..sort();
+  }
+
+  bool _matchesQuestRestrictions(List<int> traits) {
+    for (final restriction in _questIndivRestrictions) {
+      if (!Restriction.checkSvtIndiv(restriction.rangeType, restriction.targetVals, traits)) return false;
+    }
+    return true;
+  }
+
+  int _svtCost(Servant svt, int limit) => svt.getAscended(limit, (a) => a.overwriteCost) ?? svt.cost;
+
+  int _campaignRate(int svtId) {
+    var rate = 0;
+    for (final eventEntry in option.campaigns.entries) {
+      final event = db.gameData.events[eventEntry.key];
+      if (event == null) continue;
+      for (final campaignEntry in eventEntry.value.entries) {
+        if (!campaignEntry.value) continue;
+        for (final campaign in event.campaigns) {
+          if (campaign.idx != campaignEntry.key || !campaign.targetIds.contains(svtId)) continue;
+          switch (campaign.calcType) {
+            case EventCombineCalc.addition:
+              rate += math.max(0, campaign.value);
+            case EventCombineCalc.multiplication:
+              rate += math.max(0, campaign.value - 1000);
+            case EventCombineCalc.fixedValue:
+            case EventCombineCalc.none:
+              break;
+          }
+        }
+      }
+    }
+    return rate;
+  }
+
+  List<CeBondEffect> _eventEffects(Servant svt) => _eventCache.putIfAbsent(svt.id, () {
+    if (!option.enableEvent) return const [];
+    // The solver models event servant bonuses as effects earned by that
+    // servant. Team-wide extra passives (currently Mash only, besides the
+    // separately configured Bond 15 skill) are outside the requested scope.
+    return _extractEffects(
+      resolveBondEventSkills(svt, quest),
+      support: false,
+    ).where((effect) => effect.scope == BondEffectScope.self).toList();
+  });
+
+  _CeVariant _ceVariant(CraftEssence ce, bool lb) {
+    return _ceCache.putIfAbsent('${ce.id}|$lb', () {
+      final skills = ce.getActivatedSkills(lb).values.expand((e) => e).toList();
+      return _CeVariant(
+        ce,
+        lb,
+        _extractEffects(skills, support: false, ceId: ce.id),
+        _extractEffects(skills, support: true, ceId: ce.id),
+      );
+    });
+  }
+
+  List<CeBondEffect> _extractEffects(Iterable<NiceSkill> skills, {required bool support, int? ceId}) {
+    final effects = <CeBondEffect>[];
+    for (final skill in skills) {
+      for (final func in skill.functions) {
+        if (func.funcType != FuncType.servantFriendshipUp) continue;
+        if (func.funcquestTvals.isNotEmpty &&
+            !Individuality.checkSignedIndivPartialMatch(self: _questTraits, signedTarget: func.funcquestTvals)) {
+          continue;
+        }
+        final vals = support ? (func.followerVals?.firstOrNull ?? func.svals.firstOrNull) : func.svals.firstOrNull;
+        if (vals == null) continue;
+        if (support && vals.ApplySupportSvt == 0) continue;
+        if (vals.EventId != null && vals.EventId != 0 && vals.EventId != _eventId) continue;
+        final rate = vals.RateCount ?? 0;
+        final value = vals.AddCount ?? 0;
+        if (rate == 0 && value == 0) continue;
+        final scope = switch (func.funcTargetType) {
+          FuncTargetType.self when ceId == kHeroicSpiritPortraitDariusCeId => BondEffectScope.team,
+          FuncTargetType.self => BondEffectScope.self,
+          FuncTargetType.ptFull => BondEffectScope.team,
+          _ => null,
+        };
+        if (scope == null) continue; // manual page does not target other scopes
+        final targetOrAll = func.getOverwriteTvalsList();
+        effects.add(
+          CeBondEffect(
+            scope: scope,
+            rate: rate,
+            value: value,
+            wearerActIndiv: skill.actIndividuality,
+            wearerRequiredIndiv: vals.Individuality ?? 0,
+            targetOrAll: targetOrAll,
+            targetPartial: targetOrAll.isEmpty ? func.functvals : const [],
+          ),
+        );
+      }
+    }
+    return effects;
+  }
+
+  _Contribution _contribution(List<CeBondEffect> effects, List<int> wearerTraits) {
+    var selfRate = 0, selfValue = 0;
+    final teamRates = List<int>.filled(_profiles.length, 0);
+    final teamValues = List<int>.filled(_profiles.length, 0);
+    for (final effect in effects) {
+      if (!effect.wearerMatches(wearerTraits)) continue;
+      if (effect.scope == BondEffectScope.self) {
+        if (effect.targetMatches(wearerTraits)) {
+          selfRate += effect.rate;
+          selfValue += effect.value;
+        }
+      } else {
+        for (final (r, targetTraits) in _profiles.indexed) {
+          if (!effect.targetMatches(targetTraits)) continue;
+          teamRates[r] += effect.rate;
+          teamValues[r] += effect.value;
+        }
+      }
+    }
+    return _Contribution(selfRate, selfValue, teamRates, teamValues);
+  }
+
+  _Contribution _add(_Contribution a, _Contribution b) => _Contribution(
+    a.selfRate + b.selfRate,
+    a.selfValue + b.selfValue,
+    [for (var i = 0; i < _profiles.length; i++) a.teamRates[i] + b.teamRates[i]],
+    [for (var i = 0; i < _profiles.length; i++) a.teamValues[i] + b.teamValues[i]],
+  );
+}
+
+class _SvtVariant {
+  final Servant svt;
+  final int limitCount;
+  final int cost;
+  final List<int> traits;
+  final List<CeBondEffect> eventEffects;
+  final int campaignRate;
+  const _SvtVariant(this.svt, this.limitCount, this.cost, this.traits, this.eventEffects, this.campaignRate);
+}
+
+class _CeVariant {
+  final CraftEssence ce;
+  final bool lb;
+  final List<CeBondEffect> ownEffects;
+  final List<CeBondEffect> supportEffects;
+  const _CeVariant(this.ce, this.lb, this.ownEffects, this.supportEffects);
+}
+
+class _SvtClass {
+  final int cost;
+  final int profile;
+  final int campaignRate;
+  final _Contribution eventEffect;
+  final Map<int, int> limits;
+  int? searchIndex;
+  _SvtClass(this.cost, this.profile, this.campaignRate, this.eventEffect, this.limits);
+}
+
+class _CeClass {
+  final int cost;
+  final List<_Contribution> byWearer;
+  final Map<int, bool> limitBreaks;
+  int? searchIndex;
+  _CeClass(this.cost, this.byWearer, this.limitBreaks);
+
+  bool get placementInvariant {
+    if (byWearer.isEmpty) return false;
+    final first = byWearer.first;
+    if (first.selfRate != 0 || first.selfValue != 0) return false;
+    for (final contribution in byWearer.skip(1)) {
+      if (contribution.selfRate != 0 || contribution.selfValue != 0) return false;
+      if (!_sameInts(first.teamRates, contribution.teamRates) ||
+          !_sameInts(first.teamValues, contribution.teamValues)) {
+        return false;
+      }
+    }
+    return true;
+  }
+}
+
+bool _sameInts(List<int> a, List<int> b) {
+  if (a.length != b.length) return false;
+  for (var i = 0; i < a.length; i++) {
+    if (a[i] != b[i]) return false;
+  }
+  return true;
+}
+
+class _Contribution {
+  final int selfRate;
+  final int selfValue;
+  final List<int> teamRates;
+  final List<int> teamValues;
+  const _Contribution(this.selfRate, this.selfValue, this.teamRates, this.teamValues);
+
+  factory _Contribution.zero(int profiles) =>
+      _Contribution(0, 0, List<int>.filled(profiles, 0), List<int>.filled(profiles, 0));
+
+  bool get isZero =>
+      selfRate == 0 && selfValue == 0 && teamRates.every((e) => e == 0) && teamValues.every((e) => e == 0);
+
+  String get signature => '$selfRate|$selfValue|${teamRates.join(',')}|${teamValues.join(',')}';
+}
+
+class _ItemPayload {
+  final bool isSupport;
+  final bool fixedServant;
+  final Map<int, int> servantLimits;
+  final Map<int, bool> ce1LimitBreaks;
+  final Map<int, bool> ce3LimitBreaks;
+  final int? supportCe1;
+
+  const _ItemPayload({
+    required this.isSupport,
+    required this.fixedServant,
+    required this.servantLimits,
+    required this.ce1LimitBreaks,
+    required this.ce3LimitBreaks,
+    this.supportCe1,
+  });
+}
+
+class _SearchInput {
+  final BondSearchProblem problem;
+  final int? maxNodes;
+  final int maxTies;
+  const _SearchInput(this.problem, this.maxNodes, this.maxTies);
+}
+
+BondSearchResult _runPreparedBondSearch(_SearchInput input) =>
+    BondSearch.solve(input.problem, maxNodes: input.maxNodes, maxTies: input.maxTies);
+
+class _ProgressInput {
+  final SendPort port;
+  final BondSearchProblem general;
+  final _CeFirstProblem? ceFirst;
+
+  const _ProgressInput(this.port, this.general, this.ceFirst);
+}
+
+void _runProgressiveBondSearch(_ProgressInput input) {
+  try {
+    if (input.ceFirst != null) {
+      final clock = Stopwatch()..start();
+      var lastReport = -200;
+      final result = _CeFirstSearch(input.ceFirst!).solve(
+        onProgress: (progress) {
+          if (clock.elapsedMilliseconds - lastReport < 200) return;
+          input.port.send(<Object?>['ce', progress]);
+          lastReport = clock.elapsedMilliseconds;
+        },
+      );
+      input.port.send(<Object?>['ce', result]);
+    } else {
+      final result = BondSearch.solve(
+        input.general,
+        onProgress: (progress) => input.port.send(<Object?>['general', progress]),
+      );
+      input.port.send(<Object?>['general', result]);
+    }
+  } catch (e) {
+    input.port.send(<Object?>['error', e.toString()]);
+  } finally {
+    input.port.send(<Object?>['done', null]);
   }
 }

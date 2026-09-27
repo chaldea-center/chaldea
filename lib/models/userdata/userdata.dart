@@ -177,8 +177,6 @@ class User {
 
   FormationBondOption formationBondOption;
 
-  BondSolverOptions bondSolverOptions;
-
   String? lastImportId;
 
   User({
@@ -204,7 +202,6 @@ class User {
     SaintQuartzPlan? saintQuartzPlan,
     BattleSimUserData? battleSim,
     FormationBondOption? formationBondOption,
-    BondSolverOptions? bondSolverOptions,
     this.lastImportId,
   }) : id = id ?? const Uuid().v4(),
        servants = servants ?? {},
@@ -223,8 +220,7 @@ class User {
        luckyBagSvtScores = luckyBagSvtScores ?? {},
        saintQuartzPlan = saintQuartzPlan ?? SaintQuartzPlan(),
        battleSim = battleSim ?? BattleSimUserData(),
-       formationBondOption = formationBondOption ?? FormationBondOption(),
-       bondSolverOptions = bondSolverOptions ?? BondSolverOptions();
+       formationBondOption = formationBondOption ?? FormationBondOption();
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 

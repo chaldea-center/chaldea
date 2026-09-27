@@ -1353,11 +1353,6 @@ class S {
     return Intl.message('Bond Limit', name: 'bond_limit', desc: '', locale: localeName, args: []);
   }
 
-  /// `Solver`
-  String get bond_solver {
-    return Intl.message('Solver', name: 'bond_solver', desc: '', locale: localeName, args: []);
-  }
-
   /// `Bootstrap Page`
   String get bootstrap_page_title {
     return Intl.message('Bootstrap Page', name: 'bootstrap_page_title', desc: '', locale: localeName, args: []);

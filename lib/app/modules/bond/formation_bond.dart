@@ -1,4 +1,7 @@
+import 'dart:async';
 import 'dart:math';
+
+import 'package:flutter/foundation.dart' show debugPrint, kDebugMode;
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -7,6 +10,8 @@ import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/battle/models/user.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
+import 'package:chaldea/app/modules/craft_essence/craft_list.dart';
+import 'package:chaldea/app/modules/servant/servant_list.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/individuality.dart' show Individuality;
 import 'package:chaldea/models/models.dart';
@@ -14,6 +19,9 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 import '../battle/formation/team.dart';
+import 'bond_effect_corrections.dart';
+import 'solver/solver.dart';
+import 'solver/widgets.dart';
 
 const int _kMaxSvtNum = 6;
 
@@ -50,9 +58,74 @@ class SvtBondBonusResult {
   }
 }
 
+/// Runtime state for the page. The persisted settings live in [FormationBondOption].
+class _FormationBondRuntime {
+  _FormationBondRuntime({required this.userBacked});
+
+  final bool userBacked;
+  bool restored = false;
+  BondSolverResult? solverResult;
+  QuestPhase? resultQuest;
+  String? solverError;
+  bool solving = false;
+  bool searchCompleted = false;
+  bool showAllCandidates = false;
+  StreamSubscription<BondSolverResult>? search;
+  Timer? elapsedTicker;
+  Stopwatch? solveClock;
+  int searchRevision = 0;
+  int lastDebugSecond = -1;
+
+  void stopSearch() {
+    searchRevision++;
+    search?.cancel();
+    elapsedTicker?.cancel();
+    solveClock?.stop();
+  }
+
+  void clearResults() {
+    solverResult = null;
+    resultQuest = null;
+    solverError = null;
+    solving = false;
+    searchCompleted = false;
+    showAllCandidates = false;
+  }
+
+  void logProgress(BondSolverResult solved) {
+    if (!kDebugMode) return;
+    final second = solved.elapsedMilliseconds ~/ 1000;
+    if (second == lastDebugSecond && !solved.provenOptimal) return;
+    lastDebugSecond = second;
+    debugPrint(
+      '[BondSolver] ${solved.possibleCombinations == null ? "general" : "CE-first"} '
+      'elapsed=${solved.elapsedMilliseconds}ms steps=${solved.visitedNodes}'
+      '${solved.possibleCombinations == null ? "" : "/${solved.possibleCombinations}"} '
+      'best=${solved.best?.totalBond} proven=${solved.provenOptimal}',
+    );
+  }
+
+  String get status {
+    final solved = solverResult;
+    if (solving) {
+      if (solved == null) return 'Preparing search candidates…';
+      if (solved.provenOptimal) return 'Maximum proven; collecting result representatives…';
+      if (solved.best == null) return 'Searching for a feasible team…';
+      return 'Best team found; still proving the maximum…';
+    }
+    if (solverError != null) return 'Search failed';
+    if (solved == null) return 'Ready to search';
+    if (solved.provenOptimal) {
+      return searchCompleted
+          ? 'Maximum proven · Search complete'
+          : 'Maximum proven · Representative collection stopped';
+    }
+    return 'Search stopped · Maximum not proven';
+  }
+}
+
 class FormationBondTab extends StatefulWidget {
-  /// null: persistent instance backed by `db.userData.formationBondOption`, saved on dispose;
-  /// non-null: temporary instance (e.g. opened from battle simulation), never written back.
+  /// Callers supply a temporary option if edits must not affect the current user.
   final FormationBondOption? option;
   const FormationBondTab({super.key, this.option});
 
@@ -61,26 +134,36 @@ class FormationBondTab extends StatefulWidget {
 }
 
 class _FormationBondTabState extends State<FormationBondTab> {
-  late final FormationBondOption option;
+  late final User _user = db.userData.curUser;
+  late final FormationBondOption option = widget.option ?? _user.formationBondOption;
+  late final _FormationBondRuntime _runtime = _FormationBondRuntime(userBacked: widget.option == null);
   // runtime formation, converted from/to [FormationBondOption.teamFormation] on load/save
   final BattleTeamSetup formation = BattleTeamSetup();
   QuestPhase? questEntity;
+  Region get _region => db.settings.resolvedPreferredRegions.firstOrNull ?? Region.jp;
 
-  /// False until [restore] finishes. [dispose] refuses to persist before then,
-  /// otherwise leaving the tab mid-restore would overwrite the stored
-  /// formation with the still-empty runtime one.
-  bool _restored = false;
+  void updateSharedInput(VoidCallback change) {
+    if (!mounted) return;
+    final hadSearch = _runtime.solving || _runtime.solverResult != null;
+    _runtime.stopSearch();
+    setState(() {
+      change();
+      _runtime.clearResults();
+    });
+    if (hadSearch) EasyLoading.showToast('Search results are outdated. Solve again.');
+  }
 
   @override
   void initState() {
     super.initState();
-    option = widget.option ?? db.userData.curUser.formationBondOption;
+    if (_runtime.userBacked && option.teamFormation.svts.every((svt) => svt == null)) {
+      option.teamFormation.svts[2] = SvtSaveData(supportType: SupportSvtType.friend);
+    }
     restore();
   }
 
-  /// Restore the two non-JSON runtime values (team setup, quest entity) from persisted option.
+  /// Restore the two non-JSON runtime values (team setup, quest entity) from the option.
   /// Quest resolution falls back to network; on failure the quest is cleared but other settings kept.
-  /// All other fields are referenced directly on [option], no conversion needed.
   Future<void> restore() async {
     final questInfo = option.quest;
     if (questInfo != null) {
@@ -99,17 +182,18 @@ class _FormationBondTabState extends State<FormationBondTab> {
       ..clear()
       ..addAll(svts);
     formation.mysticCodeData.loadStoredData(saved.mysticCode);
-    _restored = true;
+    _runtime.restored = true;
     if (mounted) setState(() {});
   }
 
   @override
   void dispose() {
-    if (widget.option == null && _restored) saveData();
+    _runtime.stopSearch();
+    if (_runtime.restored) saveData();
     super.dispose();
   }
 
-  /// Persist runtime formation/quest back into [option]. Only called for the persistent instance.
+  /// Persist runtime formation/quest into the option supplied to this page.
   void saveData() {
     option.teamFormation = formation.toFormationData();
     option.quest = questEntity == null ? null : BattleQuestInfo.quest(questEntity!);
@@ -123,8 +207,155 @@ class _FormationBondTabState extends State<FormationBondTab> {
 
   String strTime(int t) => t.sec2date().toStringShort(omitSec: true);
 
+  FormationBondOption _buildSolverRequest(QuestPhase quest, BattleTeamSetup team) {
+    final solveOption = FormationBondOption.fromJson(option.toJson());
+    validateFormationBondOption(solveOption, quest);
+    solveOption
+      ..quest = BattleQuestInfo.quest(quest)
+      ..teamFormation = team.toFormationData();
+    return solveOption;
+  }
+
+  Future<void> solve() async {
+    if (!_runtime.restored) return;
+    final selectedQuest = questEntity;
+    if (selectedQuest == null) {
+      setState(() => _runtime.solverError = 'Select a quest first');
+      return;
+    }
+    if (_runtime.userBacked && db.userData.curUser.id != _user.id) {
+      setState(() => _runtime.solverError = 'The active user changed. Reopen this page before solving.');
+      return;
+    }
+    final revision = ++_runtime.searchRevision;
+    await _runtime.search?.cancel();
+    if (!mounted || revision != _runtime.searchRevision) return;
+    setState(() {
+      _runtime.clearResults();
+      _runtime.solving = true;
+    });
+    QuestPhase? fullQuest;
+    try {
+      // The bundled quest-phase table omits restrictions. Fetch its full form.
+      fullQuest = identical(selectedQuest, db.gameData.getQuestPhase(selectedQuest.id, selectedQuest.phase))
+          ? await AtlasApi.questPhase(selectedQuest.id, selectedQuest.phase, expireAfter: const Duration(days: 7))
+          : selectedQuest;
+    } catch (e) {
+      if (!mounted || revision != _runtime.searchRevision) return;
+      setState(() {
+        _runtime.solving = false;
+        _runtime.solverError = 'Cannot load quest restrictions: $e';
+      });
+      return;
+    }
+    if (!mounted || revision != _runtime.searchRevision) return;
+    if (fullQuest == null) {
+      setState(() {
+        _runtime.solving = false;
+        _runtime.solverError = 'Cannot load quest restrictions';
+      });
+      return;
+    }
+    _runtime.resultQuest = fullQuest;
+    final solveFormation = formation.copy();
+    final solveOption = _buildSolverRequest(fullQuest, solveFormation);
+    if (_runtime.userBacked) {
+      saveData();
+      await db.saveUserData();
+    }
+    if (!mounted || revision != _runtime.searchRevision) return;
+    _runtime.solveClock = Stopwatch()..start();
+    _runtime.lastDebugSecond = -1;
+    _runtime.elapsedTicker?.cancel();
+    _runtime.elapsedTicker = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (mounted && _runtime.solving) setState(() {});
+    });
+    if (kDebugMode) debugPrint('[BondSolver] search started: quest ${fullQuest.id}/${fullQuest.phase}');
+    _runtime.search =
+        FormationBondSolver.solveProgressively(
+          option: solveOption,
+          quest: fullQuest,
+          formation: solveFormation,
+          region: _region,
+        ).listen(
+          (solved) {
+            if (!mounted || revision != _runtime.searchRevision) return;
+            setState(() => _runtime.solverResult = solved);
+            _runtime.logProgress(solved);
+          },
+          onError: (Object e) {
+            if (!mounted || revision != _runtime.searchRevision) return;
+            setState(() {
+              _runtime.solverError = e.toString();
+              _runtime.solving = false;
+              _runtime.searchCompleted = false;
+            });
+            _runtime.elapsedTicker?.cancel();
+            _runtime.solveClock?.stop();
+            if (kDebugMode) debugPrint('[BondSolver] search failed: $e');
+          },
+          onDone: () {
+            if (!mounted || revision != _runtime.searchRevision) return;
+            setState(() {
+              _runtime.solving = false;
+              _runtime.searchCompleted = true;
+            });
+            _runtime.elapsedTicker?.cancel();
+            _runtime.solveClock?.stop();
+            if (kDebugMode) debugPrint('[BondSolver] search finished: proven=${_runtime.solverResult?.provenOptimal}');
+          },
+        );
+  }
+
+  void cancelSolve() {
+    _runtime.stopSearch();
+    if (kDebugMode) debugPrint('[BondSolver] search cancelled: proven=${_runtime.solverResult?.provenOptimal}');
+    setState(() {
+      _runtime.solving = false;
+      _runtime.searchCompleted = false;
+    });
+  }
+
+  void _editNumber(String title, int? initial, void Function(int) update) {
+    InputCancelOkDialog.number(
+      title: title,
+      initValue: initial,
+      validate: (v) => v >= 0,
+      onSubmit: (v) => updateSharedInput(() => update(v)),
+    ).showDialog(context);
+  }
+
+  void _addExcludedServant() {
+    Navigator.of(context).push<void>(
+      MaterialPageRoute(
+        builder: (_) => ServantListPage(
+          filterData: SvtFilterData(useGrid: true),
+          onSelected: (servant) {
+            if (mounted) updateSharedInput(() => option.excludedSvts.add(servant.id));
+          },
+        ),
+      ),
+    );
+  }
+
+  void _addExcludedCe() {
+    Navigator.of(context).push<void>(
+      MaterialPageRoute(
+        builder: (_) => CraftListPage(
+          filterData: CraftFilterData(useGrid: true)..obtain.options = {CEObtain.davinciBondBonus},
+          onSelected: (ce) {
+            if (mounted) updateSharedInput(() => option.excludedCes.add(ce.id));
+          },
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (_runtime.userBacked && db.userData.curUser.id != _user.id) {
+      return const Center(child: Text('The active user changed. Reopen Bond Bonus to load this user’s team.'));
+    }
     final quest = questEntity;
     final eventId = quest?.logicEventId;
     final eventSkillIds = {
@@ -150,13 +381,12 @@ class _FormationBondTabState extends State<FormationBondTab> {
     }
     return ListView(
       children: [
+        _BondQuestPicker(quest: quest, onChanged: (v) => updateSharedInput(() => questEntity = v)),
         TeamSetupCard(
           formation: formation,
           quest: quest,
           playerRegion: Region.jp,
-          onChanged: () {
-            if (mounted) setState(() {});
-          },
+          onChanged: () => updateSharedInput(() {}),
         ),
         DividerWithTitle(title: '${S.current.general_custom} / ${S.current.bond} 15 / ${S.current.bond_limit}'),
         Row(
@@ -192,44 +422,69 @@ class _FormationBondTabState extends State<FormationBondTab> {
           ),
         ),
         DividerWithTitle(title: S.current.settings_tab_name),
-        BondQuestPicker(
-          quest: quest,
-          onChanged: (v) {
-            questEntity = v;
-            if (mounted) setState(() {});
-          },
-        ),
-        DividerWithTitle(title: S.current.event, indent: 16),
-        SwitchListTile.adaptive(
-          dense: true,
-          title: Text(S.current.event_skill),
-          subtitle: eventSkillIds.isEmpty ? null : Text('${db.gameData.events[eventId]?.lShortName.l ?? eventId}'),
-          value: option.enableEvent,
-          onChanged: (v) {
-            setState(() {
-              option.enableEvent = v;
-            });
-          },
-        ),
-        if (eventSkillIds.isNotEmpty)
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Wrap(
-              spacing: 8,
-              runSpacing: 4,
-              children: [
-                for (final skillId in eventSkillIds)
-                  Text.rich(
-                    SharedBuilder.textButtonSpan(
-                      context: context,
-                      text: db.gameData.baseSkills[skillId]?.lName.l ?? skillId.toString(),
-                      onTap: () => router.push(url: Routes.skillI(skillId)),
-                    ),
-                    style: TextStyle(fontSize: 12),
-                  ),
-              ],
+        SimpleAccordion(
+          headerBuilder: (context, expanded) => ListTile(
+            dense: true,
+            title: Text(S.current.event),
+            subtitle: Text(
+              '${(option.enableEvent ? 1 : 0) + eventCampaignToggles.where((entry) => entry.$3).length}'
+              '/${eventCampaignToggles.length + 1} enabled',
             ),
           ),
+          contentBuilder: (context) => Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SwitchListTile.adaptive(
+                dense: true,
+                title: Text(S.current.event_skill),
+                subtitle: eventSkillIds.isEmpty
+                    ? null
+                    : Text('${db.gameData.events[eventId]?.lShortName.l ?? eventId}'),
+                value: option.enableEvent,
+                onChanged: (v) => updateSharedInput(() => option.enableEvent = v),
+              ),
+              if (eventSkillIds.isNotEmpty)
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Wrap(
+                    spacing: 8,
+                    runSpacing: 4,
+                    children: [
+                      for (final skillId in eventSkillIds)
+                        Text.rich(
+                          SharedBuilder.textButtonSpan(
+                            context: context,
+                            text: db.gameData.baseSkills[skillId]?.lName.l ?? skillId.toString(),
+                            onTap: () => router.push(url: Routes.skillI(skillId)),
+                          ),
+                          style: TextStyle(fontSize: 12),
+                        ),
+                    ],
+                  ),
+                ),
+              for (final (event, campaign, enabled) in eventCampaignToggles)
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: SwitchListTile.adaptive(
+                        dense: true,
+                        title: Text(event.lShortName.l),
+                        subtitle: Text(
+                          '${S.current.bond} ${campaign.calcType.operatorText}${campaign.value.format(percent: true, base: 10)}'
+                          '\n${strTime(event.startedAt)}~${strTime(event.endedAt)}',
+                        ),
+                        value: enabled,
+                        onChanged: (v) =>
+                            updateSharedInput(() => (option.campaigns[event.id] ??= {})[campaign.idx] = v),
+                      ),
+                    ),
+                    IconButton(onPressed: event.routeTo, icon: Icon(DirectionalIcons.keyboard_arrow_forward(context))),
+                  ],
+                ),
+            ],
+          ),
+        ),
         DividerWithTitle(title: 'misc', indent: 16),
         ListTile(
           dense: true,
@@ -260,38 +515,109 @@ class _FormationBondTabState extends State<FormationBondTab> {
           subtitle: Text(
             '${Transl.funcTargetType(FuncTargetType.self).l}+20%; [${S.current.support_servant_short}] ${Transl.funcTargetType(FuncTargetType.ptFull).l} +4%',
           ),
-          onChanged: (v) {
-            setState(() {
-              option.frontlineBonus = v;
-            });
-          },
+          onChanged: (v) => updateSharedInput(() => option.frontlineBonus = v),
         ),
-        if (eventCampaignToggles.isNotEmpty) DividerWithTitle(title: S.current.event_campaign, indent: 16),
-        for (final (event, campaign, enabled) in eventCampaignToggles)
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Expanded(
-                child: SwitchListTile.adaptive(
-                  dense: true,
-                  title: Text(event.lShortName.l),
-                  subtitle: Text(
-                    '${S.current.bond} ${campaign.calcType.operatorText}${campaign.value.format(percent: true, base: 10)}'
-                    '\n${strTime(event.startedAt)}~${strTime(event.endedAt)}',
-                  ),
-                  value: enabled,
-                  onChanged: (v) {
-                    setState(() {
-                      (option.campaigns[event.id] ??= {})[campaign.idx] = v;
-                    });
-                  },
-                ),
-              ),
-              IconButton(onPressed: event.routeTo, icon: Icon(DirectionalIcons.keyboard_arrow_forward(context))),
-            ],
-          ),
+        ..._solverSection(),
       ],
     );
+  }
+
+  List<Widget> _solverSection() {
+    final standardCost = ConstData.userLevel[ConstData.maxUserLevel]?.maxCost ?? 0;
+    return [
+      const DividerWithTitle(title: 'Solver settings', indent: 16),
+      ListTile(
+        dense: true,
+        title: const Text('Max COST'),
+        subtitle: Text(
+          option.maxCost == null ? '$standardCost (standard)' : '${option.maxCost}/$standardCost (custom / standard)',
+        ),
+        onTap: () => _editNumber(
+          'Max COST (0 = default)',
+          option.maxCost ?? standardCost,
+          (v) => option.maxCost = v == 0 ? null : v,
+        ),
+      ),
+      SwitchListTile.adaptive(
+        dense: true,
+        title: const Text('Exclude unreleased'),
+        subtitle: Text('Servants and craft essences · ${_region.upper}'),
+        value: option.excludeUnreleased,
+        onChanged: (v) => updateSharedInput(() => option.excludeUnreleased = v),
+      ),
+      const DividerWithTitle(title: 'Servant filters', indent: 16),
+      SwitchListTile.adaptive(
+        dense: true,
+        title: const Text('Favorite servants only'),
+        value: option.favoriteOnly,
+        onChanged: (v) => updateSharedInput(() => option.favoriteOnly = v),
+      ),
+      ListTile(
+        dense: true,
+        title: const Text('Exclude servants with bond ≥ X'),
+        subtitle: Text(option.maxBond == 0 ? 'disabled' : 'X = ${option.maxBond}'),
+        onTap: () => _editNumber('Bond threshold (0 = disabled)', option.maxBond, (v) => option.maxBond = v),
+      ),
+      BondExcludedCards(
+        title: 'Excluded servants',
+        ids: option.excludedSvts,
+        servant: true,
+        onAdd: _addExcludedServant,
+        onRemove: (id) => updateSharedInput(() => option.excludedSvts.remove(id)),
+      ),
+      const DividerWithTitle(title: 'Craft essence filters', indent: 16),
+      BondExcludedCards(
+        title: 'Excluded craft essences',
+        ids: option.excludedCes,
+        servant: false,
+        onAdd: _addExcludedCe,
+        onRemove: (id) => updateSharedInput(() => option.excludedCes.remove(id)),
+      ),
+      Padding(
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          children: [
+            Expanded(
+              child: FilledButton.icon(
+                onPressed: _runtime.solving || !_runtime.restored ? null : solve,
+                icon: const Icon(Icons.auto_awesome),
+                label: const Text('Solve max bond'),
+              ),
+            ),
+            if (_runtime.solving) ...[
+              const SizedBox(width: 8),
+              TextButton(onPressed: cancelSolve, child: const Text('Cancel')),
+            ],
+          ],
+        ),
+      ),
+      ListTile(
+        dense: true,
+        leading: Icon(
+          _runtime.solverResult?.provenOptimal == true && !_runtime.solving
+              ? Icons.verified
+              : _runtime.solving
+              ? Icons.search
+              : Icons.info_outline,
+        ),
+        title: Text(_runtime.status),
+        subtitle: _runtime.solving
+            ? Text('${_runtime.solveClock?.elapsed.inSeconds ?? 0}s elapsed · Cancel to keep the best known team')
+            : null,
+      ),
+      if (_runtime.solving) const LinearProgressIndicator(),
+      if (_runtime.solverError != null) Padding(padding: const EdgeInsets.all(16), child: Text(_runtime.solverError!)),
+      if (_runtime.solverResult != null && (_runtime.resultQuest ?? questEntity) != null)
+        BondSolverResults(
+          solved: _runtime.solverResult!,
+          formation: formation,
+          option: option,
+          quest: (_runtime.resultQuest ?? questEntity)!,
+          solving: _runtime.solving,
+          showAllCandidates: _runtime.showAllCandidates,
+          onToggleCandidates: () => setState(() => _runtime.showAllCandidates = !_runtime.showAllCandidates),
+        ),
+    ];
   }
 
   Widget buildExtraBonus(int index) {
@@ -326,10 +652,7 @@ class _FormationBondTabState extends State<FormationBondTab> {
             autofocus: true,
             initValue: detail.addValue,
             validate: (v) => v >= 0,
-            onSubmit: (value) {
-              detail.addValue = value;
-              if (mounted) setState(() {});
-            },
+            onSubmit: (value) => updateSharedInput(() => detail.addValue = value),
           ).showDialog(context);
         }),
         _textButton('+${detail.addRate.format(percent: true, base: 10)}', () {
@@ -338,29 +661,18 @@ class _FormationBondTabState extends State<FormationBondTab> {
             autofocus: true,
             initValue: (detail.addValue / 10).format(),
             validate: (s) => (double.parse(s) * 10).toInt() >= 0,
-            onSubmit: (s) {
-              detail.addRate = (double.parse(s) * 10).toInt();
-              if (mounted) setState(() {});
-            },
+            onSubmit: (s) => updateSharedInput(() => detail.addRate = (double.parse(s) * 10).toInt()),
           ).showDialog(context);
         }),
         Checkbox(
           visualDensity: VisualDensity.compact,
           value: detail.isBond15,
-          onChanged: (v) {
-            setState(() {
-              detail.isBond15 = v!;
-            });
-          },
+          onChanged: (v) => updateSharedInput(() => detail.isBond15 = v!),
         ),
         Checkbox(
           visualDensity: VisualDensity.compact,
           value: detail.isBondReachLimit,
-          onChanged: (v) {
-            setState(() {
-              detail.isBondReachLimit = v!;
-            });
-          },
+          onChanged: (v) => updateSharedInput(() => detail.isBondReachLimit = v!),
         ),
       ],
     );
@@ -430,8 +742,8 @@ class _FormationBondTabState extends State<FormationBondTab> {
 /// multiplier, pads `svtBonus` to [_kMaxSvtNum], drops an out-of-range
 /// `fixedDate`, and rebuilds the campaign toggle map from the game data.
 ///
-/// Shared by [FormationBondTab] and [BondSolverTab] so a quest's campaign
-/// toggles are resolved in exactly one place.
+/// Used by the team tab and its solver so a quest's campaign toggles are
+/// resolved in exactly one place.
 void validateFormationBondOption(FormationBondOption option, QuestPhase? quest) {
   option.teapotTimes = option.teapotTimes.clamp(1, 3);
   if (option.svtBonus.length < _kMaxSvtNum) {
@@ -481,26 +793,23 @@ void validateFormationBondOption(FormationBondOption option, QuestPhase? quest) 
   );
 }
 
-/// Quest (id + phase) picker shared by [FormationBondTab] and [BondSolverTab].
+/// Quest (id + phase) picker for the combined team and solver page.
 ///
 /// Resolves the chosen quest phase from local game data first and falls back to
 /// the network; reports the resolved phase through [onChanged] (null on failure).
-class BondQuestPicker extends StatelessWidget {
+class _BondQuestPicker extends StatelessWidget {
   final QuestPhase? quest;
   final ValueChanged<QuestPhase?> onChanged;
 
-  const BondQuestPicker({super.key, required this.quest, required this.onChanged});
+  const _BondQuestPicker({required this.quest, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
     final quest = this.quest;
-    String strTime(int t) => t.sec2date().toStringShort(omitSec: true);
     return ListTile(
       dense: true,
       title: Text('${S.current.quest} ID'),
-      subtitle: quest == null
-          ? null
-          : Text('${quest.lNameWithChapter}\n@${quest.lSpot.l}\n${strTime(quest.openedAt)}~${strTime(quest.closedAt)}'),
+      subtitle: quest == null ? null : Text('${quest.lNameWithChapter}\nBase ${S.current.bond}: ${quest.bond}'),
       onTap: quest?.routeTo,
       trailing: TextButton(
         onPressed: () {
@@ -572,12 +881,12 @@ List<SvtBondBonusResult> calcFormationBondResults(
 
   for (final (deckPos, deckSvt) in formation.svts.take(_kMaxSvtNum).indexed) {
     final svt = deckSvt.svt;
-    if (svt == null) continue;
+    if (svt == null && !deckSvt.supportType.isSupport) continue;
     final selfResult = results[deckPos];
 
-    final svtIndivs = svt.getIndividuality(eventId, deckSvt.limitCount);
+    final svtIndivs = svt?.getIndividuality(eventId, deckSvt.limitCount) ?? <int>[];
 
-    void checkAddFunctions(NiceSkill skill, bool isEquipSkill) {
+    void checkAddFunctions(NiceSkill skill, bool isEquipSkill, {int? ceId}) {
       if (skill.actIndividuality.isNotEmpty &&
           !Individuality.checkSignedIndivPartialMatch(self: svtIndivs, signedTarget: skill.actIndividuality)) {
         return;
@@ -606,6 +915,7 @@ List<SvtBondBonusResult> calcFormationBondResults(
           continue;
         }
         List<SvtBondBonusResult> targets = switch (func.funcTargetType) {
+          FuncTargetType.self when isEquipSkill && ceId == kHeroicSpiritPortraitDariusCeId => results.toList(),
           FuncTargetType.self => [selfResult],
           FuncTargetType.ptFull => results.toList(),
           _ => [],
@@ -643,7 +953,7 @@ List<SvtBondBonusResult> calcFormationBondResults(
     }
 
     // check event bonus
-    if (option.enableEvent && quest != null) {
+    if (option.enableEvent && quest != null && svt != null) {
       Map<int, Map<int, NiceSkill>> groupedEventSkills = {};
       for (final skill in svt.extraPassive) {
         if (skill.id == 970663) continue; // 夢火の導き Bond 15
@@ -671,7 +981,7 @@ List<SvtBondBonusResult> calcFormationBondResults(
       for (final (idx, enabled) in eventCampaigns.items) {
         final campaign = event.campaigns.firstWhereOrNull((e) => e.idx == idx);
         if (campaign == null || !enabled) continue;
-        if (campaign.targetIds.contains(svt.id)) {
+        if (svt != null && campaign.targetIds.contains(svt.id)) {
           switch (campaign.calcType) {
             case EventCombineCalc.addition:
               selfResult.eventAddRate += max(0, campaign.value);
@@ -695,7 +1005,7 @@ List<SvtBondBonusResult> calcFormationBondResults(
       final ce = equip.ce;
       if (ce == null) continue;
       for (final skill in ce.getActivatedSkills(equip.limitBreak).values.expand((e) => e)) {
-        checkAddFunctions(skill, true);
+        checkAddFunctions(skill, true, ceId: ce.id);
       }
     }
     // check position

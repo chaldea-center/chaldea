@@ -378,7 +378,10 @@ class BattleTeamFormation {
     @protected List<SvtSaveData?>? backupSvts,
   }) : mysticCode = mysticCode ?? MysticCodeSaveData(),
        svts = svts != null && svts.isNotEmpty
-           ? List.generate(max(6, svts.length), (index) => svts.getOrNull(index))
+           ? List.generate(
+               max(6, svts.length),
+               (index) => svts.getOrNull(index) ?? (index == 2 ? SvtSaveData(supportType: .friend) : null),
+             )
            : [
                ...List.generate(3, (index) => onFieldSvts?.getOrNull(index)),
                ...List.generate(3, (index) => backupSvts?.getOrNull(index)),
@@ -512,7 +515,7 @@ class SvtSaveData {
   factory SvtSaveData.fromJson(Map<String, dynamic> json) => _$SvtSaveDataFromJson(json);
 
   Map<String, dynamic> toJson() {
-    if (svtId == null || svtId == 0) return {};
+    if ((svtId == null || svtId == 0) && !supportType.isSupport && equip1.id == null) return {};
     this
       ..ceId = equip1.id
       ..ceLimitBreak = equip1.limitBreak
@@ -1371,6 +1374,12 @@ class FormationBondOption {
   List<FormationBondSvtBonus> svtBonus;
   bool frontlineBonus;
   int teapotTimes;
+  int? maxCost;
+  bool favoriteOnly;
+  bool excludeUnreleased;
+  int maxBond;
+  Set<int> excludedSvts;
+  Set<int> excludedCes;
 
   FormationBondOption({
     BattleTeamFormation? teamFormation,
@@ -1381,9 +1390,17 @@ class FormationBondOption {
     List<FormationBondSvtBonus>? svtBonus,
     this.frontlineBonus = true,
     this.teapotTimes = 1,
+    this.maxCost,
+    this.favoriteOnly = true,
+    this.excludeUnreleased = true,
+    this.maxBond = 15,
+    Set<int>? excludedSvts,
+    Set<int>? excludedCes,
   }) : teamFormation = teamFormation ?? BattleTeamFormation(),
        campaigns = campaigns ?? {},
-       svtBonus = svtBonus ?? List.generate(6, (_) => FormationBondSvtBonus());
+       svtBonus = svtBonus ?? List.generate(6, (_) => FormationBondSvtBonus()),
+       excludedSvts = excludedSvts ?? {},
+       excludedCes = excludedCes ?? {};
 
   factory FormationBondOption.fromJson(Map<String, dynamic> json) => _$FormationBondOptionFromJson(json);
 
@@ -1402,41 +1419,4 @@ class FormationBondSvtBonus {
   factory FormationBondSvtBonus.fromJson(Map<String, dynamic> json) => _$FormationBondSvtBonusFromJson(json);
 
   Map<String, dynamic> toJson() => _$FormationBondSvtBonusToJson(this);
-}
-
-@JsonSerializable()
-class BondSolverOptions {
-  /// null: use default (max cost of the highest master level).
-  int? maxCost;
-  bool favoriteOnly;
-  bool excludeUnreleased;
-
-  /// exclude servants whose current bond >= this value.
-  int maxBond;
-  Set<int> excludedSvts;
-  Set<int> excludedCes;
-
-  /// Quest/formation/event settings the solver runs against.
-  ///
-  /// `FormationBondOption` is reused as-is — it is exactly what
-  /// `FormationBondSolver.solve(option: ...)` consumes. It is nested here
-  /// instead of living on `User.formationBondOption` so the manual formation
-  /// page and the solver tab never write to each other's configuration.
-  FormationBondOption formationOption;
-
-  BondSolverOptions({
-    this.maxCost,
-    this.favoriteOnly = true,
-    this.excludeUnreleased = true,
-    this.maxBond = 10,
-    Set<int>? excludedSvts,
-    Set<int>? excludedCes,
-    FormationBondOption? formationOption,
-  }) : excludedSvts = excludedSvts ?? {},
-       excludedCes = excludedCes ?? {},
-       formationOption = formationOption ?? FormationBondOption();
-
-  factory BondSolverOptions.fromJson(Map<String, dynamic> json) => _$BondSolverOptionsFromJson(json);
-
-  Map<String, dynamic> toJson() => _$BondSolverOptionsToJson(this);
 }
