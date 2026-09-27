@@ -337,16 +337,23 @@ class _CustomCharaFigurePageState extends State<CustomCharaFigurePage> {
             title: Text(
               [
                 'form:  ${source.form}',
-                'faces: ${source.faceCount}',
+                'faces: ${source.face}/${source.faceCount}',
                 'faceSize: ${source.script?.getFaceSize().join('×')}',
                 'size: ${source.figureWidth}×${source.baseFigureHeight}',
               ].join('\n'),
             ),
           ),
+          const Divider(),
           ListTile(
             dense: true,
-            title: const Text('Merged PNG'),
-            subtitle: Text(source.mergedUrl),
+            title: const Text('Base Image'),
+            // subtitle: Text(Uri.parse(source.nonMergedUrl).path),
+            onTap: () => FullscreenImageViewer.show(context: context, urls: [source.nonMergedUrl]),
+          ),
+          ListTile(
+            dense: true,
+            title: const Text('Merged Image'),
+            // subtitle: Text(Uri.parse(source.mergedUrl).path),
             onTap: () => FullscreenImageViewer.show(context: context, urls: [source.mergedUrl]),
           ),
           if (AppInfo.isDebugOn)

@@ -142,19 +142,17 @@ class _AdminToolsPageState extends State<AdminToolsPage> {
                     ),
                     FilledButton(
                       onPressed: () {
-                        _RegionSelectDialog(
-                          onSelected: (regions) async {
-                            for (final region in regions) {
-                              await callRequest(
-                                'GET',
-                                'https://api.atlasacademy.io/raw/${region.upper}/info',
-                                getText: (response) {
-                                  final info = _addTimeStr(Map.from(response.data!).deepCopy());
-                                  return JsonEncoder.withIndent('  ').convert(info);
-                                },
-                              );
-                              await Future.delayed(Duration(seconds: 1));
-                            }
+                        _RegionSelectDialog.single(
+                          title: Text('raw'),
+                          onSelected: (region) async {
+                            await callRequest(
+                              'GET',
+                              'https://api.atlasacademy.io/raw/${region.upper}/info',
+                              getText: (response) {
+                                final info = _addTimeStr(Map.from(response.data!).deepCopy());
+                                return JsonEncoder.withIndent('  ').convert(info);
+                              },
+                            );
                           },
                         ).showDialog(context);
                       },
@@ -162,19 +160,17 @@ class _AdminToolsPageState extends State<AdminToolsPage> {
                     ),
                     FilledButton(
                       onPressed: () {
-                        _RegionSelectDialog(
-                          onSelected: (regions) async {
-                            for (final region in regions) {
-                              await callRequest(
-                                'GET',
-                                'https://api.atlasacademy.io/export/${region.upper}/info.json',
-                                getText: (response) {
-                                  final info = _addTimeStr(Map.from(response.data!).deepCopy());
-                                  return JsonEncoder.withIndent('  ').convert(info);
-                                },
-                              );
-                              await Future.delayed(Duration(seconds: 1));
-                            }
+                        _RegionSelectDialog.single(
+                          title: Text('export'),
+                          onSelected: (region) async {
+                            await callRequest(
+                              'GET',
+                              'https://api.atlasacademy.io/export/${region.upper}/info.json',
+                              getText: (response) {
+                                final info = _addTimeStr(Map.from(response.data!).deepCopy());
+                                return JsonEncoder.withIndent('  ').convert(info);
+                              },
+                            );
                           },
                         ).showDialog(context);
                       },
@@ -267,7 +263,14 @@ class _RegionSelectDialog extends StatefulWidget {
   final Widget? title;
   final Widget? footer;
   final ValueChanged<List<Region>> onSelected;
-  const _RegionSelectDialog({required this.onSelected, this.title, this.footer});
+  final bool single;
+
+  const _RegionSelectDialog({required this.onSelected, this.title, this.footer}) : single = false;
+
+  _RegionSelectDialog.single({this.title, required ValueChanged<Region> onSelected})
+    : onSelected = ((regions) => onSelected(regions.single)),
+      footer = null,
+      single = true;
 
   @override
   State<_RegionSelectDialog> createState() => __RegionSelectDialogState();
@@ -277,6 +280,21 @@ class __RegionSelectDialogState extends State<_RegionSelectDialog> {
   List<Region> regions = [];
   @override
   Widget build(BuildContext context) {
+    if (widget.single) {
+      return SimpleDialog(
+        title: widget.title,
+        children: [
+          for (final region in Region.values)
+            SimpleDialogOption(
+              onPressed: () {
+                Navigator.pop(context);
+                widget.onSelected([region]);
+              },
+              child: Text(region.upper),
+            ),
+        ],
+      );
+    }
     return SimpleConfirmDialog(
       title: widget.title,
       scrollable: true,

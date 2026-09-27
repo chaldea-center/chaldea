@@ -993,6 +993,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
   }
 
   Widget get battleSetupOptionSection {
+    final List<Widget> children = [];
     final quest = db.gameData.quests[battleOption.questId];
     final questPhase =
         AtlasApi.questPhaseCache(battleOption.questId, battleOption.questPhase, null, runtime.region) ??
@@ -1000,16 +1001,8 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
 
     final userQuest = mstData.userQuest[battleOption.questId];
     final now = DateTime.now().timestamp;
-    List<(Item, UserItemEntity)> teapots = [
-      for (final teapot in runtime.gameData.teapots.values)
-        if (teapot.startedAt <= now && teapot.endedAt >= now)
-          if ((mstData.userItem[teapot.id]?.num ?? 0) > 0) (teapot, mstData.userItem[teapot.id]!),
-    ];
-    teapots.sort2((e) => e.$1.startedAt);
-    if (mstData.userItem.isNotEmpty && !teapots.any((e) => e.$1.id == battleOption.campaignItemId)) {
-      battleOption.campaignItemId = 0;
-    }
 
+    // Quest Info, Lottery / box gacha progress shown as quest subtitle
     String? questInfoText;
     if (userQuest != null) {
       questInfoText = 'phase ${userQuest.questPhase}  clear ${userQuest.clearNum}  challenge ${userQuest.challengeNum}';
@@ -1040,200 +1033,259 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
       }
     }
 
+    children.addAll([
+      ListTile(
+        dense: true,
+        title: Text(_describeQuest(battleOption.questId, battleOption.questPhase, null)),
+        subtitle: questInfoText == null ? null : Text(questInfoText),
+        onTap: () => router.push(url: Routes.questI(battleOption.questId, battleOption.questPhase)),
+        trailing: TextButton(
+          onPressed: () {
+            runtime.lockTask(() {
+              InputCancelOkDialog.number(
+                title: 'Quest ID',
+                initValue: battleOption.questId,
+                onSubmit: (questId) async {
+                  Quest? quest = db.gameData.quests[questId];
+                  if (questId > 0) {
+                    quest ??= await showEasyLoading(() => AtlasApi.quest(questId, region: agent.user.region));
+                  }
+                  if (quest != null && !quest.flags.contains(QuestFlag.superBoss)) {
+                    battleOption.questId = questId;
+                    final userQuest = mstData.userQuest[questId];
+                    if (mstData.isLoggedIn) {
+                      if (userQuest != null && userQuest.clearNum > 0) {
+                        battleOption.questPhase = userQuest.questPhase;
+                      } else {
+                        battleOption.questPhase =
+                            quest.phases.firstWhereOrNull((e) => e > (userQuest?.questPhase ?? 0)) ??
+                            battleOption.questPhase;
+                      }
+                    }
+                    if (quest.phases.isNotEmpty && !quest.phases.contains(battleOption.questPhase)) {
+                      battleOption.questPhase = quest.phases.first;
+                    }
+                    if (mounted) setState(() {});
+                    _onChangeQuest();
+                  } else {
+                    EasyLoading.showError('Invalid Quest');
+                  }
+                  if (mounted) setState(() {});
+                },
+              ).showDialog(context);
+            });
+          },
+          child: Text(battleOption.questId.toString()),
+        ),
+      ),
+      ListTile(
+        dense: true,
+        title: const Text("Quest Phase"),
+        subtitle: Text('phases: ${quest?.phases.join('/') ?? '-'}'),
+        trailing: TextButton(
+          onPressed: quest == null
+              ? null
+              : () {
+                  runtime.lockTask(() {
+                    InputCancelOkDialog.number(
+                      title: 'Quest Phase',
+                      initValue: battleOption.questPhase,
+                      onSubmit: (phase) async {
+                        if (quest.phases.contains(phase)) {
+                          battleOption.questPhase = phase;
+                        } else {
+                          EasyLoading.showError('Invalid Phase');
+                        }
+                        if (mounted) setState(() {});
+                        await AtlasApi.questPhase(
+                          battleOption.questId,
+                          battleOption.questPhase,
+                          region: runtime.region,
+                        );
+                        if (mounted) setState(() {});
+                      },
+                    ).showDialog(context);
+                  });
+                },
+          child: Text(battleOption.questPhase.toString()),
+        ),
+      ),
+    ]);
+
+    // Ongoing AP/item campaigns applying to the selected quest
     List<Event> campaigns = [];
     for (final event in runtime.gameData.timerData.events.values) {
       if (event.startedAt > now || event.endedAt <= now) continue;
       for (final campaign in event.campaigns) {
-        if (!const [
-          CombineAdjustTarget.questAp,
-          CombineAdjustTarget.questApFirstTime,
-          CombineAdjustTarget.questItemFirstTime,
-        ].contains(campaign.target)) {
-          continue;
+        switch (campaign.target) {
+          case .questApFirstTime || .questItemFirstTime:
+            if (userQuest != null && userQuest.clearNum > 0) {
+              continue;
+            }
+            break;
+          case .questAp:
+            break;
+          default:
+            continue;
         }
-        if (event.isCampaignQuest(battleOption.questId)) {
-          campaigns.add(event);
-        }
+
+        if (!event.isCampaignQuest(battleOption.questId)) continue;
+
+        campaigns.add(event);
+        break;
       }
     }
-
-    return TileGroup(
-      headerWidget: SHeader.rich(
-        TextSpan(
-          text: 'Battle Setup  ',
-          children: [
-            if (battleOption.useCampaignItem)
-              CenterWidgetSpan(child: db.getIconImage(AssetURL.i.items(Items.teapotId), width: 24, height: 24)),
-          ],
-        ),
-      ),
-      children: [
+    if (campaigns.isNotEmpty) {
+      children.add(
         ListTile(
           dense: true,
-          title: Text(_describeQuest(battleOption.questId, battleOption.questPhase, null)),
-          subtitle: questInfoText == null ? null : Text(questInfoText),
-          onTap: () => router.push(url: Routes.questI(battleOption.questId, battleOption.questPhase)),
-          trailing: TextButton(
-            onPressed: () {
-              runtime.lockTask(() {
-                InputCancelOkDialog.number(
-                  title: 'Quest ID',
-                  initValue: battleOption.questId,
-                  onSubmit: (questId) async {
-                    Quest? quest = db.gameData.quests[questId];
-                    if (questId > 0) {
-                      quest ??= await showEasyLoading(() => AtlasApi.quest(questId, region: agent.user.region));
-                    }
-                    if (quest != null && !quest.flags.contains(QuestFlag.superBoss)) {
-                      battleOption.questId = questId;
-                      final userQuest = mstData.userQuest[questId];
-                      if (mstData.isLoggedIn) {
-                        if (userQuest != null && userQuest.clearNum > 0) {
-                          battleOption.questPhase = userQuest.questPhase;
-                        } else {
-                          battleOption.questPhase =
-                              quest.phases.firstWhereOrNull((e) => e > (userQuest?.questPhase ?? 0)) ??
-                              battleOption.questPhase;
-                        }
-                      }
-                      if (quest.phases.isNotEmpty && !quest.phases.contains(battleOption.questPhase)) {
-                        battleOption.questPhase = quest.phases.first;
-                      }
-                      if (mounted) setState(() {});
-                      _onChangeQuest();
-                    } else {
-                      EasyLoading.showError('Invalid Quest');
-                    }
-                    if (mounted) setState(() {});
-                  },
-                ).showDialog(context);
-              });
-            },
-            child: Text(battleOption.questId.toString()),
-          ),
-        ),
-        ListTile(
-          dense: true,
-          title: const Text("Quest Phase"),
-          subtitle: Text('phases: ${quest?.phases.join('/') ?? '-'}'),
-          trailing: TextButton(
-            onPressed: quest == null
-                ? null
-                : () {
-                    runtime.lockTask(() {
-                      InputCancelOkDialog.number(
-                        title: 'Quest Phase',
-                        initValue: battleOption.questPhase,
-                        onSubmit: (phase) async {
-                          if (quest.phases.contains(phase)) {
-                            battleOption.questPhase = phase;
-                          } else {
-                            EasyLoading.showError('Invalid Phase');
-                          }
-                          if (mounted) setState(() {});
-                          await AtlasApi.questPhase(
-                            battleOption.questId,
-                            battleOption.questPhase,
-                            region: runtime.region,
-                          );
-                          if (mounted) setState(() {});
-                        },
-                      ).showDialog(context);
-                    });
-                  },
-            child: Text(battleOption.questPhase.toString()),
-          ),
-        ),
-        if (campaigns.isNotEmpty)
-          ListTile(
-            dense: true,
-            title: Text('${campaigns.length} ${S.current.event_campaign}'),
-            subtitle: Text(campaigns.map((e) => e.lName.l).join(' / '), maxLines: 1, overflow: TextOverflow.ellipsis),
-            onTap: () {
-              SimpleDialog(
-                title: Text(S.current.event_campaign),
-                children: [
-                  for (final campaign in campaigns)
-                    SimpleDialogOption(
-                      onPressed: campaign.routeTo,
-                      child: Text.rich(
-                        TextSpan(
-                          text: '[${campaign.id}] ${campaign.lName.l}\n',
-                          children: [
-                            TextSpan(
-                              text: campaign.endedAt.sec2date().toStringShort(omitSec: true),
-                              style: TextStyle(fontSize: 12),
-                            ),
-                          ],
-                        ),
+          title: Text('${campaigns.length} ${S.current.event_campaign}'),
+          subtitle: Text(campaigns.map((e) => e.lName.l).join(' / '), maxLines: 1, overflow: TextOverflow.ellipsis),
+          onTap: () {
+            SimpleDialog(
+              title: Text(S.current.event_campaign),
+              children: [
+                for (final campaign in campaigns)
+                  SimpleDialogOption(
+                    onPressed: campaign.routeTo,
+                    child: Text.rich(
+                      TextSpan(
+                        text: '[${campaign.id}] ${campaign.lName.l}\n',
+                        children: [
+                          TextSpan(
+                            text: campaign.endedAt.sec2date().toStringShort(omitSec: true),
+                            style: TextStyle(fontSize: 12),
+                          ),
+                        ],
                       ),
                     ),
-                ],
-              ).showDialog(context);
-            },
-          ),
-        ...getUserDeckSection(quest, questPhase),
-        DividerWithTitle(title: S.current.support_servant_short, indent: 16),
-        ListTile(
-          dense: true,
-          title: Text(S.current.support_servant),
-          subtitle: Wrap(
-            spacing: 4,
-            runSpacing: 4,
-            children: [
-              if (battleOption.supportSvtIds.isEmpty) Text(S.current.general_any),
-              for (final svtId in battleOption.supportSvtIds)
-                GestureDetector(
-                  onLongPress: () {
-                    db.gameData.servantsById[svtId]?.routeTo();
-                  },
-                  child: GameCardMixin.cardIconBuilder(
-                    context: context,
-                    icon: db.gameData.servantsById[svtId]?.borderedIcon ?? Atlas.common.emptySvtIcon,
-                    width: 36,
-                    onTap: () {
-                      runtime.lockTask(() {
-                        battleOption.supportSvtIds.remove(svtId);
-                        if (mounted) setState(() {});
-                      });
-                    },
                   ),
-                ),
-            ],
-          ),
-          trailing: IconButton(
-            onPressed: () {
-              runtime.lockTask(() {
-                router.pushPage(
-                  ServantListPage(
-                    pinged: db.curUser.battleSim.pingedSvts.toList(),
-                    showSecondaryFilter: true,
-                    onSelected: (svt) {
-                      if (!svt.isUserSvt) {
-                        EasyLoading.showError('Not playable');
-                        return;
-                      }
-                      battleOption.supportSvtIds.add(svt.id);
-                      if (mounted) setState(() {});
-                    },
-                  ),
-                );
-              });
-            },
-            icon: const Icon(Icons.add_circle),
-          ),
+              ],
+            ).showDialog(context);
+          },
         ),
+      );
+    }
+
+    // User Deck
+    children.addAll(getUserDeckSection(quest, questPhase));
+
+    // Support
+    children.addAll([
+      DividerWithTitle(title: S.current.support_servant_short, indent: 16),
+      ListTile(
+        dense: true,
+        title: Text(S.current.support_servant),
+        subtitle: Wrap(
+          spacing: 4,
+          runSpacing: 4,
+          children: [
+            if (battleOption.supportSvtIds.isEmpty) Text(S.current.general_any),
+            for (final svtId in battleOption.supportSvtIds)
+              GestureDetector(
+                onLongPress: () {
+                  db.gameData.servantsById[svtId]?.routeTo();
+                },
+                child: GameCardMixin.cardIconBuilder(
+                  context: context,
+                  icon: db.gameData.servantsById[svtId]?.borderedIcon ?? Atlas.common.emptySvtIcon,
+                  width: 36,
+                  onTap: () {
+                    runtime.lockTask(() {
+                      battleOption.supportSvtIds.remove(svtId);
+                      if (mounted) setState(() {});
+                    });
+                  },
+                ),
+              ),
+          ],
+        ),
+        trailing: IconButton(
+          onPressed: () {
+            runtime.lockTask(() {
+              router.pushPage(
+                ServantListPage(
+                  pinged: db.curUser.battleSim.pingedSvts.toList(),
+                  showSecondaryFilter: true,
+                  onSelected: (svt) {
+                    if (!svt.isUserSvt) {
+                      EasyLoading.showError('Not playable');
+                      return;
+                    }
+                    battleOption.supportSvtIds.add(svt.id);
+                    if (mounted) setState(() {});
+                  },
+                ),
+              );
+            });
+          },
+          icon: const Icon(Icons.add_circle),
+        ),
+      ),
+
+      ListTile(
+        dense: true,
+        title: Text(
+          '${S.current.craft_essence_short} (${S.current.max_limit_break} ${battleOption.supportEquipMaxLimitBreak})',
+        ),
+        subtitle: Wrap(
+          spacing: 4,
+          runSpacing: 4,
+          children: [
+            if (battleOption.supportEquipIds.isEmpty) Text(S.current.general_any),
+            for (final ceId in battleOption.supportEquipIds)
+              GestureDetector(
+                onLongPress: () {
+                  db.gameData.craftEssencesById[ceId]?.routeTo();
+                },
+                child: GameCardMixin.cardIconBuilder(
+                  context: context,
+                  icon: db.gameData.craftEssencesById[ceId]?.borderedIcon ?? Atlas.common.emptyCeIcon,
+                  width: 36,
+                  onTap: () {
+                    runtime.lockTask(() {
+                      battleOption.supportEquipIds.remove(ceId);
+                      if (mounted) setState(() {});
+                    });
+                  },
+                ),
+              ),
+          ],
+        ),
+        trailing: IconButton(
+          onPressed: () {
+            runtime.lockTask(() {
+              router.pushPage(
+                CraftListPage(
+                  pinged: db.curUser.battleSim.pingedCEsWithEventAndBond(quest, null).toList(),
+                  onSelected: (ce) {
+                    if (ce.collectionNo <= 0) {
+                      EasyLoading.showError('Not playable');
+                      return;
+                    }
+                    battleOption.supportEquipIds.add(ce.id);
+                    if (mounted) setState(() {});
+                  },
+                ),
+              );
+            });
+          },
+          icon: const Icon(Icons.add_circle),
+        ),
+      ),
+    ]);
+
+    if (questPhase?.isUseGrandBoard == true || quest?.war?.parentWarId == WarId.grandBoardWar) {
+      children.add(
         ListTile(
           dense: true,
-          title: Text(
-            '${S.current.craft_essence_short} (${S.current.max_limit_break} ${battleOption.supportEquipMaxLimitBreak})',
-          ),
+          title: Text('$kStarChar2 ${S.current.grand_servant} - ${S.current.craft_essence_short}'),
           subtitle: Wrap(
             spacing: 4,
             runSpacing: 4,
             children: [
-              if (battleOption.supportEquipIds.isEmpty) Text(S.current.general_any),
-              for (final ceId in battleOption.supportEquipIds)
+              if (battleOption.grandSupportEquipIds.isEmpty) Text(S.current.general_any),
+              for (final ceId in battleOption.grandSupportEquipIds)
                 GestureDetector(
                   onLongPress: () {
                     db.gameData.craftEssencesById[ceId]?.routeTo();
@@ -1244,7 +1296,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
                     width: 36,
                     onTap: () {
                       runtime.lockTask(() {
-                        battleOption.supportEquipIds.remove(ceId);
+                        battleOption.grandSupportEquipIds.remove(ceId);
                         if (mounted) setState(() {});
                       });
                     },
@@ -1263,7 +1315,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
                         EasyLoading.showError('Not playable');
                         return;
                       }
-                      battleOption.supportEquipIds.add(ce.id);
+                      battleOption.grandSupportEquipIds.add(ce.id);
                       if (mounted) setState(() {});
                     },
                   ),
@@ -1273,171 +1325,159 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
             icon: const Icon(Icons.add_circle),
           ),
         ),
-        if (questPhase?.isUseGrandBoard == true || quest?.war?.parentWarId == WarId.grandBoardWar)
-          ListTile(
-            dense: true,
-            title: Text('$kStarChar2 ${S.current.grand_servant} - ${S.current.craft_essence_short}'),
-            subtitle: Wrap(
-              spacing: 4,
-              runSpacing: 4,
-              children: [
-                if (battleOption.grandSupportEquipIds.isEmpty) Text(S.current.general_any),
-                for (final ceId in battleOption.grandSupportEquipIds)
-                  GestureDetector(
-                    onLongPress: () {
-                      db.gameData.craftEssencesById[ceId]?.routeTo();
-                    },
-                    child: GameCardMixin.cardIconBuilder(
-                      context: context,
-                      icon: db.gameData.craftEssencesById[ceId]?.borderedIcon ?? Atlas.common.emptyCeIcon,
-                      width: 36,
-                      onTap: () {
-                        runtime.lockTask(() {
-                          battleOption.grandSupportEquipIds.remove(ceId);
-                          if (mounted) setState(() {});
-                        });
-                      },
-                    ),
-                  ),
-              ],
-            ),
-            trailing: IconButton(
-              onPressed: () {
-                runtime.lockTask(() {
-                  router.pushPage(
-                    CraftListPage(
-                      pinged: db.curUser.battleSim.pingedCEsWithEventAndBond(quest, null).toList(),
-                      onSelected: (ce) {
-                        if (ce.collectionNo <= 0) {
-                          EasyLoading.showError('Not playable');
-                          return;
-                        }
-                        battleOption.grandSupportEquipIds.add(ce.id);
-                        if (mounted) setState(() {});
-                      },
-                    ),
-                  );
-                });
-              },
-              icon: const Icon(Icons.add_circle),
-            ),
-          ),
-        if (questPhase != null && questPhase.supportServants.isNotEmpty)
-          ListTile(
-            dense: true,
-            title: Text(
-              "${questPhase.supportServants.length} Guest Supports (${questPhase.flags.where((e) => e.name.toLowerCase().contains('support') && e != QuestFlag.supportSelectAfterScript).map((e) => e.name).join('/')})",
-            ),
-            subtitle: DropdownButton<int>(
-              isDense: true,
-              isExpanded: true,
-              value: questPhase.supportServants.any((e) => e.id == battleOption.npcSupportId)
-                  ? battleOption.npcSupportId
-                  : 0,
-              items: [
-                DropdownMenuItem(value: 0, child: Text("Do not use support")),
-                for (final support in questPhase.supportServants)
-                  DropdownMenuItem(
-                    value: support.id,
-                    child: Text.rich(
-                      TextSpan(
-                        children: [
-                          CenterWidgetSpan(child: support.svt.iconBuilder(context: context, width: 24)),
-                          TextSpan(text: ' Lv.${support.lv} ${support.skills2.skillLvs.join("/")} ${support.lName.l}'),
-                        ],
-                      ),
-                    ),
-                  ),
-              ],
-              onChanged: (v) {
-                runtime.lockTask(() {
-                  battleOption.npcSupportId = v ?? 0;
-                });
-              },
-            ),
-          ),
-        DividerWithTitle(title: Transl.itemNames('星見のティーポット').l),
-        CheckboxListTile.adaptive(
+      );
+    }
+    if (questPhase != null && questPhase.supportServants.isNotEmpty) {
+      children.add(
+        ListTile(
           dense: true,
-          value: battleOption.useCampaignItem,
-          secondary: Item.iconBuilder(context: context, item: null, itemId: Items.teapotId, jumpToDetail: false),
-          title: Text(Transl.itemNames('星見のティーポット').l),
-          subtitle: teapots.isEmpty
-              ? null
-              : Text.rich(
-                  TextSpan(
-                    children: [
-                      for (final teapot in teapots)
-                        TextSpan(
-                          text:
-                              '×${teapot.$2.num}'
-                              '(${teapot.$1.endedAt.sec2date().toCustomString(year: false, second: false)})  ',
-                        ),
-                    ],
+          title: Text(
+            "${questPhase.supportServants.length} Guest Supports (${questPhase.flags.where((e) => e.name.toLowerCase().contains('support') && e != QuestFlag.supportSelectAfterScript).map((e) => e.name).join('/')})",
+          ),
+          subtitle: DropdownButton<int>(
+            isDense: true,
+            isExpanded: true,
+            value: questPhase.supportServants.any((e) => e.id == battleOption.npcSupportId)
+                ? battleOption.npcSupportId
+                : 0,
+            items: [
+              DropdownMenuItem(value: 0, child: Text("Do not use support")),
+              for (final support in questPhase.supportServants)
+                DropdownMenuItem(
+                  value: support.id,
+                  child: Text.rich(
+                    TextSpan(
+                      children: [
+                        CenterWidgetSpan(child: support.svt.iconBuilder(context: context, width: 24)),
+                        TextSpan(text: ' Lv.${support.lv} ${support.skills2.skillLvs.join("/")} ${support.lName.l}'),
+                      ],
+                    ),
                   ),
                 ),
-          onChanged: (v) {
-            runtime.lockTask(() {
-              setState(() {
-                battleOption.useCampaignItem = v!;
+            ],
+            onChanged: (v) {
+              runtime.lockTask(() {
+                battleOption.npcSupportId = v ?? 0;
               });
-            });
-          },
+            },
+          ),
         ),
-        if (mstData.userItem.isNotEmpty && teapots.isNotEmpty)
-          ListTile(
-            dense: true,
-            leading: Text('> '),
-            minLeadingWidth: 20,
-            title: DropdownButton<int>(
-              // isDense: true,
-              underline: SizedBox.shrink(),
-              isExpanded: true,
-              value: battleOption.campaignItemId,
-              items: [
-                DropdownMenuItem(value: 0, child: Text('auto select')),
-                for (final (teapot, userItem) in teapots)
-                  DropdownMenuItem(
-                    value: teapot.id,
-                    child: Text.rich(
+      );
+    }
+
+    // Campaign Item
+    // Active teapots (campaign items) the user currently holds
+    List<(Item, UserItemEntity)> teapots = [
+      for (final teapot in runtime.gameData.teapots.values)
+        if (teapot.startedAt <= now && teapot.endedAt >= now)
+          if ((mstData.userItem[teapot.id]?.num ?? 0) > 0) (teapot, mstData.userItem[teapot.id]!),
+    ];
+    teapots.sort2((e) => e.$1.startedAt);
+    if (mstData.userItem.isNotEmpty && !teapots.any((e) => e.$1.id == battleOption.campaignItemId)) {
+      battleOption.campaignItemId = 0;
+    }
+
+    children.add(DividerWithTitle(title: Transl.itemNames('星見のティーポット').l));
+    children.add(
+      CheckboxListTile.adaptive(
+        dense: true,
+        value: battleOption.useCampaignItem,
+        secondary: Item.iconBuilder(context: context, item: null, itemId: Items.teapotId, jumpToDetail: false),
+        title: Text(Transl.itemNames('星見のティーポット').l),
+        subtitle: teapots.isEmpty
+            ? null
+            : Text.rich(
+                TextSpan(
+                  children: [
+                    for (final teapot in teapots)
                       TextSpan(
-                        children: [
-                          CenterWidgetSpan(
-                            child: Item.iconBuilder(context: context, item: teapot, width: 28),
-                          ),
-                          TextSpan(text: ' ${teapot.lName.l} ×${userItem.num} '),
-                          TextSpan(
-                            text: ' (${teapot.endedAt.sec2date().toCustomString(year: false, second: false)}) ',
-                            style: TextStyle(fontSize: 12),
-                          ),
-                        ],
+                        text:
+                            '×${teapot.$2.num}'
+                            '(${teapot.$1.endedAt.sec2date().toCustomString(year: false, second: false)})  ',
                       ),
+                  ],
+                ),
+              ),
+        onChanged: (v) {
+          runtime.lockTask(() {
+            setState(() {
+              battleOption.useCampaignItem = v!;
+            });
+          });
+        },
+      ),
+    );
+    if (mstData.userItem.isNotEmpty && teapots.isNotEmpty) {
+      children.add(
+        ListTile(
+          dense: true,
+          leading: Text('> '),
+          minLeadingWidth: 20,
+          title: DropdownButton<int>(
+            // isDense: true,
+            underline: SizedBox.shrink(),
+            isExpanded: true,
+            value: battleOption.campaignItemId,
+            items: [
+              DropdownMenuItem(value: 0, child: Text('auto select')),
+              for (final (teapot, userItem) in teapots)
+                DropdownMenuItem(
+                  value: teapot.id,
+                  child: Text.rich(
+                    TextSpan(
+                      children: [
+                        CenterWidgetSpan(
+                          child: Item.iconBuilder(context: context, item: teapot, width: 28),
+                        ),
+                        TextSpan(text: ' ${teapot.lName.l} ×${userItem.num} '),
+                        TextSpan(
+                          text: ' (${teapot.endedAt.sec2date().toCustomString(year: false, second: false)}) ',
+                          style: TextStyle(fontSize: 12),
+                        ),
+                      ],
                     ),
                   ),
-              ],
-              onChanged: battleOption.useCampaignItem
-                  ? (v) {
-                      runtime.lockTask(() {
-                        if (v != null) battleOption.campaignItemId = v;
-                      });
-                    }
-                  : null,
-            ),
+                ),
+            ],
+            onChanged: battleOption.useCampaignItem
+                ? (v) {
+                    runtime.lockTask(() {
+                      if (v != null) battleOption.campaignItemId = v;
+                    });
+                  }
+                : null,
           ),
-        const Divider(),
-        CheckboxListTile.adaptive(
-          dense: true,
-          value: battleOption.isApHalf,
-          title: const Text("During AP Half Event"),
-          onChanged: (v) {
-            runtime.lockTask(() {
-              setState(() {
-                battleOption.isApHalf = v!;
-              });
-            });
-          },
         ),
-      ],
+      );
+    }
+
+    // AP Half
+    children.add(const Divider());
+    children.add(
+      CheckboxListTile.adaptive(
+        dense: true,
+        value: battleOption.isApHalf,
+        title: const Text("During AP Half Event"),
+        onChanged: (v) {
+          runtime.lockTask(() {
+            setState(() {
+              battleOption.isApHalf = v!;
+            });
+          });
+        },
+      ),
+    );
+    return TileGroup(
+      headerWidget: SHeader.rich(
+        TextSpan(
+          text: 'Battle Setup  ',
+          children: [
+            if (battleOption.useCampaignItem)
+              CenterWidgetSpan(child: db.getIconImage(AssetURL.i.items(Items.teapotId), width: 24, height: 24)),
+          ],
+        ),
+      ),
+      children: children,
     );
   }
 

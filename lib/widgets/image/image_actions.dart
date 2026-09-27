@@ -71,7 +71,7 @@ class ImageActions {
       builder: (context) {
         List<Widget> children = [
           ...extraHeaders,
-          if (data != null)
+          if (data != null && 1 > 2)
             ConstrainedBox(
               constraints: BoxConstraints(maxHeight: 200),
               child: FittedBox(

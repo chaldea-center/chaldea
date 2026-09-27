@@ -202,7 +202,7 @@ class UserDeckListPageState extends State<UserDeckListPage> {
       children: [
         DividerWithTitle(
           titleWidget: Text(
-            '[${deck.id}] No.${deck.deckNo} ${deck.name}',
+            '[${deck.id}${deck.id == mstData.user?.activeDeckId ? "*" : ""}] No.${deck.deckNo} ${deck.name}',
             style: isActiveDeck(deck)
                 ? TextStyle(color: Theme.of(context).colorScheme.error)
                 : TextStyle(fontSize: Theme.of(context).textTheme.bodySmall?.fontSize),
