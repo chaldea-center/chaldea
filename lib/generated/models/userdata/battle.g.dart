@@ -799,6 +799,7 @@ FormationBondOption _$FormationBondOptionFromJson(Map json) => $checkedCreate('F
     maxBond: $checkedConvert('maxBond', (v) => (v as num?)?.toInt() ?? 15),
     excludedSvts: $checkedConvert('excludedSvts', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
     excludedCes: $checkedConvert('excludedCes', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
+    maxCandidateTeams: $checkedConvert('maxCandidateTeams', (v) => (v as num?)?.toInt() ?? 100),
   );
   return val;
 });
@@ -818,6 +819,7 @@ Map<String, dynamic> _$FormationBondOptionToJson(FormationBondOption instance) =
   'maxBond': instance.maxBond,
   'excludedSvts': instance.excludedSvts.toList(),
   'excludedCes': instance.excludedCes.toList(),
+  'maxCandidateTeams': instance.maxCandidateTeams,
 };
 
 FormationBondSvtBonus _$FormationBondSvtBonusFromJson(Map json) =>

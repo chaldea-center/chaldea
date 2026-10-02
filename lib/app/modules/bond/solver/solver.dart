@@ -148,6 +148,26 @@ List<BondSolvedTeam> _concreteRepresentatives(BondSolvedTeam best, List<BondSolv
   return List.unmodifiable(teams);
 }
 
+/// Expand a bounded set of feasible seeds by score tier. Lower scores are used
+/// only after the available higher-score concrete variants have been added.
+List<BondSolvedTeam> _rankedCandidates(List<BondSolvedTeam> seeds, {required int maxTeams}) {
+  if (seeds.isEmpty || maxTeams < 1) return const [];
+  final byScore = <int, List<BondSolvedTeam>>{};
+  for (final seed in seeds) {
+    byScore.putIfAbsent(seed.totalBond, () => []).add(seed);
+  }
+  final scores = byScore.keys.toList()..sort((a, b) => b.compareTo(a));
+  final result = <BondSolvedTeam>[];
+  for (final score in scores) {
+    final group = byScore[score]!..sort((a, b) => b.totalCost.compareTo(a.totalCost));
+    final representatives = _concreteRepresentatives(group.first, group, maxTeams: maxTeams - result.length).toList()
+      ..sort((a, b) => b.totalCost.compareTo(a.totalCost));
+    result.addAll(representatives);
+    if (result.length >= maxTeams) break;
+  }
+  return List.unmodifiable(result);
+}
+
 Iterable<BondSolvedTeam> _substituteOneMember(BondSolvedTeam team, int index, int kind) sync* {
   final original = team.slots[index];
   BondSolvedTeam? replaced(int? servantId, int? limit, BondSolvedCe? ce1, BondSolvedCe? ce3) {
@@ -215,6 +235,7 @@ Iterable<BondSolvedTeam> _substituteOneMember(BondSolvedTeam team, int index, in
 class BondSolverResult {
   final BondSolvedTeam? best;
   final List<BondSolvedTeam> ties;
+  final List<BondSolvedTeam> candidates;
   final List<int> tieGroupCounts;
   final bool provenOptimal;
   final bool allTiesCollected;
@@ -235,6 +256,7 @@ class BondSolverResult {
   const BondSolverResult({
     required this.best,
     required this.ties,
+    this.candidates = const [],
     required this.tieGroupCounts,
     required this.provenOptimal,
     required this.allTiesCollected,
@@ -262,6 +284,7 @@ class FormationBondSolver {
   final BattleTeamSetup formation;
   final Region region;
   final bool pruneDominatedCes;
+  int get _candidateLimit => option.maxCandidateTeams.clamp(1, 200).toInt();
 
   final List<_SvtVariant> _svtVariants = [];
   final List<_CeVariant> _ceVariants = [];
@@ -320,11 +343,17 @@ class FormationBondSolver {
     final problem = solver._prepareProblem();
     final ceFirst = useCeFirst ? solver._prepareCeFirst() : null;
     if (ceFirst != null) {
-      final search = await compute(_runCeFirstSearch, _CeFirstSearchInput(ceFirst, maxNodes, maxTies));
-      return solver._ceFirstResult(search, stopwatch, maxCandidates: maxTies);
+      final search = await compute(
+        _runCeFirstSearch,
+        _CeFirstSearchInput(ceFirst, maxNodes, maxTies, solver._candidateLimit),
+      );
+      return solver._ceFirstResult(search, stopwatch, maxTies: maxTies);
     }
-    final search = await compute(_runPreparedBondSearch, _SearchInput(problem, maxNodes, maxTies));
-    return solver._result(search, stopwatch, maxCandidates: maxTies);
+    final search = await compute(
+      _runPreparedBondSearch,
+      _SearchInput(problem, maxNodes, maxTies, solver._candidateLimit),
+    );
+    return solver._result(search, stopwatch, maxTies: maxTies);
   }
 
   /// Emits feasible improvements before the optimality proof finishes. The
@@ -343,23 +372,29 @@ class FormationBondSolver {
     if (kIsWeb) {
       // Web has no worker isolate. Keep the same provisional/final contract.
       if (ceFirst != null) {
-        final provisional = _CeFirstSearch(ceFirst).solve(maxEvaluations: 8);
+        final provisional = _CeFirstSearch(ceFirst, maxCandidates: solver._candidateLimit).solve(maxEvaluations: 8);
         yield solver._ceFirstResult(provisional, stopwatch);
         if (!provisional.provenOptimal) {
-          yield solver._ceFirstResult(_CeFirstSearch(ceFirst).solve(), stopwatch);
+          yield solver._ceFirstResult(
+            _CeFirstSearch(ceFirst, maxCandidates: solver._candidateLimit).solve(),
+            stopwatch,
+          );
         }
       } else {
-        final provisional = BondSearch.solve(problem, maxNodes: 1200000);
+        final provisional = BondSearch.solve(problem, maxNodes: 1200000, maxCandidates: solver._candidateLimit);
         yield solver._result(provisional, stopwatch);
         if (!provisional.provenOptimal) {
-          yield solver._result(BondSearch.solve(problem), stopwatch);
+          yield solver._result(BondSearch.solve(problem, maxCandidates: solver._candidateLimit), stopwatch);
         }
       }
       return;
     }
 
     final messages = ReceivePort();
-    final worker = await Isolate.spawn(_runProgressiveBondSearch, _ProgressInput(messages.sendPort, problem, ceFirst));
+    final worker = await Isolate.spawn(
+      _runProgressiveBondSearch,
+      _ProgressInput(messages.sendPort, problem, ceFirst, solver._candidateLimit),
+    );
     try {
       await for (final message in messages) {
         final parts = message as List<Object?>;
@@ -390,13 +425,13 @@ class FormationBondSolver {
     final ceFirst = useCeFirst ? _prepareCeFirst() : null;
     if (ceFirst != null) {
       return _ceFirstResult(
-        _CeFirstSearch(ceFirst, maxTies: maxTies).solve(maxEvaluations: maxNodes),
+        _CeFirstSearch(ceFirst, maxTies: maxTies, maxCandidates: _candidateLimit).solve(maxEvaluations: maxNodes),
         stopwatch,
-        maxCandidates: maxTies,
+        maxTies: maxTies,
       );
     }
-    final search = BondSearch.solve(problem, maxNodes: maxNodes, maxTies: maxTies);
-    return _result(search, stopwatch, maxCandidates: maxTies);
+    final search = BondSearch.solve(problem, maxNodes: maxNodes, maxTies: maxTies, maxCandidates: _candidateLimit);
+    return _result(search, stopwatch, maxTies: maxTies);
   }
 
   BondSearchProblem _prepareProblem() {
@@ -465,13 +500,19 @@ class FormationBondSolver {
     );
   }
 
-  BondSolverResult _result(BondSearchResult search, Stopwatch stopwatch, {int maxCandidates = 20}) {
+  BondSolverResult _result(BondSearchResult search, Stopwatch stopwatch, {int maxTies = 20}) {
     final best = search.best == null ? null : _expand(search.best!);
     return BondSolverResult(
       best: best,
       ties: best == null
           ? const []
-          : _concreteRepresentatives(best, [for (final tie in search.ties) _expand(tie)], maxTeams: maxCandidates),
+          : _concreteRepresentatives(best, [for (final tie in search.ties) _expand(tie)], maxTeams: maxTies),
+      candidates: best == null
+          ? const []
+          : _rankedCandidates([
+              best,
+              for (final candidate in search.candidates) _expand(candidate),
+            ], maxTeams: _candidateLimit),
       tieGroupCounts: search.tieGroupCounts,
       provenOptimal: search.provenOptimal,
       allTiesCollected: search.allTiesCollected,
@@ -487,12 +528,13 @@ class FormationBondSolver {
     );
   }
 
-  BondSolverResult _ceFirstResult(_CeFirstResult search, Stopwatch stopwatch, {int maxCandidates = 20}) {
+  BondSolverResult _ceFirstResult(_CeFirstResult search, Stopwatch stopwatch, {int maxTies = 20}) {
     return BondSolverResult(
       best: search.best,
-      ties: search.best == null
+      ties: search.best == null ? const [] : _concreteRepresentatives(search.best!, search.ties, maxTeams: maxTies),
+      candidates: search.best == null
           ? const []
-          : _concreteRepresentatives(search.best!, search.ties, maxTeams: maxCandidates),
+          : _rankedCandidates([search.best!, ...search.candidates], maxTeams: _candidateLimit),
       tieGroupCounts: search.tieGroupCounts,
       provenOptimal: search.provenOptimal,
       allTiesCollected: false,
@@ -1347,18 +1389,24 @@ class _SearchInput {
   final BondSearchProblem problem;
   final int? maxNodes;
   final int maxTies;
-  const _SearchInput(this.problem, this.maxNodes, this.maxTies);
+  final int maxCandidates;
+  const _SearchInput(this.problem, this.maxNodes, this.maxTies, this.maxCandidates);
 }
 
-BondSearchResult _runPreparedBondSearch(_SearchInput input) =>
-    BondSearch.solve(input.problem, maxNodes: input.maxNodes, maxTies: input.maxTies);
+BondSearchResult _runPreparedBondSearch(_SearchInput input) => BondSearch.solve(
+  input.problem,
+  maxNodes: input.maxNodes,
+  maxTies: input.maxTies,
+  maxCandidates: input.maxCandidates,
+);
 
 class _ProgressInput {
   final SendPort port;
   final BondSearchProblem general;
   final _CeFirstProblem? ceFirst;
+  final int maxCandidates;
 
-  const _ProgressInput(this.port, this.general, this.ceFirst);
+  const _ProgressInput(this.port, this.general, this.ceFirst, this.maxCandidates);
 }
 
 void _runProgressiveBondSearch(_ProgressInput input) {
@@ -1366,7 +1414,7 @@ void _runProgressiveBondSearch(_ProgressInput input) {
     if (input.ceFirst != null) {
       final clock = Stopwatch()..start();
       var lastReport = -200;
-      final result = _CeFirstSearch(input.ceFirst!).solve(
+      final result = _CeFirstSearch(input.ceFirst!, maxCandidates: input.maxCandidates).solve(
         onProgress: (progress) {
           if (clock.elapsedMilliseconds - lastReport < 200) return;
           input.port.send(<Object?>['ce', progress]);
@@ -1377,6 +1425,7 @@ void _runProgressiveBondSearch(_ProgressInput input) {
     } else {
       final result = BondSearch.solve(
         input.general,
+        maxCandidates: input.maxCandidates,
         onProgress: (progress) => input.port.send(<Object?>['general', progress]),
       );
       input.port.send(<Object?>['general', result]);

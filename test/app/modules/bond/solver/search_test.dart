@@ -156,7 +156,7 @@ void main() {
     expect(updates.map((e) => e.visitedNodes), orderedEquals([...updates.map((e) => e.visitedNodes)]..sort()));
   });
 
-  test('equal outcomes share a group and keep the cheaper representative', () {
+  test('equal outcomes share a group and keep the higher-cost representative', () {
     final problem = BondSearchProblem(
       baseBond: 100,
       rateCap: 5000,
@@ -169,9 +169,30 @@ void main() {
     final result = BondSearch.solve(problem);
     expect(result.provenOptimal, isTrue);
     expect(result.allTiesCollected, isTrue);
-    expect(result.best!.totalCost, 0);
+    expect(result.best!.totalCost, 5);
+    expect(result.candidates.map((e) => e.totalCost), [5, 0]);
     expect(result.ties, hasLength(1));
     expect(result.tieGroupCounts, [2]);
+  });
+
+  test('bounded candidates include lower scores without changing the maximum proof', () {
+    final problem = BondSearchProblem(
+      baseBond: 100,
+      rateCap: 5000,
+      maxCost: 0,
+      receiverProfileCount: 1,
+      positions: [
+        BondSearchPosition(
+          frontlineRate: 0,
+          items: [_item(1, 0, selfRate: 1000), _item(2, 0, selfRate: 500), _item(3, 0)],
+        ),
+      ],
+    );
+    final result = BondSearch.solve(problem, maxCandidates: 2);
+    expect(result.provenOptimal, isTrue);
+    expect(result.best!.totalBond, 200);
+    expect(result.candidates.map((e) => e.totalBond), [200, 150]);
+    expect(result.candidates.map((e) => e.servantIds.single), [1, 2]);
   });
 }
 

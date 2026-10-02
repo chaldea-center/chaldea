@@ -69,7 +69,7 @@ class _FormationBondRuntime {
   String? solverError;
   bool solving = false;
   bool searchCompleted = false;
-  bool showAllCandidates = false;
+  int visibleCandidateCount = 5;
   StreamSubscription<BondSolverResult>? search;
   Timer? elapsedTicker;
   Stopwatch? solveClock;
@@ -89,7 +89,7 @@ class _FormationBondRuntime {
     solverError = null;
     solving = false;
     searchCompleted = false;
-    showAllCandidates = false;
+    visibleCandidateCount = 5;
   }
 
   void logProgress(BondSolverResult solved) {
@@ -573,6 +573,17 @@ class _FormationBondTabState extends State<FormationBondTab> {
         onAdd: _addExcludedCe,
         onRemove: (id) => updateSharedInput(() => option.excludedCes.remove(id)),
       ),
+      ListTile(
+        dense: true,
+        title: const Text('Candidate teams'),
+        subtitle: Text('Keep up to ${option.maxCandidateTeams} found teams (1–200)'),
+        onTap: () => InputCancelOkDialog.number(
+          title: 'Candidate teams (1–200)',
+          initValue: option.maxCandidateTeams,
+          validate: (v) => v >= 1 && v <= 200,
+          onSubmit: (v) => updateSharedInput(() => option.maxCandidateTeams = v),
+        ).showDialog(context),
+      ),
       Padding(
         padding: const EdgeInsets.all(16),
         child: Row(
@@ -614,8 +625,9 @@ class _FormationBondTabState extends State<FormationBondTab> {
           option: option,
           quest: (_runtime.resultQuest ?? questEntity)!,
           solving: _runtime.solving,
-          showAllCandidates: _runtime.showAllCandidates,
-          onToggleCandidates: () => setState(() => _runtime.showAllCandidates = !_runtime.showAllCandidates),
+          visibleCandidateCount: _runtime.visibleCandidateCount,
+          onShowMore: () => setState(() => _runtime.visibleCandidateCount += 20),
+          onShowFewer: () => setState(() => _runtime.visibleCandidateCount = 5),
         ),
     ];
   }

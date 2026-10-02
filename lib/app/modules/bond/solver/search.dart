@@ -96,6 +96,7 @@ class BondSearchWitness {
 class BondSearchResult {
   final BondSearchWitness? best;
   final List<BondSearchWitness> ties;
+  final List<BondSearchWitness> candidates;
   final List<int> tieGroupCounts;
   final bool provenOptimal;
   final bool allTiesCollected;
@@ -104,6 +105,7 @@ class BondSearchResult {
   const BondSearchResult({
     required this.best,
     required this.ties,
+    this.candidates = const [],
     required this.tieGroupCounts,
     required this.provenOptimal,
     required this.allTiesCollected,
@@ -118,11 +120,12 @@ class BondSearchResult {
 /// feasible completion. A concrete identity matching is required before any
 /// leaf can become the incumbent.
 class BondSearch {
-  BondSearch._(this.problem, this.maxNodes, this.maxTies);
+  BondSearch._(this.problem, this.maxNodes, this.maxTies, this.maxCandidates);
 
   final BondSearchProblem problem;
   final int? maxNodes;
   final int maxTies;
+  final int maxCandidates;
 
   late final List<int> _firstValues;
   late final List<List<int>> _maxSourceRates;
@@ -139,12 +142,17 @@ class BondSearch {
   late final List<int> _servantClassUsed;
   late final List<int> _ownedCeClassUsed;
   late final List<BondSearchWitness> _ties;
+  late final List<BondSearchWitness> _candidates;
+  final Set<String> _candidateKeys = {};
   late final List<int> _tieGroupCounts;
   final Map<String, int> _tieIndexByKey = {};
   BondSearchWitness? _best;
   bool _interrupted = false;
   bool _tiesTruncated = false;
   bool _collectTies = false;
+  bool _collectCandidates = false;
+  bool _scoreProven = false;
+  int _visitedOffset = 0;
   int? _nodeLimit;
   int _visitedNodes = 0;
   int _seedVisited = 0;
@@ -157,12 +165,16 @@ class BondSearch {
     int? maxNodes,
     int maxTies = 20,
     int maxTieNodes = 100000,
+    int maxCandidates = 100,
+    int maxCandidateNodes = 100000,
     void Function(BondSearchResult)? onProgress,
   }) {
     if (maxNodes != null && maxNodes < 0) throw ArgumentError.value(maxNodes, 'maxNodes');
     if (maxTies < 1) throw ArgumentError.value(maxTies, 'maxTies');
     if (maxTieNodes < 0) throw ArgumentError.value(maxTieNodes, 'maxTieNodes');
-    final search = BondSearch._(problem, maxNodes, maxTies);
+    if (maxCandidates < 1) throw ArgumentError.value(maxCandidates, 'maxCandidates');
+    if (maxCandidateNodes < 0) throw ArgumentError.value(maxCandidateNodes, 'maxCandidateNodes');
+    final search = BondSearch._(problem, maxNodes, maxTies, maxCandidates);
     search._onProgress = onProgress;
     search._progressClock.start();
     search._prepare();
@@ -174,22 +186,38 @@ class BondSearch {
     search._nodeLimit = maxNodes;
     search._visit(0, 0);
     final provenOptimal = !search._interrupted;
+    search._scoreProven = provenOptimal;
     final primaryNodes = search._visitedNodes;
+    var tieNodes = 0;
     if (provenOptimal && search._best != null) {
       search._reportProgress(provenOptimal: true);
       search
         .._collectTies = true
         .._nodeLimit = maxTieNodes
+        .._visitedOffset = primaryNodes
+        .._visitedNodes = 0;
+      search._visit(0, 0);
+      tieNodes = search._visitedNodes;
+    }
+    final allTiesCollected = provenOptimal && !search._interrupted && !search._tiesTruncated;
+    if (provenOptimal && search._best != null && maxCandidateNodes > 0) {
+      search
+        .._collectTies = false
+        .._collectCandidates = true
+        .._interrupted = false
+        .._nodeLimit = maxCandidateNodes
+        .._visitedOffset = primaryNodes + tieNodes
         .._visitedNodes = 0;
       search._visit(0, 0);
     }
     return BondSearchResult(
       best: search._best,
       ties: List.unmodifiable(search._ties),
+      candidates: List.unmodifiable(search._candidates),
       tieGroupCounts: List.unmodifiable(search._tieGroupCounts),
       provenOptimal: provenOptimal,
-      allTiesCollected: provenOptimal && !search._interrupted && !search._tiesTruncated,
-      visitedNodes: primaryNodes + (search._collectTies ? search._visitedNodes : 0),
+      allTiesCollected: allTiesCollected,
+      visitedNodes: search._visitedOffset + search._visitedNodes,
     );
   }
 
@@ -200,10 +228,11 @@ class BondSearch {
       BondSearchResult(
         best: _best,
         ties: List.unmodifiable(_ties),
+        candidates: List.unmodifiable(_candidates),
         tieGroupCounts: List.unmodifiable(_tieGroupCounts),
-        provenOptimal: provenOptimal,
+        provenOptimal: provenOptimal || _scoreProven,
         allTiesCollected: false,
-        visitedNodes: _visitedNodes,
+        visitedNodes: _visitedOffset + _visitedNodes,
       ),
     );
   }
@@ -277,6 +306,7 @@ class BondSearch {
       throw ArgumentError('invalid bond search dimensions');
     }
     _ties = [];
+    _candidates = [];
     _tieGroupCounts = [];
     _chosen = List.filled(n, null);
     _servantClassUsed = List<int>.filled(problem.servantClassCapacities.length, 0);
@@ -441,7 +471,11 @@ class BondSearch {
     final budgetIndex = math.min(remaining, _dpMaxBudget);
     if (_dp[p][budgetIndex] == -0x3fffffffffffffff) return;
     final upper = _assignedUpper(p) + _dp[p][budgetIndex];
-    if (_best != null && (_collectTies ? upper < _best!.totalBond : upper <= _best!.totalBond)) return;
+    if (_collectCandidates) {
+      if (_candidates.length >= maxCandidates && upper < _candidates.last.totalBond) return;
+    } else if (_best != null && (_collectTies ? upper < _best!.totalBond : upper <= _best!.totalBond)) {
+      return;
+    }
     final group = problem.positions[p].symmetryGroup;
     for (final item in _orderedItems[p]) {
       if (item.cost > remaining) continue;
@@ -555,8 +589,6 @@ class BondSearch {
       slotBonds[p] = bond;
       total += bond;
     }
-    if (_best != null && total < _best!.totalBond) return;
-
     final servantIds = List<int?>.filled(items.length, null);
     final ownedCeIds = List.generate(items.length, (_) => <int>[]);
     for (final entry in servants.entries) {
@@ -577,6 +609,8 @@ class BondSearch {
       servantIds: List.unmodifiable(servantIds),
       ownedCeIds: [for (final ids in ownedCeIds) List<int>.unmodifiable(ids)],
     );
+    _recordCandidate(witness);
+    if (_best != null && total < _best!.totalBond) return;
     if (_best == null || total > _best!.totalBond) {
       _best = witness;
       _ties.clear();
@@ -607,8 +641,38 @@ class BondSearch {
     _tieGroupCounts.add(1);
   }
 
+  String _candidateKey(BondSearchWitness witness) => [
+    for (final (p, item) in witness.items.indexed)
+      '${item.symmetryOrder}:${witness.servantIds[p]}:${witness.ownedCeIds[p].join(',')}',
+  ].join('|');
+
+  int _compareCandidates(BondSearchWitness a, BondSearchWitness b) {
+    final score = b.totalBond.compareTo(a.totalBond);
+    if (score != 0) return score;
+    final cost = b.totalCost.compareTo(a.totalCost);
+    return cost != 0
+        ? cost
+        : a.items
+              .fold<int>(0, (sum, item) => sum + item.wearCount)
+              .compareTo(b.items.fold<int>(0, (sum, item) => sum + item.wearCount));
+  }
+
+  void _recordCandidate(BondSearchWitness witness) {
+    if (_candidates.length >= maxCandidates && _compareCandidates(witness, _candidates.last) >= 0) return;
+    final key = _candidateKey(witness);
+    if (!_candidateKeys.add(key)) return;
+    var index = 0;
+    while (index < _candidates.length && _compareCandidates(_candidates[index], witness) <= 0) {
+      index++;
+    }
+    _candidates.insert(index, witness);
+    if (_candidates.length > maxCandidates) {
+      _candidateKeys.remove(_candidateKey(_candidates.removeLast()));
+    }
+  }
+
   bool _prefer(BondSearchWitness a, BondSearchWitness b) {
-    if (a.totalCost != b.totalCost) return a.totalCost < b.totalCost;
+    if (a.totalCost != b.totalCost) return a.totalCost > b.totalCost;
     final wearsA = a.items.fold<int>(0, (sum, item) => sum + item.wearCount);
     final wearsB = b.items.fold<int>(0, (sum, item) => sum + item.wearCount);
     return wearsA < wearsB;

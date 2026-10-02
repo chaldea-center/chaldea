@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:auto_size_text/auto_size_text.dart';
 
 import 'package:chaldea/app/battle/models/user.dart';
@@ -79,8 +81,9 @@ class BondSolverResults extends StatelessWidget {
   final FormationBondOption option;
   final QuestPhase quest;
   final bool solving;
-  final bool showAllCandidates;
-  final VoidCallback onToggleCandidates;
+  final int visibleCandidateCount;
+  final VoidCallback onShowMore;
+  final VoidCallback onShowFewer;
 
   const BondSolverResults({
     super.key,
@@ -89,8 +92,9 @@ class BondSolverResults extends StatelessWidget {
     required this.option,
     required this.quest,
     required this.solving,
-    required this.showAllCandidates,
-    required this.onToggleCandidates,
+    required this.visibleCandidateCount,
+    required this.onShowMore,
+    required this.onShowFewer,
   });
 
   @override
@@ -112,8 +116,8 @@ class BondSolverResults extends StatelessWidget {
         ),
       );
     }
-    final teams = solved.ties.isEmpty ? [best] : solved.ties;
-    final visibleTeams = showAllCandidates ? teams : teams.take(5).toList();
+    final teams = solved.candidates.isEmpty ? [best] : solved.candidates;
+    final visibleTeams = teams.take(visibleCandidateCount).toList();
     final standardCost = ConstData.userLevel[ConstData.maxUserLevel]?.maxCost ?? solved.maxCost;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -124,12 +128,20 @@ class BondSolverResults extends StatelessWidget {
           subtitle: Text(
             'COST ${best.totalCost}/${solved.maxCost}'
             '${solved.maxCost == standardCost ? "" : " · max ${solved.maxCost}/$standardCost (custom / standard)"}\n'
-            '${teams.length} ${solved.provenOptimal ? "maximum-score" : "best-known-score"} '
-            '${teams.length == 1 ? "candidate" : "candidates"} available. '
-            '${solved.allTiesCollected ? "All searched effect groups collected; concrete variants are limited." : "More equal-score teams may exist."}',
+            '${teams.length}/${option.maxCandidateTeams} feasible teams found, sorted by score. '
+            '${solved.provenOptimal ? "Maximum score proven." : "Maximum score not yet proven."} '
+            'Lower ranks are sampled; more teams may exist.',
           ),
         ),
-        for (final (i, team) in visibleTeams.indexed)
+        for (final (i, team) in visibleTeams.indexed) ...[
+          if (i == 0 || team.totalBond != visibleTeams[i - 1].totalBond)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+              child: Text(
+                '${team.totalBond * option.teapotTimes} bond · score group',
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+            ),
           Card(
             margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
             child: Column(
@@ -139,20 +151,23 @@ class BondSolverResults extends StatelessWidget {
                   title: Text('Team ${i + 1}: ${team.totalBond * option.teapotTimes}'),
                   subtitle: Text('COST ${team.totalCost}/${solved.maxCost}'),
                 ),
-                IgnorePointer(
-                  child: FormationCard(formation: _previewFormation(team), questPhase: quest),
-                ),
+                FormationCard(formation: _previewFormation(team), questPhase: quest),
                 _bondValues(context, team),
                 const SizedBox(height: 8),
               ],
             ),
           ),
+        ],
         if (teams.length > 5)
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: TextButton(
-              onPressed: onToggleCandidates,
-              child: Text(showAllCandidates ? 'Show fewer teams' : 'Show all ${teams.length} teams'),
+              onPressed: visibleTeams.length == teams.length ? onShowFewer : onShowMore,
+              child: Text(
+                visibleTeams.length == teams.length
+                    ? 'Show fewer teams'
+                    : 'Show ${math.min(20, teams.length - visibleTeams.length)} more teams',
+              ),
             ),
           ),
       ],

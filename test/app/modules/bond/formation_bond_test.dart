@@ -27,9 +27,11 @@ void main() {
 
     first.formationBondOption
       ..maxCost = 120
+      ..maxCandidateTeams = 60
       ..excludedSvts.add(100100);
     final restored = User.fromJson(first.toJson());
     expect(restored.formationBondOption.maxCost, 120);
+    expect(restored.formationBondOption.maxCandidateTeams, 60);
     expect(restored.formationBondOption.excludedSvts, {100100});
     expect(second.formationBondOption.maxCost, isNull);
   });
@@ -170,12 +172,14 @@ void main() {
     await tester.pump(const Duration(seconds: 1));
   });
 
-  testWidgets('results show multiple equal-score teams', (tester) async {
+  testWidgets('results show ranked candidates from multiple score groups', (tester) async {
     const first = BondSolvedTeam(1000, 70, []);
     const second = BondSolvedTeam(1000, 65, []);
+    const third = BondSolvedTeam(950, 60, []);
     const result = BondSolverResult(
       best: first,
       ties: [first, second],
+      candidates: [first, second, third],
       tieGroupCounts: [],
       provenOptimal: true,
       allTiesCollected: false,
@@ -200,8 +204,9 @@ void main() {
               option: FormationBondOption(),
               quest: QuestPhase(id: 987654321, name: 'Result display', bond: 1000),
               solving: false,
-              showAllCandidates: false,
-              onToggleCandidates: () {},
+              visibleCandidateCount: 5,
+              onShowMore: () {},
+              onShowFewer: () {},
             ),
           ),
         ),
@@ -210,7 +215,8 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('Team 1: 1000'), findsOneWidget);
     expect(find.text('Team 2: 1000'), findsOneWidget);
-    expect(find.textContaining('More equal-score teams may exist.'), findsOneWidget);
+    expect(find.text('Team 3: 950'), findsOneWidget);
+    expect(find.textContaining('3/100 feasible teams found'), findsOneWidget);
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(const Duration(seconds: 1));
   });

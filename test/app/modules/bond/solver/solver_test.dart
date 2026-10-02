@@ -314,7 +314,7 @@ void main() {
       formation.svts[i] = PlayerSvtData.svt(servants[i])..equip1 = SvtEquipData(ce: fillerCes[i]);
     }
     formation.svts[5].equip1 = SvtEquipData(ce: pinnedCe, limitBreak: true);
-    final option = FormationBondOption(enableEvent: false);
+    final option = FormationBondOption(enableEvent: false, maxCandidateTeams: 30);
     final quest = QuestPhase(bond: 1000);
     final result = FormationBondSolver.solve(
       option: _withFilters(option, maxCost: 999, favoriteOnly: false, excludeUnreleased: false, maxBond: 0),
@@ -325,6 +325,14 @@ void main() {
     );
     expect(result.best, isNotNull);
     expect(result.provenOptimal, isTrue);
+    expect(result.candidates.length, greaterThan(20));
+    expect(result.candidates.length, lessThanOrEqualTo(option.maxCandidateTeams));
+    for (final candidate in [result.candidates.first, result.candidates[15], result.candidates.last]) {
+      final candidateOption = FormationBondOption.fromJson(option.toJson());
+      final candidateFormation = candidate.applyTo(formation, candidateOption);
+      final checked = calcFormationBondResults(candidateOption, quest, candidateFormation);
+      expect(candidate.totalBond, checked.fold<int>(0, (sum, slot) => sum + slot.totalBond));
+    }
     final chosen = result.best!.slots[5];
     expect(chosen.equip1!.id, pinnedCe!.id);
     expect(chosen.servantId, isNotNull);
@@ -642,7 +650,8 @@ void main() {
     print(
       'five-free solver: ${result.elapsedMilliseconds}ms, ${result.visitedNodes} search steps, '
       'best=${result.best?.totalBond}, proven=${result.provenOptimal}, items=${result.itemCount}, '
-      'CE classes=${result.ownedCeClassCount}, placement invariant=${result.placementInvariantCeClassCount}',
+      'CE classes=${result.ownedCeClassCount}, placement invariant=${result.placementInvariantCeClassCount}, '
+      'candidates=${result.candidates.length}',
     );
     expect(result.best, isNotNull);
     expect(result.provenOptimal, isTrue);
@@ -653,6 +662,29 @@ void main() {
     expect(result.best!.totalCost, lessThanOrEqualTo(result.maxCost));
     expect(result.ties.length, greaterThan(1));
     expect(result.ties.length, lessThanOrEqualTo(20));
+    expect(result.candidates.length, greaterThan(20));
+    expect(result.candidates.length, lessThanOrEqualTo(option.maxCandidateTeams));
+    for (var i = 1; i < result.candidates.length; i++) {
+      expect(result.candidates[i].totalBond, lessThanOrEqualTo(result.candidates[i - 1].totalBond));
+      if (result.candidates[i].totalBond == result.candidates[i - 1].totalBond) {
+        expect(result.candidates[i].totalCost, lessThanOrEqualTo(result.candidates[i - 1].totalCost));
+      }
+    }
+    for (final candidate in result.candidates) {
+      expect(candidate.totalCost, lessThanOrEqualTo(result.maxCost));
+      final ownedServants = candidate.slots
+          .where((s) => !s.isSupport)
+          .map((s) => s.servantId)
+          .whereType<int>()
+          .toList();
+      expect(ownedServants.toSet().length, ownedServants.length);
+      final ownedCes = candidate.slots
+          .where((s) => !s.isSupport)
+          .expand((s) => [s.equip1?.id, s.equip3?.id])
+          .whereType<int>()
+          .toList();
+      expect(ownedCes.toSet().length, ownedCes.length);
+    }
     final signatures = <String>{};
     for (final team in result.ties) {
       expect(team.totalBond, result.best!.totalBond);

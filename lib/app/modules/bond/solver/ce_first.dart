@@ -83,6 +83,7 @@ class _CeFirstProblem {
 class _CeFirstResult {
   final BondSolvedTeam? best;
   final List<BondSolvedTeam> ties;
+  final List<BondSolvedTeam> candidates;
   final List<int> tieGroupCounts;
   final bool provenOptimal;
   final int evaluatedCombinations;
@@ -91,6 +92,7 @@ class _CeFirstResult {
   const _CeFirstResult(
     this.best,
     this.ties,
+    this.candidates,
     this.tieGroupCounts,
     this.provenOptimal,
     this.evaluatedCombinations,
@@ -101,7 +103,19 @@ class _CeFirstResult {
 class _CeFirstSolution {
   final BondSolvedTeam team;
   final String groupKey;
-  const _CeFirstSolution(this.team, this.groupKey);
+  final List<int> rates;
+  final List<int> values;
+  const _CeFirstSolution(this.team, this.groupKey, this.rates, this.values);
+}
+
+class _CeFirstNeighbor {
+  final int position;
+  final _CeFirstServant servant;
+  final int bond;
+  final int totalCost;
+  final int totalBond;
+
+  const _CeFirstNeighbor(this.position, this.servant, this.bond, this.totalCost, this.totalBond);
 }
 
 class _CeFirstCombo {
@@ -137,31 +151,39 @@ class _CeFirstState {
   const _CeFirstState(this.score, this.path);
 }
 
-_CeFirstResult _runCeFirstSearch(_CeFirstSearchInput input) =>
-    _CeFirstSearch(input.problem, maxTies: input.maxTies).solve(maxEvaluations: input.maxEvaluations);
+_CeFirstResult _runCeFirstSearch(_CeFirstSearchInput input) => _CeFirstSearch(
+  input.problem,
+  maxTies: input.maxTies,
+  maxCandidates: input.maxCandidates,
+).solve(maxEvaluations: input.maxEvaluations);
 
 class _CeFirstSearchInput {
   final _CeFirstProblem problem;
   final int? maxEvaluations;
   final int maxTies;
-  const _CeFirstSearchInput(this.problem, this.maxEvaluations, this.maxTies);
+  final int maxCandidates;
+  const _CeFirstSearchInput(this.problem, this.maxEvaluations, this.maxTies, this.maxCandidates);
 }
 
 class _CeFirstSearch {
   final _CeFirstProblem problem;
   final int maxTies;
+  final int maxCandidates;
   BondSolvedTeam? _best;
   final List<BondSolvedTeam> _ties = [];
+  final List<BondSolvedTeam> _candidates = [];
+  final Set<String> _candidateKeys = {};
   final List<int> _tieCounts = [];
   final List<String> _tieKeys = [];
   final Map<String, int> _tieIndex = {};
   int _evaluated = 0;
 
-  _CeFirstSearch(this.problem, {this.maxTies = 20});
+  _CeFirstSearch(this.problem, {this.maxTies = 20, this.maxCandidates = 100});
 
   _CeFirstResult _snapshot(bool proven, int possible) => _CeFirstResult(
     _best,
     List<BondSolvedTeam>.unmodifiable(_ties),
+    List<BondSolvedTeam>.unmodifiable(_candidates),
     List<int>.unmodifiable(_tieCounts),
     proven,
     _evaluated,
@@ -170,6 +192,7 @@ class _CeFirstSearch {
 
   _CeFirstResult solve({int? maxEvaluations, void Function(_CeFirstResult)? onProgress}) {
     if (maxTies < 1) throw ArgumentError.value(maxTies, 'maxTies');
+    if (maxCandidates < 1) throw ArgumentError.value(maxCandidates, 'maxCandidates');
     if (maxEvaluations != null && maxEvaluations < 0) {
       throw ArgumentError.value(maxEvaluations, 'maxEvaluations');
     }
@@ -279,9 +302,10 @@ class _CeFirstSearch {
     onProgress?.call(_snapshot(false, combos.length));
     final progressClock = Stopwatch()..start();
     var lastProgressMs = 0;
+    var scoreProven = false;
     void reportIfDue() {
       if (onProgress != null && _evaluated % 16 == 0 && progressClock.elapsedMilliseconds - lastProgressMs >= 250) {
-        onProgress(_snapshot(false, combos.length));
+        onProgress(_snapshot(scoreProven, combos.length));
         lastProgressMs = progressClock.elapsedMilliseconds;
       }
     }
@@ -299,7 +323,11 @@ class _CeFirstSearch {
         reportIfDue();
         continue;
       }
+      _rememberCandidate(solution.team);
       final team = solution.team;
+      if (_best == null || team.totalBond > _best!.totalBond || _candidates.length < maxCandidates) {
+        _rememberNearbyServants(solution);
+      }
       if (_best == null || team.totalBond > _best!.totalBond) {
         _best = team;
         _ties.clear();
@@ -309,7 +337,7 @@ class _CeFirstSearch {
         _addTie(solution);
         onProgress?.call(_snapshot(false, combos.length));
       } else if (team.totalBond == _best!.totalBond) {
-        if (team.totalCost < _best!.totalCost) _best = team;
+        if (team.totalCost > _best!.totalCost) _best = team;
         _addTie(solution);
       }
       reportIfDue();
@@ -317,6 +345,7 @@ class _CeFirstSearch {
     // The maximum score is proved above. Explore a bounded number of equal
     // upper-bound combinations for other effect groups without delaying proof.
     if (_best != null && maxEvaluations == null) {
+      scoreProven = true;
       onProgress?.call(_snapshot(true, combos.length));
       var tieEvaluations = 0;
       for (; nextCombo < combos.length && tieEvaluations < maxTies * 4 && _ties.length < maxTies; nextCombo++) {
@@ -325,9 +354,28 @@ class _CeFirstSearch {
         tieEvaluations++;
         _evaluated++;
         final solution = _evaluate(combo, ce1Slots, ce3Slots, supportSlots);
+        if (solution != null) {
+          _rememberCandidate(solution.team);
+          if (_candidates.length < maxCandidates && solution.team.totalBond == _best!.totalBond) {
+            _rememberNearbyServants(solution);
+          }
+        }
         if (solution != null && solution.team.totalBond == _best!.totalBond) {
-          if (solution.team.totalCost < _best!.totalCost) _best = solution.team;
+          if (solution.team.totalCost > _best!.totalCost) _best = solution.team;
           _addTie(solution);
+        }
+        reportIfDue();
+      }
+      var candidateEvaluations = 0;
+      for (; nextCombo < combos.length && candidateEvaluations < maxCandidates * 4; nextCombo++) {
+        final combo = combos[nextCombo];
+        if (_candidates.length == maxCandidates && combo.upper < _candidates.last.totalBond) break;
+        candidateEvaluations++;
+        _evaluated++;
+        final solution = _evaluate(combo, ce1Slots, ce3Slots, supportSlots);
+        if (solution != null) {
+          _rememberCandidate(solution.team);
+          if (solution.team.totalBond == _best!.totalBond) _addTie(solution);
         }
         reportIfDue();
       }
@@ -335,11 +383,30 @@ class _CeFirstSearch {
     return _snapshot(true, combos.length);
   }
 
+  void _rememberCandidate(BondSolvedTeam team) {
+    if (_candidates.length == maxCandidates && _compareCandidate(team, _candidates.last) >= 0) return;
+    final key = _teamSignature(team);
+    if (!_candidateKeys.add(key)) return;
+    var index = 0;
+    while (index < _candidates.length && _compareCandidate(_candidates[index], team) <= 0) {
+      index++;
+    }
+    _candidates.insert(index, team);
+    if (_candidates.length > maxCandidates) {
+      _candidateKeys.remove(_teamSignature(_candidates.removeLast()));
+    }
+  }
+
+  int _compareCandidate(BondSolvedTeam a, BondSolvedTeam b) {
+    final score = b.totalBond.compareTo(a.totalBond);
+    return score != 0 ? score : b.totalCost.compareTo(a.totalCost);
+  }
+
   void _addTie(_CeFirstSolution solution) {
     final index = _tieIndex[solution.groupKey];
     if (index != null) {
       _tieCounts[index]++;
-      if (solution.team.totalCost < _ties[index].totalCost) _ties[index] = solution.team;
+      if (solution.team.totalCost > _ties[index].totalCost) _ties[index] = solution.team;
     } else if (_ties.length < maxTies) {
       _tieIndex[solution.groupKey] = _ties.length;
       _tieKeys.add(solution.groupKey);
@@ -577,7 +644,66 @@ class _CeFirstSearch {
       rates.join(','),
       values.join(','),
     ].join('|');
-    return _CeFirstSolution(BondSolvedTeam(total, totalCost, slots), groupKey);
+    return _CeFirstSolution(BondSolvedTeam(total, totalCost, slots), groupKey, rates, values);
+  }
+
+  /// A one-servant substitution keeps every CE source unchanged in the
+  /// separable path. Score only that receiver and retain feasible alternatives.
+  void _rememberNearbyServants(_CeFirstSolution solution) {
+    final team = solution.team;
+    final neighbors = <_CeFirstNeighbor>[];
+    for (final (p, position) in problem.positions.indexed) {
+      if (position.support || position.fixedServant) continue;
+      final slot = team.slots[p];
+      if (slot.servantId == null) continue;
+      final current = position.servants.firstWhere(
+        (servant) => servant.id == slot.servantId && servant.limit == slot.limitCount,
+      );
+      final occupiedIds = <int>{
+        for (final other in team.slots)
+          if (other.position != p && other.servantId != null) other.servantId!,
+      };
+      for (final servant in position.servants) {
+        if (servant.id == current.id && servant.limit == current.limit) continue;
+        if (occupiedIds.contains(servant.id)) continue;
+        final totalCost = team.totalCost - current.cost + servant.cost;
+        if (totalCost > problem.maxCost) continue;
+        final bond = _score(position, servant, solution.rates, solution.values);
+        final totalBond = team.totalBond - slot.bond + bond;
+        if (_candidates.length == maxCandidates && totalBond < _candidates.last.totalBond) continue;
+        neighbors.add(_CeFirstNeighbor(p, servant, bond, totalCost, totalBond));
+      }
+    }
+    neighbors.sort((a, b) {
+      final score = b.totalBond.compareTo(a.totalBond);
+      return score != 0 ? score : b.totalCost.compareTo(a.totalCost);
+    });
+    for (final neighbor in neighbors.take(maxCandidates)) {
+      final original = team.slots[neighbor.position];
+      final position = problem.positions[neighbor.position];
+      final current = position.servants.firstWhere(
+        (servant) => servant.id == original.servantId && servant.limit == original.limitCount,
+      );
+      final replacement = BondSolvedSlot(
+        position: original.position,
+        servantId: neighbor.servant.id,
+        limitCount: neighbor.servant.limit,
+        equip1: original.equip1,
+        equip3: original.equip3,
+        isSupport: false,
+        fixedServant: false,
+        bond: neighbor.bond,
+        cost: original.cost - current.cost + neighbor.servant.cost,
+        servantCandidates: [neighbor.servant.id],
+        equip1Candidates: original.equip1Candidates,
+        equip3Candidates: original.equip3Candidates,
+        servantVariants: {neighbor.servant.id: neighbor.servant.limit},
+        equip1Variants: original.equip1Variants,
+        equip3Variants: original.equip3Variants,
+      );
+      final slots = List<BondSolvedSlot>.of(team.slots)..[neighbor.position] = replacement;
+      _rememberCandidate(BondSolvedTeam(neighbor.totalBond, neighbor.totalCost, slots));
+    }
   }
 
   int _chosenCeCost(_CeFirstCombo combo, int id) {

@@ -1380,6 +1380,7 @@ class FormationBondOption {
   int maxBond;
   Set<int> excludedSvts;
   Set<int> excludedCes;
+  int maxCandidateTeams;
 
   FormationBondOption({
     BattleTeamFormation? teamFormation,
@@ -1396,6 +1397,7 @@ class FormationBondOption {
     this.maxBond = 15,
     Set<int>? excludedSvts,
     Set<int>? excludedCes,
+    this.maxCandidateTeams = 100,
   }) : teamFormation = teamFormation ?? BattleTeamFormation(),
        campaigns = campaigns ?? {},
        svtBonus = svtBonus ?? List.generate(6, (_) => FormationBondSvtBonus()),
