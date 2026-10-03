@@ -61,6 +61,62 @@ void main() {
     expect(result.best!.ownedCeIds.single.toSet(), {10, 11});
   });
 
+  test('CE family matching reserves shared identity and preserves concrete IDs', () {
+    BondSearchItem choice(int servant, Set<int> ces) => BondSearchItem(
+      cost: 0,
+      receiverProfile: 0,
+      selfRate: 0,
+      selfValue: 0,
+      teamRates: const [0],
+      teamValues: const [0],
+      servantIds: {servant},
+      ownedCeIds: [ces],
+    );
+    final problem = BondSearchProblem(
+      baseBond: 100,
+      rateCap: 5000,
+      maxCost: 0,
+      receiverProfileCount: 1,
+      ownedCeIdentities: const {10: 10, 11: 10},
+      positions: [
+        BondSearchPosition(
+          frontlineRate: 0,
+          items: [
+            choice(1, {10, 20}),
+          ],
+        ),
+        BondSearchPosition(
+          frontlineRate: 0,
+          items: [
+            choice(2, {11}),
+          ],
+        ),
+      ],
+    );
+    final solved = BondSearch.solve(problem);
+    expect(solved.best!.ownedCeIds, [
+      [20],
+      [11],
+    ]);
+    final conflict = BondSearchProblem(
+      baseBond: 100,
+      rateCap: 5000,
+      maxCost: 0,
+      receiverProfileCount: 1,
+      ownedCeIdentities: problem.ownedCeIdentities,
+      positions: [
+        BondSearchPosition(
+          frontlineRate: 0,
+          items: [
+            choice(1, {10}),
+          ],
+        ),
+        problem.positions[1],
+      ],
+    );
+    expect(BondSearch.solve(conflict).best, isNull);
+  });
+
   test('random small problems match concrete exhaustive enumeration', () {
     final random = math.Random(44721);
     for (var trial = 0; trial < 250; trial++) {

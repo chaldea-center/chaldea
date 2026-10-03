@@ -19,9 +19,9 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 import '../battle/formation/team.dart';
-import 'bond_effect_corrections.dart';
+import 'bond_rules.dart';
+import 'solver/results.dart';
 import 'solver/solver.dart';
-import 'solver/widgets.dart';
 
 const int _kMaxSvtNum = 6;
 
@@ -68,19 +68,13 @@ class _FormationBondRuntime {
   QuestPhase? resultQuest;
   String? solverError;
   bool solving = false;
-  bool searchCompleted = false;
-  int visibleCandidateCount = 5;
   StreamSubscription<BondSolverResult>? search;
-  Timer? elapsedTicker;
-  Stopwatch? solveClock;
   int searchRevision = 0;
   int lastDebugSecond = -1;
 
   void stopSearch() {
     searchRevision++;
     search?.cancel();
-    elapsedTicker?.cancel();
-    solveClock?.stop();
   }
 
   void clearResults() {
@@ -88,8 +82,6 @@ class _FormationBondRuntime {
     resultQuest = null;
     solverError = null;
     solving = false;
-    searchCompleted = false;
-    visibleCandidateCount = 5;
   }
 
   void logProgress(BondSolverResult solved) {
@@ -109,38 +101,36 @@ class _FormationBondRuntime {
     final solved = solverResult;
     if (solving) {
       if (solved == null) return 'Preparing search candidates…';
-      if (solved.provenOptimal) return 'Maximum proven; collecting result representatives…';
+      if (solved.provenOptimal) return 'Maximum proven; collecting equal-score groups…';
       if (solved.best == null) return 'Searching for a feasible team…';
       return 'Best team found; still proving the maximum…';
     }
     if (solverError != null) return 'Search failed';
     if (solved == null) return 'Ready to search';
     if (solved.provenOptimal) {
-      return searchCompleted
-          ? 'Maximum proven · Search complete'
-          : 'Maximum proven · Representative collection stopped';
+      return solved.allTiesCollected ? 'Maximum proven' : 'Maximum proven · equal-score groups may be incomplete';
     }
-    return 'Search stopped · Maximum not proven';
+    return 'Stopped · Maximum not proven';
   }
 }
 
-class FormationBondTab extends StatefulWidget {
+class FormationBondPage extends StatefulWidget {
   /// Callers supply a temporary option if edits must not affect the current user.
   final FormationBondOption? option;
-  const FormationBondTab({super.key, this.option});
+  const FormationBondPage({super.key, this.option});
 
   @override
-  State<FormationBondTab> createState() => _FormationBondTabState();
+  State<FormationBondPage> createState() => _FormationBondPageState();
 }
 
-class _FormationBondTabState extends State<FormationBondTab> {
+class _FormationBondPageState extends State<FormationBondPage> with SingleTickerProviderStateMixin {
+  late final TabController _tabController = TabController(length: 2, vsync: this);
   late final User _user = db.userData.curUser;
   late final FormationBondOption option = widget.option ?? _user.formationBondOption;
   late final _FormationBondRuntime _runtime = _FormationBondRuntime(userBacked: widget.option == null);
   // runtime formation, converted from/to [FormationBondOption.teamFormation] on load/save
   final BattleTeamSetup formation = BattleTeamSetup();
   QuestPhase? questEntity;
-  Region get _region => db.settings.resolvedPreferredRegions.firstOrNull ?? Region.jp;
 
   void updateSharedInput(VoidCallback change) {
     if (!mounted) return;
@@ -189,6 +179,7 @@ class _FormationBondTabState extends State<FormationBondTab> {
   @override
   void dispose() {
     _runtime.stopSearch();
+    _tabController.dispose();
     if (_runtime.restored) saveData();
     super.dispose();
   }
@@ -234,49 +225,37 @@ class _FormationBondTabState extends State<FormationBondTab> {
       _runtime.clearResults();
       _runtime.solving = true;
     });
-    QuestPhase? fullQuest;
-    try {
-      // The bundled quest-phase table omits restrictions. Fetch its full form.
-      fullQuest = identical(selectedQuest, db.gameData.getQuestPhase(selectedQuest.id, selectedQuest.phase))
-          ? await AtlasApi.questPhase(selectedQuest.id, selectedQuest.phase, expireAfter: const Duration(days: 7))
-          : selectedQuest;
-    } catch (e) {
-      if (!mounted || revision != _runtime.searchRevision) return;
-      setState(() {
-        _runtime.solving = false;
-        _runtime.solverError = 'Cannot load quest restrictions: $e';
-      });
-      return;
-    }
+    _tabController.animateTo(1);
+    // Defer preparation until the tab transition has painted.
+    await Future<void>.delayed(_tabController.animationDuration);
     if (!mounted || revision != _runtime.searchRevision) return;
-    if (fullQuest == null) {
+    await WidgetsBinding.instance.endOfFrame;
+    if (!mounted || revision != _runtime.searchRevision) return;
+    if (_runtime.userBacked && db.userData.curUser.id != _user.id) {
       setState(() {
         _runtime.solving = false;
-        _runtime.solverError = 'Cannot load quest restrictions';
+        _runtime.solverError = 'The active user changed. Reopen this page before solving.';
       });
       return;
     }
-    _runtime.resultQuest = fullQuest;
+    // Selection/restoration resolves missing phases before Solve is available.
+    // Bundled phases are authoritative, including Grand Board restrictions.
+    final solveQuest = db.gameData.getQuestPhase(selectedQuest.id, selectedQuest.phase) ?? selectedQuest;
+    _runtime.resultQuest = solveQuest;
     final solveFormation = formation.copy();
-    final solveOption = _buildSolverRequest(fullQuest, solveFormation);
+    final solveOption = _buildSolverRequest(solveQuest, solveFormation);
     if (_runtime.userBacked) {
       saveData();
       await db.saveUserData();
     }
     if (!mounted || revision != _runtime.searchRevision) return;
-    _runtime.solveClock = Stopwatch()..start();
     _runtime.lastDebugSecond = -1;
-    _runtime.elapsedTicker?.cancel();
-    _runtime.elapsedTicker = Timer.periodic(const Duration(seconds: 1), (_) {
-      if (mounted && _runtime.solving) setState(() {});
-    });
-    if (kDebugMode) debugPrint('[BondSolver] search started: quest ${fullQuest.id}/${fullQuest.phase}');
+    if (kDebugMode) debugPrint('[BondSolver] search started: quest ${solveQuest.id}/${solveQuest.phase}');
     _runtime.search =
         FormationBondSolver.solveProgressively(
           option: solveOption,
-          quest: fullQuest,
+          quest: solveQuest,
           formation: solveFormation,
-          region: _region,
         ).listen(
           (solved) {
             if (!mounted || revision != _runtime.searchRevision) return;
@@ -288,20 +267,12 @@ class _FormationBondTabState extends State<FormationBondTab> {
             setState(() {
               _runtime.solverError = e.toString();
               _runtime.solving = false;
-              _runtime.searchCompleted = false;
             });
-            _runtime.elapsedTicker?.cancel();
-            _runtime.solveClock?.stop();
             if (kDebugMode) debugPrint('[BondSolver] search failed: $e');
           },
           onDone: () {
             if (!mounted || revision != _runtime.searchRevision) return;
-            setState(() {
-              _runtime.solving = false;
-              _runtime.searchCompleted = true;
-            });
-            _runtime.elapsedTicker?.cancel();
-            _runtime.solveClock?.stop();
+            setState(() => _runtime.solving = false);
             if (kDebugMode) debugPrint('[BondSolver] search finished: proven=${_runtime.solverResult?.provenOptimal}');
           },
         );
@@ -310,51 +281,31 @@ class _FormationBondTabState extends State<FormationBondTab> {
   void cancelSolve() {
     _runtime.stopSearch();
     if (kDebugMode) debugPrint('[BondSolver] search cancelled: proven=${_runtime.solverResult?.provenOptimal}');
-    setState(() {
-      _runtime.solving = false;
-      _runtime.searchCompleted = false;
-    });
+    setState(() => _runtime.solving = false);
   }
 
-  void _editNumber(String title, int? initial, void Function(int) update) {
+  void _editNumber({
+    required String title,
+    required int? initial,
+    required void Function(int) update,
+    String? hintText,
+  }) {
     InputCancelOkDialog.number(
       title: title,
       initValue: initial,
       validate: (v) => v >= 0,
       onSubmit: (v) => updateSharedInput(() => update(v)),
+      hintText: hintText,
     ).showDialog(context);
-  }
-
-  void _addExcludedServant() {
-    Navigator.of(context).push<void>(
-      MaterialPageRoute(
-        builder: (_) => ServantListPage(
-          filterData: SvtFilterData(useGrid: true),
-          onSelected: (servant) {
-            if (mounted) updateSharedInput(() => option.excludedSvts.add(servant.id));
-          },
-        ),
-      ),
-    );
-  }
-
-  void _addExcludedCe() {
-    Navigator.of(context).push<void>(
-      MaterialPageRoute(
-        builder: (_) => CraftListPage(
-          filterData: CraftFilterData(useGrid: true)..obtain.options = {CEObtain.davinciBondBonus},
-          onSelected: (ce) {
-            if (mounted) updateSharedInput(() => option.excludedCes.add(ce.id));
-          },
-        ),
-      ),
-    );
   }
 
   @override
   Widget build(BuildContext context) {
     if (_runtime.userBacked && db.userData.curUser.id != _user.id) {
-      return const Center(child: Text('The active user changed. Reopen Bond Bonus to load this user’s team.'));
+      return Scaffold(
+        appBar: AppBar(title: const Text('Formation Bond')),
+        body: const Center(child: Text('The active user changed. Reopen Formation Bond to load this user’s team.')),
+      );
     }
     final quest = questEntity;
     final eventId = quest?.logicEventId;
@@ -366,7 +317,8 @@ class _FormationBondTabState extends State<FormationBondTab> {
               for (final extraPassive in skill.extraPassive)
                 if (extraPassive.getValidEventIds().contains(eventId)) skill.id,
     }.toList()..sort();
-    validate();
+    // A stored date reference must survive until its quest finishes restoring.
+    if (_runtime.restored) validate();
     final results = calcResults();
     // resolve id/idx-keyed campaigns into runtime Event/EventCampaign instances
     final eventCampaignToggles = <(Event, EventCampaign, bool)>[];
@@ -379,213 +331,257 @@ class _FormationBondTabState extends State<FormationBondTab> {
         eventCampaignToggles.add((event, campaign, enabled));
       }
     }
-    return ListView(
+    final inputContent = ListView(
+      padding: const EdgeInsets.fromLTRB(4, 6, 4, 12),
       children: [
-        _BondQuestPicker(quest: quest, onChanged: (v) => updateSharedInput(() => questEntity = v)),
-        TeamSetupCard(
-          formation: formation,
-          quest: quest,
-          playerRegion: Region.jp,
-          onChanged: () => updateSharedInput(() {}),
-        ),
-        DividerWithTitle(title: '${S.current.general_custom} / ${S.current.bond} 15 / ${S.current.bond_limit}'),
-        Row(
+        TileGroup(
+          header: '${S.current.quest} / ${S.current.bond}',
           children: [
-            for (final index in range(option.svtBonus.length)) Expanded(child: Center(child: buildExtraBonus(index))),
-          ],
-        ),
-        DividerWithTitle(title: '${S.current.results} (base ${quest?.bond ?? 0})', indent: 16),
-        Row(
-          children: [
-            for (final index in range(results.length))
-              Expanded(child: Center(child: buildResult(index, results[index]))),
-          ],
-        ),
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-          child: Text.rich(
-            TextSpan(
-              text: '${S.current.total} ',
-              children: [
-                TextSpan(
-                  text: Maths.sum(results.map((e) => e.totalBond)).toString(),
-                  style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-                ),
-                const TextSpan(text: '  COST '),
-                TextSpan(
-                  text: formation.totalCost.toString(),
-                  style: TextStyle(color: Theme.of(context).colorScheme.secondary),
-                ),
-              ],
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ),
-        DividerWithTitle(title: S.current.settings_tab_name),
-        SimpleAccordion(
-          headerBuilder: (context, expanded) => ListTile(
-            dense: true,
-            title: Text(S.current.event),
-            subtitle: Text(
-              '${(option.enableEvent ? 1 : 0) + eventCampaignToggles.where((entry) => entry.$3).length}'
-              '/${eventCampaignToggles.length + 1} enabled',
-            ),
-          ),
-          contentBuilder: (context) => Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SwitchListTile.adaptive(
-                dense: true,
-                title: Text(S.current.event_skill),
-                subtitle: eventSkillIds.isEmpty
-                    ? null
-                    : Text('${db.gameData.events[eventId]?.lShortName.l ?? eventId}'),
-                value: option.enableEvent,
-                onChanged: (v) => updateSharedInput(() => option.enableEvent = v),
+            _BondQuestPicker(quest: quest, onChanged: (v) => updateSharedInput(() => questEntity = v)),
+            ListTile(
+              dense: true,
+              title: Text(
+                '${S.current.time}(${S.current.servant}/${S.current.craft_essence_short}/${S.current.costume})',
               ),
-              if (eventSkillIds.isNotEmpty)
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: Wrap(
-                    spacing: 8,
-                    runSpacing: 4,
-                    children: [
-                      for (final skillId in eventSkillIds)
-                        Text.rich(
-                          SharedBuilder.textButtonSpan(
-                            context: context,
-                            text: db.gameData.baseSkills[skillId]?.lName.l ?? skillId.toString(),
-                            onTap: () => router.push(url: Routes.skillI(skillId)),
-                          ),
-                          style: TextStyle(fontSize: 12),
-                        ),
-                    ],
-                  ),
-                ),
-              for (final (event, campaign, enabled) in eventCampaignToggles)
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: SwitchListTile.adaptive(
-                        dense: true,
-                        title: Text(event.lShortName.l),
-                        subtitle: Text(
-                          '${S.current.bond} ${campaign.calcType.operatorText}${campaign.value.format(percent: true, base: 10)}'
-                          '\n${strTime(event.startedAt)}~${strTime(event.endedAt)}',
-                        ),
-                        value: enabled,
-                        onChanged: (v) =>
-                            updateSharedInput(() => (option.campaigns[event.id] ??= {})[campaign.idx] = v),
+              subtitle: option.releaseReference == BondReleaseReference.questClosedAt
+                  ? Text(
+                      'CE availability and costume traits currently use JP data.',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    )
+                  : null,
+              trailing: DropdownButton<BondReleaseReference>(
+                value: option.releaseReference,
+                underline: const SizedBox.shrink(),
+                items: [
+                  for (final reference in BondReleaseReference.values)
+                    DropdownMenuItem(
+                      value: reference,
+                      enabled:
+                          reference != BondReleaseReference.questClosedAt || BondReleaseRules.hasClosingDate(quest),
+                      child: Text(
+                        reference == BondReleaseReference.questClosedAt
+                            ? (BondReleaseRules.hasClosingDate(quest)
+                                  ? Region.jp.getDateTimeByOffset(quest!.closedAt).toString().substring(0, 10)
+                                  : S.current.date)
+                            : reference.region.upper,
                       ),
                     ),
-                    IconButton(onPressed: event.routeTo, icon: Icon(DirectionalIcons.keyboard_arrow_forward(context))),
+                ],
+                onChanged: (reference) {
+                  if (reference != null) updateSharedInput(() => option.releaseReference = reference);
+                },
+              ),
+            ),
+          ],
+        ),
+        TileGroup(
+          header: S.current.team,
+          padding: const EdgeInsets.fromLTRB(8, 4, 8, 12),
+          children: [
+            TeamSetupCard(
+              formation: formation,
+              quest: quest,
+              playerRegion: Region.jp,
+              onChanged: () => updateSharedInput(() {}),
+            ),
+          ],
+        ),
+        TileGroup(
+          header: '${S.current.general_custom} / ${S.current.bond} 15 / ${S.current.bond_limit}',
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+              child: Row(
+                children: [
+                  for (final index in range(option.svtBonus.length))
+                    Expanded(child: Center(child: buildExtraBonus(index))),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+              child: Row(
+                children: [
+                  for (final index in range(results.length))
+                    Expanded(child: Center(child: buildResult(index, results[index]))),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Text.rich(
+                TextSpan(
+                  text: '${S.current.total} ',
+                  children: [
+                    TextSpan(
+                      text: Maths.sum(results.map((e) => e.totalBond)).toString(),
+                      style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                    ),
+                    const TextSpan(text: '  COST '),
+                    TextSpan(
+                      text: formation.totalCost.toString(),
+                      style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+                    ),
                   ],
                 ),
-            ],
-          ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ],
         ),
-        DividerWithTitle(title: 'misc', indent: 16),
-        ListTile(
-          dense: true,
-          leading: Item.iconBuilder(
-            context: context,
-            item: null,
-            itemId: Items.teapotId,
-            width: 28,
-            jumpToDetail: false,
-          ),
-          title: Text(Transl.itemNames('星見のティーポット').l),
-          trailing: DropdownButton<int>(
-            value: option.teapotTimes,
-            items: [
-              for (final times in [1, 2, 3]) DropdownMenuItem(value: times, child: Text(times == 1 ? '--' : '×$times')),
-            ],
-            onChanged: (v) {
-              setState(() {
-                if (v != null) option.teapotTimes = v;
-              });
-            },
-          ),
-        ),
-        SwitchListTile.adaptive(
-          dense: true,
-          value: option.frontlineBonus,
-          title: Text("${S.current.bond_bonus}: ${S.current.team_starting_member}"),
-          subtitle: Text(
-            '${Transl.funcTargetType(FuncTargetType.self).l}+20%; [${S.current.support_servant_short}] ${Transl.funcTargetType(FuncTargetType.ptFull).l} +4%',
-          ),
-          onChanged: (v) => updateSharedInput(() => option.frontlineBonus = v),
+        TileGroup(
+          header: '${S.current.bond_bonus} ${S.current.settings_tab_name}',
+          children: [
+            SimpleAccordion(
+              headerBuilder: (context, expanded) => ListTile(
+                dense: true,
+                title: Text(S.current.event),
+                subtitle: Text(
+                  '${(option.enableEvent ? 1 : 0) + eventCampaignToggles.where((entry) => entry.$3).length}'
+                  '/${eventCampaignToggles.length + 1} enabled',
+                ),
+              ),
+              contentBuilder: (context) => Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SwitchListTile.adaptive(
+                    dense: true,
+                    title: Text(S.current.event_skill),
+                    subtitle: eventSkillIds.isEmpty
+                        ? null
+                        : Text('${db.gameData.events[eventId]?.lShortName.l ?? eventId}'),
+                    value: option.enableEvent,
+                    onChanged: (v) => updateSharedInput(() => option.enableEvent = v),
+                  ),
+                  if (eventSkillIds.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      child: Wrap(
+                        spacing: 8,
+                        runSpacing: 4,
+                        children: [
+                          for (final skillId in eventSkillIds)
+                            Text.rich(
+                              SharedBuilder.textButtonSpan(
+                                context: context,
+                                text: db.gameData.baseSkills[skillId]?.lName.l ?? skillId.toString(),
+                                onTap: () => router.push(url: Routes.skillI(skillId)),
+                              ),
+                              style: const TextStyle(fontSize: 12),
+                            ),
+                        ],
+                      ),
+                    ),
+                  for (final (event, campaign, enabled) in eventCampaignToggles)
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: SwitchListTile.adaptive(
+                            dense: true,
+                            title: Text(event.lShortName.l),
+                            subtitle: Text(
+                              '${S.current.bond} ${campaign.calcType.operatorText}${campaign.value.format(percent: true, base: 10)}'
+                              '\n${strTime(event.startedAt)}~${strTime(event.endedAt)}',
+                            ),
+                            value: enabled,
+                            onChanged: (v) =>
+                                updateSharedInput(() => (option.campaigns[event.id] ??= {})[campaign.idx] = v),
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: event.routeTo,
+                          icon: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+                        ),
+                      ],
+                    ),
+                ],
+              ),
+            ),
+            ListTile(
+              dense: true,
+              leading: Item.iconBuilder(
+                context: context,
+                item: null,
+                itemId: Items.teapotId,
+                width: 28,
+                jumpToDetail: false,
+              ),
+              title: Text(Transl.itemNames('星見のティーポット').l),
+              trailing: DropdownButton<int>(
+                value: option.teapotTimes,
+                items: [
+                  for (final times in [1, 2, 3])
+                    DropdownMenuItem(value: times, child: Text(times == 1 ? '--' : '×$times')),
+                ],
+                onChanged: (v) {
+                  setState(() {
+                    if (v != null) option.teapotTimes = v;
+                  });
+                },
+              ),
+            ),
+            SwitchListTile.adaptive(
+              dense: true,
+              value: option.frontlineBonus,
+              title: Text('${S.current.bond_bonus}: ${S.current.team_starting_member}'),
+              subtitle: Text(
+                '${Transl.funcTargetType(FuncTargetType.self).l}+20%; '
+                '[${S.current.support_servant_short}] ${Transl.funcTargetType(FuncTargetType.ptFull).l} +4%',
+              ),
+              onChanged: (v) => updateSharedInput(() => option.frontlineBonus = v),
+            ),
+          ],
         ),
         ..._solverSection(),
       ],
     );
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(S.current.team_bond),
+        bottom: FixedHeight.tabBar(
+          TabBar(
+            controller: _tabController,
+            tabs: [
+              Tab(text: S.current.team),
+              Tab(text: S.current.results),
+            ],
+          ),
+        ),
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          KeepAliveBuilder(
+            builder: (context) => Column(
+              children: [
+                Expanded(child: inputContent),
+                _buildSolveBar(),
+              ],
+            ),
+          ),
+          KeepAliveBuilder(
+            builder: (context) => BondSolverResultsTab(
+              solved: _runtime.solverResult,
+              formation: formation,
+              option: option,
+              quest: _runtime.resultQuest ?? questEntity,
+              solving: _runtime.solving,
+              status: _runtime.status,
+              error: _runtime.solverError,
+              onCancel: cancelSolve,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
-  List<Widget> _solverSection() {
-    final standardCost = ConstData.userLevel[ConstData.maxUserLevel]?.maxCost ?? 0;
-    return [
-      const DividerWithTitle(title: 'Solver settings', indent: 16),
-      ListTile(
-        dense: true,
-        title: const Text('Max COST'),
-        subtitle: Text(
-          option.maxCost == null ? '$standardCost (standard)' : '${option.maxCost}/$standardCost (custom / standard)',
-        ),
-        onTap: () => _editNumber(
-          'Max COST (0 = default)',
-          option.maxCost ?? standardCost,
-          (v) => option.maxCost = v == 0 ? null : v,
-        ),
-      ),
-      SwitchListTile.adaptive(
-        dense: true,
-        title: const Text('Exclude unreleased'),
-        subtitle: Text('Servants and craft essences · ${_region.upper}'),
-        value: option.excludeUnreleased,
-        onChanged: (v) => updateSharedInput(() => option.excludeUnreleased = v),
-      ),
-      const DividerWithTitle(title: 'Servant filters', indent: 16),
-      SwitchListTile.adaptive(
-        dense: true,
-        title: const Text('Favorite servants only'),
-        value: option.favoriteOnly,
-        onChanged: (v) => updateSharedInput(() => option.favoriteOnly = v),
-      ),
-      ListTile(
-        dense: true,
-        title: const Text('Exclude servants with bond ≥ X'),
-        subtitle: Text(option.maxBond == 0 ? 'disabled' : 'X = ${option.maxBond}'),
-        onTap: () => _editNumber('Bond threshold (0 = disabled)', option.maxBond, (v) => option.maxBond = v),
-      ),
-      BondExcludedCards(
-        title: 'Excluded servants',
-        ids: option.excludedSvts,
-        servant: true,
-        onAdd: _addExcludedServant,
-        onRemove: (id) => updateSharedInput(() => option.excludedSvts.remove(id)),
-      ),
-      const DividerWithTitle(title: 'Craft essence filters', indent: 16),
-      BondExcludedCards(
-        title: 'Excluded craft essences',
-        ids: option.excludedCes,
-        servant: false,
-        onAdd: _addExcludedCe,
-        onRemove: (id) => updateSharedInput(() => option.excludedCes.remove(id)),
-      ),
-      ListTile(
-        dense: true,
-        title: const Text('Candidate teams'),
-        subtitle: Text('Keep up to ${option.maxCandidateTeams} found teams (1–200)'),
-        onTap: () => InputCancelOkDialog.number(
-          title: 'Candidate teams (1–200)',
-          initValue: option.maxCandidateTeams,
-          validate: (v) => v >= 1 && v <= 200,
-          onSubmit: (v) => updateSharedInput(() => option.maxCandidateTeams = v),
-        ).showDialog(context),
-      ),
-      Padding(
-        padding: const EdgeInsets.all(16),
+  Widget _buildSolveBar() {
+    return SafeArea(
+      top: false,
+      child: Padding(
+        padding: const EdgeInsets.all(12),
         child: Row(
           children: [
             Expanded(
@@ -602,33 +598,127 @@ class _FormationBondTabState extends State<FormationBondTab> {
           ],
         ),
       ),
-      ListTile(
-        dense: true,
-        leading: Icon(
-          _runtime.solverResult?.provenOptimal == true && !_runtime.solving
-              ? Icons.verified
-              : _runtime.solving
-              ? Icons.search
-              : Icons.info_outline,
+    );
+  }
+
+  List<Widget> _solverSection() {
+    final standardCost = ConstData.userLevel[ConstData.maxUserLevel]?.maxCost ?? 0;
+    return [
+      Card(
+        color: Theme.of(context).colorScheme.secondaryContainer,
+        margin: const EdgeInsets.fromLTRB(8, 12, 8, 4),
+        child: ListTile(
+          dense: true,
+          leading: Icon(Icons.auto_awesome, color: Theme.of(context).colorScheme.onSecondaryContainer),
+          title: Text(S.current.drop_calc_solve),
+          subtitle: const Text('Limits and filters'),
         ),
-        title: Text(_runtime.status),
-        subtitle: _runtime.solving
-            ? Text('${_runtime.solveClock?.elapsed.inSeconds ?? 0}s elapsed · Cancel to keep the best known team')
-            : null,
       ),
-      if (_runtime.solving) const LinearProgressIndicator(),
-      if (_runtime.solverError != null) Padding(padding: const EdgeInsets.all(16), child: Text(_runtime.solverError!)),
-      if (_runtime.solverResult != null && (_runtime.resultQuest ?? questEntity) != null)
-        BondSolverResults(
-          solved: _runtime.solverResult!,
-          formation: formation,
-          option: option,
-          quest: (_runtime.resultQuest ?? questEntity)!,
-          solving: _runtime.solving,
-          visibleCandidateCount: _runtime.visibleCandidateCount,
-          onShowMore: () => setState(() => _runtime.visibleCandidateCount += 20),
-          onShowFewer: () => setState(() => _runtime.visibleCandidateCount = 5),
-        ),
+      TileGroup(
+        header: S.current.settings_general,
+        children: [
+          ListTile(
+            dense: true,
+            title: const Text('COST'),
+            subtitle: Text('${Region.jp.localName} COST ${ConstData.maxUserCost} (Lv.${ConstData.maxUserLevel})'),
+            trailing: TextButton(
+              onPressed: () => _editNumber(
+                title: 'Max COST',
+                initial: option.maxCost ?? standardCost,
+                update: (v) => option.maxCost = v == 0 ? null : v,
+                hintText: '0 = ${S.current.general_default}',
+              ),
+              child: Text(
+                option.maxCost == null
+                    ? '$standardCost (${S.current.general_default})'
+                    : '${option.maxCost} / $standardCost',
+              ),
+            ),
+          ),
+          // ListTile(
+          //   dense: true,
+          //   title: const Text('Max teams kept'),
+          //   trailing: Row(
+          //     mainAxisSize: MainAxisSize.min,
+          //     children: [
+          //       Text('${option.maxCandidateTeams}'),
+          //       const SizedBox(width: 4),
+          //       const Icon(Icons.chevron_right, size: 20),
+          //     ],
+          //   ),
+          //   onTap: () => InputCancelOkDialog.number(
+          //     title: 'Candidate teams (1–200)',
+          //     initValue: option.maxCandidateTeams,
+          //     validate: (v) => v >= 1 && v <= 200,
+          //     onSubmit: (v) => updateSharedInput(() => option.maxCandidateTeams = v),
+          //   ).showDialog(context),
+          // ),
+        ],
+      ),
+      TileGroup(
+        header:
+            '${S.current.filter} - ${S.current.servant} '
+            '(${S.current.cur_account}: [${db.curUser.region.localName}] ${db.curUser.name})',
+        children: [
+          SwitchListTile.adaptive(
+            dense: true,
+            title: Text(S.current.bond_search_fixed_ascensions),
+            value: option.searchFixedAscensions,
+            onChanged: (v) => updateSharedInput(() => option.searchFixedAscensions = v),
+          ),
+          SwitchListTile.adaptive(
+            dense: true,
+            title: Text(S.current.favorite),
+            value: option.favoriteOnly,
+            onChanged: (v) => updateSharedInput(() => option.favoriteOnly = v),
+          ),
+          ListTile(
+            dense: true,
+            title: Text(S.current.bond),
+            trailing: TextButton(
+              onPressed: () => _editNumber(
+                title: '${S.current.bond}≤',
+                initial: option.maxBond,
+                update: (v) => option.maxBond = v,
+                hintText: '0 = ${S.current.general_any}',
+              ),
+              child: Text(option.maxBond <= 0 ? S.current.general_any : '≤${option.maxBond}'),
+            ),
+          ),
+        ],
+      ),
+      BondExcludedCards(
+        title: '${S.current.exclude} - ${S.current.servant}',
+        ids: option.excludedSvts,
+        servant: true,
+        onAdd: () {
+          router.pushPage(
+            ServantListPage(
+              filterData: SvtFilterData(useGrid: true),
+              onSelected: (svt) {
+                if (mounted) updateSharedInput(() => option.excludedSvts.add(svt.id));
+              },
+            ),
+          );
+        },
+        onRemove: (id) => updateSharedInput(() => option.excludedSvts.remove(id)),
+      ),
+      BondExcludedCards(
+        title: '${S.current.exclude} - ${S.current.craft_essence}',
+        ids: option.excludedCes,
+        servant: false,
+        onAdd: () {
+          router.pushPage(
+            CraftListPage(
+              filterData: CraftFilterData(useGrid: true)..obtain.options = {CEObtain.davinciBondBonus},
+              onSelected: (ce) {
+                if (mounted) updateSharedInput(() => option.excludedCes.add(ce.id));
+              },
+            ),
+          );
+        },
+        onRemove: (id) => updateSharedInput(() => option.excludedCes.remove(id)),
+      ),
     ];
   }
 
@@ -757,6 +847,7 @@ class _FormationBondTabState extends State<FormationBondTab> {
 /// Used by the team tab and its solver so a quest's campaign toggles are
 /// resolved in exactly one place.
 void validateFormationBondOption(FormationBondOption option, QuestPhase? quest) {
+  option.releaseReference = BondReleaseRules.resolve(option.releaseReference, quest);
   option.teapotTimes = option.teapotTimes.clamp(1, 3);
   if (option.svtBonus.length < _kMaxSvtNum) {
     option.svtBonus = List.generate(
@@ -828,10 +919,14 @@ class _BondQuestPicker extends StatelessWidget {
           InputCancelOkDialog.number(
             title: 'Quest ID',
             initValue: quest?.id,
-            validate: (v) => db.gameData.quests.containsKey(v),
+            validate: (v) => v > 0,
             onSubmit: (v) async {
-              final _quest = db.gameData.quests[v];
-              if (_quest == null || !context.mounted) return;
+              final _quest = db.gameData.quests[v] ?? await showEasyLoading(() => AtlasApi.quest(v));
+              if (!context.mounted) return;
+              if (_quest == null) {
+                EasyLoading.showError(S.current.not_found);
+                return;
+              }
               int? phase;
               if (_quest.phases.length == 1) {
                 phase = _quest.phases.single;
@@ -853,7 +948,10 @@ class _BondQuestPicker extends StatelessWidget {
               }
               if (phase == null || !_quest.phases.contains(phase)) return;
 
-              final questPhase = await showEasyLoading(() => AtlasApi.questPhase(_quest.id, phase!));
+              final questPhase =
+                  db.gameData.getQuestPhase(_quest.id, phase) ??
+                  await showEasyLoading(() => AtlasApi.questPhase(_quest.id, phase!));
+              if (!context.mounted) return;
               if (questPhase == null) {
                 EasyLoading.showError(S.current.not_found);
                 return;
@@ -890,13 +988,18 @@ List<SvtBondBonusResult> calcFormationBondResults(
   final results = List.generate(option.svtBonus.length, (_) => SvtBondBonusResult()..baseValue = quest?.bond ?? 0);
 
   final eventId = quest?.logicEventId ?? 0;
+  final reference = BondReleaseRules.resolve(option.releaseReference, quest);
+  final traits = [
+    for (final deck in formation.svts.take(_kMaxSvtNum))
+      deck.svt == null ? <int>[] : BondReleaseRules.traits(deck.svt!, deck.limitCount, eventId, reference),
+  ];
 
   for (final (deckPos, deckSvt) in formation.svts.take(_kMaxSvtNum).indexed) {
     final svt = deckSvt.svt;
     if (svt == null && !deckSvt.supportType.isSupport) continue;
     final selfResult = results[deckPos];
 
-    final svtIndivs = svt?.getIndividuality(eventId, deckSvt.limitCount) ?? <int>[];
+    final svtIndivs = traits[deckPos];
 
     void checkAddFunctions(NiceSkill skill, bool isEquipSkill, {int? ceId}) {
       if (skill.actIndividuality.isNotEmpty &&
@@ -936,8 +1039,7 @@ List<SvtBondBonusResult> calcFormationBondResults(
           final funcOverwriteTvalsList = func.getOverwriteTvalsList();
           if (funcOverwriteTvalsList.isEmpty && func.functvals.isEmpty) return true;
           final int targetIndex = results.indexOf(target);
-          final targetDeckSvt = formation.svts.getOrNull(targetIndex);
-          final targetIndivs = targetDeckSvt?.svt?.getIndividuality(eventId, targetDeckSvt.limitCount) ?? [];
+          final targetIndivs = traits.getOrNull(targetIndex) ?? <int>[];
           if (funcOverwriteTvalsList.isNotEmpty) {
             if (funcOverwriteTvalsList.every((andVals) {
               return !Individuality.checkSignedIndivAllMatch(self: targetIndivs, signedTarget: andVals);

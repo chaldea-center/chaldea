@@ -35,6 +35,8 @@ class _CeFirstSupportChoice {
 class _CeFirstPosition {
   final bool support;
   final bool fixedServant;
+  final bool searchAscensions;
+  bool get variableServant => !fixedServant || searchAscensions;
   final bool bondLimit;
   final bool freeCe1;
   final bool freeCe3;
@@ -48,6 +50,7 @@ class _CeFirstPosition {
   const _CeFirstPosition({
     required this.support,
     required this.fixedServant,
+    this.searchAscensions = false,
     required this.bondLimit,
     required this.freeCe1,
     required this.freeCe3,
@@ -214,7 +217,10 @@ class _CeFirstSearch {
     final selected3 = <int>[];
     final fixedIds = <int>{
       for (final p in problem.positions)
-        if (!p.support) ...[if (p.fixedCe1 != null) p.fixedCe1!.id, if (p.fixedCe3 != null) p.fixedCe3!.id],
+        if (!p.support) ...[
+          if (p.fixedCe1 != null) BondCeIdentity.of(p.fixedCe1!.id),
+          if (p.fixedCe3 != null) BondCeIdentity.of(p.fixedCe3!.id),
+        ],
     };
     final counts = List<int>.filled(problem.ownCes.length, 0);
 
@@ -431,11 +437,12 @@ class _CeFirstSearch {
     bool visit(int depth) {
       if (depth == order.length) return true;
       final dimension = order[depth];
-      for (final id in problem.ownCes[selected[dimension]].limits.keys) {
-        if (!used.add(id)) continue;
+      for (final id in problem.ownCes[selected[dimension]].limits.keys.toList()..sort()) {
+        final identity = BondCeIdentity.of(id);
+        if (!used.add(identity)) continue;
         assignments[dimension] = id;
         if (visit(depth + 1)) return true;
-        used.remove(id);
+        used.remove(identity);
       }
       return false;
     }
@@ -450,6 +457,7 @@ class _CeFirstSearch {
   }
 
   int _score(_CeFirstPosition position, _CeFirstServant servant, List<int> rates, List<int> values) {
+    if (position.bondLimit) return 0;
     final profile = servant.profile;
     final rate = math.min(problem.rateCap, servant.selfRate + rates[profile]);
     return (position.first * (1 + rate / 1000)).floor() + servant.selfValue + values[profile];
@@ -469,11 +477,11 @@ class _CeFirstSearch {
     }
     final freePositions = [
       for (var p = 0; p < problem.positions.length; p++)
-        if (!problem.positions[p].support && !problem.positions[p].fixedServant) p,
+        if (!problem.positions[p].support && problem.positions[p].variableServant) p,
     ];
     var fixedScore = 0;
     for (final position in problem.positions) {
-      if (position.support || !position.fixedServant || position.bondLimit) continue;
+      if (position.support || position.variableServant || position.bondLimit) continue;
       fixedScore += _score(position, position.servants.single, rates, values);
     }
     final maximumServantCost = freePositions.fold<int>(
@@ -484,13 +492,13 @@ class _CeFirstSearch {
     if (remainingCost < 0) return null;
     final mandatoryMask = freePositions.indexed.fold<int>(0, (mask, entry) {
       final (bit, p) = entry;
-      return problem.positions[p].fixedCe1 == null ? mask : mask | (1 << bit);
+      return !problem.positions[p].fixedServant && problem.positions[p].fixedCe1 == null ? mask : mask | (1 << bit);
     });
     final freeCe1Mask = freePositions.indexed.fold<int>(0, (mask, entry) {
       final (bit, p) = entry;
       return problem.positions[p].freeCe1 ? mask | (1 << bit) : mask;
     });
-    final guaranteedCe1Slots = ce1Slots.where((p) => problem.positions[p].fixedServant).length;
+    final guaranteedCe1Slots = ce1Slots.where((p) => !problem.positions[p].variableServant).length;
 
     // A candidate outside the best F distinct IDs of the same cost at a
     // position can be replaced by one of those F: at most F-1 other free
@@ -570,7 +578,7 @@ class _CeFirstSearch {
     final ce1VariantsAt = <int, Map<int, bool>>{};
     var assigned = 0;
     for (final p in ce1Slots) {
-      if (!problem.positions[p].fixedServant && !selectedServants.containsKey(p)) continue;
+      if (problem.positions[p].variableServant && !selectedServants.containsKey(p)) continue;
       if (assigned == combo.ownCe1.length) break;
       final cls = problem.ownCes[combo.ownCe1[assigned]];
       final id = combo.matchedIds[assigned];
@@ -594,7 +602,7 @@ class _CeFirstSearch {
     final slots = <BondSolvedSlot>[];
     var totalCost = 0;
     for (final (p, position) in problem.positions.indexed) {
-      final servant = position.fixedServant ? position.servants.single : selectedServants[p]?.servant;
+      final servant = !position.variableServant ? position.servants.single : selectedServants[p]?.servant;
       final ce1 = position.fixedCe1 ?? ce1At[p] ?? supportChoiceAt[p]?.ce;
       final ce3 = position.fixedCe3 ?? ce3At[p];
       final bond = servant == null || position.bondLimit ? 0 : _score(position, servant, rates, values);
@@ -622,6 +630,8 @@ class _CeFirstSearch {
           equip3: ce3,
           isSupport: position.support,
           fixedServant: position.fixedServant,
+          fixedEquip1: position.fixedCe1 != null,
+          fixedEquip3: position.fixedCe3 != null,
           bond: bond,
           cost: cost,
           servantCandidates: servant == null ? const [] : [servant.id],
@@ -640,7 +650,7 @@ class _CeFirstSearch {
     assert(totalCost == combo.ceCost + winnerCost);
     final groupKey = [
       for (final (p, position) in problem.positions.indexed)
-        '${position.fixedServant ? position.servants.single.profile : selectedServants[p]?.servant.profile ?? -1}:${slots[p].bond}',
+        '${!position.variableServant ? position.servants.single.profile : selectedServants[p]?.servant.profile ?? -1}:${slots[p].bond}',
       rates.join(','),
       values.join(','),
     ].join('|');
@@ -692,6 +702,8 @@ class _CeFirstSearch {
         equip3: original.equip3,
         isSupport: false,
         fixedServant: false,
+        fixedEquip1: original.fixedEquip1,
+        fixedEquip3: original.fixedEquip3,
         bond: neighbor.bond,
         cost: original.cost - current.cost + neighbor.servant.cost,
         servantCandidates: [neighbor.servant.id],

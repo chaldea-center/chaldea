@@ -964,6 +964,11 @@ class S {
     return Intl.message('Backup History', name: 'backup_history', desc: '', locale: localeName, args: []);
   }
 
+  /// `Base bond`
+  String get base_bond {
+    return Intl.message('Base bond', name: 'base_bond', desc: '', locale: localeName, args: []);
+  }
+
   /// `Activate Custom Skill`
   String get battle_activate_custom_skill {
     return Intl.message(
@@ -1351,6 +1356,17 @@ class S {
   /// `Bond Limit`
   String get bond_limit {
     return Intl.message('Bond Limit', name: 'bond_limit', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Search fixed servant ascensions`
+  String get bond_search_fixed_ascensions {
+    return Intl.message(
+      'Search fixed servant ascensions',
+      name: 'bond_search_fixed_ascensions',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
   }
 
   /// `Bootstrap Page`
@@ -2973,6 +2989,11 @@ class S {
     return Intl.message('Ticket', name: 'exchange_ticket_short', desc: '', locale: localeName, args: []);
   }
 
+  /// `Exclude`
+  String get exclude {
+    return Intl.message('Exclude', name: 'exclude', desc: '', locale: localeName, args: []);
+  }
+
   /// `Exclude Random Enemy Quests`
   String get exclude_random_enemy_quests {
     return Intl.message(
@@ -3846,6 +3867,11 @@ class S {
   /// `More import methods`
   String get import_userdata_more {
     return Intl.message('More import methods', name: 'import_userdata_more', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Include`
+  String get include {
+    return Intl.message('Include', name: 'include', desc: '', locale: localeName, args: []);
   }
 
   /// `Agility`
@@ -6469,6 +6495,11 @@ class S {
   /// `Block Servant`
   String get team_block_servant {
     return Intl.message('Block Servant', name: 'team_block_servant', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Team Bond`
+  String get team_bond {
+    return Intl.message('Team Bond', name: 'team_bond', desc: '', locale: localeName, args: []);
   }
 
   /// `Local Teams`

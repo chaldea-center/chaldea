@@ -795,11 +795,15 @@ FormationBondOption _$FormationBondOptionFromJson(Map json) => $checkedCreate('F
     teapotTimes: $checkedConvert('teapotTimes', (v) => (v as num?)?.toInt() ?? 1),
     maxCost: $checkedConvert('maxCost', (v) => (v as num?)?.toInt()),
     favoriteOnly: $checkedConvert('favoriteOnly', (v) => v as bool? ?? true),
-    excludeUnreleased: $checkedConvert('excludeUnreleased', (v) => v as bool? ?? true),
+    releaseReference: $checkedConvert(
+      'releaseReference',
+      (v) => $enumDecodeNullable(_$BondReleaseReferenceEnumMap, v) ?? BondReleaseReference.jp,
+    ),
     maxBond: $checkedConvert('maxBond', (v) => (v as num?)?.toInt() ?? 15),
     excludedSvts: $checkedConvert('excludedSvts', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
     excludedCes: $checkedConvert('excludedCes', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
     maxCandidateTeams: $checkedConvert('maxCandidateTeams', (v) => (v as num?)?.toInt() ?? 100),
+    searchFixedAscensions: $checkedConvert('searchFixedAscensions', (v) => v as bool? ?? true),
   );
   return val;
 });
@@ -815,11 +819,20 @@ Map<String, dynamic> _$FormationBondOptionToJson(FormationBondOption instance) =
   'teapotTimes': instance.teapotTimes,
   'maxCost': instance.maxCost,
   'favoriteOnly': instance.favoriteOnly,
-  'excludeUnreleased': instance.excludeUnreleased,
+  'releaseReference': _$BondReleaseReferenceEnumMap[instance.releaseReference]!,
   'maxBond': instance.maxBond,
   'excludedSvts': instance.excludedSvts.toList(),
   'excludedCes': instance.excludedCes.toList(),
   'maxCandidateTeams': instance.maxCandidateTeams,
+  'searchFixedAscensions': instance.searchFixedAscensions,
+};
+
+const _$BondReleaseReferenceEnumMap = {
+  BondReleaseReference.jp: 'jp',
+  BondReleaseReference.cn: 'cn',
+  BondReleaseReference.tw: 'tw',
+  BondReleaseReference.na: 'na',
+  BondReleaseReference.questClosedAt: 'questClosedAt',
 };
 
 FormationBondSvtBonus _$FormationBondSvtBonusFromJson(Map json) =>

@@ -14,7 +14,7 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/battle/models/battle.dart';
 import 'package:chaldea/app/modules/battle/battle_simulation.dart';
 import 'package:chaldea/app/modules/battle/teams/teams_query_page.dart';
-import 'package:chaldea/app/modules/bond/bond_bonus.dart';
+import 'package:chaldea/app/modules/bond/formation_bond.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/mystic_code/mystic_code_list.dart';
 import 'package:chaldea/app/modules/quest/quest_card.dart';
@@ -151,7 +151,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
           ),
           TextButton(
             onPressed: () {
-              router.pushPage(BondBonusHomePage(option: _tempFormationBondOption()));
+              router.pushPage(FormationBondPage(option: _tempFormationBondOption()));
             },
             child: Text(S.current.bond),
           ),
@@ -1270,7 +1270,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     return team;
   }
 
-  /// Temporary bond option for the bond bonus page: initialized from persisted
+  /// Temporary bond option for the Formation Bond page: initialized from persisted
   /// settings but with the current battle formation/quest, never written back.
   /// Mutable maps/lists are deep-copied so the temp page never mutates persisted state.
   FormationBondOption _tempFormationBondOption() {

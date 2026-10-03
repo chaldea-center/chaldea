@@ -5,8 +5,8 @@ import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/battle/models/user.dart';
 import 'package:chaldea/app/modules/battle/formation/team.dart';
 import 'package:chaldea/app/modules/bond/formation_bond.dart';
+import 'package:chaldea/app/modules/bond/solver/results.dart';
 import 'package:chaldea/app/modules/bond/solver/solver.dart';
-import 'package:chaldea/app/modules/bond/solver/widgets.dart';
 import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
@@ -69,21 +69,21 @@ void main() {
     expect(source.excludedSvts, {100100});
   });
 
-  testWidgets('team page shows quest before formation and solver below shared settings', (tester) async {
+  testWidgets('formation bond page separates input and results tabs', (tester) async {
     final quest = db.gameData.questPhases.values.firstWhere((phase) => phase.bond > 0);
     final supplied = FormationBondOption(quest: BattleQuestInfo.quest(quest));
     await tester.pumpWidget(
       MaterialApp(
         localizationsDelegates: const [S.delegate, ...GlobalMaterialLocalizations.delegates],
-        home: Scaffold(body: FormationBondTab(option: supplied)),
+        home: FormationBondPage(option: supplied),
       ),
     );
     await tester.pumpAndSettle();
     expect(find.textContaining(quest.lNameWithChapter), findsOneWidget);
     expect(find.textContaining('Base ${S.current.bond}: ${quest.bond}'), findsOneWidget);
     expect(find.byType(TeamSetupCard), findsOneWidget);
-    expect(find.text('Solve max bond'), findsNothing);
-    await tester.scrollUntilVisible(find.text('Solve max bond'), 300);
+    expect(find.text('Solve max bond'), findsOneWidget);
+    expect(find.text(S.current.results), findsOneWidget);
     expect(find.text('Favorite servants only'), findsWidgets);
     expect(find.text('Excluded craft essences'), findsWidgets);
     expect(supplied.quest!.id, quest.id);
@@ -99,7 +99,7 @@ void main() {
     await tester.pumpWidget(
       const MaterialApp(
         localizationsDelegates: [S.delegate, ...GlobalMaterialLocalizations.delegates],
-        home: Scaffold(body: FormationBondTab()),
+        home: FormationBondPage(),
       ),
     );
     await tester.pumpAndSettle();
@@ -130,13 +130,13 @@ void main() {
     await tester.pumpWidget(
       const MaterialApp(
         localizationsDelegates: [S.delegate, ...GlobalMaterialLocalizations.delegates],
-        home: Scaffold(body: FormationBondTab()),
+        home: FormationBondPage(),
       ),
     );
     await tester.pumpAndSettle();
-    await tester.scrollUntilVisible(find.text('Solve max bond'), 300);
     await tester.tap(find.text('Solve max bond'));
     await tester.pump();
+    expect(find.text(S.current.results), findsOneWidget);
     expect(user.formationBondOption.quest?.id, quest.id);
     expect(user.formationBondOption.maxCost, 120);
     await tester.pumpWidget(const SizedBox.shrink());
@@ -154,7 +154,7 @@ void main() {
     await tester.pumpWidget(
       MaterialApp(
         localizationsDelegates: const [S.delegate, ...GlobalMaterialLocalizations.delegates],
-        home: Scaffold(body: FormationBondTab(option: supplied)),
+        home: FormationBondPage(option: supplied),
       ),
     );
     await tester.pumpAndSettle();
@@ -197,26 +197,26 @@ void main() {
       MaterialApp(
         localizationsDelegates: const [S.delegate, ...GlobalMaterialLocalizations.delegates],
         home: Scaffold(
-          body: SingleChildScrollView(
-            child: BondSolverResults(
-              solved: result,
-              formation: BattleTeamSetup(),
-              option: FormationBondOption(),
-              quest: QuestPhase(id: 987654321, name: 'Result display', bond: 1000),
-              solving: false,
-              visibleCandidateCount: 5,
-              onShowMore: () {},
-              onShowFewer: () {},
-            ),
+          body: BondSolverResultsTab(
+            solved: result,
+            formation: BattleTeamSetup(),
+            option: FormationBondOption(),
+            quest: QuestPhase(id: 987654321, name: 'Result display', bond: 1000),
+            solving: false,
+            status: 'Maximum proven · equal-score groups may be incomplete',
+            error: null,
+            onCancel: null,
           ),
         ),
       ),
     );
     await tester.pumpAndSettle();
     expect(find.text('Team 1: 1000'), findsOneWidget);
+    expect(find.textContaining('3/100 feasible teams found'), findsNothing);
+    await tester.scrollUntilVisible(find.text('Team 2: 1000'), 300);
     expect(find.text('Team 2: 1000'), findsOneWidget);
+    await tester.scrollUntilVisible(find.text('Team 3: 950'), 300);
     expect(find.text('Team 3: 950'), findsOneWidget);
-    expect(find.textContaining('3/100 feasible teams found'), findsOneWidget);
     await tester.pumpWidget(const SizedBox.shrink());
     await tester.pump(const Duration(seconds: 1));
   });

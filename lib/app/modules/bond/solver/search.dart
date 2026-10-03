@@ -63,6 +63,7 @@ class BondSearchProblem {
   final List<BondSearchPosition> positions;
   final List<int> servantClassCapacities;
   final List<int> ownedCeClassCapacities;
+  final Map<int, int> ownedCeIdentities;
 
   const BondSearchProblem({
     required this.baseBond,
@@ -72,6 +73,7 @@ class BondSearchProblem {
     required this.positions,
     this.servantClassCapacities = const [],
     this.ownedCeClassCapacities = const [],
+    this.ownedCeIdentities = const {},
   });
 }
 
@@ -296,7 +298,7 @@ class BondSearch {
         ceDimensions.add(_IdentityDimension(p, d, ids));
       }
     }
-    return _match(servantDimensions) != null && _match(ceDimensions) != null;
+    return _match(servantDimensions) != null && _match(ceDimensions, ce: true) != null;
   }
 
   void _prepare() {
@@ -570,7 +572,7 @@ class BondSearch {
     }
     final servants = _match(servantDimensions);
     if (servants == null) return;
-    final ces = _match(ceDimensions);
+    final ces = _match(ceDimensions, ce: true);
     if (ces == null) return;
 
     var total = 0;
@@ -680,14 +682,17 @@ class BondSearch {
 
   /// Small bipartite matching. The number of dimensions is bounded by six
   /// servants and the finite owned CE slots, so augmenting paths are cheap.
-  Map<_IdentityDimension, int>? _match(List<_IdentityDimension> dimensions) {
+  Map<_IdentityDimension, int>? _match(List<_IdentityDimension> dimensions, {bool ce = false}) {
     final byId = <int, _IdentityDimension>{};
+    final concrete = <_IdentityDimension, int>{};
     bool augment(_IdentityDimension dimension, Set<int> seen) {
       for (final id in dimension.ids) {
-        if (!seen.add(id)) continue;
-        final previous = byId[id];
+        final identity = ce ? problem.ownedCeIdentities[id] ?? id : id;
+        if (!seen.add(identity)) continue;
+        final previous = byId[identity];
         if (previous == null || augment(previous, seen)) {
-          byId[id] = dimension;
+          byId[identity] = dimension;
+          concrete[dimension] = id;
           return true;
         }
       }
@@ -698,7 +703,7 @@ class BondSearch {
     for (final dimension in sorted) {
       if (!augment(dimension, <int>{})) return null;
     }
-    return {for (final entry in byId.entries) entry.value: entry.key};
+    return concrete;
   }
 }
 

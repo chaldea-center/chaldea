@@ -5,6 +5,7 @@ export 'after_layout.dart';
 export 'custom_dialogs.dart';
 export 'custom_table.dart';
 export 'custom_tile.dart';
+export 'add_remove_list.dart';
 export 'form_elements.dart';
 export 'image/image_viewer.dart';
 export 'image_with_text.dart';

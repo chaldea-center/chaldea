@@ -11,14 +11,14 @@ FormationBondOption _withFilters(
   FormationBondOption option, {
   int? maxCost,
   bool? favoriteOnly,
-  bool? excludeUnreleased,
+  BondReleaseReference? releaseReference,
   int? maxBond,
   Set<int>? excludedSvts,
   Set<int>? excludedCes,
 }) {
   if (maxCost != null) option.maxCost = maxCost;
   if (favoriteOnly != null) option.favoriteOnly = favoriteOnly;
-  if (excludeUnreleased != null) option.excludeUnreleased = excludeUnreleased;
+  if (releaseReference != null) option.releaseReference = releaseReference;
   if (maxBond != null) option.maxBond = maxBond;
   if (excludedSvts != null) option.excludedSvts = excludedSvts;
   if (excludedCes != null) option.excludedCes = excludedCes;
@@ -56,7 +56,7 @@ void main() {
       FormationBondOption(enableEvent: false),
       maxCost: 999,
       favoriteOnly: false,
-      excludeUnreleased: false,
+      releaseReference: BondReleaseReference.jp,
       maxBond: 0,
       excludedSvts: servants.map((svt) => svt.id).toSet()..removeAll([sabers[5].id, others[5].id]),
     );
@@ -76,7 +76,7 @@ void main() {
     );
 
     BondSolverResult solve(QuestPhase quest, BattleTeamSetup team) =>
-        FormationBondSolver.solve(option: option, quest: quest, formation: team, region: Region.jp);
+        FormationBondSolver.solve(option: option, quest: quest, formation: team);
 
     final saberOnly = solve(restricted(RestrictionRangeType.equal), formation);
     expect(saberOnly.provenOptimal, isTrue);
@@ -112,10 +112,15 @@ void main() {
     final quest = QuestPhase(bond: 1000);
     final expected = calcFormationBondResults(option, quest, formation);
     final result = FormationBondSolver.solve(
-      option: _withFilters(option, maxCost: 999, favoriteOnly: false, excludeUnreleased: false, maxBond: 0),
+      option: _withFilters(
+        option,
+        maxCost: 999,
+        favoriteOnly: false,
+        releaseReference: BondReleaseReference.jp,
+        maxBond: 0,
+      ),
       quest: quest,
       formation: formation,
-      region: Region.jp,
     );
     expect(result.provenOptimal, isTrue);
     expect(result.best, isNotNull);
@@ -123,10 +128,15 @@ void main() {
     expect([for (final slot in result.best!.slots) slot.bond], [for (final slot in expected) slot.totalBond]);
     expect([for (final slot in result.best!.slots) slot.servantId], [for (final s in servants) s.id]);
     final background = await FormationBondSolver.solveAsync(
-      option: _withFilters(option, maxCost: 999, favoriteOnly: false, excludeUnreleased: false, maxBond: 0),
+      option: _withFilters(
+        option,
+        maxCost: 999,
+        favoriteOnly: false,
+        releaseReference: BondReleaseReference.jp,
+        maxBond: 0,
+      ),
       quest: quest,
       formation: formation,
-      region: Region.jp,
     );
     expect(background.provenOptimal, isTrue);
     expect(background.best!.totalBond, result.best!.totalBond);
@@ -150,10 +160,9 @@ void main() {
     final option = FormationBondOption(enableEvent: false);
     final quest = QuestPhase(bond: 1000);
     final result = FormationBondSolver.solve(
-      option: _withFilters(option, maxCost: 999, excludeUnreleased: false),
+      option: _withFilters(option, maxCost: 999, releaseReference: BondReleaseReference.jp),
       quest: quest,
       formation: formation,
-      region: Region.jp,
     );
     expect(result.provenOptimal, isTrue);
     expect(result.best!.slots[0].isSupport, isTrue);
@@ -203,10 +212,9 @@ void main() {
     final manual = calcFormationBondResults(option, quest, formation);
     expect([for (final slot in manual) slot.totalBond], List<int>.filled(6, 1050));
     final solved = FormationBondSolver.solve(
-      option: _withFilters(option, maxCost: 999, excludeUnreleased: false),
+      option: _withFilters(option, maxCost: 999, releaseReference: BondReleaseReference.jp),
       quest: quest,
       formation: formation,
-      region: Region.jp,
     );
     expect(solved.provenOptimal, isTrue);
     expect([for (final slot in solved.best!.slots) slot.bond], List<int>.filled(6, 1050));
@@ -218,10 +226,9 @@ void main() {
     final supportManual = calcFormationBondResults(option, quest, supportFormation);
     expect([for (final slot in supportManual) slot.totalBond], [0, 1050, 1050, 1050, 1050, 1050]);
     final supportSolved = FormationBondSolver.solve(
-      option: _withFilters(option, maxCost: 999, excludeUnreleased: false),
+      option: _withFilters(option, maxCost: 999, releaseReference: BondReleaseReference.jp),
       quest: quest,
       formation: supportFormation,
-      region: Region.jp,
     );
     expect(supportSolved.provenOptimal, isTrue);
     expect([for (final slot in supportSolved.best!.slots) slot.bond], [0, 1050, 1050, 1050, 1050, 1050]);
@@ -246,10 +253,9 @@ void main() {
     final extra = QuestPhaseExtraDetail()..setValue('isUseGrandBoard', 1);
     final quest = QuestPhase(bond: 1000, extraDetail: extra);
     final result = FormationBondSolver.solve(
-      option: _withFilters(option, maxCost: 999, excludeUnreleased: false),
+      option: _withFilters(option, maxCost: 999, releaseReference: BondReleaseReference.jp),
       quest: quest,
       formation: formation,
-      region: Region.jp,
     );
     expect(result.provenOptimal, isTrue);
     expect(result.best!.slots[0].equip3!.id, ce3!.id);
@@ -290,10 +296,9 @@ void main() {
     final option = FormationBondOption(enableEvent: false);
     final manual = calcFormationBondResults(option, quest, formation);
     final solved = FormationBondSolver.solve(
-      option: _withFilters(option, maxCost: 999, excludeUnreleased: false),
+      option: _withFilters(option, maxCost: 999, releaseReference: BondReleaseReference.jp),
       quest: quest,
       formation: formation,
-      region: Region.jp,
     );
     expect(solved.provenOptimal, isTrue);
     expect(solved.best!.slots.first.servantId, isNull);
@@ -317,10 +322,15 @@ void main() {
     final option = FormationBondOption(enableEvent: false, maxCandidateTeams: 30);
     final quest = QuestPhase(bond: 1000);
     final result = FormationBondSolver.solve(
-      option: _withFilters(option, maxCost: 999, favoriteOnly: false, excludeUnreleased: false, maxBond: 0),
+      option: _withFilters(
+        option,
+        maxCost: 999,
+        favoriteOnly: false,
+        releaseReference: BondReleaseReference.jp,
+        maxBond: 0,
+      ),
       quest: quest,
       formation: formation,
-      region: Region.jp,
       maxNodes: 100000,
     );
     expect(result.best, isNotNull);
@@ -356,27 +366,15 @@ void main() {
     final option = FormationBondOption(enableEvent: false);
     final extra = QuestPhaseExtraDetail()..setValue('isUseGrandBoard', 1);
     final quest = QuestPhase(bond: 1000, extraDetail: extra);
-    _withFilters(option, maxCost: 999, favoriteOnly: false, excludeUnreleased: false, maxBond: 0);
-    final baseline = FormationBondSolver.solve(
-      option: option,
-      quest: quest,
-      formation: formation,
-      region: Region.jp,
-      maxNodes: 100000,
-    );
+    _withFilters(option, maxCost: 999, favoriteOnly: false, releaseReference: BondReleaseReference.jp, maxBond: 0);
+    final baseline = FormationBondSolver.solve(option: option, quest: quest, formation: formation, maxNodes: 100000);
     option.svtBonus[5]
       ..isBond15 = true
       ..isBondReachLimit = true;
     formation.svts[5]
       ..grandSvt = true
       ..equip3 = SvtEquipData(ce: db.gameData.craftEssencesById[9401970], limitBreak: true);
-    final flagged = FormationBondSolver.solve(
-      option: option,
-      quest: quest,
-      formation: formation,
-      region: Region.jp,
-      maxNodes: 100000,
-    );
+    final flagged = FormationBondSolver.solve(option: option, quest: quest, formation: formation, maxNodes: 100000);
     expect(baseline.provenOptimal, isTrue);
     expect(flagged.provenOptimal, isTrue);
     expect(flagged.best!.totalBond, baseline.best!.totalBond);
@@ -424,10 +422,9 @@ void main() {
         ..addValue = 17;
       final manual = calcFormationBondResults(option, quest, formation);
       final result = FormationBondSolver.solve(
-        option: _withFilters(option, maxCost: 999, excludeUnreleased: false),
+        option: _withFilters(option, maxCost: 999, releaseReference: BondReleaseReference.jp),
         quest: quest,
         formation: formation,
-        region: Region.jp,
       );
       expect(result.provenOptimal, isTrue, reason: 'quest ${quest.id}/${quest.phase}');
       expect(
@@ -480,10 +477,9 @@ void main() {
       formation.svts[0].equip1 = SvtEquipData(ce: ce, limitBreak: true);
       final manual = calcFormationBondResults(option, quest, formation);
       final solved = FormationBondSolver.solve(
-        option: _withFilters(option, maxCost: 999, excludeUnreleased: false),
+        option: _withFilters(option, maxCost: 999, releaseReference: BondReleaseReference.jp),
         quest: quest,
         formation: formation,
-        region: Region.jp,
       );
       expect(solved.provenOptimal, isTrue, reason: 'CE ${ce.id}');
       expect(
@@ -508,10 +504,15 @@ void main() {
     final quest = QuestPhase(bond: 1000);
     final clock = Stopwatch()..start();
     final result = await FormationBondSolver.solveAsync(
-      option: _withFilters(option, maxCost: 999, favoriteOnly: false, excludeUnreleased: false, maxBond: 0),
+      option: _withFilters(
+        option,
+        maxCost: 999,
+        favoriteOnly: false,
+        releaseReference: BondReleaseReference.jp,
+        maxBond: 0,
+      ),
       quest: quest,
       formation: formation,
-      region: Region.jp,
       maxNodes: 100000,
     );
     print('one-free solver: ${clock.elapsedMilliseconds}ms, ${result.visitedNodes} search steps');
@@ -542,15 +543,14 @@ void main() {
     }
     final option = FormationBondOption(enableEvent: false);
     final quest = QuestPhase(bond: 1000);
-    _withFilters(option, maxCost: 999, favoriteOnly: false, excludeUnreleased: false, maxBond: 0);
+    _withFilters(option, maxCost: 999, favoriteOnly: false, releaseReference: BondReleaseReference.jp, maxBond: 0);
     final baseline = FormationBondSolver.solve(
       option: option,
       quest: quest,
       formation: formation,
-      region: Region.jp,
       pruneDominatedCes: false,
     );
-    final pruned = FormationBondSolver.solve(option: option, quest: quest, formation: formation, region: Region.jp);
+    final pruned = FormationBondSolver.solve(option: option, quest: quest, formation: formation);
     expect(baseline.provenOptimal, isTrue);
     expect(pruned.provenOptimal, isTrue);
     expect(pruned.best!.totalBond, baseline.best!.totalBond);
@@ -573,15 +573,14 @@ void main() {
     final extra = QuestPhaseExtraDetail()..setValue('isUseGrandBoard', 1);
     final quest = QuestPhase(bond: 1000, extraDetail: extra);
     final option = FormationBondOption(enableEvent: false);
-    _withFilters(option, maxCost: 999, favoriteOnly: false, excludeUnreleased: false, maxBond: 0);
+    _withFilters(option, maxCost: 999, favoriteOnly: false, releaseReference: BondReleaseReference.jp, maxBond: 0);
     final baseline = FormationBondSolver.solve(
       option: option,
       quest: quest,
       formation: formation,
-      region: Region.jp,
       pruneDominatedCes: false,
     );
-    final pruned = FormationBondSolver.solve(option: option, quest: quest, formation: formation, region: Region.jp);
+    final pruned = FormationBondSolver.solve(option: option, quest: quest, formation: formation);
     expect(baseline.provenOptimal, isTrue);
     expect(pruned.provenOptimal, isTrue);
     expect(pruned.best!.totalBond, baseline.best!.totalBond);
@@ -605,10 +604,15 @@ void main() {
     final quest = QuestPhase(bond: 1000);
     final clock = Stopwatch()..start();
     final result = FormationBondSolver.solve(
-      option: _withFilters(option, maxCost: 999, favoriteOnly: false, excludeUnreleased: false, maxBond: 0),
+      option: _withFilters(
+        option,
+        maxCost: 999,
+        favoriteOnly: false,
+        releaseReference: BondReleaseReference.jp,
+        maxBond: 0,
+      ),
       quest: quest,
       formation: formation,
-      region: Region.jp,
     );
     print(
       'two-free solver: ${clock.elapsedMilliseconds}ms, ${result.visitedNodes} search steps, '
@@ -642,10 +646,9 @@ void main() {
     final option = FormationBondOption(enableEvent: false);
     final quest = QuestPhase(bond: 1000);
     final result = FormationBondSolver.solve(
-      option: _withFilters(option, favoriteOnly: false, excludeUnreleased: false, maxBond: 0),
+      option: _withFilters(option, favoriteOnly: false, releaseReference: BondReleaseReference.jp, maxBond: 0),
       quest: quest,
       formation: formation,
-      region: Region.jp,
     );
     print(
       'five-free solver: ${result.elapsedMilliseconds}ms, ${result.visitedNodes} search steps, '
@@ -762,7 +765,7 @@ void main() {
             ? 65
             : 45,
         favoriteOnly: false,
-        excludeUnreleased: false,
+        releaseReference: BondReleaseReference.jp,
         maxBond: 0,
         excludedSvts: Set.of(excludedSvts),
         excludedCes: Set.of(excludedCes),
@@ -779,12 +782,11 @@ void main() {
       } else if (trial % 4 == 3) {
         formation.svts[0] = PlayerSvtData.base()..supportType = SupportSvtType.friend;
       }
-      final fast = FormationBondSolver.solve(option: option, quest: quest, formation: formation, region: Region.jp);
+      final fast = FormationBondSolver.solve(option: option, quest: quest, formation: formation);
       final exhaustive = FormationBondSolver.solve(
         option: option,
         quest: quest,
         formation: formation,
-        region: Region.jp,
         useCeFirst: false,
       );
       expect(fast.provenOptimal, isTrue, reason: 'trial $trial fast');
@@ -815,10 +817,9 @@ void main() {
     final option = FormationBondOption(enableEvent: false);
     final quest = QuestPhase(bond: 1000);
     final updates = await FormationBondSolver.solveProgressively(
-      option: _withFilters(option, favoriteOnly: false, excludeUnreleased: false, maxBond: 0),
+      option: _withFilters(option, favoriteOnly: false, releaseReference: BondReleaseReference.jp, maxBond: 0),
       quest: quest,
       formation: formation,
-      region: Region.jp,
     ).toList();
     expect(updates, isNotEmpty);
     final candidate = updates.firstWhere((update) => update.best != null);
@@ -857,10 +858,15 @@ void main() {
     final manual = calcFormationBondResults(option, quest, formation);
     expect(manual.first.totalBond, greaterThan(manual[1].totalBond));
     final solved = FormationBondSolver.solve(
-      option: _withFilters(option, maxCost: 999, favoriteOnly: false, excludeUnreleased: false, maxBond: 0),
+      option: _withFilters(
+        option,
+        maxCost: 999,
+        favoriteOnly: false,
+        releaseReference: BondReleaseReference.jp,
+        maxBond: 0,
+      ),
       quest: quest,
       formation: formation,
-      region: Region.jp,
     );
     expect(solved.provenOptimal, isTrue);
     expect([for (final slot in solved.best!.slots) slot.bond], [for (final slot in manual) slot.totalBond]);

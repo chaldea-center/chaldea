@@ -1362,6 +1362,21 @@ class BattleAttackRecordData {
   Map<String, dynamic> toJson() => _$BattleAttackRecordDataToJson(this);
 }
 
+enum BondReleaseReference {
+  jp,
+  cn,
+  tw,
+  na,
+  questClosedAt;
+
+  Region get region => switch (this) {
+    cn => Region.cn,
+    tw => Region.tw,
+    na => Region.na,
+    jp || questClosedAt => Region.jp,
+  };
+}
+
 @JsonSerializable()
 class FormationBondOption {
   BattleTeamFormation teamFormation;
@@ -1376,11 +1391,12 @@ class FormationBondOption {
   int teapotTimes;
   int? maxCost;
   bool favoriteOnly;
-  bool excludeUnreleased;
+  BondReleaseReference releaseReference;
   int maxBond;
   Set<int> excludedSvts;
   Set<int> excludedCes;
   int maxCandidateTeams;
+  bool searchFixedAscensions;
 
   FormationBondOption({
     BattleTeamFormation? teamFormation,
@@ -1393,11 +1409,12 @@ class FormationBondOption {
     this.teapotTimes = 1,
     this.maxCost,
     this.favoriteOnly = true,
-    this.excludeUnreleased = true,
+    this.releaseReference = BondReleaseReference.jp,
     this.maxBond = 15,
     Set<int>? excludedSvts,
     Set<int>? excludedCes,
     this.maxCandidateTeams = 100,
+    this.searchFixedAscensions = true,
   }) : teamFormation = teamFormation ?? BattleTeamFormation(),
        campaigns = campaigns ?? {},
        svtBonus = svtBonus ?? List.generate(6, (_) => FormationBondSvtBonus()),
