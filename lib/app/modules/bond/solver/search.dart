@@ -1,5 +1,11 @@
 import 'dart:math' as math;
 
+/// Sentinel for an unreachable value.
+///
+/// Kept within JavaScript's safe integer range (2^53 - 1) so that
+/// `flutter build web` can compile the literal; real scores are far smaller.
+const int kImpossibleScore = -0x1fffffffffffff;
+
 /// One effect-equivalent choice for a formation position.
 ///
 /// The caller has already resolved quest, wearer, target, event, and CE rules.
@@ -180,7 +186,7 @@ class BondSearch {
     search._onProgress = onProgress;
     search._progressClock.start();
     search._prepare();
-    if (search._dp[0][search._dpMaxBudget] != -0x3fffffffffffffff) {
+    if (search._dp[0][search._dpMaxBudget] != kImpossibleScore) {
       search._seedFeasible(0, 0);
     }
     if (search._best != null) search._improveSeed();
@@ -385,7 +391,7 @@ class BondSearch {
       (sum, position) => sum + position.items.fold<int>(0, (maxCost, item) => math.max(maxCost, item.cost)),
     );
     final budget = _dpMaxBudget = math.min(problem.maxCost, maxSelectableCost);
-    const impossible = -0x3fffffffffffffff;
+    const impossible = kImpossibleScore;
     _dp = List.generate(n + 1, (_) => List<int>.filled(budget + 1, impossible));
     for (var b = 0; b <= budget; b++) {
       _dp[n][b] = 0;
@@ -471,7 +477,7 @@ class BondSearch {
     }
     final remaining = problem.maxCost - spent;
     final budgetIndex = math.min(remaining, _dpMaxBudget);
-    if (_dp[p][budgetIndex] == -0x3fffffffffffffff) return;
+    if (_dp[p][budgetIndex] == kImpossibleScore) return;
     final upper = _assignedUpper(p) + _dp[p][budgetIndex];
     if (_collectCandidates) {
       if (_candidates.length >= maxCandidates && upper < _candidates.last.totalBond) return;

@@ -19,6 +19,8 @@ void main() {
     favoriteOnly: false,
     maxBond: 0,
     maxCost: 999,
+    // These tests compare pinned ascensions with explicitly enabled searching.
+    searchFixedAscensions: false,
   );
   final quest = QuestPhase(bond: 1000);
   List<CraftEssence> fillers() => db.gameData.craftEssencesById.values

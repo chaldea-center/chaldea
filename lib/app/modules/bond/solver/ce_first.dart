@@ -244,7 +244,7 @@ class _CeFirstSearch {
       var upper = 0;
       for (final position in problem.positions) {
         if (position.support || position.bondLimit) continue;
-        var highest = position.fixedServant ? -0x3fffffffffffffff : 0;
+        var highest = position.fixedServant ? kImpossibleScore : 0;
         for (final servant in position.servants) {
           highest = math.max(highest, _score(position, servant, rates, values));
         }
