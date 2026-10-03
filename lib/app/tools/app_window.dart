@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:tray_manager/tray_manager.dart';
+import 'package:tray_manager/tray_manager.dart' hide Image;
 import 'package:window_manager/window_manager.dart';
 
 import 'package:chaldea/generated/l10n.dart';
@@ -19,6 +19,9 @@ import 'backup_backend/chaldea_backend.dart';
 class AppWindowUtil {
   const AppWindowUtil._();
   static bool _trayInstalled = false;
+  static TrayIcon? _trayIcon;
+  static Menu? _trayMenu;
+  static final List<MenuItem> _trayMenuItems = <MenuItem>[];
 
   static Future<void> init() async {
     if (PlatformU.isDesktop) {
@@ -78,38 +81,89 @@ class AppWindowUtil {
 
   @protected
   static Future<void> destroyTray() async {
-    if (_trayInstalled) {
-      _trayInstalled = false;
-      return trayManager.destroy();
+    if (!_trayInstalled) return;
+    _trayInstalled = false;
+    for (final item in _trayMenuItems) {
+      item.dispose();
     }
+    _trayMenuItems.clear();
+    _trayMenu?.dispose();
+    _trayMenu = null;
+    _trayIcon?.dispose();
+    _trayIcon = null;
   }
 
   static Future<void> setTray() async {
     if (!PlatformU.isDesktop) return;
     try {
-      final icon = 'res/img/launcher_icon/${PlatformU.isWindows ? 'app_icon.ico' : 'app_icon_rounded.png'}';
-      trayManager.setIcon(icon);
-      final _menuMain = Menu(
-        items: [
-          MenuItem(label: '$kAppName v${AppInfo.versionString}', disabled: true),
-          MenuItem.separator(),
-          MenuItem(label: S.current.show, onClick: (menuItem) => showWindow()),
-          MenuItem.separator(),
-          MenuItem(label: S.current.hide, onClick: (menuItem) => minimizeWindow()),
-          MenuItem.separator(),
-          MenuItem(
-            label: S.current.quit,
-            onClick: (menuItem) async {
-              await db.saveAll();
-              if (await _shouldCloseCheckUpload()) {
-                await destroyWindow();
-              }
-            },
-          ),
-        ],
+      if (_trayInstalled) await destroyTray();
+
+      final trayIcon = TrayIcon.create();
+      if (trayIcon == null) throw StateError('Unable to create the tray icon');
+
+      final iconPath = 'res/img/launcher_icon/${PlatformU.isWindows ? 'app_icon.ico' : 'app_icon_rounded.png'}';
+      final icon = ImageAsset.fromAsset(iconPath);
+      if (icon == null) throw ArgumentError.value(iconPath, 'iconPath', 'Unable to load tray icon');
+
+      trayIcon
+        ..icon = icon
+        ..isIconTemplate = false
+        ..iconSize = const Size.square(18)
+        ..iconPosition = TrayIconPosition.left;
+
+      final menu = Menu.create();
+      if (menu == null) throw StateError('Unable to create the tray menu');
+      final menuItems = <MenuItem>[];
+
+      MenuItem addMenuItem(String label, {bool enabled = true, void Function()? onClick}) {
+        final item = MenuItem.createWithLabelAndType(label, MenuItemType.normal);
+        if (item == null) throw StateError('Unable to create the tray menu item: $label');
+        item.isEnabled = enabled;
+        if (onClick != null) {
+          item.addListener((event) {
+            if (event is MenuItemClickedEvent) onClick();
+          });
+        }
+        menu.addItem(item);
+        menuItems.add(item);
+        return item;
+      }
+
+      addMenuItem('$kAppName v${AppInfo.versionString}', enabled: false);
+      menu.addSeparator();
+      addMenuItem(S.current.show, onClick: () => showWindow());
+      menu.addSeparator();
+      addMenuItem(S.current.hide, onClick: () => minimizeWindow());
+      menu.addSeparator();
+      addMenuItem(
+        S.current.quit,
+        onClick: () async {
+          await db.saveAll();
+          if (await _shouldCloseCheckUpload()) {
+            await destroyWindow();
+          }
+        },
       );
 
-      await trayManager.setContextMenu(_menuMain);
+      trayIcon.setContextMenu(menu);
+      trayIcon.setVisible(true);
+
+      // nativeapi reports a whole click at once and nothing at all on Linux,
+      // where the panel keeps the click and opens the menu itself.
+      trayIcon.addListener((event) {
+        switch (event) {
+          case TrayIconClickedEvent():
+            onTrayClick();
+          case TrayIconRightClickedEvent():
+            onTrayRightClick();
+          case TrayIconDoubleClickedEvent():
+            break;
+        }
+      });
+
+      _trayIcon = trayIcon;
+      _trayMenu = menu;
+      _trayMenuItems.addAll(menuItems);
       print('set tray menu');
       _trayInstalled = true;
     } catch (e, s) {
@@ -122,23 +176,23 @@ class AppWindowUtil {
 
   static Future<void> onTrayClick() async {
     if (PlatformU.isWindows) {
-      return windowManager.show();
+      await windowManager.show();
     } else if (PlatformU.isMacOS) {
-      return trayManager.popUpContextMenu();
+      _trayIcon?.openContextMenu();
     } else if (PlatformU.isLinux) {
-      return windowManager.show();
+      await windowManager.show();
       // not supported
-      // trayManager.popUpContextMenu();
+      // _trayIcon?.openContextMenu();
     }
   }
 
   static Future<void> onTrayRightClick() async {
     if (PlatformU.isWindows) {
-      return trayManager.popUpContextMenu();
+      _trayIcon?.openContextMenu();
     } else if (PlatformU.isMacOS) {
-      return windowManager.show();
+      await windowManager.show();
     } else if (PlatformU.isLinux) {
-      return windowManager.show();
+      await windowManager.show();
     }
   }
 

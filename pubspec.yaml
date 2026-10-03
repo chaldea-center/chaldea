@@ -30,7 +30,7 @@ dependencies:
     sdk: flutter
 
   alarm: ^5.10.0
-  android_id: ^0.5.0
+  android_id: ^0.6.0
   archive: ^4.0.1
   args: ^2.6.0
   auto_size_text: ^3.0.0
@@ -38,14 +38,14 @@ dependencies:
   cached_network_image_platform_interface: ^5.0.0
   carousel_slider: ^5.0.0
   catcher_2: ^2.1.0
-  connectivity_plus: ^7.0.0
+  connectivity_plus: ^7.3.1
   countly_flutter_np: ^26.1.0
   # cookie_jar: ^4.0.1
   # crclib: ^3.0.0
   cross_file: ^0.3.3+5
   crypto: ^3.0.6
   csv: ^8.0.0
-  cupertino_icons: ^1.0.6
+  cupertino_icons: ^2.0.0
   cupertino_ui: ^1.0.0
   dart_des: ^1.0.2
   data_table_2: ^3.0.0
@@ -75,7 +75,7 @@ dependencies:
   font_awesome_flutter: ^11.0.0
   github: ^9.16.0
   hive: ^2.2.3
-  home_widget: ^0.9.0
+  home_widget: ^0.10.0
   html: ^0.15.3
   http: ^1.2.0
   image: ^4.9.0
@@ -107,7 +107,7 @@ dependencies:
   smooth_page_indicator: ^3.0.0
   string_validator: ^1.0.0
   timezone: ^0.11.0
-  tray_manager: ^0.5.0
+  tray_manager: ^0.7.0
   tuple: ^2.0.1
   url_launcher: ^6.3.1
   uuid: ^4.3.3
@@ -129,7 +129,7 @@ dev_dependencies:
   intl_utils: # ^2.6.1
     git: https://github.com/chaldea-center/intl_utils.git
   json_serializable: ^6.14.0
-  tidy_imports: ^1.4.0
+  tidy_imports: ^2.1.0
   # flutter_launcher_icons: ^0.8.1
 
 #flutter_icons:
@@ -204,4 +204,4 @@ tidy_imports:
   comments: false
   sort_pubspec: false
   sort_exports: false
-  separate-relative-imports: true # dart 3.13+
+  separate_relative_imports: true # dart 3.13+

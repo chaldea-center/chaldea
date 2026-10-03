@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:intl/intl.dart';
-import 'package:tray_manager/tray_manager.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'package:chaldea/app/api/chaldea.dart';
@@ -42,7 +41,7 @@ class Chaldea extends StatefulWidget {
   _ChaldeaState createState() => _ChaldeaState();
 }
 
-class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WindowListener, TrayListener {
+class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WindowListener {
   final routeInformationParser = AppRouteInformationParser();
   final backButtonDispatcher = RootBackButtonDispatcher();
 
@@ -155,7 +154,6 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WindowListener
     });
 
     windowManager.addListener(this);
-    trayManager.addListener(this);
   }
 
   @override
@@ -311,23 +309,12 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WindowListener
   @override
   void dispose() {
     windowManager.removeListener(this);
-    trayManager.removeListener(this);
     super.dispose();
   }
 
   @override
   void onWindowClose() {
     AppWindowUtil.onWindowClose();
-  }
-
-  @override
-  void onTrayIconMouseDown() {
-    AppWindowUtil.onTrayClick();
-  }
-
-  @override
-  void onTrayIconRightMouseDown() {
-    AppWindowUtil.onTrayRightClick();
   }
 }
 
