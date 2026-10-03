@@ -438,7 +438,7 @@ class _MissionInputTabState extends State<MissionInputTab> {
             icon: const Icon(Icons.add_circle_outline),
             tooltip: S.current.add_mission,
           ),
-          ElevatedButton(
+          FilledButton(
             onPressed: options.missions.isEmpty ? null : _solveProblem,
             child: Text(S.current.drop_calc_solve),
           ),

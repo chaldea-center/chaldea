@@ -50,7 +50,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
               ValueListenableBuilder(
                 valueListenable: widget.solver.running,
                 builder: (context, value, child) =>
-                    ElevatedButton(onPressed: value ? null : widget.onStart, child: Text(S.current.calculate)),
+                    FilledButton(onPressed: value ? null : widget.onStart, child: Text(S.current.calculate)),
               ),
             ],
           ),

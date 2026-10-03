@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/gestures.dart';
 
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -7,6 +9,8 @@ import 'package:chaldea/app/descriptors/mission_conds.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/app/modules/master_mission/master_mission.dart';
+import 'package:chaldea/app/modules/master_mission/solver/custom_mission.dart';
+import 'package:chaldea/app/modules/master_mission/solver/scheme.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/platform/platform.dart';
@@ -423,11 +427,20 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
             setState(() {});
           },
         ),
-        Center(
-          child: FilledButton(
-            onPressed: selectedMissions.isEmpty ? null : receiveMissions,
-            child: Text('Mission Receive ×${selectedMissions.length}'),
-          ),
+        OverflowBar(
+          alignment: MainAxisAlignment.center,
+          spacing: 4,
+          children: [
+            FilledButton.icon(
+              onPressed: solveMissions,
+              icon: const Icon(Icons.search),
+              label: Text(S.current.drop_calc_solve),
+            ),
+            FilledButton(
+              onPressed: selectedMissions.isEmpty ? null : receiveMissions,
+              child: Text('Receive ×${selectedMissions.length}'),
+            ),
+          ],
         ),
         const SizedBox(height: 4),
       ],
@@ -464,5 +477,85 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
         if (mounted) setState(() {});
       },
     ).showDialog(context);
+  }
+
+  Future<void> solveMissions() async {
+    final mm = _mm;
+    final merged = <String, CustomMission>{};
+    final multiDetailMissions = <EventMission>[];
+    for (final mission in mm?.missions ?? <EventMission>[]) {
+      if (getMissionProgress(mission.id).isClearOrAchieve) continue;
+      final customMission = CustomMission.fromEventMission(mission);
+      if (customMission == null) continue;
+      // Match the first condition that fromEventMission can actually convert.
+      final cond = mission.conds.firstWhere((cond) {
+        return cond.missionProgressType == MissionProgressType.clear &&
+            cond.condType == CondType.missionConditionDetail &&
+            cond.details.any((detail) {
+              final type = CustomMission.kDetailCondMapping[detail.missionCondType];
+              return type != null &&
+                  !(type == CustomMissionType.quest && detail.targetIds.length == 1 && detail.targetIds.first == 0);
+            });
+      });
+      customMission.count =
+          (cond.targetNum -
+                  (runtime.condCheck.getEventMissionProgressNum(cond.condType, cond.targetIds, cond.targetNum) ?? 0))
+              .clamp(0, cond.targetNum);
+      if (customMission.count == 0) continue;
+      if (cond.details.length > 1) multiDetailMissions.add(mission);
+      final key = _missionConditionKey(customMission);
+      final previous = merged[key];
+      if (previous == null || customMission.count > previous.count) merged[key] = customMission;
+    }
+    if (merged.isEmpty) {
+      await SimpleConfirmDialog(
+        title: Text(S.current.drop_calc_solve),
+        content: const Text('No solvable unfinished missions.'),
+        showCancel: false,
+      ).showDialog(context);
+      return;
+    }
+    if (multiDetailMissions.isNotEmpty) {
+      final confirmed = await SimpleConfirmDialog(
+        title: const Text('Multiple mission condition details'),
+        scrollable: true,
+        content: Text(
+          [
+            'These missions contain multiple details. Remaining counts use the first detail progress.',
+            for (final mission in multiDetailMissions) '${mission.dispNo}. ${mission.name}',
+          ].join('\n'),
+        ),
+      ).showDialog(context);
+      if (confirmed != true || !mounted || _mm != mm) return;
+    }
+    if (mm == null) return;
+    int? warId;
+    final event =
+        runtime.gameData.timerData.events[mm.id] ??
+        runtime.gameData.timerData.events.values.firstWhereOrNull(
+          (event) => event.missions.any((mission) => mission.id == mm.missions.firstOrNull?.id),
+        );
+    if (event != null) {
+      for (final id in event.warIds) {
+        if (db.gameData.wars[id]?.quests.any((quest) => quest.isAnyFree) == true) {
+          warId = id;
+          break;
+        }
+      }
+    } else if (runtime.region != Region.jp) {
+      final wars = db.gameData.mappingData.warRelease.ofRegion(runtime.region)?.where((id) => id < 1000).toList();
+      if (wars != null && wars.isNotEmpty) warId = Maths.max(wars);
+    }
+    router.push(
+      child: CustomMissionPage(initMissions: merged.values.toList(), initWarId: warId),
+    );
+  }
+
+  String _missionConditionKey(CustomMission mission) {
+    final conds = mission.conds.map((cond) {
+      final ids = cond.targetIds.toList()..sort();
+      return jsonEncode([cond.type.name, cond.useAnd, ids]);
+    }).toList()..sort();
+    return jsonEncode([mission.condAnd, mission.enemyDeckOnly, conds]);
   }
 }
