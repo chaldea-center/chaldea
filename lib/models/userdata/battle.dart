@@ -56,7 +56,9 @@ void _removeEmptyListOrDefault(
 
 @JsonSerializable(converters: [RegionConverter()])
 class BattleSimUserData {
+  @protected
   Set<int> pingedCEs; // collectionNo
+  @protected
   Set<int> pingedSvts; // collectionNo
   // questId, teamIds
   Map<int, Set<int>> favoriteTeams;
@@ -67,8 +69,8 @@ class BattleSimUserData {
     Set<int>? pingedSvts,
     Map<int, Set<int>>? favoriteTeams,
     List<BattleShareData>? teams,
-  }) : pingedCEs = pingedCEs ?? {18, 28, 34, 48, 1080},
-       pingedSvts = pingedSvts ?? {215, 284, 314, 316, 357},
+  }) : pingedCEs = pingedCEs ?? {},
+       pingedSvts = pingedSvts ?? {},
        favoriteTeams = favoriteTeams ?? {},
        teams = teams ?? [] {
     validate();
@@ -88,29 +90,13 @@ class BattleSimUserData {
     }
   }
 
-  Set<int> pingedCEsWithEventAndBond(Quest? quest, Servant? svt) {
-    final event = quest?.war?.event;
-    Set<int> pinged = pingedCEs.toSet();
-    if (event != null) {
-      for (final ce in db.gameData.craftEssences.values) {
-        if (pinged.contains(ce.collectionNo)) continue;
-        if (ce.eventSkills(event.id).isNotEmpty) {
-          pinged.add(ce.collectionNo);
-        }
-      }
-    }
-    if (svt != null) {
-      for (final ceId in svt.bondEquips) {
-        final bondCE = db.gameData.craftEssencesById[ceId];
-        if (bondCE != null && bondCE.collectionNo > 0) {
-          pinged.add(bondCE.collectionNo);
-        }
-      }
-    }
-    return pinged;
-  }
-
-  factory BattleSimUserData.fromJson(Map<String, dynamic> json) => _$BattleSimUserDataFromJson(json);
+  factory BattleSimUserData.fromJson(Map<String, dynamic> json) => _$BattleSimUserDataFromJson({
+    ...json,
+    // Missing legacy fields used to receive these defaults. Explicit empty
+    // collections must remain empty after migration.
+    'pingedCEs': json['pingedCEs'] ?? [18, 28, 34, 48, 1080],
+    'pingedSvts': json['pingedSvts'] ?? [215, 284, 314, 316, 357],
+  });
 
   Map<String, dynamic> toJson() => _$BattleSimUserDataToJson(this);
 }

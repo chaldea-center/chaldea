@@ -428,7 +428,7 @@ class _ServantSelectorNoOption extends StatelessWidget {
           onChanged();
         },
         filterData: svtFilterData,
-        pinged: db.curUser.battleSim.pingedSvts.toList(),
+        pinged: db.settings.gameplay.pinnedSvtIds.toList(),
         showSecondaryFilter: true,
       ),
     );

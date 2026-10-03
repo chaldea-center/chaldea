@@ -307,6 +307,11 @@ Json? _$JsonConverterToJson<Json, Value>(Value? value, Json? Function(Value valu
 
 GameplaySettings _$GameplaySettingsFromJson(Map json) => $checkedCreate('GameplaySettings', json, ($checkedConvert) {
   final val = GameplaySettings(
+    pinnedSvtIds: $checkedConvert('pinnedSvtIds', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
+    pinnedSvtEquipIds: $checkedConvert(
+      'pinnedSvtEquipIds',
+      (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet(),
+    ),
     preferApRate: $checkedConvert('preferApRate', (v) => v as bool? ?? true),
     preferredFavorite: $checkedConvert('preferredFavorite', (v) => $enumDecodeNullable(_$FavoriteStateEnumMap, v)),
     priorityTags: $checkedConvert(
@@ -328,6 +333,8 @@ GameplaySettings _$GameplaySettingsFromJson(Map json) => $checkedCreate('Gamepla
 });
 
 Map<String, dynamic> _$GameplaySettingsToJson(GameplaySettings instance) => <String, dynamic>{
+  'pinnedSvtIds': instance.pinnedSvtIds.toList(),
+  'pinnedSvtEquipIds': instance.pinnedSvtEquipIds.toList(),
   'preferApRate': instance.preferApRate,
   'preferredFavorite': _$FavoriteStateEnumMap[instance.preferredFavorite],
   'priorityTags': instance.priorityTags.map((k, e) => MapEntry(k.toString(), e)),

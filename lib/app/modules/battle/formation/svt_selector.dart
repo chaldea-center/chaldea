@@ -112,7 +112,7 @@ class ServantSelector extends StatelessWidget {
                   onChanged();
                 },
                 filterData: svtFilterData,
-                pinged: db.curUser.battleSim.pingedSvts.toList(),
+                pinged: db.settings.gameplay.pinnedSvtIds.toList(),
                 showSecondaryFilter: true,
                 eventId: questPhase?.logicEventId,
               ),
@@ -215,7 +215,7 @@ class ServantSelector extends StatelessWidget {
                   onChanged();
                 },
                 filterData: craftFilterData,
-                pinged: db.curUser.battleSim.pingedCEsWithEventAndBond(questPhase, playerSvtData.dispSvt).toList(),
+                pinnedGroups: db.settings.gameplay.pinnedSvtEquipGroups(questPhase, playerSvtData.dispSvt),
               ),
               detail: true,
             );

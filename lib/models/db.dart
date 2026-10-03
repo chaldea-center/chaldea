@@ -50,11 +50,13 @@ class _Database {
 
   set gameData(GameData gameData) {
     _gameData = gameData;
+    if (settings.gameplay.normalizePinnedIds(gameData)) unawaited(saveSettings());
     _userData.validate();
     itemCenter.init();
   }
 
   RuntimeData runtimeData = RuntimeData();
+
   ItemCenter itemCenter = ItemCenter();
 
   // shortcut
@@ -127,12 +129,14 @@ class _Database {
       Hive.init(paths.hiveDir);
     }
 
-    await loadSettings();
-    await loadUserData().then((value) {
-      if (value != null) {
-        userData = value;
-      }
-    });
+    final loadedUserData = await loadUserData();
+    await loadSettings(null, loadedUserData?.users.firstOrNull?.battleSim);
+    if (loadedUserData != null) {
+      userData = loadedUserData;
+      // Persist collection numbers before removing their legacy persistence source.
+      await saveSettings();
+      await saveUserData();
+    }
 
     SplitRoute.enableSplitView = settings.display.enableSplitView;
     if (settings.display.splitMasterRatio != null) {
@@ -155,11 +159,11 @@ class _Database {
     );
   }
 
-  Future<LocalSettings> loadSettings([String? fp]) async {
+  Future<LocalSettings> loadSettings([String? fp, BattleSimUserData? legacyPins]) async {
     return settings = await _loadWithBak<LocalSettings>(
       fp: fp ?? paths.settingsPath,
-      fromJson: (data) => LocalSettings.fromJson(data),
-      onError: () => LocalSettings(),
+      fromJson: (data) => LocalSettings.fromJson(data, legacyPins: legacyPins),
+      onError: () => legacyPins == null ? LocalSettings() : LocalSettings.fromJson({}, legacyPins: legacyPins),
     );
   }
 

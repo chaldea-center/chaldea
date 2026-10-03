@@ -13,9 +13,7 @@ import 'package:chaldea/utils/utils.dart';
 
 import '../../packages/language.dart';
 import '../api/api.dart';
-import '../gamedata/common.dart';
-import '../gamedata/drop_rate.dart';
-import '../gamedata/quest.dart';
+import '../gamedata/gamedata.dart';
 import '_helper.dart';
 import 'autologin.dart';
 import 'battle.dart';
@@ -114,14 +112,29 @@ class LocalSettings {
 
   bool get hideApple => PlatformU.isApple && misc.launchTimes < 5;
 
-  factory LocalSettings.fromJson(Map<String, dynamic> rawJson) {
+  factory LocalSettings.fromJson(Map<String, dynamic> rawJson, {BattleSimUserData? legacyPins}) {
     final formatVersion = rawJson['formatVersion'];
-    if (formatVersion is int) {
-      if (formatVersion >= kSettingsFormatVersion) {
-        return _$LocalSettingsFromJson(rawJson);
-      }
+    final json = formatVersion is int && formatVersion >= kSettingsFormatVersion
+        ? Map<String, dynamic>.of(rawJson)
+        : _migrateLegacyV1(rawJson);
+    if (legacyPins != null) {
+      final gameplay = Map<String, dynamic>.from(json['gameplay'] as Map? ?? {});
+      // Existing shared fields, including explicit empty arrays, take precedence.
+      // ignore: invalid_use_of_protected_member
+      gameplay.putIfAbsent('pinnedSvtIds', () => legacyPins.pingedSvts.toList());
+      // ignore: invalid_use_of_protected_member
+      gameplay.putIfAbsent('pinnedSvtEquipIds', () => legacyPins.pingedCEs.toList());
+      json['gameplay'] = gameplay;
     }
-    return _$LocalSettingsFromJson(_migrateLegacyV1(rawJson));
+    final settings = _$LocalSettingsFromJson(json);
+    if (legacyPins != null) {
+      // Clear only after settings have been deserialized successfully.
+      // ignore: invalid_use_of_protected_member
+      legacyPins.pingedSvts.clear();
+      // ignore: invalid_use_of_protected_member
+      legacyPins.pingedCEs.clear();
+    }
+    return settings;
   }
 
   Map<String, dynamic> toJson() {
@@ -377,6 +390,9 @@ class LocaleSettings {
 
 @JsonSerializable()
 class GameplaySettings {
+  Set<int> pinnedSvtIds;
+  Set<int> pinnedSvtEquipIds;
+
   bool preferApRate;
   FavoriteState? preferredFavorite;
   Map<int, String> priorityTags;
@@ -384,16 +400,54 @@ class GameplaySettings {
   MasterMissionOptions masterMissionOptions;
 
   GameplaySettings({
+    Set<int>? pinnedSvtIds,
+    Set<int>? pinnedSvtEquipIds,
     this.preferApRate = true,
     this.preferredFavorite,
     Map<int, String>? priorityTags,
     Map<int, EventItemCalcParams>? eventItemCalc,
     MasterMissionOptions? masterMissionOptions,
-  }) : priorityTags = priorityTags ?? {},
+  }) : pinnedSvtIds = pinnedSvtIds ?? {503900, 504500, 604200, 2800100, 901400},
+       pinnedSvtEquipIds = pinnedSvtEquipIds ?? {9400180, 9400280, 9400340, 9400480, 9403990},
+       priorityTags = priorityTags ?? {},
        eventItemCalc = eventItemCalc ?? {},
        masterMissionOptions = masterMissionOptions ?? MasterMissionOptions();
 
   factory GameplaySettings.fromJson(Map<String, dynamic> json) => _$GameplaySettingsFromJson(json);
+
+  /// Normalize persisted collection numbers once valid game data is available.
+  bool normalizePinnedIds(GameData gameData) {
+    if (!gameData.isValid) return false;
+    final svtIds = pinnedSvtIds
+        .map((value) => (gameData.servantsById[value] ?? gameData.servantsNoDup[value])?.id)
+        .whereType<int>()
+        .toSet();
+    final equipIds = pinnedSvtEquipIds
+        .map((value) => (gameData.craftEssencesById[value] ?? gameData.craftEssences[value])?.id)
+        .whereType<int>()
+        .toSet();
+    final changed =
+        !pinnedSvtIds.containsAll(svtIds) ||
+        pinnedSvtIds.length != svtIds.length ||
+        !pinnedSvtEquipIds.containsAll(equipIds) ||
+        pinnedSvtEquipIds.length != equipIds.length;
+    pinnedSvtIds = svtIds;
+    pinnedSvtEquipIds = equipIds;
+    return changed;
+  }
+
+  List<List<int>> pinnedSvtEquipGroups(Quest? quest, Servant? svt) {
+    final event = quest?.war?.event;
+    return [
+      pinnedSvtEquipIds.toList(),
+      if (event != null)
+        [
+          for (final ce in db.gameData.craftEssences.values)
+            if (ce.eventSkills(event.id).isNotEmpty) ce.id,
+        ],
+      svt?.bondEquips.toList() ?? [],
+    ];
+  }
 
   Map<String, dynamic> toJson() => _$GameplaySettingsToJson(this);
 }

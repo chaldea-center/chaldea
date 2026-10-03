@@ -184,54 +184,23 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
     children.add(
       TextButton(
         onPressed: () {
-          showDialog(
-            context: context,
-            useRootNavigator: false,
-            builder: (context) {
-              if (options.supports.length >= 5) {
-                return SimpleConfirmDialog(
-                  title: Text(S.current.support_servant),
-                  content: const Text('Max 5 supports'),
-                  showCancel: false,
-                );
-              }
-              List<Widget> supports = [];
-              for (final int svtId in db.curUser.battleSim.pingedSvts.toList()..sort()) {
-                final svt = db.gameData.servantsNoDup[svtId];
-                if (svt != null) {
-                  supports.add(
-                    svt.iconBuilder(
-                      context: context,
-                      width: 56,
-                      padding: const EdgeInsets.all(2),
-                      onTap: () {
-                        options.supports.add(svt.id);
-                        Navigator.pop(context);
-                        if (mounted) setState(() {});
-                      },
-                    ),
-                  );
-                }
-              }
-              return SimpleConfirmDialog(
-                title: Text(S.current.support_servant),
-                scrollable: true,
-                content: Wrap(children: supports),
-                confirmText: S.current.general_custom,
-                onTapOk: () {
-                  if (!mounted) return;
-                  router.pushPage(
-                    ServantListPage(
-                      pinged: db.curUser.battleSim.pingedSvts.toList(),
-                      onSelected: (svt) {
-                        options.supports.add(svt.id);
-                        if (mounted) setState(() {});
-                      },
-                    ),
-                  );
-                },
-              );
-            },
+          if (options.supports.length >= 5) {
+            SimpleConfirmDialog(
+              title: Text(S.current.support_servant),
+              content: const Text('Max 5 supports'),
+              showCancel: false,
+            ).showDialog(context);
+            return;
+          }
+
+          router.pushPage(
+            ServantListPage(
+              pinged: db.settings.gameplay.pinnedSvtIds.toList(),
+              onSelected: (svt) {
+                options.supports.add(svt.id);
+                if (mounted) setState(() {});
+              },
+            ),
           );
         },
         child: Text(S.current.add),
@@ -518,9 +487,11 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
                         });
                       }
                     },
-                    pinged: [
-                      for (final ce in db.gameData.craftEssences.values)
-                        if (ce.canBeGrandSvtRewardEquip && ce.rarity == 5) ce.id,
+                    pinnedGroups: [
+                      [
+                        for (final ce in db.gameData.craftEssences.values)
+                          if (ce.canBeGrandSvtRewardEquip && ce.rarity == 5) ce.id,
+                      ],
                     ],
                   ),
                   detail: true,
@@ -723,7 +694,7 @@ class _TdDmgOptionsTabState extends State<TdDmgOptionsTab> {
               onTap: () {
                 router.pushPage(
                   CraftListPage(
-                    pinged: db.curUser.battleSim.pingedCEs.toList(),
+                    pinnedGroups: [db.settings.gameplay.pinnedSvtEquipIds.toList()],
                     filterData: CraftFilterData(useGrid: true),
                     onSelected: (ce) {
                       options.ceId = ce.id;

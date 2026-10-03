@@ -1205,7 +1205,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
             runtime.lockTask(() {
               router.pushPage(
                 ServantListPage(
-                  pinged: db.curUser.battleSim.pingedSvts.toList(),
+                  pinged: db.settings.gameplay.pinnedSvtIds.toList(),
                   showSecondaryFilter: true,
                   onSelected: (svt) {
                     if (!svt.isUserSvt) {
@@ -1257,7 +1257,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
             runtime.lockTask(() {
               router.pushPage(
                 CraftListPage(
-                  pinged: db.curUser.battleSim.pingedCEsWithEventAndBond(quest, null).toList(),
+                  pinnedGroups: db.settings.gameplay.pinnedSvtEquipGroups(quest, null),
                   onSelected: (ce) {
                     if (ce.collectionNo <= 0) {
                       EasyLoading.showError('Not playable');
@@ -1309,7 +1309,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
               runtime.lockTask(() {
                 router.pushPage(
                   CraftListPage(
-                    pinged: db.curUser.battleSim.pingedCEsWithEventAndBond(quest, null).toList(),
+                    pinnedGroups: db.settings.gameplay.pinnedSvtEquipGroups(quest, null),
                     onSelected: (ce) {
                       if (ce.collectionNo <= 0) {
                         EasyLoading.showError('Not playable');

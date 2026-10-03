@@ -596,15 +596,15 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: CheckboxWithLabel(
                 ink: false,
-                value: db.curUser.battleSim.pingedSvts.contains(svt.collectionNo),
+                value: db.settings.gameplay.pinnedSvtIds.contains(svt.id),
                 label: Text('Laplace: ${S.current.pin_to_top}'),
                 onChanged: (v) {
-                  db.curUser.battleSim.pingedSvts.toggle(svt.collectionNo);
+                  db.settings.gameplay.pinnedSvtIds.toggle(svt.id);
                   Navigator.pop(context);
                 },
               ),
               onTap: () {
-                db.curUser.battleSim.pingedSvts.toggle(svt.collectionNo);
+                db.settings.gameplay.pinnedSvtIds.toggle(svt.id);
               },
             ),
           if (svt.isUserSvt)

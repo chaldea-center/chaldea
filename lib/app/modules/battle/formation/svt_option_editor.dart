@@ -1408,7 +1408,7 @@ class _ServantOptionEditPageState extends State<ServantOptionEditPage> {
           _updateState(() {});
         },
         filterData: svtFilterData,
-        pinged: db.curUser.battleSim.pingedSvts.toList(),
+        pinged: db.settings.gameplay.pinnedSvtIds.toList(),
         showSecondaryFilter: true,
         eventId: questPhase?.logicEventId,
       ),
@@ -1778,13 +1778,14 @@ class _CraftEssenceOptionEditPageState extends State<CraftEssenceOptionEditPage>
           _updateState(() {});
         },
         filterData: craftFilterData,
-        pinged: switch (widget.equipTarget) {
-          SvtEquipTarget.normal =>
-            db.curUser.battleSim.pingedCEsWithEventAndBond(widget.questPhase, playerSvtData.svt).toList(),
-          SvtEquipTarget.bond => playerSvtData.svt?.bondEquips ?? [],
+        pinnedGroups: switch (widget.equipTarget) {
+          SvtEquipTarget.normal => db.settings.gameplay.pinnedSvtEquipGroups(widget.questPhase, playerSvtData.svt),
+          SvtEquipTarget.bond => [playerSvtData.svt?.bondEquips ?? []],
           SvtEquipTarget.reward => [
-            for (final ce in db.gameData.craftEssences.values)
-              if (ce.canBeGrandSvtRewardEquip && ce.rarity == 5) ce.id,
+            [
+              for (final ce in db.gameData.craftEssences.values)
+                if (ce.canBeGrandSvtRewardEquip && ce.rarity == 5) ce.id,
+            ],
           ],
         },
       ),

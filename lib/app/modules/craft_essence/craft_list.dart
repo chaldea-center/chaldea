@@ -16,9 +16,9 @@ import 'filter.dart';
 class CraftListPage extends StatefulWidget {
   final CraftFilterData? filterData;
   final void Function(CraftEssence ce)? onSelected;
-  final List<int>? pinged;
+  final List<List<int>>? pinnedGroups;
 
-  CraftListPage({super.key, this.onSelected, this.filterData, this.pinged});
+  CraftListPage({super.key, this.onSelected, this.filterData, this.pinnedGroups});
 
   @override
   State<StatefulWidget> createState() => CraftListPageState();
@@ -82,29 +82,29 @@ class CraftListPageState extends State<CraftListPage> with SearchableListState<C
 
   @override
   List<Widget> handleSlivers(List<Widget> slivers, bool useGrid) {
-    List<CraftEssence> pingedCEs =
-        widget.pinged
-            ?.map((e) => db.gameData.craftEssences[e] ?? db.gameData.craftEssencesById[e])
-            .whereType<CraftEssence>()
-            .toList() ??
-        [];
-    pingedCEs.sort2((e) => e.collectionNo);
-    if (pingedCEs.isNotEmpty) {
-      slivers = [
+    final pinnedSlivers = <Widget>[];
+    for (final group in widget.pinnedGroups ?? <List<int>>[]) {
+      final byId = <int, CraftEssence>{};
+      for (final value in group) {
+        final ce = db.gameData.craftEssencesById[value] ?? db.gameData.craftEssences[value];
+        if (ce != null) byId[ce.id] = ce;
+      }
+      final pinnedCEs = byId.values.toList()..sort2((e) => -e.collectionNo);
+      if (pinnedCEs.isEmpty) continue;
+      pinnedSlivers.add(
         SliverPadding(
-          padding: const EdgeInsets.symmetric(horizontal: 6),
+          padding: EdgeInsets.fromLTRB(6, pinnedSlivers.isEmpty ? 0 : 6, 6, 0),
           sliver: SliverGrid.extent(
             maxCrossAxisExtent: 72,
             mainAxisSpacing: 2,
             crossAxisSpacing: 2,
             childAspectRatio: 132 / 144,
-            children: [for (final datum in pingedCEs) gridItemBuilder(datum)],
+            children: [for (final datum in pinnedCEs) gridItemBuilder(datum)],
           ),
         ),
-        ...slivers,
-      ];
+      );
     }
-    return super.handleSlivers(slivers, useGrid);
+    return super.handleSlivers([...pinnedSlivers, ...slivers], useGrid);
   }
 
   @override
