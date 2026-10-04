@@ -33,6 +33,7 @@ jobs:
       - name: Build web
         run: |
           dart ./scripts/gen_git_info.dart
+          dart ./scripts/patch_before_build.dart web
           flutter build web --release -v --source-maps
           dart ./scripts/patch_web_build.dart
 
