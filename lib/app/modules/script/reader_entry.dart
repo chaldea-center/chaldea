@@ -169,7 +169,7 @@ class _ScriptIdLoadingPageState extends State<ScriptIdLoadingPage> {
                     combined: true,
                   ),
                   const SizedBox(height: 16),
-                  ElevatedButton(
+                  FilledButton(
                     onPressed: () {
                       fetch(force: true);
                     },

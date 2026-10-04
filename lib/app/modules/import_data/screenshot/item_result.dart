@@ -156,7 +156,7 @@ class _ItemResultTabState extends State<ItemResultTab> with ScrollControllerMixi
     return OverflowBar(
       alignment: MainAxisAlignment.center,
       children: [
-        ElevatedButton(
+        FilledButton(
           onPressed: widget.result?.details.isNotEmpty == true ? _doImportResult : null,
           child: Text(S.current.update),
         ),

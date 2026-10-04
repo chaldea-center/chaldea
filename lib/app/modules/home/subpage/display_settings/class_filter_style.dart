@@ -29,8 +29,9 @@ class _ClassFilterStyleSettingState extends State<ClassFilterStyleSetting> {
               ],
             ),
           ),
+          const SizedBox(height: 8),
           Center(
-            child: ElevatedButton(
+            child: FilledButton(
               onPressed: db.gameData.isValid ? () => router.push(url: Routes.servants) : null,
               child: Text(S.current.preview),
             ),

@@ -322,7 +322,7 @@ class _DropCalcInputTabState extends State<DropCalcInputTab> {
                     );
                   },
                 ),
-                ElevatedButton(onPressed: running ? null : solve, child: Text(S.current.drop_calc_solve)),
+                FilledButton(onPressed: running ? null : solve, child: Text(S.current.drop_calc_solve)),
               ],
             ),
           ],

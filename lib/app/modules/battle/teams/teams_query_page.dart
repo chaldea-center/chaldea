@@ -130,7 +130,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
     final List<Widget> buttons;
     if (widget.mode == TeamQueryMode.user && !secrets.isLoggedIn) {
       buttons = [
-        ElevatedButton(
+        FilledButton(
           onPressed: () async {
             await router.pushPage(LoginPage());
             if (mounted) setState(() {});

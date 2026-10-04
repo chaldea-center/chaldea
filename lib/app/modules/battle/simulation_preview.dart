@@ -392,7 +392,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
                       });
                     },
                   ),
-                  ElevatedButton(
+                  FilledButton.tonal(
                     onPressed: () async {
                       EasyLoading.show();
                       try {

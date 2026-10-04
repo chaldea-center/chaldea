@@ -203,7 +203,7 @@ class _NetworkSettingsPageState extends State<NetworkSettingsPage> {
             // const Divider(height: 8),
             const SizedBox(height: 8),
             Center(
-              child: ElevatedButton(onPressed: _testNetwork, child: Text(S.current.test.toUpperCase())),
+              child: FilledButton(onPressed: _testNetwork, child: Text(S.current.test.toUpperCase())),
             ),
             if (Language.isCHS) serverHint,
             for (final group in testGroups) _buildGroup(group),

@@ -255,7 +255,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
 
         children.add(
           Center(
-            child: ElevatedButton(
+            child: FilledButton.tonal(
               onPressed: () {
                 router.pushPage(
                   GachaGroupPage(
@@ -554,7 +554,7 @@ class _SummonDetailPageState extends State<SummonDetailPage> {
     );
     Widget? expBtn;
     if (summon.isLuckyBag && !summon.isDestiny && summon.subSummons.isNotEmpty) {
-      expBtn = ElevatedButton(
+      expBtn = FilledButton.tonal(
         onPressed: () => router.push(child: LuckyBagExpectation(summon: summon)),
         child: Text(S.current.summon_expectation_btn),
       );

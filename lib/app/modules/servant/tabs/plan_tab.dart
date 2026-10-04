@@ -823,7 +823,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
 
     // 确定
     if (enhanceMode) {
-      buttons.add(ElevatedButton(onPressed: _onEnhance, child: Text(S.current.ok)));
+      buttons.add(FilledButton(onPressed: _onEnhance, child: Text(S.current.ok)));
     }
     buttons.addAll([
       const SizedBox(height: 28, child: VerticalDivider(width: 8, thickness: 1)),

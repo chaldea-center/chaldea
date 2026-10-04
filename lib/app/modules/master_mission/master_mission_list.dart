@@ -171,7 +171,7 @@ class _MasterMissionListPageState extends State<MasterMissionListPage> {
             setState(() {});
           },
         ),
-        ElevatedButton(
+        FilledButton(
           onPressed: () => solveMultiple(mms),
           child: Text(selected.isEmpty ? S.current.general_custom : S.current.drop_calc_solve),
         ),

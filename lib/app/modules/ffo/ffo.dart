@@ -35,7 +35,7 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
       body = const Center(child: CircularProgressIndicator());
     } else if (FfoDB.i.isEmpty) {
       body = Center(
-        child: ElevatedButton(
+        child: FilledButton(
           onPressed: () {
             loadDB(false);
           },
@@ -136,7 +136,7 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
               setState(() {});
             },
           ),
-          ElevatedButton(
+          FilledButton(
             onPressed: params.isEmpty
                 ? null
                 : () async {
@@ -151,7 +151,7 @@ class _FreedomOrderPageState extends State<FreedomOrderPage> {
                   },
             child: Text(S.current.save),
           ),
-          ElevatedButton(
+          FilledButton(
             onPressed: () {
               router.pushPage(const FFOSummonPage());
             },

@@ -84,7 +84,7 @@ class _ScreenshotsTabState extends State<ScreenshotsTab> with ScrollControllerMi
           icon: const Icon(Icons.add_photo_alternate_outlined),
           tooltip: S.current.import_screenshot,
         ),
-        ElevatedButton.icon(
+        FilledButton.icon(
           onPressed: widget.images.isEmpty ? null : widget.onUpload,
           icon: const Icon(Icons.upload),
           label: Text(S.current.upload),

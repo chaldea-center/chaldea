@@ -106,9 +106,9 @@ class SoundPlayButton extends StatelessWidget {
       ),
     );
     if (name == null || name!.isEmpty) {
-      return ElevatedButton(
+      return FilledButton.tonal(
         onPressed: url == null ? null : () => onPressed(url!),
-        style: ElevatedButton.styleFrom(
+        style: FilledButton.styleFrom(
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
           visualDensity: VisualDensity.compact,
           padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 10),
@@ -117,9 +117,9 @@ class SoundPlayButton extends StatelessWidget {
         child: playButton,
       );
     }
-    return ElevatedButton.icon(
+    return FilledButton.tonalIcon(
       onPressed: url == null ? null : () => onPressed(url!),
-      style: ElevatedButton.styleFrom(
+      style: FilledButton.styleFrom(
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         visualDensity: VisualDensity.compact,
         padding: const EdgeInsetsDirectional.fromSTEB(8, 2, 14, 2),

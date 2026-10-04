@@ -163,7 +163,7 @@ class _SkillResultTabState extends State<SkillResultTab> with ScrollControllerMi
     return OverflowBar(
       alignment: MainAxisAlignment.center,
       children: [
-        ElevatedButton(onPressed: result.details.isNotEmpty ? _doImportResult : null, child: Text(S.current.update)),
+        FilledButton(onPressed: result.details.isNotEmpty ? _doImportResult : null, child: Text(S.current.update)),
       ],
     );
   }

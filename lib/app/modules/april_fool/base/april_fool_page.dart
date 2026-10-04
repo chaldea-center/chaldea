@@ -249,7 +249,7 @@ mixin AprilFoolPageMixin<T extends StatefulWidget> on State<T> {
       children: [
         // svt?.iconBuilder(context: context, width: 24) ?? const SizedBox(width: 24),
         // const SizedBox(width: 16),
-        ElevatedButton(onPressed: exportImage, child: Text(S.current.general_export)),
+        FilledButton(onPressed: exportImage, child: Text(S.current.general_export)),
       ],
     );
     return SafeArea(child: child);

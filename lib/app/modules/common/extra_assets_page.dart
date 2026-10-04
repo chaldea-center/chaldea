@@ -79,6 +79,7 @@ class ExtraAssetsPage extends StatelessWidget {
         expanded: true,
         showMerge: true,
         placeholder: charaGraphPlaceholder,
+        excludeUrlsForMerge: extraCharaGraph?.toSet(),
       ),
       _oneGroup(
         S.current.april_fool,
@@ -174,6 +175,7 @@ class ExtraAssetsPage extends StatelessWidget {
     PlaceholderWidgetBuilder? placeholder,
     List<Widget>? actions,
     String? subtitle,
+    Set<String>? excludeUrlsForMerge,
   }) => oneGroup(
     title,
     urls,
@@ -184,6 +186,7 @@ class ExtraAssetsPage extends StatelessWidget {
     onTapImage: onTapImage,
     actions: actions,
     subtitle: subtitle,
+    excludeUrlsForMerge: excludeUrlsForMerge,
   );
 
   static Widget? oneGroup(
@@ -197,6 +200,7 @@ class ExtraAssetsPage extends StatelessWidget {
     Widget Function(Widget child, String url)? transform,
     List<Widget>? actions,
     String? subtitle,
+    Set<String>? excludeUrlsForMerge,
   }) {
     final _urls = urls.toList();
     if (_urls.isEmpty) return null;
@@ -222,7 +226,11 @@ class ExtraAssetsPage extends StatelessWidget {
           if (showMerge && expanded && _urls.length > 1)
             IconButton(
               onPressed: () {
-                router.pushPage(MergeImagePage(imageUrls: _urls.toList()));
+                final urls = _urls.toList();
+                if (excludeUrlsForMerge != null) {
+                  urls.removeWhere(excludeUrlsForMerge.contains);
+                }
+                router.pushPage(MergeImagePage(imageUrls: urls));
               },
               icon: Icon(Icons.ios_share, color: Theme.of(context).hintColor),
               tooltip: S.current.share,
@@ -492,7 +500,7 @@ class _MergeImagePageState extends State<MergeImagePage> {
       alignment: WrapAlignment.center,
       spacing: 4,
       children: [
-        ElevatedButton(
+        FilledButton(
           onPressed: imgBytes == null
               ? null
               : () {

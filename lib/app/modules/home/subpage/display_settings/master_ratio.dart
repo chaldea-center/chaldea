@@ -27,7 +27,7 @@ class _MasterRatioSettingState extends State<MasterRatioSetting> {
           ratioTile,
           if (kIsWeb || kDebugMode) maxWidthTile,
           Center(
-            child: ElevatedButton(
+            child: FilledButton(
               onPressed: () {
                 setState(() {
                   display.splitMasterRatio = SplitRoute.defaultMasterRatio = null;

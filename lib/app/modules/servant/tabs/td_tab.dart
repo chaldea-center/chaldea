@@ -74,7 +74,7 @@ class SvtTdTab extends StatelessWidget {
       children.add(
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-          child: ElevatedButton(
+          child: FilledButton(
             onPressed: () {
               // if (!BiliPlayer.isSupport && svt.extra.tdAnimations.length == 1) {
               //   launch(svt.extra.tdAnimations.first.weburl);

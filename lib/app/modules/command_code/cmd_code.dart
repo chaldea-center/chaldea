@@ -141,7 +141,7 @@ class _CmdCodeDetailPageState extends State<CmdCodeDetailPage> {
                         });
                       }
                     },
-                    style: ElevatedButton.styleFrom(textStyle: const TextStyle(fontWeight: FontWeight.normal)),
+                    style: FilledButton.styleFrom(textStyle: const TextStyle(fontWeight: FontWeight.normal)),
                     child: Text([S.current.previous_card, S.current.next_card][i]),
                   ),
               ],

@@ -271,7 +271,7 @@ class _ClassBoardDetailPageState extends State<ClassBoardDetailPage> with Single
           child: OverflowBar(
             alignment: MainAxisAlignment.center,
             children: [
-              ElevatedButton(
+              FilledButton(
                 onPressed: () {
                   showDialog(context: context, useRootNavigator: false, builder: setAllDialog);
                 },

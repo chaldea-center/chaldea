@@ -169,7 +169,7 @@ class _CombineImagePageState extends State<CombineImagePage> {
           spacing: 8,
           runSpacing: 6,
           children: [
-            ElevatedButton(
+            FilledButton.tonal(
               onPressed: () {
                 router.pushPage(
                   ServantListPage(
@@ -181,7 +181,7 @@ class _CombineImagePageState extends State<CombineImagePage> {
               },
               child: Text(S.current.servant),
             ),
-            ElevatedButton(
+            FilledButton.tonal(
               onPressed: () {
                 router.pushPage(
                   CraftListPage(
@@ -193,7 +193,7 @@ class _CombineImagePageState extends State<CombineImagePage> {
               },
               child: Text(S.current.craft_essence),
             ),
-            ElevatedButton(
+            FilledButton.tonal(
               onPressed: () {
                 router.pushPage(
                   CmdCodeListPage(
@@ -205,7 +205,7 @@ class _CombineImagePageState extends State<CombineImagePage> {
               },
               child: Text(S.current.command_code),
             ),
-            ElevatedButton(
+            FilledButton.tonal(
               onPressed: () {
                 InputCancelOkDialog(
                   title: 'http(s) URL',
@@ -220,7 +220,7 @@ class _CombineImagePageState extends State<CombineImagePage> {
               },
               child: const Text('URL'),
             ),
-            ElevatedButton(
+            FilledButton.tonal(
               onPressed: kIsWeb
                   ? null
                   : () async {
@@ -250,8 +250,8 @@ class _CombineImagePageState extends State<CombineImagePage> {
           alignment: WrapAlignment.center,
           spacing: 8,
           children: [
-            ElevatedButton(onPressed: () => takeScreenshot(height, false), child: Text(S.current.preview)),
-            ElevatedButton(onPressed: () => takeScreenshot(height, true), child: Text(S.current.save)),
+            FilledButton(onPressed: () => takeScreenshot(height, false), child: Text(S.current.preview)),
+            FilledButton(onPressed: () => takeScreenshot(height, true), child: Text(S.current.save)),
           ],
         ),
         TileGroup(

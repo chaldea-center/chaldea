@@ -41,11 +41,7 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
       if (code == null) {
         buffer.write('null');
       } else {
-        buffer.writeAll([
-          code.substring(0, min(8, code.length)),
-          '****',
-          code.substring(max(0, code.length - 8), code.length),
-        ]);
+        buffer.write(maskSecret(code, keep: 8));
         if (!code.startsWith('ZSv/')) {
           buffer.write('\n> Warning: should start with ZSv/');
         }
@@ -56,8 +52,8 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
         [
           'gameServer: ${auth.userCreateServer}',
           'userId: ${auth.userId}',
-          'authKey: ${auth.authKey}',
-          'secretKey: ${auth.secretKey}',
+          'authKey: ${maskSecret(auth.authKey)}',
+          'secretKey: ${maskSecret(auth.secretKey)}',
           if (auth.saveDataVer != null) 'SaveDataVer: ${auth.saveDataVer}',
         ].map(
           (e) => Text(e, style: Theme.of(context).textTheme.bodySmall, maxLines: 1, overflow: TextOverflow.ellipsis),
@@ -128,7 +124,7 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
             ),
           ),
           Center(
-            child: ElevatedButton(
+            child: FilledButton(
               onPressed: () async {
                 if (_codeCtrl.text.trim().isEmpty) {
                   EasyLoading.showError('Empty');
@@ -173,7 +169,7 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
           _buildTextField(_authKeyCtrl, 'authKey'),
           _buildTextField(_secretKeyCtrl, 'secretKey'),
           Center(
-            child: ElevatedButton(
+            child: FilledButton(
               onPressed: () {
                 final _auth = AuthSaveData(
                   userId: _userIdCtrl.text.trim(),
@@ -303,5 +299,13 @@ class _ReadAuthPageState extends State<ReadAuthPage> {
       saveDataVer: data['SaveDataVer'] as String,
       userCreateServer: data['userCreateServer'] as String,
     );
+  }
+
+  String maskSecret(String value, {int keep = 3, int maxStars = 24}) {
+    if (value.length <= keep * 2) return '*' * min(value.length, maxStars);
+    final stars = min(value.length - keep * 2, maxStars);
+    return '${value.substring(0, keep)}'
+        '${'*' * stars}'
+        '${value.substring(value.length - keep)}';
   }
 }

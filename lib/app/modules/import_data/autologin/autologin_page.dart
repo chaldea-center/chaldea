@@ -346,7 +346,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
           tooltip: S.current.remove,
         ),
         const SizedBox(width: 8),
-        ElevatedButton.icon(
+        FilledButton.icon(
           onPressed: () {
             AppVersion? minVer = AppVersion.tryParse(switch (args.region) {
               Region.jp => ConstData.config.autoLoginMinVerJp,
@@ -364,7 +364,7 @@ class _AutoLoginPageState extends State<AutoLoginPage> {
           label: Text(S.current.login_login),
         ),
         const SizedBox(width: 8),
-        ElevatedButton(
+        FilledButton(
           onPressed: args.response?.data.isSuccess('login') == true && args.response?.data != null
               ? () => _doImport(jsonEncode(args.response!.data.rawMap))
               : null,

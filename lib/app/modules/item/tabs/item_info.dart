@@ -68,7 +68,7 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
       final svt = db.gameData.entities[itemId];
       return ListTile(
         title: Center(
-          child: ElevatedButton(
+          child: FilledButton(
             onPressed: () {
               router.push(url: Routes.enemyI(itemId));
             },

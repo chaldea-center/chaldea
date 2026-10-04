@@ -38,7 +38,7 @@ class _TranslationSettingState extends State<TranslationSetting> {
           ),
           SFooter([S.current.drag_to_sort, S.current.preferred_translation_footer].join('/')),
           Center(
-            child: ElevatedButton(
+            child: FilledButton(
               child: Text(S.current.reset),
               onPressed: () {
                 setState(() {

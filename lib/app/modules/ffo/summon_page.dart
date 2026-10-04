@@ -104,7 +104,7 @@ class _FFOSummonPageState extends State<FFOSummonPage> {
           FFOUtil.imgUrl('UI/${ten ? 'btn_summon_10.png' : 'btn_summon_01.png'}'),
           height: 50,
           placeholder: (context) =>
-              ElevatedButton(onPressed: () => drawSummon(ten ? 10 : 1), child: Text('Gacha ×${ten ? 10 : 1}')),
+              FilledButton(onPressed: () => drawSummon(ten ? 10 : 1), child: Text('Gacha ×${ten ? 10 : 1}')),
         ),
       ),
     );
