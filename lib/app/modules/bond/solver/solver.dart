@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:isolate';
 import 'dart:math' as math;
 
-import 'package:flutter/foundation.dart' show compute, kIsWeb;
+import 'package:flutter/foundation.dart' show compute, kIsWeb, listEquals;
 
 import 'package:chaldea/app/battle/models/user.dart';
 import 'package:chaldea/models/gamedata/individuality.dart' show Individuality;
@@ -124,7 +124,7 @@ class BondSolvedTeam {
         if (equipped == null) continue;
         final ce = db.gameData.craftEssencesById[equipped.id];
         if (ce == null) continue;
-        final effects = extractCeBondEffects(ce, equipped.limitBreak, quest, support: wearer.isSupport);
+        final effects = CeBondEffect.extractAll(ce, equipped.limitBreak, quest, support: wearer.isSupport);
         var rate = 0, value = 0;
         final targetTraitGroups = <List<int>>[];
         for (final effect in effects) {
@@ -207,148 +207,148 @@ class BondSolvedTeam {
       ..limitBreak = chosen?.limitBreak ?? false
       ..lv = ce?.lvMax ?? 0;
   }
-}
 
-String _teamSignature(BondSolvedTeam team) => [
-  for (final slot in team.slots)
-    '${slot.position}:${slot.servantId}:${slot.limitCount}:'
-        '${slot.equip1?.id}:${slot.equip1?.limitBreak}:'
-        '${slot.equip3?.id}:${slot.equip3?.limitBreak}',
-].join('|');
+  String get _signature => [
+    for (final slot in slots)
+      '${slot.position}:${slot.servantId}:${slot.limitCount}:'
+          '${slot.equip1?.id}:${slot.equip1?.limitBreak}:'
+          '${slot.equip3?.id}:${slot.equip3?.limitBreak}',
+  ].join('|');
 
-/// Expand exact effect-class witnesses into a bounded set of concrete teams.
-/// Every substitute belongs to the same class (or has the same exact slot
-/// score in the CE-first path), so the score and COST remain unchanged.
-List<BondSolvedTeam> _concreteRepresentatives(
-  BondSolvedTeam best,
-  List<BondSolvedTeam> groups, {
-  int maxTeams = 20,
-  BondSolvedTeam Function(BondSolvedTeam)? normalize,
-}) {
-  final teams = <BondSolvedTeam>[];
-  final seen = <String>{};
-  void add(BondSolvedTeam team) {
-    if (normalize != null) team = normalize(team);
-    if (team.totalBond == best.totalBond && seen.add(_teamSignature(team))) teams.add(team);
-  }
-
-  add(best);
-  for (final group in groups) {
-    if (teams.length == maxTeams) break;
-    add(group);
-  }
-  final seeds = List<BondSolvedTeam>.of(teams);
-  final choices = <Iterator<BondSolvedTeam>>[];
-  for (final seed in seeds) {
-    for (var p = 0; p < seed.slots.length; p++) {
-      for (var kind = 0; kind < 3; kind++) {
-        choices.add(_substituteOneMember(seed, p, kind).iterator);
-      }
+  /// Expand exact effect-class witnesses into a bounded set of concrete teams.
+  /// Every substitute belongs to the same class (or has the same exact slot
+  /// score in the CE-first path), so the score and COST remain unchanged.
+  static List<BondSolvedTeam> _concreteRepresentatives(
+    BondSolvedTeam best,
+    List<BondSolvedTeam> groups, {
+    int maxTeams = 20,
+    BondSolvedTeam Function(BondSolvedTeam)? normalize,
+  }) {
+    final teams = <BondSolvedTeam>[];
+    final seen = <String>{};
+    void add(BondSolvedTeam team) {
+      if (normalize != null) team = normalize(team);
+      if (team.totalBond == best.totalBond && seen.add(team._signature)) teams.add(team);
     }
-  }
-  while (teams.length < maxTeams) {
-    var advanced = false;
-    for (final choice in choices) {
-      if (!choice.moveNext()) continue;
-      advanced = true;
-      add(choice.current);
+
+    add(best);
+    for (final group in groups) {
       if (teams.length == maxTeams) break;
+      add(group);
     }
-    if (!advanced) break;
-  }
-  return List.unmodifiable(teams);
-}
-
-/// Expand a bounded set of feasible seeds by score tier. Lower scores are used
-/// only after the available higher-score concrete variants have been added.
-List<BondSolvedTeam> _rankedCandidates(
-  List<BondSolvedTeam> seeds, {
-  required int maxTeams,
-  BondSolvedTeam Function(BondSolvedTeam)? normalize,
-}) {
-  if (seeds.isEmpty || maxTeams < 1) return const [];
-  final byScore = <int, List<BondSolvedTeam>>{};
-  for (final seed in seeds) {
-    byScore.putIfAbsent(seed.totalBond, () => []).add(seed);
-  }
-  final scores = byScore.keys.toList()..sort((a, b) => b.compareTo(a));
-  final result = <BondSolvedTeam>[];
-  for (final score in scores) {
-    final group = byScore[score]!..sort((a, b) => b.totalCost.compareTo(a.totalCost));
-    final representatives = _concreteRepresentatives(
-      group.first,
-      group,
-      maxTeams: maxTeams - result.length,
-      normalize: normalize,
-    ).toList()..sort((a, b) => b.totalCost.compareTo(a.totalCost));
-    result.addAll(representatives);
-    if (result.length >= maxTeams) break;
-  }
-  return List.unmodifiable(result);
-}
-
-Iterable<BondSolvedTeam> _substituteOneMember(BondSolvedTeam team, int index, int kind) sync* {
-  final original = team.slots[index];
-  BondSolvedTeam? replaced(int? servantId, int? limit, BondSolvedCe? ce1, BondSolvedCe? ce3) {
-    final slot = BondSolvedSlot(
-      position: original.position,
-      servantId: servantId,
-      limitCount: limit,
-      equip1: ce1,
-      equip3: ce3,
-      isSupport: original.isSupport,
-      fixedServant: original.fixedServant,
-      bond: original.bond,
-      cost: original.cost,
-      servantCandidates: original.servantCandidates,
-      equip1Candidates: original.equip1Candidates,
-      equip3Candidates: original.equip3Candidates,
-      servantVariants: original.servantVariants,
-      equip1Variants: original.equip1Variants,
-      equip3Variants: original.equip3Variants,
-      fixedEquip1: original.fixedEquip1,
-      fixedEquip3: original.fixedEquip3,
-    );
-    final slots = List<BondSolvedSlot>.of(team.slots)..[index] = slot;
-    final ownedServants = <int>{};
-    final ownedCes = <int>{};
-    for (final member in slots) {
-      if (member.isSupport) continue;
-      if (member.servantId != null && !ownedServants.add(member.servantId!)) return null;
-      for (final ce in [member.equip1, member.equip3]) {
-        if (ce != null && !ownedCes.add(BondCeIdentity.of(ce.id))) return null;
+    final seeds = List<BondSolvedTeam>.of(teams);
+    final choices = <Iterator<BondSolvedTeam>>[];
+    for (final seed in seeds) {
+      for (var p = 0; p < seed.slots.length; p++) {
+        for (var kind = 0; kind < 3; kind++) {
+          choices.add(_substituteOneMember(seed, p, kind).iterator);
+        }
       }
     }
-    return BondSolvedTeam(team.totalBond, team.totalCost, slots);
+    while (teams.length < maxTeams) {
+      var advanced = false;
+      for (final choice in choices) {
+        if (!choice.moveNext()) continue;
+        advanced = true;
+        add(choice.current);
+        if (teams.length == maxTeams) break;
+      }
+      if (!advanced) break;
+    }
+    return List.unmodifiable(teams);
   }
 
-  if (kind == 0 && !original.fixedServant && !original.isSupport && original.servantId != null) {
-    for (final entry in original.servantVariants.entries) {
-      if (entry.key == original.servantId) continue;
-      final team = replaced(entry.key, entry.value, original.equip1, original.equip3);
-      if (team != null) yield team;
+  /// Expand a bounded set of feasible seeds by score tier. Lower scores are used
+  /// only after the available higher-score concrete variants have been added.
+  static List<BondSolvedTeam> _rankedCandidates(
+    List<BondSolvedTeam> seeds, {
+    required int maxTeams,
+    BondSolvedTeam Function(BondSolvedTeam)? normalize,
+  }) {
+    if (seeds.isEmpty || maxTeams < 1) return const [];
+    final byScore = <int, List<BondSolvedTeam>>{};
+    for (final seed in seeds) {
+      byScore.putIfAbsent(seed.totalBond, () => []).add(seed);
     }
-  } else if (kind == 1 && !original.fixedEquip1 && original.equip1 != null) {
-    for (final entry in original.equip1Variants.entries) {
-      if (entry.key == original.equip1!.id) continue;
-      final team = replaced(
-        original.servantId,
-        original.limitCount,
-        BondSolvedCe(entry.key, entry.value),
-        original.equip3,
-      );
-      if (team != null) yield team;
+    final scores = byScore.keys.toList()..sort((a, b) => b.compareTo(a));
+    final result = <BondSolvedTeam>[];
+    for (final score in scores) {
+      final group = byScore[score]!..sort((a, b) => b.totalCost.compareTo(a.totalCost));
+      final representatives = _concreteRepresentatives(
+        group.first,
+        group,
+        maxTeams: maxTeams - result.length,
+        normalize: normalize,
+      ).toList()..sort((a, b) => b.totalCost.compareTo(a.totalCost));
+      result.addAll(representatives);
+      if (result.length >= maxTeams) break;
     }
-  } else if (kind == 2 && !original.fixedEquip3 && original.equip3 != null) {
-    for (final entry in original.equip3Variants.entries) {
-      if (entry.key == original.equip3!.id) continue;
-      final team = replaced(
-        original.servantId,
-        original.limitCount,
-        original.equip1,
-        BondSolvedCe(entry.key, entry.value),
+    return List.unmodifiable(result);
+  }
+
+  static Iterable<BondSolvedTeam> _substituteOneMember(BondSolvedTeam team, int index, int kind) sync* {
+    final original = team.slots[index];
+    BondSolvedTeam? replaced(int? servantId, int? limit, BondSolvedCe? ce1, BondSolvedCe? ce3) {
+      final slot = BondSolvedSlot(
+        position: original.position,
+        servantId: servantId,
+        limitCount: limit,
+        equip1: ce1,
+        equip3: ce3,
+        isSupport: original.isSupport,
+        fixedServant: original.fixedServant,
+        bond: original.bond,
+        cost: original.cost,
+        servantCandidates: original.servantCandidates,
+        equip1Candidates: original.equip1Candidates,
+        equip3Candidates: original.equip3Candidates,
+        servantVariants: original.servantVariants,
+        equip1Variants: original.equip1Variants,
+        equip3Variants: original.equip3Variants,
+        fixedEquip1: original.fixedEquip1,
+        fixedEquip3: original.fixedEquip3,
       );
-      if (team != null) yield team;
+      final slots = List<BondSolvedSlot>.of(team.slots)..[index] = slot;
+      final ownedServants = <int>{};
+      final ownedCes = <int>{};
+      for (final member in slots) {
+        if (member.isSupport) continue;
+        if (member.servantId != null && !ownedServants.add(member.servantId!)) return null;
+        for (final ce in [member.equip1, member.equip3]) {
+          if (ce != null && !ownedCes.add(BondCeIdentity.of(ce.id))) return null;
+        }
+      }
+      return BondSolvedTeam(team.totalBond, team.totalCost, slots);
+    }
+
+    if (kind == 0 && !original.fixedServant && !original.isSupport && original.servantId != null) {
+      for (final entry in original.servantVariants.entries) {
+        if (entry.key == original.servantId) continue;
+        final team = replaced(entry.key, entry.value, original.equip1, original.equip3);
+        if (team != null) yield team;
+      }
+    } else if (kind == 1 && !original.fixedEquip1 && original.equip1 != null) {
+      for (final entry in original.equip1Variants.entries) {
+        if (entry.key == original.equip1!.id) continue;
+        final team = replaced(
+          original.servantId,
+          original.limitCount,
+          BondSolvedCe(entry.key, entry.value),
+          original.equip3,
+        );
+        if (team != null) yield team;
+      }
+    } else if (kind == 2 && !original.fixedEquip3 && original.equip3 != null) {
+      for (final entry in original.equip3Variants.entries) {
+        if (entry.key == original.equip3!.id) continue;
+        final team = replaced(
+          original.servantId,
+          original.limitCount,
+          original.equip1,
+          BondSolvedCe(entry.key, entry.value),
+        );
+        if (team != null) yield team;
+      }
     }
   }
 }
@@ -455,7 +455,7 @@ class FormationBondSolver {
         for (final slot in team.slots) slot.position == target.position ? slot.copyWith(limitCount: limit) : slot,
       ]);
       final score = evaluator._scoreConcrete(changed);
-      if (score.$2 == team.totalCost && _sameInts(score.$1, team.slots.map((slot) => slot.bond).toList())) {
+      if (score.$2 == team.totalCost && listEquals(score.$1, team.slots.map((slot) => slot.bond).toList())) {
         allowed.add(limit);
       }
     }
@@ -622,13 +622,13 @@ class FormationBondSolver {
     final ceFirst = useCeFirst ? solver._prepareCeFirst() : null;
     if (ceFirst != null) {
       final search = await compute(
-        _runCeFirstSearch,
+        FormationBondSolver._runCeFirstSearch,
         _CeFirstSearchInput(ceFirst, maxNodes, maxTies, solver._candidateLimit),
       );
       return solver._ceFirstResult(search, stopwatch, maxTies: maxTies);
     }
     final search = await compute(
-      _runPreparedBondSearch,
+      FormationBondSolver._runPreparedBondSearch,
       _SearchInput(problem, maxNodes, maxTies, solver._candidateLimit),
     );
     return solver._result(search, stopwatch, maxTies: maxTies);
@@ -669,7 +669,7 @@ class FormationBondSolver {
 
     final messages = ReceivePort();
     final worker = await Isolate.spawn(
-      _runProgressiveBondSearch,
+      FormationBondSolver._runProgressiveBondSearch,
       _ProgressInput(messages.sendPort, problem, ceFirst, solver._candidateLimit),
     );
     try {
@@ -787,7 +787,7 @@ class FormationBondSolver {
       best: best,
       ties: best == null
           ? const []
-          : _concreteRepresentatives(
+          : BondSolvedTeam._concreteRepresentatives(
               best,
               [for (final tie in search.ties) _expand(tie)],
               maxTeams: maxTies,
@@ -795,7 +795,7 @@ class FormationBondSolver {
             ),
       candidates: best == null
           ? const []
-          : _rankedCandidates(
+          : BondSolvedTeam._rankedCandidates(
               [best, for (final candidate in search.candidates) _expand(candidate)],
               maxTeams: _candidateLimit,
               normalize: _normalizeTeam,
@@ -820,10 +820,15 @@ class FormationBondSolver {
       best: search.best == null ? null : _normalizeTeam(search.best!),
       ties: search.best == null
           ? const []
-          : _concreteRepresentatives(search.best!, search.ties, maxTeams: maxTies, normalize: _normalizeTeam),
+          : BondSolvedTeam._concreteRepresentatives(
+              search.best!,
+              search.ties,
+              maxTeams: maxTies,
+              normalize: _normalizeTeam,
+            ),
       candidates: search.best == null
           ? const []
-          : _rankedCandidates(
+          : BondSolvedTeam._rankedCandidates(
               [search.best!, ...search.candidates],
               maxTeams: _candidateLimit,
               normalize: _normalizeTeam,
@@ -954,7 +959,8 @@ class FormationBondSolver {
         final reference = ce.byWearer[svtClasses.first.profile];
         for (final svt in svtClasses.skip(1)) {
           final other = ce.byWearer[svt.profile];
-          if (!_sameInts(reference.teamRates, other.teamRates) || !_sameInts(reference.teamValues, other.teamValues)) {
+          if (!listEquals(reference.teamRates, other.teamRates) ||
+              !listEquals(reference.teamValues, other.teamValues)) {
             return null;
           }
         }
@@ -963,8 +969,8 @@ class FormationBondSolver {
         final reference = svtClasses.first.eventEffect;
         if (svtClasses.any(
           (svt) =>
-              !_sameInts(reference.teamRates, svt.eventEffect.teamRates) ||
-              !_sameInts(reference.teamValues, svt.eventEffect.teamValues),
+              !listEquals(reference.teamRates, svt.eventEffect.teamRates) ||
+              !listEquals(reference.teamValues, svt.eventEffect.teamValues),
         )) {
           return null;
         }
@@ -1529,7 +1535,7 @@ class FormationBondSolver {
     // servant. Team-wide extra passives (currently Mash only, besides the
     // separately configured Bond 15 skill) are outside the requested scope.
     return _extractEffects(
-      resolveBondEventSkills(svt, quest),
+      svt.resolveBondEventSkills(quest),
       support: false,
     ).where((effect) => effect.scope == BondEffectScope.self).toList();
   });
@@ -1539,8 +1545,8 @@ class FormationBondSolver {
       return _CeVariant(
         ce,
         lb,
-        extractCeBondEffects(ce, lb, quest, support: false),
-        extractCeBondEffects(ce, lb, quest, support: true),
+        CeBondEffect.extractAll(ce, lb, quest, support: false),
+        CeBondEffect.extractAll(ce, lb, quest, support: true),
       );
     });
   }
@@ -1612,6 +1618,47 @@ class FormationBondSolver {
     [for (var i = 0; i < _profiles.length; i++) a.teamRates[i] + b.teamRates[i]],
     [for (var i = 0; i < _profiles.length; i++) a.teamValues[i] + b.teamValues[i]],
   );
+
+  static BondSearchResult _runPreparedBondSearch(_SearchInput input) => BondSearch.solve(
+    input.problem,
+    maxNodes: input.maxNodes,
+    maxTies: input.maxTies,
+    maxCandidates: input.maxCandidates,
+  );
+
+  static void _runProgressiveBondSearch(_ProgressInput input) {
+    try {
+      if (input.ceFirst != null) {
+        final clock = Stopwatch()..start();
+        var lastReport = -200;
+        final result = _CeFirstSearch(input.ceFirst!, maxCandidates: input.maxCandidates).solve(
+          onProgress: (progress) {
+            if (clock.elapsedMilliseconds - lastReport < 200) return;
+            input.port.send(<Object?>['ce', progress]);
+            lastReport = clock.elapsedMilliseconds;
+          },
+        );
+        input.port.send(<Object?>['ce', result]);
+      } else {
+        final result = BondSearch.solve(
+          input.general,
+          maxCandidates: input.maxCandidates,
+          onProgress: (progress) => input.port.send(<Object?>['general', progress]),
+        );
+        input.port.send(<Object?>['general', result]);
+      }
+    } catch (e) {
+      input.port.send(<Object?>['error', e.toString()]);
+    } finally {
+      input.port.send(<Object?>['done', null]);
+    }
+  }
+
+  static _CeFirstResult _runCeFirstSearch(_CeFirstSearchInput input) => _CeFirstSearch(
+    input.problem,
+    maxTies: input.maxTies,
+    maxCandidates: input.maxCandidates,
+  ).solve(maxEvaluations: input.maxEvaluations);
 }
 
 class _SvtVariant {
@@ -1655,21 +1702,13 @@ class _CeClass {
     if (first.selfRate != 0 || first.selfValue != 0) return false;
     for (final contribution in byWearer.skip(1)) {
       if (contribution.selfRate != 0 || contribution.selfValue != 0) return false;
-      if (!_sameInts(first.teamRates, contribution.teamRates) ||
-          !_sameInts(first.teamValues, contribution.teamValues)) {
+      if (!listEquals(first.teamRates, contribution.teamRates) ||
+          !listEquals(first.teamValues, contribution.teamValues)) {
         return false;
       }
     }
     return true;
   }
-}
-
-bool _sameInts(List<int> a, List<int> b) {
-  if (a.length != b.length) return false;
-  for (var i = 0; i < a.length; i++) {
-    if (a[i] != b[i]) return false;
-  }
-  return true;
 }
 
 class _Contribution {
@@ -1714,13 +1753,6 @@ class _SearchInput {
   const _SearchInput(this.problem, this.maxNodes, this.maxTies, this.maxCandidates);
 }
 
-BondSearchResult _runPreparedBondSearch(_SearchInput input) => BondSearch.solve(
-  input.problem,
-  maxNodes: input.maxNodes,
-  maxTies: input.maxTies,
-  maxCandidates: input.maxCandidates,
-);
-
 class _ProgressInput {
   final SendPort port;
   final BondSearchProblem general;
@@ -1728,32 +1760,4 @@ class _ProgressInput {
   final int maxCandidates;
 
   const _ProgressInput(this.port, this.general, this.ceFirst, this.maxCandidates);
-}
-
-void _runProgressiveBondSearch(_ProgressInput input) {
-  try {
-    if (input.ceFirst != null) {
-      final clock = Stopwatch()..start();
-      var lastReport = -200;
-      final result = _CeFirstSearch(input.ceFirst!, maxCandidates: input.maxCandidates).solve(
-        onProgress: (progress) {
-          if (clock.elapsedMilliseconds - lastReport < 200) return;
-          input.port.send(<Object?>['ce', progress]);
-          lastReport = clock.elapsedMilliseconds;
-        },
-      );
-      input.port.send(<Object?>['ce', result]);
-    } else {
-      final result = BondSearch.solve(
-        input.general,
-        maxCandidates: input.maxCandidates,
-        onProgress: (progress) => input.port.send(<Object?>['general', progress]),
-      );
-      input.port.send(<Object?>['general', result]);
-    }
-  } catch (e) {
-    input.port.send(<Object?>['error', e.toString()]);
-  } finally {
-    input.port.send(<Object?>['done', null]);
-  }
 }

@@ -58,3 +58,20 @@ class BondReleaseRules {
     return traits.toSet().toList()..sort();
   }
 }
+
+/// Resolves a servant's active event passive skills that grant bond bonuses.
+extension ServantBondEffects on Servant {
+  List<NiceSkill> resolveBondEventSkills(QuestPhase quest) {
+    final grouped = <int, Map<int, NiceSkill>>{};
+    for (final skill in extraPassive) {
+      if (skill.id == 970663) continue; // Bond 15 passive is handled separately.
+      for (final passive in skill.extraPassive) {
+        if (passive.startedAt > quest.closedAt || passive.endedAt < quest.openedAt) continue;
+        final eventIds = passive.getValidEventIds();
+        if (eventIds.isNotEmpty && !eventIds.contains(quest.logicEventId ?? 0)) continue;
+        grouped.putIfAbsent(passive.num, () => {})[passive.priority] = skill;
+      }
+    }
+    return [for (final priorities in grouped.values) priorities[priorities.keys.reduce((a, b) => a > b ? a : b)]!];
+  }
+}

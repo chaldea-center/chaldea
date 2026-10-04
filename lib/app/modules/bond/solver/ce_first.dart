@@ -154,12 +154,6 @@ class _CeFirstState {
   const _CeFirstState(this.score, this.path);
 }
 
-_CeFirstResult _runCeFirstSearch(_CeFirstSearchInput input) => _CeFirstSearch(
-  input.problem,
-  maxTies: input.maxTies,
-  maxCandidates: input.maxCandidates,
-).solve(maxEvaluations: input.maxEvaluations);
-
 class _CeFirstSearchInput {
   final _CeFirstProblem problem;
   final int? maxEvaluations;
@@ -391,7 +385,7 @@ class _CeFirstSearch {
 
   void _rememberCandidate(BondSolvedTeam team) {
     if (_candidates.length == maxCandidates && _compareCandidate(team, _candidates.last) >= 0) return;
-    final key = _teamSignature(team);
+    final key = team._signature;
     if (!_candidateKeys.add(key)) return;
     var index = 0;
     while (index < _candidates.length && _compareCandidate(_candidates[index], team) <= 0) {
@@ -399,7 +393,7 @@ class _CeFirstSearch {
     }
     _candidates.insert(index, team);
     if (_candidates.length > maxCandidates) {
-      _candidateKeys.remove(_teamSignature(_candidates.removeLast()));
+      _candidateKeys.remove(_candidates.removeLast()._signature);
     }
   }
 

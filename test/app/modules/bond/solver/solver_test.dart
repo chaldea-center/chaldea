@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:chaldea/app/battle/models/user.dart';
-import 'package:chaldea/app/modules/bond/formation_bond.dart';
+import 'package:chaldea/app/modules/bond/formation_bond_calc.dart';
 import 'package:chaldea/app/modules/bond/solver/solver.dart';
 import 'package:chaldea/models/models.dart';
 
@@ -110,7 +110,7 @@ void main() {
     }
     final option = FormationBondOption(enableEvent: false, teapotTimes: 1);
     final quest = QuestPhase(bond: 1000);
-    final expected = calcFormationBondResults(option, quest, formation);
+    final expected = option.calcResults(quest, formation);
     final result = FormationBondSolver.solve(
       option: _withFilters(
         option,
@@ -169,11 +169,11 @@ void main() {
     expect(result.best!.slots[0].servantId, isNull);
     expect(result.best!.slots[0].equip1!.id, ce!.id);
 
-    final virtualManual = calcFormationBondResults(option, quest, formation);
+    final virtualManual = option.calcResults(quest, formation);
     expect(result.best!.totalBond, virtualManual.fold<int>(0, (v, slot) => v + slot.totalBond));
     final applied = result.best!.applyTo(formation, option);
     expect(applied.svts[0].svt, isNull);
-    final reappliedScore = calcFormationBondResults(option, quest, applied);
+    final reappliedScore = option.calcResults(quest, applied);
     expect(result.best!.totalBond, reappliedScore.fold<int>(0, (v, slot) => v + slot.totalBond));
 
     // This follower CE has no wearer trait condition, so a real support in the
@@ -182,7 +182,7 @@ void main() {
     manualFormation.svts[0] = PlayerSvtData.svt(servants.last)
       ..supportType = SupportSvtType.friend
       ..equip1 = SvtEquipData(ce: ce, limitBreak: true);
-    final manual = calcFormationBondResults(option, quest, manualFormation);
+    final manual = option.calcResults(quest, manualFormation);
     expect(result.best!.totalBond, manual.fold<int>(0, (v, slot) => v + slot.totalBond));
   }, timeout: const Timeout(Duration(minutes: 2)));
 
@@ -209,7 +209,7 @@ void main() {
     }
     final option = FormationBondOption(enableEvent: false, frontlineBonus: false);
     final quest = QuestPhase(bond: 1000);
-    final manual = calcFormationBondResults(option, quest, formation);
+    final manual = option.calcResults(quest, formation);
     expect([for (final slot in manual) slot.totalBond], List<int>.filled(6, 1050));
     final solved = FormationBondSolver.solve(
       option: _withFilters(option, maxCost: 999, releaseReference: BondReleaseReference.jp),
@@ -223,7 +223,7 @@ void main() {
     supportFormation.svts[0] = PlayerSvtData.base()
       ..supportType = SupportSvtType.friend
       ..equip1 = SvtEquipData(ce: portrait);
-    final supportManual = calcFormationBondResults(option, quest, supportFormation);
+    final supportManual = option.calcResults(quest, supportFormation);
     expect([for (final slot in supportManual) slot.totalBond], [0, 1050, 1050, 1050, 1050, 1050]);
     final supportSolved = FormationBondSolver.solve(
       option: _withFilters(option, maxCost: 999, releaseReference: BondReleaseReference.jp),
@@ -259,7 +259,7 @@ void main() {
     );
     expect(result.provenOptimal, isTrue);
     expect(result.best!.slots[0].equip3!.id, ce3!.id);
-    final manual = calcFormationBondResults(option, quest, formation);
+    final manual = option.calcResults(quest, formation);
     expect(result.best!.totalBond, manual.fold<int>(0, (v, slot) => v + slot.totalBond));
     expect([for (final slot in result.best!.slots) slot.bond], [for (final slot in manual) slot.totalBond]);
   }, timeout: const Timeout(Duration(minutes: 2)));
@@ -294,7 +294,7 @@ void main() {
     final extra = QuestPhaseExtraDetail()..setValue('isUseGrandBoard', 1);
     final quest = QuestPhase(bond: 1000, extraDetail: extra);
     final option = FormationBondOption(enableEvent: false);
-    final manual = calcFormationBondResults(option, quest, formation);
+    final manual = option.calcResults(quest, formation);
     final solved = FormationBondSolver.solve(
       option: _withFilters(option, maxCost: 999, releaseReference: BondReleaseReference.jp),
       quest: quest,
@@ -340,7 +340,7 @@ void main() {
     for (final candidate in [result.candidates.first, result.candidates[15], result.candidates.last]) {
       final candidateOption = FormationBondOption.fromJson(option.toJson());
       final candidateFormation = candidate.applyTo(formation, candidateOption);
-      final checked = calcFormationBondResults(candidateOption, quest, candidateFormation);
+      final checked = candidateOption.calcResults(quest, candidateFormation);
       expect(candidate.totalBond, checked.fold<int>(0, (sum, slot) => sum + slot.totalBond));
     }
     final chosen = result.best!.slots[5];
@@ -349,7 +349,7 @@ void main() {
     formation.svts[5] = PlayerSvtData.svt(db.gameData.servantsById[chosen.servantId]!)
       ..limitCount = chosen.limitCount!
       ..equip1 = SvtEquipData(ce: pinnedCe, limitBreak: true);
-    final manual = calcFormationBondResults(option, quest, formation);
+    final manual = option.calcResults(quest, formation);
     expect(result.best!.totalBond, manual.fold<int>(0, (v, slot) => v + slot.totalBond));
   }, timeout: const Timeout(Duration(minutes: 2)));
 
@@ -383,7 +383,7 @@ void main() {
     final applied = flagged.best!.applyTo(formation, option);
     expect(option.svtBonus[5].isBond15, isFalse);
     expect(option.svtBonus[5].isBondReachLimit, isFalse);
-    final manual = calcFormationBondResults(option, quest, applied);
+    final manual = option.calcResults(quest, applied);
     expect(flagged.best!.totalBond, manual.fold<int>(0, (v, slot) => v + slot.totalBond));
   }, timeout: const Timeout(Duration(minutes: 2)));
 
@@ -420,7 +420,7 @@ void main() {
       option.svtBonus[2]
         ..addRate = 123
         ..addValue = 17;
-      final manual = calcFormationBondResults(option, quest, formation);
+      final manual = option.calcResults(quest, formation);
       final result = FormationBondSolver.solve(
         option: _withFilters(option, maxCost: 999, releaseReference: BondReleaseReference.jp),
         quest: quest,
@@ -475,7 +475,7 @@ void main() {
           ..equip1 = i == 0 ? SvtEquipData() : SvtEquipData(ce: fillerCes[i - 1]);
       }
       formation.svts[0].equip1 = SvtEquipData(ce: ce, limitBreak: true);
-      final manual = calcFormationBondResults(option, quest, formation);
+      final manual = option.calcResults(quest, formation);
       final solved = FormationBondSolver.solve(
         option: _withFilters(option, maxCost: 999, releaseReference: BondReleaseReference.jp),
         quest: quest,
@@ -527,7 +527,7 @@ void main() {
           limitBreak: chosen.equip1?.limitBreak ?? false,
         );
     }
-    final manual = calcFormationBondResults(option, quest, formation);
+    final manual = option.calcResults(quest, formation);
     expect(result.best!.totalBond, manual.fold<int>(0, (v, slot) => v + slot.totalBond));
   }, timeout: const Timeout(Duration(minutes: 2)));
 
@@ -586,7 +586,7 @@ void main() {
     expect(pruned.best!.totalBond, baseline.best!.totalBond);
     expect(pruned.ownedCeClassCount, lessThan(baseline.ownedCeClassCount));
     final applied = pruned.best!.applyTo(formation, option);
-    final manual = calcFormationBondResults(option, quest, applied);
+    final manual = option.calcResults(quest, applied);
     expect(pruned.best!.totalBond, manual.fold<int>(0, (sum, slot) => sum + slot.totalBond));
   }, timeout: const Timeout(Duration(minutes: 2)));
 
@@ -636,7 +636,7 @@ void main() {
           limitBreak: chosen.equip1?.limitBreak ?? false,
         );
     }
-    final manual = calcFormationBondResults(option, quest, formation);
+    final manual = option.calcResults(quest, formation);
     expect(winner.totalBond, manual.fold<int>(0, (v, slot) => v + slot.totalBond));
   }, timeout: const Timeout(Duration(minutes: 2)));
 
@@ -660,7 +660,7 @@ void main() {
     expect(result.provenOptimal, isTrue);
     expect(result.ownedCeClassCount, result.placementInvariantCeClassCount);
     final applied = result.best!.applyTo(formation, option);
-    final manual = calcFormationBondResults(option, quest, applied);
+    final manual = option.calcResults(quest, applied);
     expect(result.best!.totalBond, manual.fold<int>(0, (sum, slot) => sum + slot.totalBond));
     expect(result.best!.totalCost, lessThanOrEqualTo(result.maxCost));
     expect(result.ties.length, greaterThan(1));
@@ -710,7 +710,7 @@ void main() {
       );
       final candidateOption = FormationBondOption.fromJson(option.toJson());
       final candidate = team.applyTo(formation, candidateOption);
-      final checked = calcFormationBondResults(candidateOption, quest, candidate);
+      final checked = candidateOption.calcResults(quest, candidate);
       expect(checked.fold<int>(0, (sum, slot) => sum + slot.totalBond), team.totalBond);
     }
   }, timeout: const Timeout(Duration(minutes: 2)));
@@ -796,12 +796,12 @@ void main() {
         expect(team.totalBond, exhaustive.best!.totalBond, reason: 'trial $trial alternative');
         final candidateOption = FormationBondOption.fromJson(option.toJson());
         final candidate = team.applyTo(formation, candidateOption);
-        final checked = calcFormationBondResults(candidateOption, quest, candidate);
+        final checked = candidateOption.calcResults(quest, candidate);
         expect(checked.fold<int>(0, (sum, slot) => sum + slot.totalBond), team.totalBond);
       }
       if (fast.best != null) {
         final applied = fast.best!.applyTo(formation, option);
-        final manual = calcFormationBondResults(option, quest, applied);
+        final manual = option.calcResults(quest, applied);
         expect(fast.best!.totalBond, manual.fold<int>(0, (sum, slot) => sum + slot.totalBond));
         expect(
           fast.best!.slots.where((slot) => slot.servantId != null).map((slot) => slot.servantId).toSet().length,
@@ -827,7 +827,7 @@ void main() {
     expect(updates.last.provenOptimal, isTrue);
     expect(updates.last.best!.totalBond, greaterThanOrEqualTo(candidate.best!.totalBond));
     final applied = updates.last.best!.applyTo(formation, option);
-    final manual = calcFormationBondResults(option, quest, applied);
+    final manual = option.calcResults(quest, applied);
     expect(updates.last.best!.totalBond, manual.fold<int>(0, (sum, slot) => sum + slot.totalBond));
   }, timeout: const Timeout(Duration(minutes: 2)));
 
@@ -855,7 +855,7 @@ void main() {
         ..equip1 = SvtEquipData(ce: i == 0 ? eventCe : fillers[i - 1], limitBreak: true);
     }
     final option = FormationBondOption(enableEvent: false, frontlineBonus: false);
-    final manual = calcFormationBondResults(option, quest, formation);
+    final manual = option.calcResults(quest, formation);
     expect(manual.first.totalBond, greaterThan(manual[1].totalBond));
     final solved = FormationBondSolver.solve(
       option: _withFilters(

@@ -2,7 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:chaldea/app/battle/models/user.dart';
 import 'package:chaldea/app/modules/bond/bond_rules.dart';
-import 'package:chaldea/app/modules/bond/formation_bond.dart';
+import 'package:chaldea/app/modules/bond/formation_bond_calc.dart';
 import 'package:chaldea/app/modules/bond/solver/bond_effect.dart';
 import 'package:chaldea/app/modules/bond/solver/solver.dart';
 import 'package:chaldea/models/models.dart';
@@ -24,7 +24,7 @@ void main() {
   );
   final quest = QuestPhase(bond: 1000);
   List<CraftEssence> fillers() => db.gameData.craftEssencesById.values
-      .where((ce) => ce.collectionNo > 0 && extractCeBondEffects(ce, true, quest, support: false).isEmpty)
+      .where((ce) => ce.collectionNo > 0 && CeBondEffect.extractAll(ce, true, quest, support: false).isEmpty)
       .take(6)
       .toList();
   BattleTeamSetup formation({Servant? first}) {
@@ -53,7 +53,7 @@ void main() {
     expect(result.provenOptimal, isTrue);
     for (final team in [result.best!, ...result.candidates]) {
       final applied = team.applyTo(input, FormationBondOption.fromJson(option.toJson()));
-      final manual = calcFormationBondResults(option, phase, applied);
+      final manual = option.calcResults(phase, applied);
       expect(team.slots.map((s) => s.bond).toList(), manual.map((s) => s.totalBond).toList());
       final cost = applied.totalCost;
       expect(team.totalCost, cost);
@@ -63,11 +63,16 @@ void main() {
   test('FSN family has identical effects, shared exclusions and leaves collection 1972 alone', () {
     final family = BondCeIdentity.families.single;
     expect(BondCeIdentity.of(9308080), 9308080);
-    final reference = extractCeBondEffects(db.gameData.craftEssencesById[family.first]!, true, quest, support: false);
+    final reference = CeBondEffect.extractAll(
+      db.gameData.craftEssencesById[family.first]!,
+      true,
+      quest,
+      support: false,
+    );
     for (final id in family) {
       expect(BondCeIdentity.of(id), family.first);
       expect(BondCeIdentity.excluded(id, {family.last}), isTrue);
-      final effects = extractCeBondEffects(db.gameData.craftEssencesById[id]!, true, quest, support: false);
+      final effects = CeBondEffect.extractAll(db.gameData.craftEssencesById[id]!, true, quest, support: false);
       expect(
         effects.map((e) => '${e.rate}:${e.value}:${e.targetPartial}:${e.targetOrAll}').toList(),
         reference.map((e) => '${e.rate}:${e.value}:${e.targetPartial}:${e.targetOrAll}').toList(),
@@ -113,8 +118,8 @@ void main() {
   test('generic CEs use smallest available IDs and display later IDs first', () {
     final ces = db.gameData.craftEssencesById.values.where((ce) {
       if (ce.collectionNo <= 0 || ce.isRegionSpecific) return false;
-      final effects = extractCeBondEffects(ce, true, quest, support: false);
-      final support = extractCeBondEffects(ce, true, quest, support: true);
+      final effects = CeBondEffect.extractAll(ce, true, quest, support: false);
+      final support = CeBondEffect.extractAll(ce, true, quest, support: true);
       return effects.length == 1 &&
           effects.single.isFlat &&
           effects.single.rate == 50 &&
@@ -148,8 +153,8 @@ void main() {
   test('mixed free CEs sort by traits, rate and ID while support and pins stay fixed', () {
     final flat = db.gameData.craftEssencesById.values.where((ce) {
       if (ce.collectionNo <= 0 || ce.isRegionSpecific) return false;
-      final own = extractCeBondEffects(ce, true, quest, support: false);
-      final support = extractCeBondEffects(ce, true, quest, support: true);
+      final own = CeBondEffect.extractAll(ce, true, quest, support: false);
+      final support = CeBondEffect.extractAll(ce, true, quest, support: true);
       return own.length == 1 &&
           own.single.isFlat &&
           own.single.rate == 50 &&
@@ -158,7 +163,7 @@ void main() {
           support.single.rate == 50;
     }).toList()..sort((a, b) => a.id.compareTo(b.id));
     final generic = flat.where((ce) => ce.cost == flat.first.cost).take(2).toList();
-    final fsnEffects = extractCeBondEffects(db.gameData.craftEssencesById[9308100]!, true, quest, support: false);
+    final fsnEffects = CeBondEffect.extractAll(db.gameData.craftEssencesById[9308100]!, true, quest, support: false);
     final fsn = db.gameData.servantsById.values.firstWhere(
       (svt) =>
           svt.isUserSvt &&
@@ -220,7 +225,7 @@ void main() {
       ];
       if (traits.every((t) => t.join(',') == traits.first.join(','))) continue;
       for (final ce in db.gameData.craftEssencesById.values.where((c) => c.collectionNo > 0 && !c.isRegionSpecific)) {
-        final effects = extractCeBondEffects(ce, true, quest, support: false);
+        final effects = CeBondEffect.extractAll(ce, true, quest, support: false);
         if (effects.length != 1 ||
             effects.single.scope != BondEffectScope.team ||
             !effects.single.hasTargetCondition ||
@@ -362,7 +367,7 @@ void main() {
     }
     for (final phase in [null, QuestPhase(closedAt: 0), QuestPhase(closedAt: 2000000000)]) {
       final option = options()..releaseReference = BondReleaseReference.questClosedAt;
-      validateFormationBondOption(option, phase);
+      option.validate(phase);
       expect(option.releaseReference, BondReleaseReference.jp);
       expect(BondReleaseRules.resolve(BondReleaseReference.questClosedAt, phase), BondReleaseReference.jp);
     }
@@ -438,7 +443,7 @@ void main() {
           BondReleaseRules.traits(svt, 4, 0, BondReleaseReference.jp).contains(Trait.hasCostume.value),
     );
     final ce = db.gameData.craftEssencesById.values.firstWhere(
-      (ce) => extractCeBondEffects(ce, true, quest, support: false).any(
+      (ce) => CeBondEffect.extractAll(ce, true, quest, support: false).any(
         (effect) =>
             effect.scope == BondEffectScope.team &&
             effect.rate > 0 &&

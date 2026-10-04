@@ -267,6 +267,16 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
     final List<int> freeCeIds = allCeIds.where((e) => !mustHaveCeIds.contains(e) && !excludeCeIds.contains(e)).toList();
     final int n = freeCeIds.length;
     List<_GroupItem> resultData = [];
+
+    Set<T> intersectionSetList<T>(List<Set<T>> array) {
+      if (array.isEmpty) return {};
+      Set<T> result = array.first.toSet();
+      for (final s in array.skip(1)) {
+        result = result.intersection(s);
+      }
+      return result;
+    }
+
     for (int mask = 0; mask < (1 << n); mask++) {
       final List<int> usedCeIds = List.of(mustHaveCeIds);
       usedCeIds.sort(); // for key sort
@@ -278,7 +288,7 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
       if (usedCeIds.isEmpty) continue;
 
       final List<Set<int>> svtIdList = usedCeIds.map((ceId) => allCeMatchSvtData[ceId]!.keys.toSet()).toList();
-      final sameSvtIds = _intersectionSetList(svtIdList);
+      final sameSvtIds = intersectionSetList(svtIdList);
       if (sameSvtIds.isEmpty) continue;
 
       List<({Servant svt, List<int> limitCounts})> svts = [];
@@ -286,7 +296,7 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
         if (!shownSvtIds.contains(svtId)) continue;
         final svt = _targetSvts[svtId] ?? db.gameData.servantsById[svtId];
         if (svt == null) continue;
-        final sameLimitCounts = _intersectionSetList(
+        final sameLimitCounts = intersectionSetList(
           usedCeIds.map((ceId) => allCeMatchSvtData[ceId]![svtId]?.toSet() ?? <int>{}).toList(),
         );
         for (final ceId in excludeCeIds) {
@@ -680,13 +690,4 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
   Set<int> _getSvtAllLimits(Servant svt) {
     return {...range(5), ...svt.costume.keys, ...svt.ascensionAdd.individuality2.all.keys};
   }
-}
-
-Set<T> _intersectionSetList<T>(List<Set<T>> array) {
-  if (array.isEmpty) return {};
-  Set<T> result = array.first.toSet();
-  for (final s in array.skip(1)) {
-    result = result.intersection(s);
-  }
-  return result;
 }
