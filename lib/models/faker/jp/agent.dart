@@ -14,6 +14,18 @@ import '../shared/agent.dart';
 import 'network.dart';
 
 class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManagerJP> {
+  @override
+  Future<FResponse> coinRoomPut({required Map<int, int> items}) {
+    final request = FRequestJP(network: network, path: '/coinRoom/put');
+    request.addFieldStr(
+      'itemData',
+      jsonEncode([
+        for (final entry in items.entries) {'id': entry.key, 'num': entry.value},
+      ]),
+    );
+    return request.beginRequestAndCheckError('coin_room_put');
+  }
+
   FakerAgentJP({required super.network});
   FakerAgentJP.s({required GameTop gameTop, required AutoLoginDataJP user})
     : super(

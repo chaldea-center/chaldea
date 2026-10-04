@@ -14,6 +14,7 @@ import '../gacha/gacha_draw.dart';
 import '../mission/mission_receive.dart';
 import '../present_box/present_box.dart';
 import '../runtime.dart';
+import '../shop/coin_room.dart';
 import '../shop/ex_room_shop.dart';
 import '../shop/shop.dart';
 
@@ -570,12 +571,13 @@ class FakerReminders extends StatelessWidget {
 
     // coin room
     final userCoinRoom = mstData.userCoinRoom.firstOrNull;
-    const int maxCoinRoomNum = 2;
+    final maxCoinRoomNum = runtime.gameData.timerData.constants.coinRoomMaxNum;
     if (userCoinRoom != null && userCoinRoom.num < maxCoinRoomNum) {
       children.add(
         ListTile(
           leading: Item.iconBuilder(context: context, item: Items.grail, width: 32),
-          title: Text('聖杯鋳造'),
+          title: Text(S.current.holy_grail_casting),
+          onTap: () => router.pushPage(CoinRoomPage(runtime: runtime)),
           trailing: Text(
             [
               '${userCoinRoom.num}/$maxCoinRoomNum/${userCoinRoom.totalNum}',

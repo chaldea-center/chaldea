@@ -372,6 +372,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "guda_male": MessageLookupByLibrary.simpleMessage("ぐだ男"),
     "help": MessageLookupByLibrary.simpleMessage("ヘルプ"),
     "high_difficulty_quest": MessageLookupByLibrary.simpleMessage("高難易度クエスト"),
+    "holy_grail_casting": MessageLookupByLibrary.simpleMessage("聖杯鋳造"),
     "http_sniff_hint": MessageLookupByLibrary.simpleMessage("(JP/NA/CN/TW)アカウントがログインしているときにデータ"),
     "https_sniff": MessageLookupByLibrary.simpleMessage("Httpsスニッフィング"),
     "hunting_quest": MessageLookupByLibrary.simpleMessage("ハンティングクエスト"),

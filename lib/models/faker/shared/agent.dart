@@ -44,6 +44,8 @@ abstract class FakerAgent<
 
   Future<FResponse> shopPurchaseByStone({required int32_t id, required int32_t num});
 
+  Future<FResponse> coinRoomPut({required Map<int, int> items});
+
   Future<FResponse> eventMissionClearReward({required List<int32_t> missionIds});
 
   Future<FResponse> eventMissionRandomCancel({required int32_t missionId});

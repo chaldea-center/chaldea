@@ -3641,6 +3641,11 @@ class S {
     return Intl.message('History', name: 'history', desc: '', locale: localeName, args: []);
   }
 
+  /// `Holy Grail Casting`
+  String get holy_grail_casting {
+    return Intl.message('Holy Grail Casting', name: 'holy_grail_casting', desc: '', locale: localeName, args: []);
+  }
+
   /// `Home Page Icon Size`
   String get home_page_icon_size {
     return Intl.message('Home Page Icon Size', name: 'home_page_icon_size', desc: '', locale: localeName, args: []);

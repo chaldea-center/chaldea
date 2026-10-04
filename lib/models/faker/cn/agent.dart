@@ -20,6 +20,19 @@ import '../shared/agent.dart';
 import 'network.dart';
 
 class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManagerCN> {
+  @override
+  Future<FResponse> coinRoomPut({required Map<int, int> items}) {
+    return _acPhp(
+      key: 'coinroomput',
+      nid: 'coin_room_put',
+      params2: {
+        'itemData': jsonEncode([
+          for (final entry in items.entries) {'id': entry.key, 'num': entry.value},
+        ]),
+      },
+    );
+  }
+
   FakerAgentCN({required super.network});
   FakerAgentCN.s({required GameTop gameTop, required AutoLoginDataCN user})
     : super(

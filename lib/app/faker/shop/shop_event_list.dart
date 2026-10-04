@@ -9,6 +9,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 import '../runtime.dart';
+import 'coin_room.dart';
 import 'shop.dart';
 
 class ShopEventListPage extends StatelessWidget {
@@ -47,6 +48,15 @@ class ShopEventListPage extends StatelessWidget {
 
     const _kShownShopTypes = <ShopType>[.mana, .rarePri, .revivalItem, .exRoomShop];
     children.addAll([for (final shopType in _kShownShopTypes) _buildShopType(context, shopType)]);
+    children.add(
+      ListTile(
+        dense: true,
+        leading: Item.iconBuilder(context: context, item: Items.grail, icon: Items.grail?.icon, width: 24),
+        title: Text(S.current.holy_grail_casting),
+        trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+        onTap: () => router.pushPage(CoinRoomPage(runtime: runtime)),
+      ),
+    );
 
     final events = runtime.gameData.timerData.events.values
         .where((e) => e.shop.isNotEmpty && e.startedAt <= now && e.shopClosedAt > now)
