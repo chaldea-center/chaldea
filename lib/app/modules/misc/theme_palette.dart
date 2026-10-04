@@ -2,7 +2,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'package:chaldea/app/app.dart';
-import 'package:chaldea/app/modules/misc/showcase/showcase_home_page.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/theme.dart';
 
@@ -16,8 +15,6 @@ class DarkLightThemePalette extends StatefulWidget {
 }
 
 class _DarkLightThemePaletteState extends State<DarkLightThemePalette> {
-  // late bool useM3 = Theme.of(context).useMaterial3;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,20 +22,6 @@ class _DarkLightThemePaletteState extends State<DarkLightThemePalette> {
         leading: const BackButton(),
         title: const Text('Palette'),
         actions: [
-          // IconButton(
-          //   onPressed: () {
-          //     setState(() {
-          //       useM3 = !useM3;
-          //     });
-          //   },
-          //   icon: Icon(useM3 ? Icons.filter_3 : Icons.filter_2),
-          //   tooltip: "Material 2/3",
-          // ),
-          IconButton(
-            onPressed: () => router.pushPage(const ShowcaseHomePage()),
-            icon: const Icon(Icons.grid_view_rounded),
-            tooltip: 'MD3 Showcase',
-          ),
           IconButton(
             onPressed: () async {
               await router.pushPage(const ThemeColorPage());
@@ -97,7 +80,7 @@ class _PaletteForThemeState extends State<_PaletteForTheme> {
               padding: const EdgeInsets.all(16),
               child: Center(
                 child: Text(
-                  '${themeData.brightness.name}(${themeData.useMaterial3 ? 3 : 2})',
+                  themeData.brightness.name,
                   textAlign: TextAlign.center,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,

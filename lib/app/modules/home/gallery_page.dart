@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:material_ui/material_ui.dart';
@@ -8,11 +6,9 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/simple_accordion.dart';
-import 'package:chaldea/widgets/tile_items.dart';
 
 import 'elements/grid_gallery.dart';
 import 'elements/news_carousel.dart';
@@ -133,7 +129,6 @@ class _GalleryPageState extends State<GalleryPage> {
             const RandomImageSurprise(),
             const ListTile(subtitle: Center(child: AutoSizeText('~~~~~ · ~~~~~', maxLines: 1))),
             ...notifications,
-            if (kDebugMode) buildTestInfoPad(),
           ],
         );
       },
@@ -190,28 +185,5 @@ class _GalleryPageState extends State<GalleryPage> {
     }
 
     return children;
-  }
-
-  /// Notifications
-
-  /// TEST
-  Widget buildTestInfoPad() {
-    return Card(
-      margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: divideTiles(<Widget>[
-          ListTile(
-            title: Center(child: Text(S.current.test_info_pad, style: const TextStyle(fontSize: 18))),
-          ),
-          ListTile(title: const Text('UUID'), subtitle: Text(AppInfo.uuid)),
-          ListTile(title: Text(S.current.screen_size), trailing: Text(MediaQuery.of(context).size.toString())),
-          ListTile(
-            title: Text(S.current.dataset_version),
-            trailing: Text(db.gameData.version.text(), textAlign: TextAlign.end),
-          ),
-        ]),
-      ),
-    );
   }
 }

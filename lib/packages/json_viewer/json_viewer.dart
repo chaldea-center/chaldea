@@ -22,7 +22,7 @@ class _JsonViewerPageState extends State<JsonViewerPage> {
 
   @override
   Widget build(BuildContext context) {
-    final lightTheme = ThemeData.light(useMaterial3: Theme.of(context).useMaterial3);
+    final lightTheme = ThemeData.light();
     return Scaffold(
       appBar: AppBar(
         title: const Text("Json Viewer"),

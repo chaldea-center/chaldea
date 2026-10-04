@@ -101,7 +101,7 @@ class ValDsc extends StatelessWidget {
           useRootNavigator: false,
           builder: (context) {
             return Theme(
-              data: ThemeData.light(useMaterial3: Theme.of(context).useMaterial3),
+              data: ThemeData.light(),
               child: SimpleConfirmDialog(
                 title: const Text('Data Vals'),
                 content: JsonViewer((originVals ?? vals).toJson(sort: false), defaultOpen: true),

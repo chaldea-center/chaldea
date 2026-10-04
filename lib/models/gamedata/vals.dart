@@ -169,8 +169,6 @@ class DataVals {
   int? get StatusEffectId => _get('StatusEffectId');
   int? get EndBattle => _get('EndBattle');
   int? get LoseBattle => _get('LoseBattle');
-  @Deprecated('use getAddIndividualty()')
-  int? get AddIndividualty => _get('AddIndividualty');
   List<int>? get AddIndividualtyList => _list('AddIndividualtyList'); // an array version of `AddIndividualty`
   int? get AddLinkageTargetIndividualty => _get('AddLinkageTargetIndividualty');
   int? get SameBuffLimitTargetIndividuality => _get('SameBuffLimitTargetIndividuality');
@@ -459,11 +457,7 @@ class DataVals {
   // methods
 
   List<int> getAddIndividuality() {
-    return [
-      // ignore: deprecated_member_use_from_same_package
-      if (AddIndividualtyList != null) ...?AddIndividualtyList else ?AddIndividualty,
-      ...?AddIndividualityEx,
-    ];
+    return [...?AddIndividualtyList, ...?AddIndividualityEx];
   }
 
   /// [TriggeredTargetHpRange], [TriggeredTargetHpRateRange]

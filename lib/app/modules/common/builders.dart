@@ -65,22 +65,12 @@ class SharedBuilder {
 
   static Color? appBarForeground(BuildContext context) {
     final themeData = Theme.of(context);
-    return themeData.appBarTheme.foregroundColor ??
-        (themeData.useMaterial3
-            ? themeData.colorScheme.onSurface
-            : (themeData.colorScheme.brightness == Brightness.dark
-                  ? themeData.colorScheme.onSurface
-                  : themeData.colorScheme.onPrimary));
+    return themeData.appBarTheme.foregroundColor ?? themeData.colorScheme.onSurface;
   }
 
   static Color? appBarBackground(BuildContext context) {
     final themeData = Theme.of(context);
-    return themeData.appBarTheme.backgroundColor ??
-        (themeData.useMaterial3
-            ? themeData.colorScheme.surface
-            : (themeData.colorScheme.brightness == Brightness.dark
-                  ? themeData.colorScheme.surface
-                  : themeData.colorScheme.primary));
+    return themeData.appBarTheme.backgroundColor ?? themeData.colorScheme.surface;
   }
 
   static Widget groupItems({

@@ -317,7 +317,7 @@ class Bgm with RouteInfo {
   int id;
   String name;
   String fileName;
-  bool notReleased;
+  bool notReleased; // BgmFlag.IS_NOT_RELEASE
   String? audioAsset;
 
   Bgm({required this.id, this.name = '', this.fileName = "", this.notReleased = true, this.audioAsset});

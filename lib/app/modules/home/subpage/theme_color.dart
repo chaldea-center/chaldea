@@ -36,24 +36,6 @@ class _ThemeColorPageState extends State<ThemeColorPage> {
               ],
             ),
           ),
-          // RadioGroup<bool>(
-          //   groupValue: db.settings.appearance.useMaterial3,
-          //   onChanged: (v) {
-          //     if (v != null && v != db.settings.appearance.useMaterial3) {
-          //       db.settings.appearance.useMaterial3 = v;
-          //       db.notifySettings();
-          //       db.notifyAppUpdate();
-          //     }
-          //     setState(() {});
-          //   },
-          //   child: TileGroup(
-          //     header: "Material Design",
-          //     children: [
-          //       for (final useM3 in [false, true])
-          //         RadioListTile<bool>(value: useM3, title: Text(useM3 ? 'Material 3' : 'Material 2')),
-          //     ],
-          //   ),
-          // ),
           if (1 > 2)
             TileGroup(
               header: 'Surface Mode',

@@ -244,7 +244,7 @@ class FilterOption<T> extends StatelessWidget {
             // tapTargetSize: shrinkWrap ? MaterialTapTargetSize.shrinkWrap : null,
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             shape: ContinuousRectangleBorder(borderRadius: borderRadius),
-            side: themeData.useMaterial3 ? BorderSide(color: themeData.colorScheme.outline, width: 0.5) : null,
+            side: BorderSide(color: themeData.colorScheme.outline, width: 0.5),
           ),
         ),
         child: child ?? Text(value.toString()),

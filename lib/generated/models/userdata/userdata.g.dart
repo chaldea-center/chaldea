@@ -416,10 +416,6 @@ SaintQuartzPlan _$SaintQuartzPlanFromJson(Map json) => $checkedCreate('SaintQuar
     weeklyMission: $checkedConvert('weeklyMission', (v) => v as bool? ?? true),
     limitedMission: $checkedConvert('limitedMission', (v) => v as bool? ?? true),
     campaignLoginBonus: $checkedConvert('campaignLoginBonus', (v) => v as bool? ?? true),
-    extraMissions: $checkedConvert(
-      'extraMissions',
-      (v) => (v as Map?)?.map((k, e) => MapEntry(int.parse(k as String), e as bool)),
-    ),
     minusPlannedBanner: $checkedConvert('minusPlannedBanner', (v) => v as bool?),
     favoriteSummonOnly: $checkedConvert('favoriteSummonOnly', (v) => v as bool? ?? false),
   );
@@ -437,7 +433,6 @@ Map<String, dynamic> _$SaintQuartzPlanToJson(SaintQuartzPlan instance) => <Strin
   'weeklyMission': instance.weeklyMission,
   'limitedMission': instance.limitedMission,
   'campaignLoginBonus': instance.campaignLoginBonus,
-  'extraMissions': instance.extraMissions.map((k, e) => MapEntry(k.toString(), e)),
   'minusPlannedBanner': instance.minusPlannedBanner,
   'favoriteSummonOnly': instance.favoriteSummonOnly,
 };

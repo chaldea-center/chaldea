@@ -16,7 +16,6 @@ class SaintQuartzPlan {
   bool weeklyMission;
   bool limitedMission;
   bool campaignLoginBonus;
-  Map<int, bool> extraMissions; // not included
 
   bool minusPlannedBanner; // not implemented
   // view options
@@ -38,12 +37,10 @@ class SaintQuartzPlan {
     this.weeklyMission = true,
     this.limitedMission = true,
     this.campaignLoginBonus = true,
-    Map<int, bool>? extraMissions,
     bool? minusPlannedBanner,
     this.favoriteSummonOnly = false,
   }) : startDate = startDate ?? DateUtils.dateOnly(DateTime.now()),
        endDate = endDate ?? DateUtils.dateOnly(DateTime.now()),
-       extraMissions = extraMissions ?? {},
        minusPlannedBanner = minusPlannedBanner ?? true {
     validate();
   }

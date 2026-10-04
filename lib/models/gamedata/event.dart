@@ -1310,7 +1310,7 @@ class EventLottery {
   PayType payType;
   ItemAmount cost;
   int priority;
-  bool limited;
+  bool limited; // LotteryFlag.limitReset
   List<EventLotteryBox> boxes;
   List<EventLotteryTalk> talks;
 
@@ -1353,6 +1353,8 @@ class EventLottery {
     return Maths.sum(boxes.map((e) => e.boxIndex == boxIndex ? e.maxNum : 0));
   }
 }
+
+enum LotteryFlag { none, limitReset } // BoxGachaFlag
 
 @JsonSerializable()
 class EventLotteryTalk {

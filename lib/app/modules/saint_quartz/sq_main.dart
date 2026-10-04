@@ -54,7 +54,6 @@ class _SaintQuartzPlanningState extends State<SaintQuartzPlanning> with SingleTi
         // physics: const NeverScrollableScrollPhysics(),
         children: [
           SQSettingTab(),
-          // ExtraMissionTab(),
           SQTableTab(),
           KeepAliveBuilder(builder: (context) => DailyBonusTab()),
         ],

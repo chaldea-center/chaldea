@@ -1,3 +1,8 @@
+.agents/skills
+.trae/skills
+.superpowers
+
+
 # Custom
 .widget_preview/
 lib/test.dart
