@@ -3,14 +3,20 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 
+import 'package:crypto/crypto.dart';
 import 'package:worker_manager/worker_manager.dart';
 
 import '../packages/file_plus/file_plus.dart';
+import 'constants.dart';
 
 class JsonHelper {
   JsonHelper._();
 
   static final _executor = workerManager;
+
+  /// Below this size tasks run on the calling isolate: the worker round-trip
+  /// and queue wait would outweigh the tiny synchronous cost.
+  static const _minWorkerSize = 10 * 1024;
 
   static Completer? _completer;
   static bool _initiated = false;
@@ -36,32 +42,45 @@ class JsonHelper {
   }
 
   static Future<dynamic> decodeString<T>(String data) async {
-    if (kIsWeb || data.length < 10 * 1024) return jsonDecode(data);
+    if (kIsWeb || data.length < _minWorkerSize) return _decodeString(data);
     await init();
     return _executor.execute(() => _decodeString(data));
   }
 
   static Future<dynamic> decodeBytes<T>(List<int> bytes) async {
-    if (kIsWeb || bytes.length < 10 * 1024) return _decodeBytes(bytes);
+    if (kIsWeb || bytes.length < _minWorkerSize) return _decodeBytes(bytes);
     await init();
     return _executor.execute(() => _decodeBytes(bytes));
   }
 
   static Future<dynamic> decodeFile<T>(String fp) async {
-    if (kIsWeb) return jsonDecode(await FilePlus(fp).readAsString());
+    if (kIsWeb) return _decodeString(await FilePlus(fp).readAsString());
     await init();
     return _executor.execute(() => _decodeFile(fp));
   }
 
-  static dynamic _decodeBytes<T>(List<int> bytes) {
-    return jsonDecode(utf8.decode(bytes));
+  /// Lowercase md5 hex of [bytes]; large inputs are hashed on a worker isolate.
+  static Future<String> md5Hex(List<int> bytes) async {
+    if (kIsWeb || bytes.length < _minWorkerSize) return _md5Hex(bytes);
+    await init();
+    return _executor.execute(() => _md5Hex(bytes));
   }
 
+  /// Game data may contain private-use placeholder chars, replace them before
+  /// parsing so every caller gets the plain text.
   static dynamic _decodeString<T>(String text) {
-    return jsonDecode(text);
+    return jsonDecode(kReplaceDWChars(text));
+  }
+
+  static dynamic _decodeBytes<T>(List<int> bytes) {
+    return _decodeString(utf8.decode(bytes));
   }
 
   static Future<dynamic> _decodeFile<T>(String fp) async {
-    return jsonDecode(utf8.decode(await FilePlus(fp).readAsBytes()));
+    return _decodeBytes(await FilePlus(fp).readAsBytes());
+  }
+
+  static String _md5Hex(List<int> bytes) {
+    return md5.convert(bytes).toString().toLowerCase();
   }
 }

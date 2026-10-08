@@ -4,7 +4,6 @@ import 'dart:io' show SocketException;
 
 import 'package:flutter/foundation.dart';
 
-import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:path/path.dart';
@@ -15,6 +14,7 @@ import 'package:chaldea/packages/language.dart' show Language;
 import 'package:chaldea/utils/utils.dart';
 
 import '../../generated/l10n.dart';
+import '../../models/gamedata/gamedata_sliced.dart';
 import '../../models/models.dart';
 import '../../packages/app_info.dart';
 import '../../packages/file_plus/file_plus.dart';
@@ -165,10 +165,10 @@ class GameDataLoader {
         bytes = await _file.readAsBytes();
       }
       // tier 1: gameDir, either full or minified (size, hash) pair
-      bool valid = bytes != null && (!db.settings.network.checkDataHash || checkFileVersion(bytes, fv));
+      bool valid = bytes != null && (!db.settings.network.checkDataHash || await checkFileVersion(bytes, fv));
       if (!valid) {
         if (offline) {
-          final _localHash = bytes == null ? '' : md5.convert(bytes).toString().toLowerCase();
+          final _localHash = bytes == null ? '' : await JsonHelper.md5Hex(bytes);
           throw S.current.file_not_found_or_mismatched_hash(fv.filename, fv.hash, _localHash);
         }
         // tier 2: staging cache, strict size+hash so interrupted updates can resume
@@ -179,10 +179,10 @@ class GameDataLoader {
         } else {
           downloading.value += 1;
           var resp = await _downFileWithRetry(fv.filename, options: Options(responseType: ResponseType.bytes));
-          if (db.settings.network.checkDataHash && !checkFileVersion(resp.data, fv)) {
+          if (db.settings.network.checkDataHash && !await checkFileVersion(resp.data, fv)) {
             resp = await _downFileWithRetry(fv.filename, options: Options(responseType: ResponseType.bytes), t: true);
-            if (!checkFileVersion(resp.data, fv)) {
-              final _hash = md5.convert(resp.data).toString().toLowerCase();
+            if (!await checkFileVersion(resp.data, fv)) {
+              final _hash = await JsonHelper.md5Hex(resp.data);
               throw S.current.file_not_found_or_mismatched_hash(fv.filename, fv.hash, _hash);
             }
           }
@@ -192,9 +192,7 @@ class GameDataLoader {
           _stagedFiles.add(fv);
         }
       }
-      String text = utf8.decode(bytes);
-      text = kReplaceDWChars(text);
-      dynamic fileJson = await JsonHelper.decodeString(text);
+      dynamic fileJson = await JsonHelper.decodeBytes(bytes);
       l2mFn ??= l2mKey == null ? null : (e) => e[l2mKey].toString();
       if (l2mFn != null) {
         assert(fileJson is List, '${fv.filename}: ${fileJson.runtimeType}');
@@ -303,7 +301,7 @@ class GameDataLoader {
     }
 
     tmp.gameJson = _gameJson;
-    GameData _gamedata = GameData.fromJson(_gameJson);
+    GameData _gamedata = await gameDataFromJsonSliced(_gameJson);
     await _fixGameData(_gamedata);
     if (!offline) {
       logger.t(
@@ -420,16 +418,17 @@ class GameDataLoader {
     if (!kDebugMode) return;
   }
 
-  static bool checkHash(List<int> bytes, String hash) {
-    return md5.convert(bytes).toString().toLowerCase().startsWith(hash.toLowerCase());
+  /// Hashing large files is offloaded to a worker isolate (see JsonHelper).
+  static Future<bool> checkHash(List<int> bytes, String hash) async {
+    return (await JsonHelper.md5Hex(bytes)).startsWith(hash.toLowerCase());
   }
 
   /// A file is valid if it matches either the full or the minified
   /// (size, hash) pair: different data sources may serialize the same
   /// JSON with different indentation.
-  static bool checkFileVersion(List<int> bytes, FileVersion fv) {
-    if (bytes.length == fv.size && checkHash(bytes, fv.hash)) return true;
-    return bytes.length == fv.minSize && checkHash(bytes, fv.minHash);
+  static Future<bool> checkFileVersion(List<int> bytes, FileVersion fv) async {
+    if (bytes.length == fv.size && await checkHash(bytes, fv.hash)) return true;
+    return bytes.length == fv.minSize && await checkHash(bytes, fv.minHash);
   }
 
   /// Read a staged file from gameCacheDir, strict size+hash verification
@@ -439,7 +438,7 @@ class GameDataLoader {
     if (!file.existsSync()) return null;
     try {
       final bytes = await file.readAsBytes();
-      if (!checkFileVersion(bytes, fv)) return null;
+      if (!await checkFileVersion(bytes, fv)) return null;
       return bytes;
     } catch (e, s) {
       logger.e('read staged file failed: ${fv.filename}', e, s);

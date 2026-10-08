@@ -17,6 +17,11 @@ import 'packages/app_info.dart';
 void testFunction([BuildContext? context]) async {
   assert(context == null || context.mounted);
   if (kReleaseMode && !AppInfo.isDebugDevice) return;
+  const ids = [2801100];
+  for (final id in ids) {
+    final svt = db.gameData.servantsById[id]!;
+    print(svt.ascensionAdd.overwriteSkillName.toJson());
+  }
 }
 
 void loadSvtIconRemap() async {

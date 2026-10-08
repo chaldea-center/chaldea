@@ -88,7 +88,14 @@ class _Database {
 
   // late final ValueNotifier<GameData> _gameNotifier;
 
+  // Set by notifyUserdata/notifySettings at mutation entry points; cleared
+  // when the corresponding object is saved. The saving loop persists only
+  // dirty data, plus a low-frequency full-hash fallback for unmarked changes.
+  bool _userdataDirty = false;
+  bool _settingsDirty = false;
+
   void notifyUserdata() {
+    _userdataDirty = true;
     _userNotifier.sink.add(userData);
     EasyDebounce.debounce('save_userdata', const Duration(seconds: 10), () {
       saveUserData();
@@ -97,6 +104,7 @@ class _Database {
   }
 
   void notifySettings() {
+    _settingsDirty = true;
     _settingNotifier.sink.add(settings);
   }
 
@@ -215,9 +223,15 @@ class _Database {
     await saveSettings();
   }
 
-  Future<void> saveUserData() => _saveWithBak(paths.userDataPath, userData);
+  Future<void> saveUserData() {
+    _userdataDirty = false;
+    return _saveWithBak(paths.userDataPath, userData);
+  }
 
-  Future<void> saveSettings() => _saveWithBak(paths.settingsPath, settings);
+  Future<void> saveSettings() {
+    _settingsDirty = false;
+    return _saveWithBak(paths.settingsPath, settings);
+  }
 
   Future<void> _saveWithBak(String fp, Object obj) async {
     try {
@@ -233,26 +247,39 @@ class _Database {
   }
 
   void _startSavingLoop() {
+    const tickInterval = Duration(seconds: 10);
+    // Dirty-flag ticks save promptly; every [hashFallbackTicks] ticks run a
+    // full hash compare as the safety net for changes that missed the notify
+    // calls. Normal exits are covered by saveAll() on background/close.
+    const hashFallbackTicks = 60; // 10 minutes
+    var tick = 0;
     String? _lastUserHash;
     String? _lastSettingHash;
     String _getHash(Object obj) {
       return md5.convert(utf8.encode(jsonEncode(obj))).toString();
     }
 
-    Timer.periodic(const Duration(seconds: 10), (timer) {
+    Timer.periodic(tickInterval, (timer) {
       try {
-        final _userHash = _getHash(userData);
-        final _settingHash = _getHash(settings);
-        if (_lastUserHash != null && _lastSettingHash != null) {
-          if (_userHash != _lastUserHash) {
+        if (_userdataDirty) {
+          saveUserData();
+        }
+        if (_settingsDirty) {
+          saveSettings();
+        }
+        tick += 1;
+        if (_lastUserHash == null || tick % hashFallbackTicks == 0) {
+          final _userHash = _getHash(userData);
+          final _settingHash = _getHash(settings);
+          if (_lastUserHash != null && _userHash != _lastUserHash) {
             saveUserData();
           }
-          if (_settingHash != _lastSettingHash) {
+          if (_lastSettingHash != null && _settingHash != _lastSettingHash) {
             saveSettings();
           }
+          _lastUserHash = _userHash;
+          _lastSettingHash = _settingHash;
         }
-        _lastUserHash = _userHash;
-        _lastSettingHash = _settingHash;
       } catch (e, s) {
         logger.e('save loop failed', e, s);
       }
