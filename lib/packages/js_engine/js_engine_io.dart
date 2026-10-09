@@ -2,10 +2,11 @@ import 'dart:async';
 
 import 'package:flutter_js/flutter_js.dart';
 
+import '../../utils/task_observer.dart';
 import 'js_engine_interface.dart';
 
 class JsEngine implements JsEngineInterface {
-  final JavascriptRuntime engine = getJavascriptRuntime(xhr: false);
+  final JavascriptRuntime engine = TaskObserver.sync('solver.engine.create', () => getJavascriptRuntime(xhr: false));
 
   JsEngine();
 
@@ -32,7 +33,11 @@ class JsEngine implements JsEngineInterface {
 
   @override
   Future<String?> eval(String command, {String? name}) async {
-    return (await engine.evaluateAsync(command)).stringResult;
+    final result = TaskObserver.sync(
+      name == 'solver_caller' ? 'solver.engine.solve' : 'solver.engine.script',
+      () => engine.evaluateAsync(command),
+    );
+    return (await result).stringResult;
   }
 
   @override

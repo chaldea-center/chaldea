@@ -8,6 +8,7 @@ import 'package:worker_manager/worker_manager.dart';
 
 import '../packages/file_plus/file_plus.dart';
 import 'constants.dart';
+import 'task_observer.dart';
 
 class JsonHelper {
   JsonHelper._();
@@ -42,28 +43,61 @@ class JsonHelper {
   }
 
   static Future<dynamic> decodeString<T>(String data) async {
-    if (kIsWeb || data.length < _minWorkerSize) return _decodeString(data);
-    await init();
-    return _executor.execute(() => _decodeString(data));
+    if (kIsWeb || data.length < _minWorkerSize) {
+      return TaskObserver.sync('json.decode', () => _decodeString(data));
+    }
+    return _onWorker('json.decode', () => _decodeString(data));
   }
 
   static Future<dynamic> decodeBytes<T>(List<int> bytes) async {
-    if (kIsWeb || bytes.length < _minWorkerSize) return _decodeBytes(bytes);
-    await init();
-    return _executor.execute(() => _decodeBytes(bytes));
+    if (kIsWeb || bytes.length < _minWorkerSize) {
+      return TaskObserver.sync('json.decode', () => _decodeBytes(bytes));
+    }
+    return _onWorker('json.decode', () => _decodeBytes(bytes));
   }
 
   static Future<dynamic> decodeFile<T>(String fp) async {
-    if (kIsWeb) return _decodeString(await FilePlus(fp).readAsString());
-    await init();
-    return _executor.execute(() => _decodeFile(fp));
+    if (kIsWeb) {
+      final text = await TaskObserver.wall('json.file.read', () => FilePlus(fp).readAsString());
+      return TaskObserver.sync('json.decode', () => _decodeString(text));
+    }
+    return _onWorker('json.file.decode', () => _decodeFile(fp), kind: TaskTimingKind.wall);
   }
 
   /// Lowercase md5 hex of [bytes]; large inputs are hashed on a worker isolate.
   static Future<String> md5Hex(List<int> bytes) async {
-    if (kIsWeb || bytes.length < _minWorkerSize) return _md5Hex(bytes);
-    await init();
-    return _executor.execute(() => _md5Hex(bytes));
+    if (kIsWeb || bytes.length < _minWorkerSize) {
+      return TaskObserver.sync('json.md5', () => _md5Hex(bytes));
+    }
+    return _onWorker('json.md5', () => _md5Hex(bytes));
+  }
+
+  static Future<R> _onWorker<R>(
+    String task,
+    FutureOr<R> Function() action, {
+    TaskTimingKind kind = TaskTimingKind.sync,
+  }) {
+    return TaskObserver.wall('$task.request', () async {
+      await init();
+      if (!TaskObserver.enabled) return _executor.execute(action);
+      final result = await _executor.execute(() => _measureWorker(action));
+      TaskObserver.record(task, kind, result.elapsedUs, isolate: 'worker', failed: result.failed);
+      if (result.failed) Error.throwWithStackTrace(result.error!, result.stack!);
+      return result.value as R;
+    });
+  }
+
+  /// This callback runs in the worker. Do not access the caller's log sink or
+  /// statistics here; return only the result and fixed-size timing metadata.
+  static Future<_WorkerTiming<R>> _measureWorker<R>(FutureOr<R> Function() action) async {
+    final sw = Stopwatch()..start();
+    try {
+      final result = action();
+      final value = result is Future<R> ? await result : result;
+      return _WorkerTiming(value: value, elapsedUs: sw.elapsedMicroseconds);
+    } catch (e, s) {
+      return _WorkerTiming(elapsedUs: sw.elapsedMicroseconds, error: e, stack: s, failed: true);
+    }
   }
 
   /// Game data may contain private-use placeholder chars, replace them before
@@ -83,4 +117,14 @@ class JsonHelper {
   static String _md5Hex(List<int> bytes) {
     return md5.convert(bytes).toString().toLowerCase();
   }
+}
+
+class _WorkerTiming<R> {
+  const _WorkerTiming({this.value, required this.elapsedUs, this.error, this.stack, this.failed = false});
+
+  final R? value;
+  final int elapsedUs;
+  final Object? error;
+  final StackTrace? stack;
+  final bool failed;
 }

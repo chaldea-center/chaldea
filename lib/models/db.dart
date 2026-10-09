@@ -23,6 +23,7 @@ import '../packages/language.dart';
 import '../packages/method_channel/method_channel_chaldea.dart';
 import '../packages/packages.dart';
 import '../packages/split_route/split_route.dart';
+import '../utils/task_observer.dart';
 import 'gamedata/gamedata.dart';
 import 'paths.dart';
 import 'userdata/local_settings.dart';
@@ -162,6 +163,7 @@ class _Database {
   Future<UserData?> loadUserData([String? fp]) {
     return _loadWithBak<UserData?>(
       fp: fp ?? paths.userDataPath,
+      task: 'db.userdata',
       fromJson: (data) => UserData.fromJson(data),
       onError: () => null,
     );
@@ -170,6 +172,7 @@ class _Database {
   Future<LocalSettings> loadSettings([String? fp, BattleSimUserData? legacyPins]) async {
     return settings = await _loadWithBak<LocalSettings>(
       fp: fp ?? paths.settingsPath,
+      task: 'db.settings',
       fromJson: (data) => LocalSettings.fromJson(data, legacyPins: legacyPins),
       onError: () => legacyPins == null ? LocalSettings() : LocalSettings.fromJson({}, legacyPins: legacyPins),
     );
@@ -177,14 +180,27 @@ class _Database {
 
   static const _backSuffix = '.bak';
 
-  Future<T> _loadWithBak<T>({required String fp, required T Function(dynamic) fromJson, T Function()? onError}) async {
+  Future<T> _loadWithBak<T>({
+    required String fp,
+    required String task,
+    required T Function(dynamic) fromJson,
+    T Function()? onError,
+  }) async {
     Future<T> load(String _fp) async {
-      final f = FilePlus(_fp);
-      if (!f.existsSync()) {
-        throw OSError('File not found: $fp');
-      }
-      final data = jsonDecode(await f.readAsString());
-      return fromJson(data);
+      return TaskObserver.wall(
+        '$task.load',
+        () async {
+          final f = FilePlus(_fp);
+          if (!f.existsSync()) {
+            throw OSError('File not found: $fp');
+          }
+          final text = await TaskObserver.wall('$task.read', f.readAsString);
+          final data = TaskObserver.sync('$task.decode', () => jsonDecode(text));
+          return TaskObserver.sync('$task.objectify', () => fromJson(data));
+        },
+        phase: true,
+        detail: 'backup=${_fp != fp}',
+      );
     }
 
     final bakFp = fp + _backSuffix;
@@ -225,24 +241,31 @@ class _Database {
 
   Future<void> saveUserData() {
     _userdataDirty = false;
-    return _saveWithBak(paths.userDataPath, userData);
+    return _saveWithBak(paths.userDataPath, userData, 'db.userdata');
   }
 
   Future<void> saveSettings() {
     _settingsDirty = false;
-    return _saveWithBak(paths.settingsPath, settings);
+    return _saveWithBak(paths.settingsPath, settings, 'db.settings');
   }
 
-  Future<void> _saveWithBak(String fp, Object obj) async {
+  Future<void> _saveWithBak(String fp, Object obj, String task) async {
+    final span = TaskObserver.start('$task.save');
+    var failed = true;
     try {
-      String content = jsonEncode(obj);
-      await FilePlus(fp).writeAsString(content, flush: true);
-      await FilePlus(fp + _backSuffix).writeAsString(content, flush: true);
+      String content = TaskObserver.sync('$task.encode', () => jsonEncode(obj));
+      await TaskObserver.wall('$task.write', () async {
+        await FilePlus(fp).writeAsString(content, flush: true);
+        await FilePlus(fp + _backSuffix).writeAsString(content, flush: true);
+      });
+      failed = false;
     } catch (e, s) {
       if (kAppKey.currentContext != null) {
         EasyLoading.showError(e.toString());
       }
       logger.e('saving file failed', e, s);
+    } finally {
+      span.finish(failed: failed);
     }
   }
 
@@ -256,33 +279,36 @@ class _Database {
     String? _lastUserHash;
     String? _lastSettingHash;
     String _getHash(Object obj) {
-      return md5.convert(utf8.encode(jsonEncode(obj))).toString();
+      return TaskObserver.sync('db.fallback.hash', () => md5.convert(utf8.encode(jsonEncode(obj))).toString());
     }
 
     Timer.periodic(tickInterval, (timer) {
-      try {
-        if (_userdataDirty) {
-          saveUserData();
-        }
-        if (_settingsDirty) {
-          saveSettings();
-        }
-        tick += 1;
-        if (_lastUserHash == null || tick % hashFallbackTicks == 0) {
-          final _userHash = _getHash(userData);
-          final _settingHash = _getHash(settings);
-          if (_lastUserHash != null && _userHash != _lastUserHash) {
+      TaskObserver.sync('db.heartbeat', () {
+        try {
+          if (_userdataDirty) {
             saveUserData();
           }
-          if (_lastSettingHash != null && _settingHash != _lastSettingHash) {
+          if (_settingsDirty) {
             saveSettings();
           }
-          _lastUserHash = _userHash;
-          _lastSettingHash = _settingHash;
+          tick += 1;
+          if (_lastUserHash == null || tick % hashFallbackTicks == 0) {
+            final _userHash = _getHash(userData);
+            final _settingHash = _getHash(settings);
+            if (_lastUserHash != null && _userHash != _lastUserHash) {
+              saveUserData();
+            }
+            if (_lastSettingHash != null && _settingHash != _lastSettingHash) {
+              saveSettings();
+            }
+            _lastUserHash = _userHash;
+            _lastSettingHash = _settingHash;
+          }
+        } catch (e, s) {
+          logger.e('save loop failed', e, s);
         }
-      } catch (e, s) {
-        logger.e('save loop failed', e, s);
-      }
+      });
+      TaskObserver.summaryIfDue();
     });
   }
 

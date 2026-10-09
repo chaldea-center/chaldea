@@ -7,6 +7,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/network.dart';
 import 'package:chaldea/utils/extension.dart';
 import 'package:chaldea/utils/img_util.dart';
+import 'package:chaldea/utils/task_observer.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 class StartupLoadingPage extends StatefulWidget {
@@ -37,31 +38,43 @@ class _StartupLoadingPageState extends State<StartupLoadingPage> {
   }
 
   Future _updateData() async {
-    startTime = DateTime.now();
-    Future.delayed(const Duration(seconds: 32), () {
-      if (mounted) setState(() {});
-    });
-    GameData? data = await _loader.reload(
-      offline: !onlineUpdate,
-      silent: true,
-      connectTimeout: onlineUpdate ? const Duration(seconds: 5) : null,
-    );
-    if (onlineUpdate && data == null) {
-      hint = 'Loading local cache...';
-      needBackgroundUpdate = false;
-      if (mounted) setState(() {});
-      data = await _loader.reload(offline: true, silent: true);
-    }
-    if (data != null) {
-      db.gameData = data;
-      widget.onSuccess.call();
-      // rootRouter.appState.dataReady = true;
-      if (needBackgroundUpdate && network.available && kReleaseMode) {
-        await Future.delayed(const Duration(seconds: 3));
-        await _loader.reload(silent: true);
+    final span = TaskObserver.start('bootstrap.ready', phase: true, detail: 'online=$onlineUpdate');
+    var ready = false;
+    try {
+      startTime = DateTime.now();
+      Future.delayed(const Duration(seconds: 32), () {
+        if (mounted) setState(() {});
+      });
+      GameData? data = await _loader.reload(
+        offline: !onlineUpdate,
+        silent: true,
+        connectTimeout: onlineUpdate ? const Duration(seconds: 5) : null,
+      );
+      if (onlineUpdate && data == null) {
+        hint = 'Loading local cache...';
+        needBackgroundUpdate = false;
+        if (mounted) setState(() {});
+        data = await TaskObserver.wall(
+          'bootstrap.offline_fallback',
+          () => _loader.reload(offline: true, silent: true),
+          phase: true,
+        );
       }
-    } else {
-      widget.onFailed.call();
+      if (data != null) {
+        db.gameData = data;
+        widget.onSuccess.call();
+        ready = true;
+        span.finish();
+        // rootRouter.appState.dataReady = true;
+        if (needBackgroundUpdate && network.available && kReleaseMode) {
+          await Future.delayed(const Duration(seconds: 3));
+          await TaskObserver.wall('bootstrap.background_update', () => _loader.reload(silent: true), phase: true);
+        }
+      } else {
+        widget.onFailed.call();
+      }
+    } finally {
+      span.finish(failed: !ready);
     }
   }
 

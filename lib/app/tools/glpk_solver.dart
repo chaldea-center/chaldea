@@ -11,6 +11,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/js_engine/js_engine.dart';
 import 'package:chaldea/packages/logger.dart';
+import 'package:chaldea/utils/task_observer.dart';
 import 'package:chaldea/utils/utils.dart';
 
 class BaseLPSolver {
@@ -18,6 +19,10 @@ class BaseLPSolver {
 
   /// ensure libs loaded
   Future<void> ensureEngine() async {
+    await TaskObserver.wall('solver.basic.init', _ensureEngine);
+  }
+
+  Future<void> _ensureEngine() async {
     // only load once
     // use callback to setState, not Future.
     print('=========loading js libs=========');
@@ -37,14 +42,22 @@ class BaseLPSolver {
   }
 
   Future<Map<int, num>> callSolver(BasicLPParams params) async {
+    return TaskObserver.wall('solver.basic.solve', () => _callSolver(params));
+  }
+
+  Future<Map<int, num>> _callSolver(BasicLPParams params) async {
     await ensureEngine();
-    params.removeInvalidCells();
+    TaskObserver.sync('solver.basic.prepare', params.removeInvalidCells);
     if (params.bVec.isEmpty || params.cVec.isEmpty) {
       throw ArgumentError(S.current.glpk_error_no_valid_target);
     }
-    final resultString = await engine.eval('''glpk_solver(`${jsonEncode(params)}`)''', name: 'solver_caller');
+    final command = TaskObserver.sync('solver.basic.encode', () => '''glpk_solver(`${jsonEncode(params)}`)''');
+    final resultString = await engine.eval(command, name: 'solver_caller');
     logger.i('result: $resultString');
-    return Map<String, num>.from(jsonDecode(resultString!)).map((key, value) => MapEntry(int.parse(key), value));
+    return TaskObserver.sync(
+      'solver.basic.result',
+      () => Map<String, num>.from(jsonDecode(resultString!)).map((key, value) => MapEntry(int.parse(key), value)),
+    );
   }
 
   void dispose() {
@@ -59,6 +72,10 @@ class FreeLPSolver {
 
   /// ensure libs loaded
   Future<void> ensureEngine() async {
+    await TaskObserver.wall('solver.free.init', _ensureEngine);
+  }
+
+  Future<void> _ensureEngine() async {
     // only load once
     // use callback to setState, not Future.
     print('=========loading js libs=========');
@@ -79,6 +96,10 @@ class FreeLPSolver {
 
   /// two part: glpk linear programming +(then) efficiency sort
   Future<LPSolution> calculate({required FreeLPParams params}) async {
+    return TaskObserver.wall('solver.free.solve', () => _calculate(params: params));
+  }
+
+  Future<LPSolution> _calculate({required FreeLPParams params}) async {
     // if use integer GLPK (simplex then intopt),
     // it may run out of time and memory, then crash.
     // so only use simplex here
@@ -90,7 +111,7 @@ class FreeLPSolver {
     data.itemIds.addAll([Items.bondPointId, Items.expPointId]);
     data.matrix.add(data.bonds.map((e) => e.toDouble()).toList());
     data.matrix.add(data.exps.map((e) => e.toDouble()).toList());
-    _preProcess(data: data, params: params);
+    TaskObserver.sync('solver.free.prepare', () => _preProcess(data: data, params: params));
     if (params.rows.isEmpty) {
       logger.d(
         'after pre processing, params has no valid rows.\n'
@@ -128,7 +149,8 @@ class FreeLPSolver {
         ..planItemWeights.clear();
       logger.i('glpk params: ${jsonEncode(_debugParams)}');
       await ensureEngine();
-      final resultString = await engine.eval('''glpk_solver(`${jsonEncode(glpkParams)}`)''', name: 'solver_caller');
+      final command = TaskObserver.sync('solver.free.encode', () => '''glpk_solver(`${jsonEncode(glpkParams)}`)''');
+      final resultString = await engine.eval(command, name: 'solver_caller');
       logger.i('result: $resultString');
 
       Map<String, num> result = Map.from(jsonDecode(resultString ?? '{}'));
@@ -156,7 +178,7 @@ class FreeLPSolver {
       });
       solution.sortCountVars();
       //
-      _solveEfficiency(solution, params, data);
+      TaskObserver.sync('solver.free.efficiency', () => _solveEfficiency(solution, params, data));
     } catch (e, s) {
       logger.e('Execute GLPK solver failed', e, s);
       EasyLoading.showToast('Execute GLPK solver failed:\n$e');

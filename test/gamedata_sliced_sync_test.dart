@@ -1,15 +1,13 @@
-// Static drift guard for the hand-written frame-sliced GameData builder
-// (ANR remediation P1-4). `gameDataFromJsonSliced` re-implements only the
-// top-level field enumeration of `_$GameDataFromJson`; every leaf still calls
-// the generated `X.fromJson`.
+// Keeps the frame-sliced GameData builder aligned with generated decoding.
+// The sliced builder enumerates top-level fields and delegates entity parsing
+// to the generated fromJson methods.
 //
-// `GameData`'s constructor takes all fields as optional named parameters, so a
-// forgotten / renamed / reordered argument compiles cleanly and drifts
-// silently. This test parses both source files as text and compares:
-//   1. the named-argument sequence of the `GameData(...)` calls;
-//   2. the order in which each top-level `json['key']` is first read.
-// Passes as long as both files are changed together (e.g. after regenerating
-// gamedata.g.dart for a new field, update gamedata_sliced.dart accordingly).
+// Optional constructor parameters allow omitted fields to compile without
+// errors. These tests compare constructor argument names and order, and JSON
+// keys in order of first use. After regenerating gamedata.g.dart, synchronize
+// only the field enumeration in gamedata_sliced.dart; keep entity parsing in
+// the generated code.
+
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
@@ -17,10 +15,9 @@ import 'package:flutter_test/flutter_test.dart';
 const String _generatedFile = 'lib/generated/models/gamedata/gamedata.g.dart';
 const String _slicedFile = 'lib/models/gamedata/gamedata_sliced.dart';
 
-// `=> GameData(` cannot match `=> GameDataAdd(`; `_$GameDataFromJson` is the
-// first such call in the generated file.
+// Match the GameData constructor without matching similarly named models.
+// _$GameDataFromJson contains the first matching call in the generated file.
 final RegExp _generatedCall = RegExp(r'=>\s*GameData\(');
-// The single assembly call in the sliced builder.
 final RegExp _slicedCall = RegExp(r'return\s+GameData\(');
 
 /// Index of the '(' that opens the call matched by [marker].
@@ -87,9 +84,7 @@ List<String> _namedArgs(String region) {
   ];
 }
 
-/// Top-level json keys in the order they are first read (re-reads of the same
-/// key, e.g. a `== null ? null : ...` condition plus its parse call, and
-/// converter helpers that read once, are implementation detail).
+/// JSON keys in order of first occurrence, ignoring repeated reads of a key.
 List<String> _jsonKeys(String text) {
   final keys = <String>[];
   for (final m in RegExp(r"json\['([^']+)'\]").allMatches(text)) {
@@ -99,7 +94,7 @@ List<String> _jsonKeys(String text) {
   return keys;
 }
 
-/// Removes `//` line comments, keeping string literals intact.
+/// Removes line comments while preserving string literals and line breaks.
 String _stripComments(String source) {
   final out = StringBuffer();
   for (var i = 0; i < source.length; i++) {
@@ -112,7 +107,7 @@ String _stripComments(String source) {
     }
     if (c == '/' && i + 1 < source.length && source[i + 1] == '/') {
       final newline = source.indexOf('\n', i);
-      i = newline == -1 ? source.length : newline - 1; // keep the newline
+      i = newline == -1 ? source.length : newline - 1;
       continue;
     }
     out.write(c);
@@ -142,8 +137,8 @@ String _nextNonWs(String s, int i) {
   return '';
 }
 
-// Generics heuristic: `Foo<Bar>` opens after a word char and before a type-ish
-// char; `=>` (arrow) and comparisons have no word char directly before `>`.
+// Approximate generic delimiters from adjacent identifier/type characters so
+// commas within type arguments do not split constructor arguments.
 bool _looksLikeGenericOpen(String s, int i) {
   if (!_isWordChar(_prevNonWs(s, i))) return false;
   final next = _nextNonWs(s, i);
@@ -162,17 +157,15 @@ void main() {
   late List<String> slicedKeys;
 
   setUpAll(() {
-    // Comment stripping must precede region scanning: comments may contain
-    // unbalanced brackets (`// L11-13 (tmp producer #1)`).
+    // Strip comments before scanning so their brackets do not affect nesting.
     final generatedSrc = _stripComments(File(_generatedFile).readAsStringSync());
     final slicedSrc = _stripComments(File(_slicedFile).readAsStringSync());
     final generatedRegion = _callRegion(generatedSrc, _openParenOf(generatedSrc, _generatedCall));
     final slicedRegion = _callRegion(slicedSrc, _openParenOf(slicedSrc, _slicedCall));
     generatedArgs = _namedArgs(generatedRegion);
     slicedArgs = _namedArgs(slicedRegion);
-    // Generated keys are scoped to the GameData call region so the keys of
-    // other classes further down the file do not leak in; the sliced file has
-    // no other `json['...']` reads.
+    // Restrict generated keys to GameData; the file contains other models.
+    // The sliced source contains only top-level GameData key reads.
     generatedKeys = _jsonKeys(generatedRegion);
     slicedKeys = _jsonKeys(slicedSrc);
   });

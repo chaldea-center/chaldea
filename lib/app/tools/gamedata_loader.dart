@@ -21,6 +21,7 @@ import '../../packages/file_plus/file_plus.dart';
 import '../../packages/logger.dart';
 import '../../packages/network.dart';
 import '../../utils/json_helper.dart';
+import '../../utils/task_observer.dart';
 
 class GameDataLoader {
   // Dio get dio => Dio(BaseOptions(baseUrl: 'http://192.168.0.5:8002/'));
@@ -93,11 +94,15 @@ class GameDataLoader {
     downloading.value = 0;
     error = null;
     cancelToken = CancelToken();
+    final observation = TaskObserver.observeLoading();
+    final loadSpan = TaskObserver.start('gamedata.reload', phase: true, detail: 'offline=$offline');
+    var failed = true;
     try {
-      await JsonHelper.init();
+      await TaskObserver.wall('gamedata.worker.init', JsonHelper.init, phase: true);
       final result = await _loadJson(offline, force, connectTimeout, db.settings.filters.removeOldDataRegion);
       if (result.isValid) {
         if (!completer.isCompleted) completer.complete(result);
+        failed = error != null;
       } else {
         logger.d(
           'Invalid game data: ${result.version.text(false)}, '
@@ -112,6 +117,8 @@ class GameDataLoader {
     } finally {
       tmp.reset();
       JsonHelper.dispose();
+      loadSpan.finish(failed: failed);
+      observation.finish();
     }
     return completer.future;
   }
@@ -122,7 +129,8 @@ class GameDataLoader {
     DataVersion newVersion;
     try {
       if (_versionFile.existsSync()) {
-        oldVersion = DataVersion.fromJson(jsonDecode(await _versionFile.readAsString()));
+        final text = await TaskObserver.wall('gamedata.version.read', _versionFile.readAsString, phase: true);
+        oldVersion = TaskObserver.sync('gamedata.version.parse', () => DataVersion.fromJson(jsonDecode(text)));
       }
     } catch (e, s) {
       logger.e('read old version failed', e, s);
@@ -139,7 +147,12 @@ class GameDataLoader {
       }
     } else {
       oldVersion ??= DataVersion();
-      newVersion = DataVersion.fromJson((await _downFile('version.json', timeout: connectTimeout)).json());
+      final response = await TaskObserver.wall(
+        'gamedata.version.download',
+        () => _downFile('version.json', timeout: connectTimeout),
+        phase: true,
+      );
+      newVersion = TaskObserver.sync('gamedata.version.parse', () => DataVersion.fromJson(response.json()));
     }
     if (newVersion.appVersion > AppInfo.version) {
       final String versionString = newVersion.appVersion.versionString;
@@ -162,25 +175,48 @@ class GameDataLoader {
       final _cacheFile = FilePlus(joinPaths(db.paths.gameCacheDir, fv.filename));
       Uint8List? bytes;
       if (_file.existsSync()) {
-        bytes = await _file.readAsBytes();
+        bytes = await TaskObserver.wall('gamedata.file.read', _file.readAsBytes, phase: true, detail: fv.filename);
       }
       // tier 1: gameDir, either full or minified (size, hash) pair
-      bool valid = bytes != null && (!db.settings.network.checkDataHash || await checkFileVersion(bytes, fv));
+      bool valid =
+          bytes != null &&
+          (!db.settings.network.checkDataHash ||
+              await TaskObserver.wall(
+                'gamedata.file.check',
+                () => checkFileVersion(bytes!, fv),
+                phase: true,
+                detail: fv.filename,
+              ));
       if (!valid) {
         if (offline) {
           final _localHash = bytes == null ? '' : await JsonHelper.md5Hex(bytes);
           throw S.current.file_not_found_or_mismatched_hash(fv.filename, fv.hash, _localHash);
         }
         // tier 2: staging cache, strict size+hash so interrupted updates can resume
-        final cached = await _readStagedFile(_cacheFile, fv);
+        final cached = await TaskObserver.wall(
+          'gamedata.file.cache_read',
+          () => _readStagedFile(_cacheFile, fv),
+          phase: true,
+          detail: fv.filename,
+        );
         if (cached != null) {
           bytes = cached;
           _stagedFiles.add(fv);
         } else {
           downloading.value += 1;
-          var resp = await _downFileWithRetry(fv.filename, options: Options(responseType: ResponseType.bytes));
+          Future<Response<dynamic>> download({bool t = false}) => TaskObserver.wall(
+            'gamedata.file.download',
+            () => _downFileWithRetry(
+              fv.filename,
+              options: Options(responseType: ResponseType.bytes),
+              t: t,
+            ),
+            phase: true,
+            detail: fv.filename,
+          );
+          var resp = await download();
           if (db.settings.network.checkDataHash && !await checkFileVersion(resp.data, fv)) {
-            resp = await _downFileWithRetry(fv.filename, options: Options(responseType: ResponseType.bytes), t: true);
+            resp = await download(t: true);
             if (!await checkFileVersion(resp.data, fv)) {
               final _hash = await JsonHelper.md5Hex(resp.data);
               throw S.current.file_not_found_or_mismatched_hash(fv.filename, fv.hash, _hash);
@@ -188,41 +224,56 @@ class GameDataLoader {
           }
           bytes = resp.data;
           // persist to staging cache immediately, do NOT retain bytes in memory until commit
-          await _cacheFile.writeAsBytes(bytes!);
+          await TaskObserver.wall(
+            'gamedata.file.cache_write',
+            () => _cacheFile.writeAsBytes(bytes!),
+            phase: true,
+            detail: fv.filename,
+          );
           _stagedFiles.add(fv);
         }
       }
-      dynamic fileJson = await JsonHelper.decodeBytes(bytes);
+      dynamic fileJson = await TaskObserver.wall(
+        'gamedata.file.decode',
+        () => JsonHelper.decodeBytes(bytes!),
+        phase: true,
+        detail: fv.filename,
+      );
       l2mFn ??= l2mKey == null ? null : (e) => e[l2mKey].toString();
       if (l2mFn != null) {
         assert(fileJson is List, '${fv.filename}: ${fileJson.runtimeType}');
-        fileJson = Map.fromIterable(fileJson, key: l2mFn);
+        fileJson = TaskObserver.sync(
+          'gamedata.file.index',
+          () => Map.fromIterable(fileJson, key: l2mFn),
+          detail: fv.filename,
+        );
       }
-      Map<dynamic, dynamic> targetJson = _gameJson;
-      String key = fv.key;
-      if (key.contains('.')) {
-        final nodes = key.split('.');
-        for (final node in nodes.sublist(0, nodes.length - 1)) {
-          targetJson = targetJson.putIfAbsent(node, () => {});
+      TaskObserver.sync('gamedata.file.merge', () {
+        Map<dynamic, dynamic> targetJson = _gameJson;
+        String key = fv.key;
+        if (key.contains('.')) {
+          final nodes = key.split('.');
+          for (final node in nodes.sublist(0, nodes.length - 1)) {
+            targetJson = targetJson.putIfAbsent(node, () => {});
+          }
+          key = nodes.last;
         }
-        key = nodes.last;
-      }
-
-      // Map<dynamic, dynamic> targetJson =
-      //     fv.key.startsWith('wiki.') ? _gameJson.putIfAbsent('wiki', () => {}) : _gameJson;
-      // String key = fv.key.startsWith('wiki.') ? fv.key.substring(5) : fv.key;
-      if (targetJson[key] == null) {
-        targetJson[key] = fileJson;
-      } else {
-        final value = targetJson[key]!;
-        if (value is Map) {
-          value.addAll(fileJson);
-        } else if (value is List) {
-          value.addAll(fileJson);
+        // Map<dynamic, dynamic> targetJson =
+        //     fv.key.startsWith('wiki.') ? _gameJson.putIfAbsent('wiki', () => {}) : _gameJson;
+        // String key = fv.key.startsWith('wiki.') ? fv.key.substring(5) : fv.key;
+        if (targetJson[key] == null) {
+          targetJson[key] = fileJson;
         } else {
-          throw "Unsupported type: ${value.runtimeType}";
+          final value = targetJson[key]!;
+          if (value is Map) {
+            value.addAll(fileJson);
+          } else if (value is List) {
+            value.addAll(fileJson);
+          } else {
+            throw "Unsupported type: ${value.runtimeType}";
+          }
         }
-      }
+      }, detail: fv.filename);
 
       // print('loaded ${fv.filename}');
       await Future.delayed(Duration(milliseconds: 200));
@@ -276,11 +327,11 @@ class GameDataLoader {
       }
       futures.add(_pool.withResource(() => _downloadCheck(fv, l2mKey: keys[fv.key], l2mFn: l2mFn)));
     }
-    await Future.wait(futures);
+    await TaskObserver.wall('gamedata.files', () => Future.wait(futures), phase: true);
     _gameJson['gachas'] ??= _gameJson['mstGacha'] ?? {};
 
-    await _addGameAdd(_gameJson);
-    await _patchMappings(_gameJson);
+    await TaskObserver.wall('gamedata.add_data', () => _addGameAdd(_gameJson), phase: true);
+    await TaskObserver.wall('gamedata.mappings', () => _patchMappings(_gameJson), phase: true);
 
     if (_gameJson.isEmpty) {
       throw Exception('No data loaded');
@@ -301,8 +352,12 @@ class GameDataLoader {
     }
 
     tmp.gameJson = _gameJson;
-    GameData _gamedata = await gameDataFromJsonSliced(_gameJson);
-    await _fixGameData(_gamedata);
+    GameData _gamedata = await TaskObserver.wall(
+      'gamedata.objectify',
+      () => gameDataFromJsonSliced(_gameJson),
+      phase: true,
+    );
+    await TaskObserver.wall('gamedata.fix', () => _fixGameData(_gamedata), phase: true);
     if (!offline) {
       logger.t(
         '[${offline ? "offline" : "online"}]Updating dataset(${_gamedata.version.text(false)}): ${_stagedFiles.length} files updated',
@@ -311,12 +366,16 @@ class GameDataLoader {
       // commit keeps the old committed version logically intact
       for (final fv in _stagedFiles) {
         if (kDebugMode) print('writing ${basename(fv.filename)}');
-        await _commitStagedFile(fv);
+        await TaskObserver.wall('gamedata.file.commit', () => _commitStagedFile(fv), phase: true, detail: fv.filename);
       }
       if (newVersion != oldVersion) {
-        await _versionFile.writeAsBytes(utf8.encode(jsonEncode(newVersion)));
+        await TaskObserver.wall(
+          'gamedata.version.write',
+          () => _versionFile.writeAsBytes(utf8.encode(jsonEncode(newVersion))),
+          phase: true,
+        );
       }
-      await _clearGameCache(_stagedFiles);
+      await TaskObserver.wall('gamedata.cache_clear', () => _clearGameCache(_stagedFiles), phase: true);
     }
 
     db.runtimeData.upgradableDataVersion = newVersion;
