@@ -149,21 +149,24 @@ class MultiDescriptor {
     ];
   }
 
-  static List<InlineSpan> traits(BuildContext context, List<int> targetIds, {bool? useAnd}) {
+  static List<InlineSpan> traits(BuildContext context, List<int> targetIds, {bool? useAnd, bool addSvtId = true}) {
     if (targetIds.length <= 10) {
       return list(context, targetIds, (context, id) {
         return inkWell(
           context: context,
           onTap: () => router.push(url: Routes.traitI(id)),
-          text: '[${Transl.traitName(id)}]',
+          text: '[${Transl.traitName(id, addSvtId: addSvtId)}]',
         );
       }, useAnd);
     }
     return [
       collapsed(context, targetIds, S.current.trait, (context, id) {
+        final hideId =
+            !addSvtId && (db.gameData.servantsById.containsKey(id.abs()) || db.gameData.entities.containsKey(id.abs()));
+        final name = Transl.traitName(id, addSvtId: addSvtId);
         return ListTile(
-          title: Text('Trait $id - ${Transl.traitName(id)}'),
-          subtitle: Text(id.toString()),
+          title: Text(hideId ? name : 'Trait $id - $name'),
+          subtitle: hideId ? null : Text(id.toString()),
           onTap: () => router.push(url: Routes.traitI(id)),
         );
       }, useAnd),

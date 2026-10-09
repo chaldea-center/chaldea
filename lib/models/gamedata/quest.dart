@@ -1998,7 +1998,7 @@ class QuestPhaseRestriction {
   String dialogMessage;
   String noticeMessage;
   String title;
-  // script;
+  QuestPhaseRestrictionScript? script;
 
   QuestPhaseRestriction({
     required this.restriction,
@@ -2006,11 +2006,24 @@ class QuestPhaseRestriction {
     this.dialogMessage = '',
     this.noticeMessage = '',
     this.title = '',
+    this.script,
   });
 
   factory QuestPhaseRestriction.fromJson(Map<String, dynamic> json) => _$QuestPhaseRestrictionFromJson(json);
 
   Map<String, dynamic> toJson() => _$QuestPhaseRestrictionToJson(this);
+}
+
+@JsonSerializable()
+class QuestPhaseRestrictionScript {
+  List<CommonRelease>? releaseConditions;
+
+  QuestPhaseRestrictionScript({this.releaseConditions});
+
+  factory QuestPhaseRestrictionScript.fromJson(Map<String, dynamic> json) =>
+      _$QuestPhaseRestrictionScriptFromJson(json);
+
+  Map<String, dynamic> toJson() => _$QuestPhaseRestrictionScriptToJson(this);
 }
 
 @JsonSerializable()
@@ -2374,30 +2387,35 @@ enum DeckType {
 }
 
 enum RestrictionType {
-  none, // custom
-  individuality,
-  rarity,
-  totalCost,
-  lv,
-  supportOnly,
-  uniqueSvtOnly,
-  fixedSupportPosition,
-  fixedMySvtIndividualityPositionMain,
-  fixedMySvtIndividualitySingle,
-  svtNum,
-  mySvtNum,
-  mySvtOrNpc,
-  alloutBattleUniqueSvt,
-  fixedSvtIndividualityPositionMain,
-  uniqueIndividuality,
-  mySvtOrSupport,
-  dataLostBattleUniqueSvt,
-  myGrandSvt,
-  fixedMyGrandSvt,
-  myGrandSvtPositionMain,
-  myGrandSvtOrSupportGrandSvt,
-  activeGrandBoard,
-  fixedCostume,
+  none(0), // custom
+  individuality(1),
+  rarity(2),
+  totalCost(3),
+  lv(4),
+  supportOnly(5),
+  uniqueSvtOnly(6),
+  fixedSupportPosition(7),
+  fixedMySvtIndividualityPositionMain(8),
+  fixedMySvtIndividualitySingle(9),
+  svtNum(10),
+  mySvtNum(11),
+  mySvtOrNpc(12),
+  alloutBattleUniqueSvt(13),
+  fixedSvtIndividualityPositionMain(14),
+  uniqueIndividuality(15),
+  mySvtOrSupport(16),
+  dataLostBattleUniqueSvt(17),
+  myGrandSvt(21),
+  fixedMyGrandSvt(22),
+  myGrandSvtPositionMain(23),
+  myGrandSvtOrSupportGrandSvt(24),
+  activeGrandBoard(25),
+  fixedCostume(101);
+
+  const RestrictionType(this.value);
+  final int value;
+
+  static RestrictionType? fromValue(int value) => values.firstWhereOrNull((type) => type.value == value);
 }
 
 enum RestrictionRangeType { none, equal, notEqual, above, below, between }

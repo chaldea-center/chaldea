@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/app.dart';
-import 'package:chaldea/app/modules/quest/breakdown/quest_phase.dart' show QuestRestrictionPage;
+import 'package:chaldea/app/modules/quest/breakdown/restriction.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/mst_data.dart';
@@ -248,7 +248,12 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
                       title: Text('${questPhase.restrictions.length} ${S.current.quest_restriction}'),
                       trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
                       onTap: () {
-                        router.pushPage(QuestRestrictionPage(restrictions: questPhase.restrictions));
+                        router.pushPage(
+                          QuestRestrictionPage(
+                            restrictions: questPhase.restrictions,
+                            questName: questPhase.lNameWithChapter,
+                          ),
+                        );
                       },
                     ),
                   if (questPhase.flags.isNotEmpty)

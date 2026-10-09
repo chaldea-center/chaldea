@@ -14,6 +14,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 import '../../enemy/support_servant.dart';
+import 'restriction.dart';
 import 'stage.dart';
 
 typedef _QuestPhaseSelectCallback = void Function(QuestPhase quest);
@@ -165,7 +166,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
         getFlags(curPhase.flags),
         getOverwriteMysticCode(curPhase),
         getSupportServants(curPhase),
-        buildRestriction(curPhase.restrictions),
+        buildRestriction(curPhase),
         buildHints(curPhase.hints, curPhase.messages),
         ...buildDrops(curPhase),
       ]);
@@ -731,23 +732,33 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
     );
   }
 
-  Widget? buildRestriction(List<QuestPhaseRestriction> restrictions) {
+  Widget? buildRestriction(QuestPhase questPhase) {
+    final restrictions = questPhase.restrictions;
     if (restrictions.isEmpty || widget.battleOnly || widget.offline) return null;
-    final shortMsg = restrictions
-        .map((e) => QuestRestrictionPage.getText(restriction: e, all: false, leading: false))
-        .firstWhereOrNull((e) => e.isNotEmpty);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3),
       child: InkWell(
         onTap: () {
-          router.pushPage(QuestRestrictionPage(restrictions: restrictions));
+          router.pushPage(QuestRestrictionPage(restrictions: restrictions, questName: questPhase.lNameWithChapter));
         },
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             _header(S.current.quest_restriction),
-            Text(shortMsg ?? '??????'),
-            const SizedBox(width: double.infinity),
+            SizedBox(
+              width: double.infinity,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  for (final restriction in restrictions)
+                    QuestRestrictionDescriptor(
+                      restriction: restriction,
+                      leading: const TextSpan(text: '• '),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
+                    ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -1141,121 +1152,6 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
         ],
       ),
     );
-  }
-}
-
-class QuestRestrictionPage extends StatelessWidget {
-  final List<QuestPhaseRestriction> restrictions;
-  const QuestRestrictionPage({super.key, required this.restrictions});
-
-  @override
-  Widget build(BuildContext context) {
-    List<Widget> children = [];
-    for (int index = 0; index < restrictions.length; index++) {
-      final restriction = restrictions[index];
-      if (restrictions.length > 1) {
-        children.add(SHeader('${S.current.quest_restriction} ${index + 1}'));
-      }
-      final re = restriction.restriction;
-      String rangeText = '';
-      switch (re.rangeType) {
-        case RestrictionRangeType.none:
-          break;
-        case RestrictionRangeType.equal:
-          rangeText += 'Equal(=) ';
-          break;
-        case RestrictionRangeType.notEqual:
-          rangeText += 'NotEqual(≠) ';
-          break;
-        case RestrictionRangeType.above:
-          rangeText += 'Above(≥)';
-          break;
-        case RestrictionRangeType.below:
-          rangeText += 'Below(≤)';
-          break;
-        case RestrictionRangeType.between:
-          rangeText += 'Between(a≤x≤b)';
-          break;
-      }
-      children.add(
-        CustomTable(
-          children: [
-            CustomTableRow(
-              children: [
-                TableCellData(
-                  text: getText(restriction: restriction, all: true, leading: true),
-                  alignment: AlignmentDirectional.centerStart,
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                ),
-              ],
-            ),
-            CustomTableRow(
-              children: [
-                TableCellData(text: S.current.general_type, isHeader: true),
-                TableCellData(text: restriction.restriction.type.name, flex: 3),
-              ],
-            ),
-            CustomTableRow(
-              children: [
-                TableCellData(text: 'Value', isHeader: true),
-                TableCellData(
-                  child: Text.rich(
-                    TextSpan(
-                      text: rangeText,
-                      children: [
-                        if (re.targetVals.isNotEmpty && rangeText.isNotEmpty) const TextSpan(text: ': '),
-                        ...guessVal(context, re.targetVals, restriction.restriction.type),
-                        if (re.targetVals2.isNotEmpty) const TextSpan(text: '; '),
-                        ...guessVal(context, re.targetVals2, restriction.restriction.type),
-                      ],
-                    ),
-                  ),
-                  flex: 3,
-                ),
-              ],
-            ),
-          ],
-        ),
-      );
-    }
-    return Scaffold(
-      appBar: AppBar(title: Text(S.current.quest_restriction)),
-      body: ListView(children: children),
-    );
-  }
-
-  List<InlineSpan> guessVal(BuildContext context, List<int> vals, RestrictionType type) {
-    return divideList([
-      for (final val in vals)
-        val > 99
-            ? SharedBuilder.textButtonSpan(
-                context: context,
-                text: Transl.trait(val).l,
-                onTap: () {
-                  if (type == RestrictionType.alloutBattleUniqueSvt) {
-                    router.push(url: Routes.eventI(val));
-                  } else {
-                    router.push(url: Routes.traitI(val));
-                  }
-                },
-              )
-            : TextSpan(text: val.toString()),
-    ], const TextSpan(text: ', '));
-  }
-
-  static String getText({required QuestPhaseRestriction restriction, required bool all, required bool leading}) {
-    final messages = <String>{};
-    for (final msg in [restriction.noticeMessage, restriction.dialogMessage, restriction.restriction.name]) {
-      if (msg.isNotEmpty && msg != '0') {
-        messages.add(msg.replaceAll('\n', ' '));
-      }
-    }
-    if (messages.isEmpty) return '';
-    if (all) {
-      return messages.map((e) => leading ? '$kULLeading $e' : e).join('\n');
-    } else {
-      return leading ? '$kULLeading ${messages.first}' : messages.first;
-    }
   }
 }
 

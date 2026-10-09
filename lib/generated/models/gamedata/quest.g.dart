@@ -1212,6 +1212,9 @@ QuestPhaseRestriction _$QuestPhaseRestrictionFromJson(Map json) => QuestPhaseRes
   dialogMessage: json['dialogMessage'] as String? ?? '',
   noticeMessage: json['noticeMessage'] as String? ?? '',
   title: json['title'] as String? ?? '',
+  script: json['script'] == null
+      ? null
+      : QuestPhaseRestrictionScript.fromJson(Map<String, dynamic>.from(json['script'] as Map)),
 );
 
 Map<String, dynamic> _$QuestPhaseRestrictionToJson(QuestPhaseRestriction instance) => <String, dynamic>{
@@ -1220,6 +1223,7 @@ Map<String, dynamic> _$QuestPhaseRestrictionToJson(QuestPhaseRestriction instanc
   'dialogMessage': instance.dialogMessage,
   'noticeMessage': instance.noticeMessage,
   'title': instance.title,
+  'script': instance.script?.toJson(),
 };
 
 const _$FrequencyTypeEnumMap = {
@@ -1231,6 +1235,16 @@ const _$FrequencyTypeEnumMap = {
   FrequencyType.everyTimeAfter: 'everyTimeAfter',
   FrequencyType.everyTimeBefore: 'everyTimeBefore',
   FrequencyType.onceUntilRemind: 'onceUntilRemind',
+};
+
+QuestPhaseRestrictionScript _$QuestPhaseRestrictionScriptFromJson(Map json) => QuestPhaseRestrictionScript(
+  releaseConditions: (json['releaseConditions'] as List<dynamic>?)
+      ?.map((e) => CommonRelease.fromJson(Map<String, dynamic>.from(e as Map)))
+      .toList(),
+);
+
+Map<String, dynamic> _$QuestPhaseRestrictionScriptToJson(QuestPhaseRestrictionScript instance) => <String, dynamic>{
+  'releaseConditions': instance.releaseConditions?.map((e) => e.toJson()).toList(),
 };
 
 QuestGroup _$QuestGroupFromJson(Map json) => QuestGroup(
