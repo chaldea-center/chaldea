@@ -1,4 +1,5 @@
 import 'package:chaldea/app/api/atlas.dart';
+import 'package:chaldea/models/gamedata/individuality.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 
@@ -38,7 +39,7 @@ class FieldAiManager with _AiManagerBase {
         if (ai.timing != timing.value) continue;
         if (ai.cond == NiceAiCond.none ||
             (ai.cond == NiceAiCond.turn && ai.vals.firstOrNull == 1) ||
-            (ai.cond == NiceAiCond.commonReleaseId && await isAllowedCommonRelease(ai.vals))) {
+            (ai.cond == NiceAiCond.commonReleaseId && await AiCondEvaluator.isAllowedCommonRelease(ai.vals))) {
           if (ai.aiAct.type == NiceAiActType.skillId && ai.aiAct.target == NiceAiActTarget.random) {
             final skill = ai.aiAct.skill;
             if (skill == null) continue;
@@ -57,25 +58,6 @@ class FieldAiManager with _AiManagerBase {
         }
       }
     }
-  }
-
-  Future<bool> isAllowedCommonRelease(List<int> aiVals) async {
-    if (aiVals.isEmpty) return true;
-    final commonReleaseId = aiVals.first;
-    assert(aiVals.where((e) => e > 10).length == 1, 'Ai contains multiple ids for common release cond: $aiVals');
-    final releases = await showEasyLoading(() => AtlasApi.commonRelease(commonReleaseId), mask: true);
-    if (releases == null) return true;
-    if (CommonRelease.check(releases, _checkOneRelease) == false) {
-      return false;
-    }
-    return true;
-  }
-
-  bool? _checkOneRelease(CommonRelease release) {
-    if (const <CondType>{.questClearPhase, .questClear}.contains(release.condType)) {
-      return true;
-    }
-    return null;
   }
 
   Future<void> actWaveStart(BattleData battleData) async {
@@ -191,5 +173,129 @@ class SvtAiManager with _AiManagerBase {
         break;
       }
     }
+  }
+
+  /// For now this is exclusively for Grand Duel Assassin's AI
+  Future<void> reactionPlayerActionStart(BattleData battleData, BattleServantData actor) async {
+    final questId = battleData.niceQuest?.id ?? 0;
+    if (aiCollection == null ||
+        !ConstGameData.grandDuelAssassinFreeQuestIds.contains(questId) ||
+        enemyAi?.aiId != ConstGameData.grandDualAssassinFreeBaseSvtAiId)
+      return;
+
+    final mainAis = NiceAiCollection.sortedAis(aiCollection!.mainAis);
+    for (final ai in mainAis) {
+      // grande dual assassin hardcoded logic for func target
+      final targetIndex = battleData.turnCount % 3 - 1;
+      final target = battleData.onFieldAllyServants.getOrNull(targetIndex);
+
+      if (ai.actNum == NiceAiActNum.reactionPlayeractionstart &&
+          await AiCondEvaluator.evaluate(ai, battleData, actor, target)) {
+        if (ai.aiAct.type != NiceAiActType.skillId) {
+          // other aiActType treated as no-op
+          return;
+        }
+
+        final skill = ai.aiAct.skill;
+        if (skill == null) return;
+        final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.svtAi, skillLv: ai.aiAct.skillLv ?? 1);
+        await skillInfo.activate(battleData, activator: actor, defaultToPlayer: false, preferredEnemy: target);
+        battleData.recorder.skill(
+          prefix: 'SvtAI: ',
+          battleData: battleData,
+          activator: actor,
+          skill: skillInfo,
+          fromPlayer: actor.isPlayer,
+          uploadEligible: battleData.niceQuest?.isLaplaceNeedAi == true,
+        );
+        break;
+      }
+    }
+  }
+}
+
+class AiCondEvaluator {
+  AiCondEvaluator._();
+
+  static Future<bool> evaluate(
+    NiceAi ai,
+    BattleData battleData,
+    BattleServantData actor,
+    BattleServantData? targetOverride,
+  ) async {
+    bool result = false;
+    switch (ai.cond) {
+      case NiceAiCond.none:
+        result = true;
+      case NiceAiCond.turn:
+        result = battleData.turnCount == ai.vals.firstOrNull;
+      case NiceAiCond.commonReleaseId:
+        result = await isAllowedCommonRelease(ai.vals);
+      case NiceAiCond.checkSelfIndividuality:
+        result = Individuality.checkSignedIndividualities2(
+          self: actor.getTraits(),
+          signedTarget: ai.vals,
+          matchedFunc: Individuality.isMatchArray,
+          mismatchFunc: Individuality.isMatchArray,
+        );
+      case NiceAiCond.checkSelfBuffIndividuality:
+        result = Individuality.checkSignedIndividualities2(
+          self: actor.getBuffTraits(),
+          signedTarget: ai.vals,
+          matchedFunc: Individuality.isMatchArray,
+          mismatchFunc: Individuality.isMatchArray,
+        );
+      case NiceAiCond.existIndividualityOpponentFront:
+        // we don't have proper AI logic yet so allowing overrides for now
+        final target = targetOverride ?? battleData.onFieldAllyServants.getOrNull(0);
+        result = Individuality.checkSignedIndividualities2(
+          self: target?.getTraits(),
+          signedTarget: ai.vals,
+          matchedFunc: Individuality.isMatchArray,
+          mismatchFunc: Individuality.isMatchArray,
+        );
+      case NiceAiCond.existIndividualityOpponentCenter:
+        final target = targetOverride ?? battleData.onFieldAllyServants.getOrNull(1);
+        result = Individuality.checkSignedIndividualities2(
+          self: target?.getTraits(),
+          signedTarget: ai.vals,
+          matchedFunc: Individuality.isMatchArray,
+          mismatchFunc: Individuality.isMatchArray,
+        );
+      case NiceAiCond.existIndividualityOpponentBack:
+        final target = targetOverride ?? battleData.onFieldAllyServants.getOrNull(2);
+        result = Individuality.checkSignedIndividualities2(
+          self: target?.getTraits(),
+          signedTarget: ai.vals,
+          matchedFunc: Individuality.isMatchArray,
+          mismatchFunc: Individuality.isMatchArray,
+        );
+      default:
+        result = false;
+    }
+
+    if (ai.condNegative) {
+      result = !result;
+    }
+    return result;
+  }
+
+  static Future<bool> isAllowedCommonRelease(List<int> aiVals) async {
+    if (aiVals.isEmpty) return true;
+    final commonReleaseId = aiVals.first;
+    assert(aiVals.where((e) => e > 10).length == 1, 'Ai contains multiple ids for common release cond: $aiVals');
+    final releases = await showEasyLoading(() => AtlasApi.commonRelease(commonReleaseId), mask: true);
+    if (releases == null) return true;
+    if (CommonRelease.check(releases, _checkOneRelease) == false) {
+      return false;
+    }
+    return true;
+  }
+
+  static bool? _checkOneRelease(CommonRelease release) {
+    if (const <CondType>{.questClearPhase, .questClear}.contains(release.condType)) {
+      return true;
+    }
+    return null;
   }
 }

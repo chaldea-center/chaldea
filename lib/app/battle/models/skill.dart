@@ -151,6 +151,7 @@ class BattleSkillInfoData {
     bool defaultToPlayer = true,
     BattleSkillParams? param,
     bool isTransform = false,
+    BattleServantData? preferredEnemy,
   }) async {
     final curSkill = skill;
     if (curSkill == null) {
@@ -178,7 +179,7 @@ class BattleSkillInfoData {
     }
 
     final targetedAlly = battleData.getTargetedAlly(activator, defaultToPlayer: defaultToPlayer);
-    final targetedEnemy = battleData.getTargetedEnemy(activator, defaultToPlayer: defaultToPlayer);
+    final targetedEnemy = preferredEnemy ?? battleData.getTargetedEnemy(activator, defaultToPlayer: defaultToPlayer);
     final Set<BattleServantData> wouldAffectTargets = {};
     List<NiceFunction> resultFunctions = curSkill.functions;
 

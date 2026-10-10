@@ -121,7 +121,7 @@ class InstantDeath {
     final grantInstantDeath =
         await activator?.getBuffValue(battleData, BuffAction.grantInstantdeath, opponent: target, card: card) ?? 0;
 
-    final deathRate = substituteRate ?? target.deathRate;
+    final deathRate = substituteRate ?? (dataVals.IgnoreDeathRate == 1 ? 1000 : target.deathRate);
     final functionRate = dataVals.Rate ?? 1000;
     final resistRate = resistInstantDeath - nonResistInstantDeath;
     final buffRate = grantInstantDeath - resistRate - substituteResist;

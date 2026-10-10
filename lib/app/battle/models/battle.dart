@@ -1046,6 +1046,10 @@ class BattleData {
           await action.confirmCardSelection(this);
         }
 
+        for (final enemy in nonnullEnemies) {
+          await enemy.svtAi.reactionPlayerActionStart(this, enemy);
+        }
+
         int extraOvercharge = 0;
         for (int i = 0; i < actions.length; i += 1) {
           await withAction(() async {

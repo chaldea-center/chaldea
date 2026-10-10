@@ -74,6 +74,13 @@ class ConstGameData {
     ...range(4000807, 4000813), // tree No2
   };
 
+  static Set<int> grandDuelAssassinFreeQuestIds = {
+    ...range(94150501, 94150508), // 94150501~94150507
+    ...range(94150531, 94150538), // 94150531~94150537
+  };
+
+  static int grandDualAssassinFreeBaseSvtAiId = 94150530;
+
   final List<int> warIdsHasEpilogue = [108];
 
   final Map<int, Map<Region, int>> svtIdToCollectionRemapByRegion = {
