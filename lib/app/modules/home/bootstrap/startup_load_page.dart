@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' show Random;
 
 import 'package:flutter/foundation.dart';
@@ -19,10 +20,18 @@ class StartupLoadingPage extends StatefulWidget {
   State<StartupLoadingPage> createState() => _StartupLoadingPageState();
 }
 
-class _StartupLoadingPageState extends State<StartupLoadingPage> {
+class _StartupLoadingPageState extends State<StartupLoadingPage> with WidgetsBindingObserver {
   final _loader = GameDataLoader.instance;
   String? hint;
   DateTime startTime = DateTime.now();
+  DateTime _lastActivity = DateTime.now();
+  Timer? _watchdog;
+  bool _foreground = true;
+  bool _stalled = false;
+  bool _recovering = false;
+  bool _finished = false;
+  bool _showUpdatingHint = false;
+  int _generation = 0;
 
   bool onlineUpdate =
       network.available &&
@@ -34,41 +43,121 @@ class _StartupLoadingPageState extends State<StartupLoadingPage> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _foreground =
+        WidgetsBinding.instance.lifecycleState == null ||
+        WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed;
+    _loader.activity.addListener(_activityChanged);
+    _loader.progress.addListener(_activityChanged);
+    _loader.downloading.addListener(_activityChanged);
+    _watchdog = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (!mounted || _finished || !_foreground || _recovering) return;
+      final stalled = DateTime.now().difference(_lastActivity) >= const Duration(seconds: 60);
+      if (stalled && !_stalled) {
+        TaskObserver.record(
+          'bootstrap.no_progress',
+          TaskTimingKind.wall,
+          DateTime.now().difference(_lastActivity).inMicroseconds,
+        );
+      }
+      final updating =
+          onlineUpdate && _loader.downloading.value > 0 && DateTime.now().difference(startTime).inSeconds > 30;
+      if (_stalled != stalled || _showUpdatingHint != updating) {
+        setState(() {
+          _stalled = stalled;
+          _showUpdatingHint = updating;
+        });
+      }
+    });
     _updateData();
   }
 
-  Future _updateData() async {
+  void _activityChanged() {
+    _lastActivity = DateTime.now();
+    if (mounted && _stalled) setState(() => _stalled = false);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    _foreground = state == AppLifecycleState.resumed;
+    _activityChanged();
+  }
+
+  @override
+  void dispose() {
+    _generation++;
+    _watchdog?.cancel();
+    _loader.activity.removeListener(_activityChanged);
+    _loader.progress.removeListener(_activityChanged);
+    _loader.downloading.removeListener(_activityChanged);
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  bool _current(int generation) => mounted && generation == _generation;
+
+  Future<void> _recover({required bool offline}) async {
+    if (_recovering || _finished) return;
+    _generation++; // Invalidate the old caller before its cancellation completes.
+    setState(() {
+      _recovering = true;
+      _stalled = false;
+      hint = null;
+      needBackgroundUpdate = false;
+    });
+    try {
+      await _loader.interrupt();
+      if (!mounted) return;
+      setState(() => _recovering = false);
+      await _updateData(offline: offline);
+    } finally {
+      if (mounted && _recovering) setState(() => _recovering = false);
+    }
+  }
+
+  Future<void> _updateData({bool? offline}) async {
+    final generation = ++_generation;
+    final loadOffline = offline ?? !onlineUpdate;
+    onlineUpdate = !loadOffline;
+    _lastActivity = startTime = DateTime.now();
+    _showUpdatingHint = false;
     final span = TaskObserver.start('bootstrap.ready', phase: true, detail: 'online=$onlineUpdate');
     var ready = false;
     try {
-      startTime = DateTime.now();
-      Future.delayed(const Duration(seconds: 32), () {
-        if (mounted) setState(() {});
-      });
       GameData? data = await _loader.reload(
-        offline: !onlineUpdate,
+        offline: loadOffline,
         silent: true,
-        connectTimeout: onlineUpdate ? const Duration(seconds: 5) : null,
+        automatic: true,
+        connectTimeout: loadOffline ? null : const Duration(seconds: 5),
       );
-      if (onlineUpdate && data == null) {
-        hint = 'Loading local cache...';
+      if (!_current(generation)) return;
+      if (!loadOffline && data == null) {
+        hint = 'Loading local data...';
         needBackgroundUpdate = false;
-        if (mounted) setState(() {});
+        setState(() {});
         data = await TaskObserver.wall(
           'bootstrap.offline_fallback',
-          () => _loader.reload(offline: true, silent: true),
+          () => _loader.reload(offline: true, silent: true, automatic: true),
           phase: true,
         );
+        if (!_current(generation)) return;
       }
+      _finished = true;
+      _watchdog?.cancel();
       if (data != null) {
         db.gameData = data;
-        widget.onSuccess.call();
         ready = true;
         span.finish();
-        // rootRouter.appState.dataReady = true;
+        widget.onSuccess.call();
         if (needBackgroundUpdate && network.available && kReleaseMode) {
-          await Future.delayed(const Duration(seconds: 3));
-          await TaskObserver.wall('bootstrap.background_update', () => _loader.reload(silent: true), phase: true);
+          await Future<void>.delayed(const Duration(seconds: 3));
+          if (!_loader.loading) {
+            await TaskObserver.wall(
+              'bootstrap.background_update',
+              () => _loader.reload(silent: true, automatic: true),
+              phase: true,
+            );
+          }
         }
       } else {
         widget.onFailed.call();
@@ -84,46 +173,52 @@ class _StartupLoadingPageState extends State<StartupLoadingPage> {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
       child: ImageUtil.getChaldeaBackground(context),
     );
+    final showRecovery = !_finished && (_stalled || _recovering);
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Expanded(child: Center(child: img)),
         const SizedBox(height: 12),
-        ValueListenableBuilder<int>(
-          valueListenable: _loader.downloading,
-          builder: ((context, value, child) {
-            bool showHint = onlineUpdate && value > 0 && DateTime.now().difference(startTime).inSeconds > 30;
-            showHint = showHint || hint != null;
-            return Text.rich(
-              TextSpan(
-                children: showHint
-                    ? [
-                        TextSpan(text: hint ?? 'Updating '),
-                        CenterWidgetSpan(
-                          child: IconButton(
-                            onPressed: () {
-                              _loader.interrupt();
-                              setState(() {});
-                            },
-                            color: Theme.of(context).colorScheme.primary,
-                            icon: const Icon(Icons.clear),
-                            iconSize: 12,
-                          ),
-                        ),
-                      ]
-                    : [const TextSpan(text: '  ')],
-              ),
-              textAlign: TextAlign.center,
-            );
-          }),
-        ),
+        if (showRecovery)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  _recovering ? 'Finishing current work...' : 'No progress. Keep waiting or reload.',
+                  textAlign: TextAlign.center,
+                ),
+                Wrap(
+                  alignment: WrapAlignment.center,
+                  spacing: 12,
+                  children: [
+                    TextButton(
+                      onPressed: _recovering ? null : () => _recover(offline: false),
+                      child: const Text('Retry'),
+                    ),
+                    TextButton(
+                      onPressed: _recovering ? null : () => _recover(offline: true),
+                      child: const Text('Load Offline'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          )
+        else
+          ValueListenableBuilder<int>(
+            valueListenable: _loader.downloading,
+            builder: (context, value, child) {
+              final showHint = hint != null || _showUpdatingHint;
+              return Text(showHint ? (hint ?? 'Updating') : '  ', textAlign: TextAlign.center);
+            },
+          ),
         const SizedBox(height: 8),
         ValueListenableBuilder<double?>(
           valueListenable: _loader.progress,
-          builder: (context, value, child) {
-            return _AnimatedProgressIndicator(value: value ?? 0, imageSize: 48);
-          },
+          builder: (context, value, child) => _AnimatedProgressIndicator(value: value ?? 0, imageSize: 48),
         ),
         const SizedBox(height: 48),
       ],

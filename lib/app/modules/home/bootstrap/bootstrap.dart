@@ -15,7 +15,6 @@ import 'package:chaldea/app/tools/gamedata_loader.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/app_info.dart';
-import 'package:chaldea/packages/file_plus/file_plus_web.dart';
 import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/packages/platform/platform.dart';
@@ -450,49 +449,45 @@ class _DatabaseIntroState extends State<_DatabaseIntro> {
           alignment: WrapAlignment.center,
           children: [
             FilledButton(
-              onPressed: () async {
-                try {
-                  setState(() {
-                    success = false;
-                  });
-                  final gamedata = await _loader.reload(force: true, offline: false, silent: false);
-                  if (gamedata != null) {
-                    db.gameData = gamedata;
-                    success = true;
-                  }
-                } on UpdateError {
-                  //
-                } catch (e, s) {
-                  logger.e('download gamedata error', e, s);
-                }
-                if (mounted) setState(() {});
-              },
+              onPressed: _loader.loading
+                  ? null
+                  : () async {
+                      try {
+                        setState(() {
+                          success = false;
+                        });
+                        final gamedata = await _loader.reload(force: true, offline: false, silent: false);
+                        if (!mounted) return;
+                        if (gamedata != null) {
+                          db.gameData = gamedata;
+                          success = true;
+                        }
+                      } on UpdateError {
+                        //
+                      } catch (e, s) {
+                        logger.e('download gamedata error', e, s);
+                      }
+                      if (mounted) setState(() {});
+                    },
               child: Text(S.current.update),
             ),
             if (_loader.error != null)
               TextButton(
-                onPressed: () async {
-                  if (kIsWeb) {
-                    final prefix = FilePlusWeb.normalizePath(db.paths.gameDir);
-                    for (final key in FilePlusWeb.list()) {
-                      if (key.startsWith(prefix)) {
-                        await FilePlusWeb(key).delete();
-                        print('deleting $key');
-                      }
-                    }
-                  } else {
-                    final dir = Directory(db.paths.gameDir);
-                    try {
-                      dir.deleteSync(recursive: true);
-                    } catch (e, s) {
-                      logger.e('delete game folder folder', e, s);
-                    } finally {
-                      dir.createSync(recursive: true);
-                    }
-                  }
-                  EasyLoading.showSuccess(S.current.clear_cache_finish);
-                },
-                child: Text(S.current.clear_cache, style: TextStyle(color: Theme.of(context).colorScheme.error)),
+                onPressed: _loader.loading
+                    ? null
+                    : () async {
+                        await _loader.interrupt();
+                        if (!mounted) return;
+                        final gamedata = await _loader.reload(force: true, offline: true, silent: false);
+                        if (!mounted) return;
+                        setState(() {
+                          if (gamedata != null) {
+                            db.gameData = gamedata;
+                            success = true;
+                          }
+                        });
+                      },
+                child: const Text('Load Offline'),
               ),
           ],
         ),

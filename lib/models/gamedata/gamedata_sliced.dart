@@ -1,4 +1,4 @@
-// Frame-sliced variant of `GameData.fromJson` (ANR remediation P1-4).
+// Frame-sliced variant of `GameData.fromJson`.
 //
 // INVARIANTS — keep in sync with the generated code:
 // 1) The final `GameData(...)` call must mirror `_$GameDataFromJson`
@@ -15,18 +15,21 @@ import 'package:chaldea/models/gamedata/gamedata.dart';
 
 /// Hands the event loop back every [budgetMs] of continuous work.
 class _SliceYielder {
-  _SliceYielder(this.budgetMs);
+  _SliceYielder(this.budgetMs, this.checkpoint);
 
   final int budgetMs;
+  final void Function()? checkpoint;
   final Stopwatch _sw = Stopwatch()..start();
 
   bool get exhausted => _sw.elapsedMilliseconds >= budgetMs;
 
   Future<void> yieldNow() async {
+    checkpoint?.call();
     _sw.reset();
     // Duration.zero schedules a timer event so the event loop (timers, frames)
     // gets a turn. `await null` would only drain microtasks and block the UI.
     await Future<void>.delayed(Duration.zero);
+    checkpoint?.call();
   }
 }
 
@@ -52,8 +55,13 @@ Future<List<V>?> _sliceList<V>(Object? raw, V Function(Map<String, dynamic>) par
 
 /// Same input/output contract as `GameData.fromJson`, but yields to the event
 /// loop every [budgetMs] so startup objectification cannot freeze the UI.
-Future<GameData> gameDataFromJsonSliced(Map<String, dynamic> json, {int budgetMs = 40}) async {
-  final y = _SliceYielder(budgetMs);
+Future<GameData> gameDataFromJsonSliced(
+  Map<String, dynamic> json, {
+  int budgetMs = 40,
+  void Function()? checkpoint,
+}) async {
+  checkpoint?.call();
+  final y = _SliceYielder(budgetMs, checkpoint);
 
   final version = json['version'] == null
       ? null

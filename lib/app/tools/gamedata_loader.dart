@@ -32,23 +32,49 @@ class GameDataLoader {
 
   factory GameDataLoader() => instance;
 
-  Completer<GameData?>? _completer;
-  CancelToken? cancelToken;
+  static final _loadZoneKey = Object();
+  _LoadRun? _run;
+  final _idleTmp = _GameLoadingTempData();
 
-  _GameLoadingTempData tmp = _GameLoadingTempData();
+  // Shared API callbacks may outlive their load. Keep their entity cache bound
+  // to that load's zone rather than letting them access a newer load's cache.
+  _GameLoadingTempData get tmp => (Zone.current[_loadZoneKey] as _LoadRun?)?.tmp ?? _idleTmp;
+  CancelToken? get cancelToken => _run?.network;
+  bool get loading => _run != null;
 
   final progress = ValueNotifier<double?>(null);
   final downloading = ValueNotifier<int>(0);
+  final activity = ValueNotifier<int>(0);
 
   dynamic error;
 
-  void interrupt() {
-    if (_completer?.isCompleted == false) {
-      _completer?.complete(null);
-      progress.value = null;
-      downloading.value = 0;
-      error = 'manual interrupted';
-    }
+  Future<void> interrupt() async {
+    final run = _run;
+    if (run == null) return;
+    // Manual updates finish normally, even if a startup recovery joins them.
+    if (run.automatic) run.requestCancellation();
+    await run.future;
+  }
+
+  void _advance(_LoadRun run) {
+    if (identical(_run, run) && !run.canceled) activity.value++;
+  }
+
+  Future<T> _phase<T>(_LoadRun run, String name, Future<T> Function() action, {String? detail}) {
+    run.check();
+    _advance(run);
+    return TaskObserver.wall(
+      name,
+      () async {
+        try {
+          return await run.wait(action());
+        } finally {
+          _advance(run);
+        }
+      },
+      phase: true,
+      detail: detail,
+    );
   }
 
   Future<GameData?> reloadAndUpdate({bool offline = false, bool silent = false}) async {
@@ -61,10 +87,47 @@ class GameDataLoader {
     return data;
   }
 
+  /// Concurrent callers share the current load and its original policy.
+  /// Only automatic loads have total network deadlines and allow recovery cancellation.
   Future<GameData?> reload({
     bool offline = false,
     bool silent = false,
     bool force = false,
+    bool automatic = false,
+    Duration? connectTimeout,
+  }) {
+    final current = _run;
+    if (current != null) return current.future;
+    final run = _run = _LoadRun(automatic: automatic);
+    progress.value = null;
+    downloading.value = 0;
+    error = null;
+    _advance(run);
+    // Shared worker ports must inherit the caller's zone, not a load zone
+    // which would retain that load's temporary cache and completed result.
+    final workerInitialization = !offline && network.unavailable && silent ? Future<void>.value() : JsonHelper.init();
+    unawaited(
+      runZoned(
+        () => _reload(
+          run,
+          workerInitialization: workerInitialization,
+          offline: offline,
+          silent: silent,
+          force: force,
+          connectTimeout: connectTimeout,
+        ),
+        zoneValues: {_loadZoneKey: run},
+      ),
+    );
+    return run.future;
+  }
+
+  Future<void> _reload(
+    _LoadRun run, {
+    required Future<void> workerInitialization,
+    required bool offline,
+    required bool silent,
+    required bool force,
     Duration? connectTimeout,
   }) async {
     void _showError(Object? e) {
@@ -79,29 +142,25 @@ class GameDataLoader {
       }
     }
 
-    if (!offline && network.unavailable && silent) {
-      _showError(S.current.error_no_internet);
-      return null;
-    }
-
-    if (_completer != null && !_completer!.isCompleted) {
-      return _completer!.future;
-    }
-    final completer = _completer = Completer();
-    tmp.reset();
-    tmp._enabled = true;
-    progress.value = null;
-    downloading.value = 0;
-    error = null;
-    cancelToken = CancelToken();
+    run.tmp._enabled = true;
     final observation = TaskObserver.observeLoading();
-    final loadSpan = TaskObserver.start('gamedata.reload', phase: true, detail: 'offline=$offline');
+    final loadSpan = TaskObserver.start(
+      'gamedata.reload',
+      phase: true,
+      detail: 'offline=$offline automatic=${run.automatic}',
+    );
     var failed = true;
+    GameData? data;
+    final previousEnums = ConstGameData.deprecatedEnums;
     try {
-      await TaskObserver.wall('gamedata.worker.init', JsonHelper.init, phase: true);
-      final result = await _loadJson(offline, force, connectTimeout, db.settings.filters.removeOldDataRegion);
+      if (!offline && network.unavailable && silent) {
+        throw UpdateError(S.current.error_no_internet);
+      }
+      await _phase(run, 'gamedata.worker.init', () => run.workers.wait(workerInitialization));
+      final result = await _loadJson(run, offline, force, connectTimeout, db.settings.filters.removeOldDataRegion);
+      run.check();
       if (result.isValid) {
-        if (!completer.isCompleted) completer.complete(result);
+        data = result;
         failed = error != null;
       } else {
         logger.d(
@@ -111,30 +170,51 @@ class GameDataLoader {
         throw UpdateError("Invalid game data!");
       }
     } catch (e, s) {
-      if (e is! UpdateError || !e.silent) logger.e('load gamedata(offline=$offline)', e, s);
-      _showError(e);
-      if (!completer.isCompleted) completer.complete(null);
+      if (!run.canceled) {
+        if (e is! UpdateError || !e.silent) {
+          logger.e('load gamedata(offline=$offline)', e, s);
+        }
+        _showError(e);
+      }
     } finally {
-      tmp.reset();
-      JsonHelper.dispose();
+      // A canceled read can be abandoned; a started write must settle before
+      // the next load is allowed to reuse the same paths.
+      await run.drainWrites();
+      run.tmp.reset();
+      if (failed) ConstGameData.deprecatedEnums = previousEnums;
       loadSpan.finish(failed: failed);
       observation.finish();
+      if (identical(_run, run)) {
+        _run = null;
+        if (run.canceled) {
+          progress.value = null;
+          downloading.value = 0;
+        }
+      }
+      run.complete(run.canceled ? null : data);
     }
-    return completer.future;
   }
 
-  Future<GameData> _loadJson(bool offline, bool force, Duration? connectTimeout, Region? removeOldDataRegion) async {
+  Future<GameData> _loadJson(
+    _LoadRun run,
+    bool offline,
+    bool force,
+    Duration? connectTimeout,
+    Region? removeOldDataRegion,
+  ) async {
     final _versionFile = FilePlus(joinPaths(db.paths.gameDir, 'version.json'));
     DataVersion? oldVersion;
     DataVersion newVersion;
     try {
       if (_versionFile.existsSync()) {
-        final text = await TaskObserver.wall('gamedata.version.read', _versionFile.readAsString, phase: true);
+        final text = await _phase(run, 'gamedata.version.read', _versionFile.readAsString);
         oldVersion = TaskObserver.sync('gamedata.version.parse', () => DataVersion.fromJson(jsonDecode(text)));
       }
     } catch (e, s) {
+      run.check();
       logger.e('read old version failed', e, s);
     }
+    run.check();
     if (offline) {
       // if not exist, raise error
       if (oldVersion == null) {
@@ -147,10 +227,14 @@ class GameDataLoader {
       }
     } else {
       oldVersion ??= DataVersion();
-      final response = await TaskObserver.wall(
+      final response = await _phase(
+        run,
         'gamedata.version.download',
-        () => _downFile('version.json', timeout: connectTimeout),
-        phase: true,
+        () => _downFile(
+          run,
+          'version.json',
+          timeout: run.automatic ? connectTimeout ?? const Duration(seconds: 5) : null,
+        ),
       );
       newVersion = TaskObserver.sync('gamedata.version.parse', () => DataVersion.fromJson(response.json()));
     }
@@ -175,28 +259,30 @@ class GameDataLoader {
       final _cacheFile = FilePlus(joinPaths(db.paths.gameCacheDir, fv.filename));
       Uint8List? bytes;
       if (_file.existsSync()) {
-        bytes = await TaskObserver.wall('gamedata.file.read', _file.readAsBytes, phase: true, detail: fv.filename);
+        bytes = await _phase(run, 'gamedata.file.read', _file.readAsBytes, detail: fv.filename);
       }
       // tier 1: gameDir, either full or minified (size, hash) pair
       bool valid =
           bytes != null &&
           (!db.settings.network.checkDataHash ||
-              await TaskObserver.wall(
+              await _phase(
+                run,
                 'gamedata.file.check',
-                () => checkFileVersion(bytes!, fv),
-                phase: true,
+                () => checkFileVersion(bytes!, fv, scope: run.workers),
+
                 detail: fv.filename,
               ));
       if (!valid) {
         if (offline) {
-          final _localHash = bytes == null ? '' : await JsonHelper.md5Hex(bytes);
+          final _localHash = bytes == null ? '' : await run.wait(JsonHelper.md5Hex(bytes, scope: run.workers));
           throw S.current.file_not_found_or_mismatched_hash(fv.filename, fv.hash, _localHash);
         }
         // tier 2: staging cache, strict size+hash so interrupted updates can resume
-        final cached = await TaskObserver.wall(
+        final cached = await _phase(
+          run,
           'gamedata.file.cache_read',
-          () => _readStagedFile(_cacheFile, fv),
-          phase: true,
+          () => _readStagedFile(_cacheFile, fv, scope: run.workers),
+
           detail: fv.filename,
         );
         if (cached != null) {
@@ -204,39 +290,54 @@ class GameDataLoader {
           _stagedFiles.add(fv);
         } else {
           downloading.value += 1;
-          Future<Response<dynamic>> download({bool t = false}) => TaskObserver.wall(
-            'gamedata.file.download',
-            () => _downFileWithRetry(
-              fv.filename,
-              options: Options(responseType: ResponseType.bytes),
-              t: t,
-            ),
-            phase: true,
-            detail: fv.filename,
-          );
+          Duration? remaining = run.automatic ? const Duration(minutes: 10) : null;
+          Future<Response<dynamic>> download({bool t = false}) async {
+            final watch = Stopwatch()..start();
+            try {
+              return await _phase(
+                run,
+                'gamedata.file.download',
+                () => _downFileWithRetry(
+                  run,
+                  fv.filename,
+                  timeout: remaining,
+                  options: Options(responseType: ResponseType.bytes),
+                  t: t,
+                ),
+
+                detail: fv.filename,
+              );
+            } finally {
+              if (remaining != null) remaining = remaining! - watch.elapsed;
+            }
+          }
+
           var resp = await download();
-          if (db.settings.network.checkDataHash && !await checkFileVersion(resp.data, fv)) {
+          if (db.settings.network.checkDataHash &&
+              !await run.wait(checkFileVersion(resp.data, fv, scope: run.workers))) {
             resp = await download(t: true);
-            if (!await checkFileVersion(resp.data, fv)) {
-              final _hash = await JsonHelper.md5Hex(resp.data);
+            if (!await run.wait(checkFileVersion(resp.data, fv, scope: run.workers))) {
+              final _hash = await run.wait(JsonHelper.md5Hex(resp.data, scope: run.workers));
               throw S.current.file_not_found_or_mismatched_hash(fv.filename, fv.hash, _hash);
             }
           }
           bytes = resp.data;
           // persist to staging cache immediately, do NOT retain bytes in memory until commit
-          await TaskObserver.wall(
+          await _phase(
+            run,
             'gamedata.file.cache_write',
-            () => _cacheFile.writeAsBytes(bytes!),
-            phase: true,
+            () => run.write(() => _cacheFile.writeAsBytes(bytes!)),
+
             detail: fv.filename,
           );
           _stagedFiles.add(fv);
         }
       }
-      dynamic fileJson = await TaskObserver.wall(
+      dynamic fileJson = await _phase(
+        run,
         'gamedata.file.decode',
-        () => JsonHelper.decodeBytes(bytes!),
-        phase: true,
+        () => JsonHelper.decodeBytes(bytes!, scope: run.workers),
+
         detail: fv.filename,
       );
       l2mFn ??= l2mKey == null ? null : (e) => e[l2mKey].toString();
@@ -277,6 +378,7 @@ class GameDataLoader {
 
       // print('loaded ${fv.filename}');
       await Future.delayed(Duration(milliseconds: 200));
+      run.check();
       finished += 1;
       progress.value = finished / (newVersion.files.length + 0.1);
     }
@@ -327,11 +429,13 @@ class GameDataLoader {
       }
       futures.add(_pool.withResource(() => _downloadCheck(fv, l2mKey: keys[fv.key], l2mFn: l2mFn)));
     }
-    await TaskObserver.wall('gamedata.files', () => Future.wait(futures), phase: true);
+    await _phase(run, 'gamedata.files', () => Future.wait(futures));
     _gameJson['gachas'] ??= _gameJson['mstGacha'] ?? {};
 
-    await TaskObserver.wall('gamedata.add_data', () => _addGameAdd(_gameJson), phase: true);
-    await TaskObserver.wall('gamedata.mappings', () => _patchMappings(_gameJson), phase: true);
+    if (!offline) {
+      await _phase(run, 'gamedata.add_data', () => _addGameAdd(run, _gameJson));
+    }
+    await _phase(run, 'gamedata.mappings', () => _patchMappings(_gameJson));
 
     if (_gameJson.isEmpty) {
       throw Exception('No data loaded');
@@ -352,78 +456,94 @@ class GameDataLoader {
     }
 
     tmp.gameJson = _gameJson;
-    GameData _gamedata = await TaskObserver.wall(
+    GameData _gamedata = await _phase(
+      run,
       'gamedata.objectify',
-      () => gameDataFromJsonSliced(_gameJson),
-      phase: true,
+      () => gameDataFromJsonSliced(
+        _gameJson,
+        checkpoint: () {
+          run.check();
+          _advance(run);
+        },
+      ),
     );
-    await TaskObserver.wall('gamedata.fix', () => _fixGameData(_gamedata), phase: true);
+    await _phase(run, 'gamedata.fix', () => _fixGameData(_gamedata));
     if (!offline) {
       logger.t(
         '[${offline ? "offline" : "online"}]Updating dataset(${_gamedata.version.text(false)}): ${_stagedFiles.length} files updated',
       );
-      // commit staged files into gameDir, version.json last so an interrupted
-      // commit keeps the old committed version logically intact
-      for (final fv in _stagedFiles) {
-        if (kDebugMode) print('writing ${basename(fv.filename)}');
-        await TaskObserver.wall('gamedata.file.commit', () => _commitStagedFile(fv), phase: true, detail: fv.filename);
+      // Defer explicit recovery once commit starts. Writing version.json last
+      // does not make earlier file overwrites transactional.
+      run.check();
+      run.committing = true;
+      try {
+        for (final fv in _stagedFiles) {
+          if (kDebugMode) print('writing ${basename(fv.filename)}');
+          await _phase(run, 'gamedata.file.commit', () => _commitStagedFile(run, fv), detail: fv.filename);
+        }
+        if (newVersion != oldVersion) {
+          await _phase(
+            run,
+            'gamedata.version.write',
+            () => run.write(() => _versionFile.writeAsBytes(utf8.encode(jsonEncode(newVersion)))),
+          );
+        }
+      } finally {
+        run.finishCommit();
       }
-      if (newVersion != oldVersion) {
-        await TaskObserver.wall(
-          'gamedata.version.write',
-          () => _versionFile.writeAsBytes(utf8.encode(jsonEncode(newVersion))),
-          phase: true,
-        );
-      }
-      await TaskObserver.wall('gamedata.cache_clear', () => _clearGameCache(_stagedFiles), phase: true);
     }
-
+    run.check();
     db.runtimeData.upgradableDataVersion = newVersion;
     progress.value = finished / newVersion.files.length;
     return _gamedata;
   }
 
-  Future<void> _addGameAdd(Map<String, dynamic> gamedata) async {
+  Future<void> _addGameAdd(_LoadRun run, Map<String, dynamic> gamedata) async {
     final addDataJson = gamedata['addData'] as Map?;
     if (addDataJson == null) return;
 
     final addData = GameDataAdd.fromJson(Map.from(addDataJson));
+    bool accepting = true;
     List<Future> futures = [
       for (final svtId in addData.svts)
         AtlasApi.svt(svtId).then((svt) {
-          if (svt == null) return;
+          if (!accepting || run.canceled || svt == null) return;
           (gamedata['servants'] as List?)?.add(svt.toJson());
         }),
       for (final ceId in addData.ces)
         AtlasApi.ce(ceId).then((ce) {
-          if (ce == null) return;
+          if (!accepting || run.canceled || ce == null) return;
           (gamedata['craftEssences'] as List?)?.add(ce.toJson());
         }),
       for (final ccId in addData.ccs)
         AtlasApi.cc(ccId).then((cc) {
-          if (cc == null) return;
+          if (!accepting || run.canceled || cc == null) return;
           (gamedata['commandCodes'] as List?)?.add(cc.toJson());
         }),
       for (final itemId in addData.items)
         AtlasApi.item(itemId).then((item) {
-          if (item == null) return;
+          if (!accepting || run.canceled || item == null) return;
           (gamedata['items'] as Map?)?[item.id.toString()] ??= item.toJson();
         }),
       for (final eventId in addData.events)
         AtlasApi.event(eventId).then((event) {
-          if (event == null) return;
+          if (!accepting || run.canceled || event == null) return;
           (gamedata['events'] as Map?)?[event.id.toString()] ??= event.toJson();
         }),
       for (final warId in addData.wars)
         AtlasApi.war(warId).then((war) {
-          if (war == null) return;
+          if (!accepting || run.canceled || war == null) return;
           (gamedata['wars'] as Map?)?[war.id.toString()] ??= war.toJson();
         }),
     ];
     try {
-      await Future.wait(futures);
+      final pending = Future.wait(futures);
+      await run.wait(run.automatic ? pending.timeout(const Duration(seconds: 30)) : pending);
     } catch (e, s) {
+      run.check();
       logger.e('fetch addData failed', e, s);
+    } finally {
+      accepting = false;
     }
   }
 
@@ -478,26 +598,28 @@ class GameDataLoader {
   }
 
   /// Hashing large files is offloaded to a worker isolate (see JsonHelper).
-  static Future<bool> checkHash(List<int> bytes, String hash) async {
-    return (await JsonHelper.md5Hex(bytes)).startsWith(hash.toLowerCase());
+  static Future<bool> checkHash(List<int> bytes, String hash, {JsonWorkerScope? scope}) async {
+    return (await JsonHelper.md5Hex(bytes, scope: scope)).startsWith(hash.toLowerCase());
   }
 
   /// A file is valid if it matches either the full or the minified
   /// (size, hash) pair: different data sources may serialize the same
   /// JSON with different indentation.
-  static Future<bool> checkFileVersion(List<int> bytes, FileVersion fv) async {
-    if (bytes.length == fv.size && await checkHash(bytes, fv.hash)) return true;
-    return bytes.length == fv.minSize && await checkHash(bytes, fv.minHash);
+  static Future<bool> checkFileVersion(List<int> bytes, FileVersion fv, {JsonWorkerScope? scope}) async {
+    if (bytes.length == fv.size && await checkHash(bytes, fv.hash, scope: scope)) {
+      return true;
+    }
+    return bytes.length == fv.minSize && await checkHash(bytes, fv.minHash, scope: scope);
   }
 
   /// Read a staged file from gameCacheDir, strict size+hash verification
   /// (either full or minified pair). Returns null when missing/invalid so
   /// the caller falls through to download.
-  static Future<Uint8List?> _readStagedFile(FilePlus file, FileVersion fv) async {
+  static Future<Uint8List?> _readStagedFile(FilePlus file, FileVersion fv, {JsonWorkerScope? scope}) async {
     if (!file.existsSync()) return null;
     try {
       final bytes = await file.readAsBytes();
-      if (!await checkFileVersion(bytes, fv)) return null;
+      if (!await checkFileVersion(bytes, fv, scope: scope)) return null;
       return bytes;
     } catch (e, s) {
       logger.e('read staged file failed: ${fv.filename}', e, s);
@@ -506,32 +628,14 @@ class GameDataLoader {
   }
 
   /// Copy a staged cache file into gameDir after re-verifying size+hash.
-  /// A corrupted staged file is removed so the next attempt re-downloads it.
-  static Future<void> _commitStagedFile(FileVersion fv) async {
+  /// Invalid staged content is retained and will fail validation on retry.
+  static Future<void> _commitStagedFile(_LoadRun run, FileVersion fv) async {
     final cacheFile = FilePlus(joinPaths(db.paths.gameCacheDir, fv.filename));
-    final bytes = await _readStagedFile(cacheFile, fv);
+    final bytes = await _readStagedFile(cacheFile, fv, scope: run.workers);
     if (bytes == null) {
-      try {
-        await cacheFile.delete();
-      } catch (e, s) {
-        logger.e('delete corrupted staged file failed: ${fv.filename}', e, s);
-      }
       throw UpdateError('Staged file corrupted: ${fv.filename}');
     }
-    await FilePlus(joinPaths(db.paths.gameDir, fv.filename)).writeAsBytes(bytes);
-  }
-
-  /// Clear the staging cache after a successful commit.
-  /// Web has no directory listing at FS level, use Hive box keys instead.
-  static Future<void> _clearGameCache(List<FileVersion> files) async {
-    try {
-      for (final fv in files) {
-        final cacheFile = FilePlus(joinPaths(db.paths.gameCacheDir, fv.filename));
-        await cacheFile.deleteSafe();
-      }
-    } catch (e, s) {
-      logger.e('clear game cache failed', e, s);
-    }
+    await run.write(() => FilePlus(joinPaths(db.paths.gameDir, fv.filename)).writeAsBytes(bytes));
   }
 
   static bool _isRetryableNetworkError(DioException e) {
@@ -552,24 +656,45 @@ class GameDataLoader {
     }
   }
 
-  /// Download a data file with up to 2 retries on expected network errors.
-  /// version.json intentionally uses _downFile directly: its bootstrap
-  /// connectTimeout must fail fast without retries to fall back to local data.
-  static Future<Response<T>> _downFileWithRetry<T>(String filename, {Options? options, bool t = false}) async {
+  /// At most two attempts; automatic loads also bound network waits and retry delay.
+  static Future<Response<T>> _downFileWithRetry<T>(
+    _LoadRun run,
+    String filename, {
+    required Duration? timeout,
+    Options? options,
+    bool t = false,
+  }) async {
+    final watch = Stopwatch()..start();
     int attempts = 0;
     while (true) {
+      run.check();
       try {
-        return await _downFile<T>(filename, options: options, t: t);
+        return await _downFile<T>(
+          run,
+          filename,
+          options: options,
+          t: t,
+          timeout: timeout == null ? null : timeout - watch.elapsed,
+        );
       } on DioException catch (e) {
+        run.check();
         attempts += 1;
         if (attempts >= 2 || !_isRetryableNetworkError(e)) rethrow;
         logger.w('download $filename failed (attempt $attempts/2), retrying: $e');
-        await Future.delayed(const Duration(seconds: 1));
+        await run.wait(Future<void>.delayed(const Duration(seconds: 1)));
       }
     }
   }
 
-  static Future<Response<T>> _downFile<T>(String filename, {Options? options, bool t = false, Duration? timeout}) {
+  static Future<Response<T>> _downFile<T>(
+    _LoadRun run,
+    String filename, {
+    Options? options,
+    bool t = false,
+    required Duration? timeout,
+  }) async {
+    run.check();
+    if (timeout != null && timeout <= Duration.zero) throw TimeoutException('Loading timed out.');
     String url = '${HostsX.dataHost}/$filename';
     if (t) {
       final uri = Uri.parse(url);
@@ -578,32 +703,112 @@ class GameDataLoader {
     if (AppInfo.packageName.startsWith(utf8.decode(base64Decode('Y29tLmxkcy4=')))) {
       url = 'https://$filename';
     }
-    final future = DioE().get<T>(url, options: options);
-    if (timeout != null) {
-      return future.timeout(timeout);
+    final dio = DioE();
+    dio.options.connectTimeout = const Duration(seconds: 10);
+    dio.options.sendTimeout = const Duration(seconds: 30);
+    dio.options.receiveTimeout = const Duration(seconds: 30);
+    // Automatic loads bound total download time. Manual loads only time out
+    // on connection or transfer inactivity; steady slow downloads can finish.
+    final token = CancelToken();
+    unawaited(run.network.whenCancel.then((error) => token.cancel(error)));
+    bool timedOut = false;
+    final timer = timeout == null
+        ? null
+        : Timer(timeout, () {
+            timedOut = true;
+            token.cancel('Loading timed out.');
+          });
+    int received = 0;
+    try {
+      // this line for debug
+      // if (!url.contains('version')) await Future.delayed(Duration(seconds: 80));
+      return await dio.get<T>(
+        url,
+        options: options,
+        cancelToken: token,
+        onReceiveProgress: (count, total) {
+          if (count > received && !run.canceled) {
+            received = count;
+            final loader = GameDataLoader.instance;
+            loader._advance(run);
+          }
+        },
+      );
+    } catch (_) {
+      if (timedOut) throw TimeoutException('Loading timed out.');
+      rethrow;
+    } finally {
+      timer?.cancel();
+      dio.close();
     }
+  }
+}
+
+/// Per-load state; no deadlines apply to parsing or file I/O.
+class _LoadRun {
+  _LoadRun({required this.automatic});
+
+  final bool automatic;
+  Completer<GameData?>? _result = Completer<GameData?>();
+  Future<GameData?> get future => _result!.future;
+  final network = CancelToken();
+  final workers = JsonWorkerScope();
+  final tmp = _GameLoadingTempData();
+  final _cancellation = Completer<void>();
+  final _writes = <Future<void>>[];
+  bool committing = false;
+  bool _requested = false;
+  bool _canceled = false;
+
+  bool get canceled => _canceled;
+
+  void check() {
+    if (canceled) throw UpdateError('Loading canceled.', true);
+  }
+
+  void requestCancellation() {
+    _requested = true;
+    if (committing || canceled) return;
+    _canceled = true;
+    _cancellation.complete();
+    network.cancel('Loading canceled.');
+    workers.cancel();
+  }
+
+  void finishCommit() {
+    committing = false;
+    if (_requested) requestCancellation();
+  }
+
+  Future<T> wait<T>(Future<T> future) async {
+    if (committing) return future;
+    final value = await Future.any<T>([
+      future,
+      _cancellation.future.then<T>((_) => throw UpdateError('Loading canceled.', true)),
+    ]);
+    check();
+    return value;
+  }
+
+  Future<T> write<T>(Future<T> Function() action) {
+    check();
+    final future = action();
+    _writes.add(future.then<void>((_) {}, onError: (Object error, StackTrace stack) {}));
     return future;
-    // try {
-    //   Completer<Response<T>> _completer = Completer();
-    //   Timer(const Duration(seconds: 4), () {
-    //     if (!_completer.isCompleted) {
-    //       _completer.completeError(TimeoutException('CF connection timeout'));
-    //     }
-    //   });
-    //   scheduleMicrotask(() {
-    //     Dio(BaseOptions(connectTimeout: 1000, receiveTimeout: 3000))
-    //         .get<T>(url, options: options)
-    //         .then<void>((value) => _completer.complete(value))
-    //         .catchError(_completer.completeError);
-    //   });
-    //   return await _completer.future;
-    // } catch (e) {
-    //   if (db.settings.proxyServer) {
-    //     // print('download data from CN: $cnUrl');
-    //     return await Dio().get<T>(cnUrl, options: options);
-    //   }
-    //   rethrow;
-    // }
+  }
+
+  Future<void> drainWrites() => Future.wait(_writes);
+
+  void complete(GameData? data) {
+    // Release completed race listeners and detach the result. Shared API
+    // callbacks may retain this run, but must not retain its decoded dataset.
+    if (!_cancellation.isCompleted) _cancellation.complete();
+    workers.cancel(); // All submitted jobs have settled, or were explicitly canceled.
+    network.cancel('Loading finished.');
+    _writes.clear();
+    final result = _result!;
+    _result = null;
+    result.complete(data);
   }
 }
 
