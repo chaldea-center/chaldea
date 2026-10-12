@@ -169,14 +169,14 @@ class _ItemResultTabState extends State<ItemResultTab> with ScrollControllerMixi
       title: Text(S.current.import_screenshot_update_items),
       content: Text(S.current.import_screenshot_hint),
       confirmText: S.current.update,
-      onTapOk: () {
+      onTapOk: () async {
         for (final detail in result.details) {
           if (detail.checked) {
             db.curUser.items[detail.itemId] = detail.count;
           }
         }
         db.itemCenter.updateLeftItems();
-        db.saveUserData();
+        await db.saveUserData();
         EasyLoading.showSuccess(S.current.import_data_success);
       },
     ).showDialog(context);

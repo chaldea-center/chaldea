@@ -154,7 +154,7 @@ class _UserDataPageState extends State<UserDataPage> {
       final userdata = UserData.fromJson(jsonDecode(utf8.decode(bytes)));
       await db.backupUserdata();
       db.userData = userdata;
-      db.saveUserData();
+      await db.saveUserData();
       EasyLoading.showToast(S.current.import_data_success);
       db.notifyAppUpdate();
     } catch (e, s) {
@@ -388,8 +388,8 @@ class __BackupHistoryPageState extends State<_BackupHistoryPage> {
                           final userdata = UserData.fromJson(jsonData);
                           await db.backupUserdata();
                           db.userData = userdata;
+                          await db.saveUserData();
                           EasyLoading.showToast(S.current.import_data_success);
-                          db.saveUserData();
                           db.notifyAppUpdate();
                         } catch (e) {
                           EasyLoading.showError(S.current.import_data_error(e));

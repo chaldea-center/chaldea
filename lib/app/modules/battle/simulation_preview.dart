@@ -1266,6 +1266,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
     final questInfo = questPhase == null ? null : BattleQuestInfo.quest(questPhase!);
     team.quest = questInfo;
     team.options = options.toShareData();
+    db.notifySettings();
 
     return team;
   }

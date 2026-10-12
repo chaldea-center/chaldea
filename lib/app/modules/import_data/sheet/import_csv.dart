@@ -118,7 +118,7 @@ class _ImportCSVPageState extends State<ImportCSVPage> {
                     builder: (context) {
                       return SimpleConfirmDialog(
                         title: Text(S.current.confirm),
-                        onTapOk: () {
+                        onTapOk: () async {
                           for (final row in parsedRows) {
                             final svt = db.gameData.servantsWithDup[row.collectionNo];
                             if (svt == null) continue;
@@ -132,6 +132,7 @@ class _ImportCSVPageState extends State<ImportCSVPage> {
                             }
                           }
                           db.itemCenter.init();
+                          await db.saveUserData();
                           EasyLoading.showSuccess(S.current.import_data_success);
                         },
                       );

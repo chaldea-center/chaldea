@@ -68,6 +68,7 @@ class ChaldeaServerBackup extends BackupBackend<UserData> {
       if (selected != null) {
         db.userData = selected;
         db.notifyUserdata();
+        await db.saveUserData();
         EasyLoading.showSuccess(S.current.import_data_success);
       }
       return selected;

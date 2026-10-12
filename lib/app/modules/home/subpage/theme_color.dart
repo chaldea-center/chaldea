@@ -24,6 +24,7 @@ class _ThemeColorPageState extends State<ThemeColorPage> {
               if (v != null && v != db.settings.themeMode) {
                 db.settings.appearance.themeMode = v;
                 db.notifySettings();
+                db.saveSettings();
                 db.notifyAppUpdate();
               }
               setState(() {});
@@ -103,6 +104,7 @@ class _ThemeColorPageState extends State<ThemeColorPage> {
                     });
                   },
                   onChangeEnd: (value) {
+                    db.saveSettings();
                     Future.delayed(Duration(milliseconds: 100), db.notifyAppUpdate);
                   },
                 ),
@@ -115,6 +117,7 @@ class _ThemeColorPageState extends State<ThemeColorPage> {
               if (v != db.settings.appearance.flexScheme) {
                 db.settings.appearance.flexScheme = v;
                 db.notifySettings();
+                db.saveSettings();
                 db.notifyAppUpdate();
               }
               setState(() {});

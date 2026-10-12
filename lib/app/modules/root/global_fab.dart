@@ -209,6 +209,7 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
             db.settings.appearance.themeMode = db.settings.appearance.isResolvedDarkMode
                 ? ThemeMode.light
                 : ThemeMode.dark;
+            db.saveSettings();
             db.notifyAppUpdate();
           },
         ),
@@ -269,6 +270,7 @@ class __DebugMenuDialogState extends State<_DebugMenuDialog> {
             onChanged: (lang) {
               if (lang == null) return;
               db.settings.setLanguage(lang);
+              db.saveSettings();
               db.notifyAppUpdate();
             },
           ),

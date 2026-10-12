@@ -320,6 +320,7 @@ Extra master mission rewards are not included.""",
   void update() {
     if (mounted) setState(() {});
     plan.validate();
+    db.notifyUserdata();
     EasyDebounce.debounce('sq_plan_solve', const Duration(seconds: 1), () {
       plan.solve();
     });

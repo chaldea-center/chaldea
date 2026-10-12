@@ -363,6 +363,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
             status.favorite = true;
           }
           status.grandSvt = v;
+          db.notifyUserdata();
           if (mounted) setState(() {});
         },
         title: Text(S.current.grand_servant),
@@ -723,6 +724,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
                     itemExtent: 36,
                     onSelected: (v) {
                       status.setCmdCard(index, v);
+                      db.notifyUserdata();
                       if (mounted) setState(() {});
                     },
                   ).showDialog(context);
@@ -739,6 +741,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
                         builder: (context) => CmdCodeListPage(
                           onSelected: (selectedCode) {
                             status.setCmdCode(index, selectedCode.collectionNo);
+                            db.notifyUserdata();
                             if (mounted) setState(() {});
                           },
                         ),
@@ -766,6 +769,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
                     onPressed: () {
                       setState(() {
                         status.setCmdCode(index, null);
+                        db.notifyUserdata();
                       });
                     },
                     icon: const Icon(Icons.remove_circle_outline, size: 18),

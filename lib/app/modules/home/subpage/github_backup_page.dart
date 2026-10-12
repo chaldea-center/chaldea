@@ -65,8 +65,8 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
   Future<void> backup() async {
     try {
       await showEasyLoading(() => backend.backup(message: message.isNotEmpty ? message : null));
+      await db.saveAll();
       EasyLoading.showSuccess(S.current.success);
-      db.saveAll();
     } on ConflictError catch (e) {
       EasyLoading.dismiss();
       if (!mounted) return;
@@ -95,8 +95,8 @@ class _GithubBackupPageState extends State<GithubBackupPage> {
   Future<void> restore() async {
     try {
       await showEasyLoading(() => backend.restore());
+      await db.saveAll();
       EasyLoading.showSuccess(S.current.success);
-      db.saveAll();
     } catch (e, s) {
       EasyLoading.dismiss();
       logger.e('github restore failed', e, s);

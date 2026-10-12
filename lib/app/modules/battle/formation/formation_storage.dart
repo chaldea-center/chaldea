@@ -118,6 +118,7 @@ class _FormationEditorState extends State<FormationEditor>
             final item = userData.teams.removeAt(oldIndex);
             userData.teams.insert(newIndex, item);
             userData.validate();
+            db.notifyUserdata();
           });
         },
       );
@@ -141,6 +142,7 @@ class _FormationEditorState extends State<FormationEditor>
                 setState(() {
                   s = s.trim();
                   formation.name = s.isEmpty ? null : s;
+                  db.notifyUserdata();
                 });
               }
             },
@@ -228,6 +230,7 @@ class _FormationEditorState extends State<FormationEditor>
                     if (mounted) {
                       setState(() {
                         userData.teams.remove(team);
+                        db.notifyUserdata();
                       });
                     }
                   },
@@ -245,6 +248,7 @@ class _FormationEditorState extends State<FormationEditor>
               onTapOk: () {
                 setState(() {
                   userData.teams[index] = widget.teamToSave!.copy();
+                  db.notifyUserdata();
                 });
                 EasyLoading.showSuccess('${S.current.team} ${index + 1}');
               },
@@ -300,6 +304,7 @@ class _FormationEditorState extends State<FormationEditor>
                 ? null
                 : () {
                     userData.teams.add(widget.teamToSave!.copy());
+                    db.notifyUserdata();
                     EasyLoading.showSuccess('${S.current.saved}: ${S.current.team} ${userData.teams.length}');
                     setState(() {});
                   },

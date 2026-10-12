@@ -931,9 +931,9 @@ class ImportHttpPageState extends State<ImportHttpPage> {
     }
     user.lastImportId = userGame.friendCode;
 
-    EasyLoading.showSuccess(S.current.success);
     db.itemCenter.init();
-    db.saveUserData();
+    await db.saveUserData();
+    EasyLoading.showSuccess(S.current.success);
   }
 
   void importResponseBody() async {
