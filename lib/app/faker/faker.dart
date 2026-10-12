@@ -1046,29 +1046,8 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
                 title: 'Quest ID',
                 initValue: battleOption.questId,
                 onSubmit: (questId) async {
-                  Quest? quest = db.gameData.quests[questId];
-                  if (questId > 0) {
-                    quest ??= await showEasyLoading(() => AtlasApi.quest(questId, region: agent.user.region));
-                  }
-                  if (quest != null && !quest.flags.contains(QuestFlag.superBoss)) {
-                    battleOption.questId = questId;
-                    final userQuest = mstData.userQuest[questId];
-                    if (mstData.isLoggedIn) {
-                      if (userQuest != null && userQuest.clearNum > 0) {
-                        battleOption.questPhase = userQuest.questPhase;
-                      } else {
-                        battleOption.questPhase =
-                            quest.phases.firstWhereOrNull((e) => e > (userQuest?.questPhase ?? 0)) ??
-                            battleOption.questPhase;
-                      }
-                    }
-                    if (quest.phases.isNotEmpty && !quest.phases.contains(battleOption.questPhase)) {
-                      battleOption.questPhase = quest.phases.first;
-                    }
-                    if (mounted) setState(() {});
+                  if (await runtime.battle.selectQuest(questId)) {
                     _onChangeQuest();
-                  } else {
-                    EasyLoading.showError('Invalid Quest');
                   }
                   if (mounted) setState(() {});
                 },

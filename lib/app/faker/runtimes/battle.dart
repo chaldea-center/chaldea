@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/modules/bond/solver/bond_effect.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -18,6 +20,34 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
   bool stopLoopFlag = false;
 
   AutoBattleOptions get battleOption => agent.user.curBattleOption;
+
+  Future<bool> selectQuest(int questId, {Quest? quest}) async {
+    quest ??= db.gameData.quests[questId];
+    if (questId > 0 && quest == null) {
+      quest = await showEasyLoading(() => AtlasApi.quest(questId, region: agent.user.region));
+    }
+    if (quest == null || quest.flags.contains(QuestFlag.superBoss)) {
+      EasyLoading.showError('Invalid Quest');
+      return false;
+    }
+
+    final battleOption = this.battleOption;
+    battleOption.questId = questId;
+    final userQuest = mstData.userQuest[questId];
+    if (mstData.isLoggedIn) {
+      if (userQuest != null && userQuest.clearNum > 0) {
+        battleOption.questPhase = userQuest.questPhase;
+      } else {
+        battleOption.questPhase =
+            quest.phases.firstWhereOrNull((e) => e > (userQuest?.questPhase ?? 0)) ?? battleOption.questPhase;
+      }
+    }
+    if (quest.phases.isNotEmpty && !quest.phases.contains(battleOption.questPhase)) {
+      battleOption.questPhase = quest.phases.first;
+    }
+    runtime.update();
+    return true;
+  }
 
   Future<void> startLoop({bool dialog = true}) async {
     if (runtime.agentData.curBattle != null) {

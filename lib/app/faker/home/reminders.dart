@@ -476,7 +476,7 @@ class FakerReminders extends StatelessWidget {
           icon: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
         ),
         onTap: () {
-          router.pushPage(QuestListPage.ids(ids: questIds.toList(), mstData: mstData));
+          router.pushPage(QuestListPage.ids(ids: questIds.toList(), mstData: mstData, onSelected: _onSelectQuest));
         },
       );
     }
@@ -531,7 +531,7 @@ class FakerReminders extends StatelessWidget {
             icon: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
           ),
           onTap: () {
-            router.pushPage(QuestListPage.ids(ids: uncleared, mstData: mstData));
+            router.pushPage(QuestListPage.ids(ids: uncleared, mstData: mstData, onSelected: _onSelectQuest));
           },
         );
       }
@@ -548,7 +548,8 @@ class FakerReminders extends StatelessWidget {
               !quest.isRepeatRaid &&
               !_shownQuestIds.contains(quest.id) &&
               quest.type != QuestType.friendship &&
-              quest.warId != WarId.rankup,
+              quest.warId != WarId.rankup &&
+              _isQuestNeedClear(quest.id),
         )
         .toList();
     if (timerQuests.isNotEmpty) {
@@ -560,7 +561,7 @@ class FakerReminders extends StatelessWidget {
           '${timerQuests.length} uncleared, ${Maths.min(timerQuests.map((e) => e.closedAt)).sec2date().toCustomString(year: false, second: false)}',
         ),
         onTap: () {
-          router.pushPage(QuestListPage(quests: timerQuests, mstData: mstData));
+          router.pushPage(QuestListPage(quests: timerQuests, mstData: mstData, onSelected: _onSelectQuest));
         },
       );
     }
@@ -607,5 +608,11 @@ class FakerReminders extends StatelessWidget {
     }
 
     return children;
+  }
+
+  void _onSelectQuest(int questId, Quest? quest) {
+    runtime.lockTask(() async {
+      await runtime.battle.selectQuest(questId, quest: quest);
+    });
   }
 }

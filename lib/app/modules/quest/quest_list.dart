@@ -20,6 +20,7 @@ class QuestListPage extends StatefulWidget {
   final NiceWar? war;
   final bool? groupByWar;
   final MasterDataManager? mstData;
+  final void Function(int questId, Quest? quest)? onSelected;
 
   const QuestListPage({
     super.key,
@@ -29,6 +30,7 @@ class QuestListPage extends StatefulWidget {
     this.war,
     this.groupByWar,
     this.mstData,
+    this.onSelected,
   }) : ids = const [];
 
   const QuestListPage.ids({
@@ -39,6 +41,7 @@ class QuestListPage extends StatefulWidget {
     this.war,
     this.groupByWar,
     this.mstData,
+    this.onSelected,
   }) : quests = const [];
 
   @override
@@ -97,6 +100,13 @@ class _QuestListPageState extends State<QuestListPage> {
 
     Widget buildQuest(int questId) {
       final quest = allQuestsMap[questId];
+      final onSelected = widget.onSelected;
+      final VoidCallback? onLongPress = onSelected == null
+          ? null
+          : () {
+              Navigator.pop(context, questId);
+              onSelected(questId, quest);
+            };
 
       final spot = db.gameData.spots[quest?.spotId];
 
@@ -132,6 +142,7 @@ class _QuestListPageState extends State<QuestListPage> {
           subtitle: userQuestInfo.isEmpty ? null : Text(userQuestInfo.join('\n')),
           contentPadding: leading == null ? null : const EdgeInsetsDirectional.fromSTEB(4, 0, 16, 0),
           horizontalTitleGap: 8,
+          onLongPress: onLongPress,
           onTap: () {
             router.push(url: Routes.questI(questId), detail: true);
           },
@@ -239,6 +250,7 @@ class _QuestListPageState extends State<QuestListPage> {
         contentPadding: leading == null ? null : const EdgeInsetsDirectional.fromSTEB(4, 0, 16, 0),
         horizontalTitleGap: 8,
         selected: quest.is90PlusFree && quest.warId > 2000,
+        onLongPress: onLongPress,
         onTap: () {
           router.push(
             url: Routes.questI(quest.id),
