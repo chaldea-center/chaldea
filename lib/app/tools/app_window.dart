@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:tray_manager/tray_manager.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'package:chaldea/generated/l10n.dart';
@@ -14,16 +15,15 @@ import 'package:chaldea/utils/constants.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 import 'backup_backend/chaldea_backend.dart';
-import 'tray_controller_stub.dart' if (dart.library.ffi) 'tray_controller_native.dart';
 
 /// Window and system-tray helpers.
-///
-/// The tray controller is imported conditionally: tray_manager 0.7 is backed by
-/// nativeapi, whose dart:ffi bindings cannot be compiled for the web, so the web
-/// build resolves the tray controller to a no-op stub.
 class AppWindowUtil {
   const AppWindowUtil._();
-  static TrayController? _tray;
+
+  // Keep the tray wrapper alive and retain menu wrappers for explicit disposal.
+  static TrayIcon? _trayIcon;
+  static Menu? _trayMenu;
+  static final List<MenuItem> _trayMenuItems = <MenuItem>[];
 
   static Future<void> init() async {
     if (PlatformU.isDesktop) {
@@ -77,34 +77,102 @@ class AppWindowUtil {
     if (value != null) {
       return value ? setTray() : destroyTray();
     } else {
-      return (_tray?.installed ?? false) ? destroyTray() : setTray();
+      return _trayIcon != null ? destroyTray() : setTray();
     }
   }
 
   @protected
   static Future<void> destroyTray() async {
-    final tray = _tray;
-    _tray = null;
-    await tray?.uninstall();
+    _trayIcon?.dispose();
+    _trayIcon = null;
+    for (final item in _trayMenuItems) {
+      item.dispose();
+    }
+    _trayMenuItems.clear();
+    _trayMenu?.dispose();
+    _trayMenu = null;
   }
 
   static Future<void> setTray() async {
     if (!PlatformU.isDesktop) return;
     try {
       await destroyTray();
-      final tray = TrayController(onShow: showWindow, onHide: minimizeWindow, onQuit: _quitFromTray);
-      await tray.install(
-        iconPath: 'res/img/launcher_icon/${PlatformU.isWindows ? 'app_icon.ico' : 'app_icon_rounded.png'}',
-        versionLabel: '$kAppName v${AppInfo.versionString}',
-        showLabel: S.current.show,
-        hideLabel: S.current.hide,
-        quitLabel: S.current.quit,
-      );
-      _tray = tray;
+      final trayIcon = TrayIcon.create();
+      if (trayIcon == null) throw StateError('Unable to create the tray icon');
+      _trayIcon = trayIcon;
+
+      final iconPath = 'res/img/launcher_icon/${PlatformU.isWindows ? 'app_icon.ico' : 'app_icon_rounded.png'}';
+      final icon = ImageAsset.fromAsset(iconPath);
+      if (icon == null) throw ArgumentError.value(iconPath, 'iconPath', 'Unable to load tray icon');
+      try {
+        trayIcon.icon = icon;
+      } finally {
+        // The native tray retains the image after its Dart handle is released.
+        icon.dispose();
+      }
+      trayIcon
+        ..isIconTemplate = false
+        ..iconPosition = TrayIconPosition.left;
+
+      final menu = Menu.create();
+      if (menu == null) throw StateError('Unable to create the tray menu');
+      _trayMenu = menu;
+
+      void addMenuItem(String label, {bool enabled = true, Future<void> Function()? onClick}) {
+        final item = MenuItem.createWithLabelAndType(label, MenuItemType.normal);
+        if (item == null) throw StateError('Unable to create the tray menu item: $label');
+        _trayMenuItems.add(item);
+        item.isEnabled = enabled;
+        if (onClick != null) {
+          item.addListener((event) {
+            if (event is MenuItemClickedEvent) onClick();
+          });
+        }
+        menu.addItem(item);
+      }
+
+      addMenuItem('$kAppName v${AppInfo.versionString}', enabled: false);
+      menu.addSeparator();
+      addMenuItem(S.current.show, onClick: showWindow);
+      menu.addSeparator();
+      addMenuItem(S.current.hide, onClick: minimizeWindow);
+      menu.addSeparator();
+      addMenuItem(S.current.quit, onClick: _quitFromTray);
+
+      trayIcon.setContextMenu(menu);
+      trayIcon.setVisible(true);
+      // Linux panels handle tray clicks and open the menu themselves.
+      trayIcon.addListener((event) {
+        switch (event) {
+          case TrayIconClickedEvent():
+            _onTrayClick();
+          case TrayIconRightClickedEvent():
+            _onTrayRightClick();
+          case TrayIconDoubleClickedEvent():
+            break;
+        }
+      });
       print('set tray menu');
     } catch (e, s) {
+      await destroyTray();
       logger.e('init system tray failed', e, s);
       EasyLoading.showError('${S.current.failed}: ${S.current.show_system_tray}');
+    }
+  }
+
+  static void _onTrayClick() {
+    if (PlatformU.isWindows || PlatformU.isLinux) {
+      showWindow();
+    } else if (PlatformU.isMacOS) {
+      _trayIcon?.openContextMenu();
+    }
+  }
+
+  static void _onTrayRightClick() {
+    if (PlatformU.isWindows) {
+      _trayIcon?.openContextMenu();
+    } else if (PlatformU.isMacOS || PlatformU.isLinux) {
+      showWindow();
     }
   }
 
