@@ -36,8 +36,7 @@ class GameDataLoader {
   _LoadRun? _run;
   final _idleTmp = _GameLoadingTempData();
 
-  // Shared API callbacks may outlive their load. Keep their entity cache bound
-  // to that load's zone rather than letting them access a newer load's cache.
+  // Bind cached entities to their load, including callbacks that outlive it.
   _GameLoadingTempData get tmp => (Zone.current[_loadZoneKey] as _LoadRun?)?.tmp ?? _idleTmp;
   CancelToken? get cancelToken => _run?.network;
   bool get loading => _run != null;
@@ -103,8 +102,7 @@ class GameDataLoader {
     downloading.value = 0;
     error = null;
     _advance(run);
-    // Shared worker ports must inherit the caller's zone, not a load zone
-    // which would retain that load's temporary cache and completed result.
+    // Initialize shared workers outside the load zone to avoid retaining its data.
     final workerInitialization = !offline && network.unavailable && silent ? Future<void>.value() : JsonHelper.init();
     unawaited(
       runZoned(
@@ -177,8 +175,7 @@ class GameDataLoader {
         _showError(e);
       }
     } finally {
-      // A canceled read can be abandoned; a started write must settle before
-      // the next load is allowed to reuse the same paths.
+      // Finish writes before another load can reuse their paths.
       await run.drainWrites();
       run.tmp.reset();
       if (failed) ConstGameData.deprecatedEnums = previousEnums;
@@ -471,8 +468,7 @@ class GameDataLoader {
       logger.t(
         '[${offline ? "offline" : "online"}]Updating dataset(${_gamedata.version.text(false)}): ${_stagedFiles.length} files updated',
       );
-      // Defer explicit recovery once commit starts. Writing version.json last
-      // does not make earlier file overwrites transactional.
+      // Defer recovery during commit; version.json written last does not make it atomic.
       run.check();
       run.committing = true;
       try {
@@ -601,9 +597,7 @@ class GameDataLoader {
     return (await JsonHelper.md5Hex(bytes, scope: scope)).startsWith(hash.toLowerCase());
   }
 
-  /// A file is valid if it matches either the full or the minified
-  /// (size, hash) pair: different data sources may serialize the same
-  /// JSON with different indentation.
+  /// Accepts either the full or minified size/hash pair.
   static Future<bool> checkFileVersion(List<int> bytes, FileVersion fv, {JsonWorkerScope? scope}) async {
     if (bytes.length == fv.size && await checkHash(bytes, fv.hash, scope: scope)) {
       return true;
@@ -611,9 +605,7 @@ class GameDataLoader {
     return bytes.length == fv.minSize && await checkHash(bytes, fv.minHash, scope: scope);
   }
 
-  /// Read a staged file from gameCacheDir, strict size+hash verification
-  /// (either full or minified pair). Returns null when missing/invalid so
-  /// the caller falls through to download.
+  /// Reads verified staged data, or returns null so the caller can download it.
   static Future<Uint8List?> _readStagedFile(FilePlus file, FileVersion fv, {JsonWorkerScope? scope}) async {
     if (!file.existsSync()) return null;
     try {
@@ -626,8 +618,7 @@ class GameDataLoader {
     }
   }
 
-  /// Copy a staged cache file into gameDir after re-verifying size+hash.
-  /// Invalid staged content is retained and will fail validation on retry.
+  /// Re-verifies staged data before copying it into gameDir; invalid data stays cached.
   static Future<void> _commitStagedFile(_LoadRun run, FileVersion fv) async {
     final cacheFile = FilePlus(joinPaths(db.paths.gameCacheDir, fv.filename));
     final bytes = await _readStagedFile(cacheFile, fv, scope: run.workers);
@@ -706,8 +697,7 @@ class GameDataLoader {
     dio.options.connectTimeout = const Duration(seconds: 10);
     dio.options.sendTimeout = const Duration(seconds: 30);
     dio.options.receiveTimeout = const Duration(seconds: 30);
-    // Automatic loads bound total download time. Manual loads only time out
-    // on connection or transfer inactivity; steady slow downloads can finish.
+    // Only automatic loads have total deadlines; manual loads time out on inactivity.
     final token = CancelToken();
     unawaited(run.network.whenCancel.then((error) => token.cancel(error)));
     bool timedOut = false;
@@ -799,8 +789,7 @@ class _LoadRun {
   Future<void> drainWrites() => Future.wait(_writes);
 
   void complete(GameData? data) {
-    // Release completed race listeners and detach the result. Shared API
-    // callbacks may retain this run, but must not retain its decoded dataset.
+    // Release listeners and results so surviving callbacks do not retain the dataset.
     if (!_cancellation.isCompleted) _cancellation.complete();
     workers.cancel(); // All submitted jobs have settled, or were explicitly canceled.
     network.cancel('Loading finished.');

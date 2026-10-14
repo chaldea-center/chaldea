@@ -1,8 +1,3 @@
-// ProfileCard: simplified gradient-header card showing a title (e.g.
-// username) and an optional subtitle (e.g. uid). Avatar circle removed —
-// the profile page has no avatar feature. Gradient and foreground colors
-// come from AppThemeData so they can be restyled via ThemeData.
-
 import 'package:material_ui/material_ui.dart';
 
 import 'package:chaldea/widgets/theme.dart';

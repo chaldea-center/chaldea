@@ -1,7 +1,3 @@
-// StepIndicator: numbered circles connected by a horizontal line.
-// Active step (<=current) fills the circle with colorScheme.primary; future
-// steps use outline.
-
 import 'package:material_ui/material_ui.dart';
 
 class StepIndicator extends StatelessWidget {

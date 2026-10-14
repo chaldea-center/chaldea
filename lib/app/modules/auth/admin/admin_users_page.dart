@@ -1,11 +1,3 @@
-// AdminUsersPage: admin-only paginated list of users with search.
-// Pulls `adminSearchUsers(search:, limit: 20, offset: N)` and renders each
-// row as an AdminUserListTile (avatar + name + id + masked email + role
-// badge + online dot + createdAt). Tap → push AdminUserDetailPage(userId).
-// "Load more" affordance at list end when `hasNextPage` is true.
-// Uses Scaffold(body:) because the page has a sticky search bar + a
-// scrollable list (Expanded) — not a simple flat ListView.
-
 import 'package:material_ui/material_ui.dart';
 
 import 'package:chaldea/app/api/chaldea_server.dart';

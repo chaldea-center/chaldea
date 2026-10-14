@@ -1,8 +1,3 @@
-// Form validators shared across the auth module. Ported verbatim from the
-// legacy login_page.dart regexes so behavior stays identical.
-// Why centralize: register / change-username / change-password / login pages
-// all need the same rules; keeping them here prevents drift.
-
 import 'package:chaldea/generated/l10n.dart';
 
 const _reservedNamePrefixes = <String>[
@@ -22,16 +17,7 @@ const _reservedNameExact = <String>[
   'guest', 'test', 'noreply',
 ];
 
-/// Returns null if [name] is acceptable, else an error string.
-/// Empty input returns null (caller decides whether empty is allowed).
-///
-/// Rules:
-/// 1. 4-18 characters
-/// 2. Only ASCII letters, digits, and underscores
-/// 3. Must start with a letter (not a digit or underscore)
-/// 4. Must not end with an underscore
-/// 5. Must not start with a prefix-restricted keyword (blocks variants)
-/// 6. Must not exactly match an exact-restricted keyword
+/// Validates username syntax and reserved names. Empty input is allowed.
 String? validateUsername(String? name) {
   name ??= '';
   if (name.isEmpty) return null;
@@ -113,9 +99,7 @@ String? validateNewName(String? newName, {String? oldName}) {
   return validateUsername(newName);
 }
 
-/// Login identifier: accepts both username and email.
-/// Only checks non-empty, reasonable length, and no whitespace/control chars.
-/// Format validation deferred to server.
+/// Accepts a non-empty username or email; the server validates its format.
 String? validateLoginIdentifier(String value) {
   if (value.isEmpty) return S.current.validation_required;
   if (value.length > 254) return S.current.validation_too_long;

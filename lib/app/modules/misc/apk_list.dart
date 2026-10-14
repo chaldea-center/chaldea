@@ -372,8 +372,6 @@ class _ApkListPageState extends State<ApkListPage> {
 
   void _onInstallTap(BuildContext context, String url) {
     if (url.toLowerCase().endsWith('.xapk')) {
-      // XAPK direct install: full download→parse→install flow on the
-      // dedicated page (ADR 0004)
       router.pushPage(XapkInstallPage(url: url));
     } else {
       ApkInstaller.installFromUrl(context, url: url);

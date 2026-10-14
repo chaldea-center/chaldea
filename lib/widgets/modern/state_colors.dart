@@ -1,6 +1,4 @@
-// StateColors: semantic state colors (success/warning/info/danger) for
-// banners and badges. ColorScheme has no semantic slots for these, so we use
-// fixed Material palette colors with brightness-aware alpha for backgrounds.
+// State colors supplement ColorScheme with success, warning and info.
 
 import 'package:material_ui/material_ui.dart';
 

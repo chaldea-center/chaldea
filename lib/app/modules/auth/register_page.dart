@@ -1,8 +1,3 @@
-// RegisterPage: 2-step registration flow.
-// Step 1: collect username/email/password/confirm → call `register` to send code.
-// Step 2: enter the email code → call `verifyRegister` to create the account.
-// On success: persist the returned user, then pop back to the profile hub.
-
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:material_ui/material_ui.dart';
 

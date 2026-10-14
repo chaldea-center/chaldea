@@ -7,11 +7,7 @@ import java.util.Base64
 import java.util.zip.ZipFile
 
 /**
- * Pure XAPK manifest parsing and split-selection logic.
- *
- * Deliberately free of Android dependencies (org.json is provided by
- * both the platform and the JVM test classpath) so it stays
- * unit-testable without Robolectric. See docs/xapk-install.md.
+ * XAPK manifest parsing and split selection without Android dependencies.
  */
 
 data class XapkSplit(val file: String, val id: String, val size: Long)
@@ -60,14 +56,8 @@ object XapkCore {
     }
 
     /**
-     * Select the splits that enter the install session: base and
-     * non-ABI config splits always; ABI splits reduced to the single
-     * best-matching ABI. SUPPORTED_ABIS is ordered best-first, so a
-     * 64-bit device ([arm64-v8a, armeabi-v7a, ...]) installing a
-     * combined XAPK writes only the arm64-v8a split — mirroring Play
-     * per-device delivery (ADR 0004). When ABI splits exist but none
-     * matches (e.g. an arm-only XAPK on x86), all ABI splits are kept
-     * rather than producing a package with no native libraries at all.
+     * Keeps base and non-ABI splits, plus the first supported ABI.
+     * If no ABI matches, keeps all ABI splits rather than omitting native libraries.
      */
     fun selectSplits(splits: List<XapkSplit>, supportedAbis: List<String>): List<XapkSplit> {
         val base = splits.filter { it.id == "base" }
@@ -85,11 +75,8 @@ object XapkCore {
     }
 
     /**
-     * Parse manifest.json content against the ZIP central-directory
-     * entry sizes. [entrySizes] maps entry name -> uncompressed size,
-     * used both to fill per-split sizes and to cross-check the
-     * manifest's [total_size] (which — as verified against FGO
-     * artifacts — equals the sum of split entry sizes only).
+     * Parses manifest.json and validates split sizes against the ZIP entries.
+     * The total size includes split APKs only.
      */
     fun parseManifest(json: String, entrySizes: Map<String, Long>): XapkManifest {
         val obj = try {
@@ -154,11 +141,7 @@ object XapkCore {
     }
 
     /**
-     * Base64 PNG of the XAPK root `icon.png` (APKPure convention — FGO
-     * artifacts ship one), or null when the archive has no such entry.
-     * This is the cheap icon path for the parse summary; callers fall
-     * back to reading the base split APK resources (XapkAppInfoReader)
-     * when it returns null.
+     * Returns the root icon.png as base64, or null so callers can try the base APK.
      */
     fun readRootIconBase64(zip: ZipFile): String? {
         val entry = zip.getEntry("icon.png") ?: return null
@@ -168,9 +151,7 @@ object XapkCore {
     }
 
     /**
-     * Copy a split entry out of the archive to [target] (e.g. the base
-     * APK, which PackageManager can then parse for its real label/icon).
-     * Returns [target] so callers can chain.
+     * Extracts a split entry to [target] and returns the file.
      */
     fun extractSplitToFile(zip: ZipFile, entryName: String, target: File): File {
         val entry = zip.getEntry(entryName)

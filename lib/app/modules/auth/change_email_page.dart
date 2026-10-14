@@ -1,12 +1,3 @@
-// ChangeEmailPage: 2-step email-binding flow.
-// Step 1: enter current password + new email → call `changeEmail` to send
-// verification code. Password is required because email is the root-trust
-// anchor of the account — see the `secure-email-change` OpenSpec change.
-// Step 2: enter code → call `verifyEmail` to confirm. On success, manually
-// patch `secrets.user.email` (verifyEmail returns bool, not a fresh user)
-// then pop; ProfilePage refreshes via its _pushAndRefresh await.
-// The top uses ValueHeader (large icon + label + current email).
-
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -97,7 +88,7 @@ class _ChangeEmailPageState extends State<ChangeEmailPage> {
     if (!_isStep2Available) return;
     final ok = await showEasyLoading(() => ChaldeaServerApi.verifyEmail(newEmail: _emailController.text, code: _code));
     if (ok == true) {
-      // verifyEmail returns bool, not a fresh user — manually update info with new email
+      // verifyEmail returns no user data, so update the email locally.
       final currentInfo = secrets.user.info;
       if (currentInfo != null) {
         secrets.user.updateFromUserInfo(

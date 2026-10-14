@@ -1,16 +1,4 @@
-// FormInput: a TextFormField wrapper that renders the label ABOVE the field
-// (not as InputDecoration.labelText, which floats into the border). Styling
-// (fill, border, radius) comes from InputDecorationTheme; this widget only
-// adds the label-above layout and optional prefix/suffix icons.
-//
-// This widget encapsulates the "touched" mechanism: error display is
-// controlled by [errorDisplayMode] and [forceShowError], so callers no
-// longer need to track focus/blur state manually.
-//
-// [onSubmit] is wired to the field's submit action (keyboard action button,
-// configured via [textInputAction]). It fires only when [validator] passes;
-// on failure the error is shown immediately and focus is kept. On success
-// the field unfocuses (keyboard dismissed) before the callback runs.
+// Form input with a label above the field and configurable validation timing.
 
 import 'package:material_ui/material_ui.dart';
 
@@ -40,6 +28,8 @@ class FormInput extends StatefulWidget {
   final bool autocorrect;
   final FocusNode? focusNode;
   final ValueChanged<String>? onChanged;
+
+  /// Called after validation succeeds and the field loses focus.
   final ValueChanged<String>? onSubmit;
   final TextInputAction? textInputAction;
   final InputDecoration? decoration;
@@ -144,8 +134,7 @@ class _FormInputState extends State<FormInput> {
   void _onFieldSubmitted(String value) {
     final error = _computeError();
     if (error != null) {
-      // Validation failed — show error immediately and keep focus so the
-      // user can fix the input; onSubmit is not called.
+      // Keep focus and show the error before accepting submission.
       setState(() {
         _touched = true;
         _error = error;

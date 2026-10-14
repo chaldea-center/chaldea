@@ -10,14 +10,7 @@ import 'package:chaldea/packages/method_channel/method_channel_chaldea.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
 
-/// Android direct-install service (see
-/// docs/context/android-install/CONTEXT.md).
-///
-/// Capability gating: [isSupported] probes the manifest DECLARATION of
-/// REQUEST_INSTALL_PACKAGES — silent, cached, never a dialog. The user
-/// GRANT is checked per flow, permission-first: an ungranted device is
-/// guided to system settings before any download starts, and the user
-/// re-taps Install after returning.
+/// Downloads and installs APKs after checking Android install permission.
 class ApkInstaller {
   ApkInstaller._();
 
@@ -37,8 +30,6 @@ class ApkInstaller {
     return 'download.apk';
   }
 
-  /// Direct-install flow: grant check → download with progress → system
-  /// package installer.
   static Future<void> installFromUrl(BuildContext context, {required String url, String? filename}) async {
     final capability = await MethodChannelChaldea.getInstallCapability();
     if (capability == null || !capability.declared) return;
@@ -48,8 +39,7 @@ class ApkInstaller {
       if (open == true) {
         await MethodChannelChaldea.openInstallPermissionSettings();
       }
-      // permission-first: nothing is downloaded until the user grants in
-      // settings and returns to tap Install again
+      // The user must grant permission and tap Install again before downloading.
       return;
     }
     await _showDownloadDialog(context, url: url, filename: filename ?? filenameOf(url));
@@ -72,10 +62,6 @@ class ApkInstaller {
     );
   }
 }
-
-// ---------------------------------------------------------------------------
-// download + install dialog (modeled after showDesktopUpgradeDialog)
-// ---------------------------------------------------------------------------
 
 enum _ApkInstallPhase { downloading, done, cancelled, error }
 

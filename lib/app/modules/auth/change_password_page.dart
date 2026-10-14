@@ -1,8 +1,3 @@
-// ChangePasswordPage: change the user's password.
-// Per design.md D-change-password: the API returns a fresh accessToken, so
-// the session stays valid (NO auto-logout). The design's footer hint
-// "After password change, you will be automatically logged out" is intentionally omitted.
-
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:material_ui/material_ui.dart';
 

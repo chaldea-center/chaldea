@@ -1,15 +1,3 @@
-// AdminUserDetailPage: read-only user detail + 2 admin actions.
-// Sections: ProfileCard (admin sees full email, no masking) + Basic Info
-// (info-rows: name/id/email/role+badge/createdAt) + Statistics
-// (info-rows: backupsCount/teamsCount/sessions list/logins list — last two
-// read-only lists) + Admin Actions with exactly 2 ActionRows: Reset Password
-// (password input dialog → adminRecoverUser(password:)) and Send Recovery Email
-// (email input dialog, prefilled with the bound email → adminRecoverUser(email:)
-// — the emailed reset link also binds the target email to the account when the
-// user completes the reset; available even when an email is already bound, to
-// cover accounts whose bound email is no longer accessible). No other
-// action-rows per design D6.
-
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:material_ui/material_ui.dart';
 
@@ -73,9 +61,7 @@ class _AdminUserDetailPageState extends State<AdminUserDetailPage> {
   }
 
   Future<void> _sendRecoveryEmail() async {
-    // Works for both unbound-email accounts and accounts whose bound email is
-    // no longer accessible: the submitted email receives the reset link and is
-    // bound to the account when the user completes the reset.
+    // Completing recovery binds the submitted email, replacing any existing one.
     final email = await showDialog<String>(
       context: context,
       builder: (context) => InputCancelOkDialog(
@@ -87,21 +73,17 @@ class _AdminUserDetailPageState extends State<AdminUserDetailPage> {
             : 'After the user clicks the link in the email and resets the '
                   'password, this email will be bound to the account (replacing '
                   'the existing one).',
-        // validateEmail treats empty as acceptable (callers decide); here an
-        // empty value must not be submittable, so reject it explicitly.
+        // validateEmail allows empty input; this dialog requires an email.
         validate: (s) => s.isNotEmpty && validateEmail(s) == null,
       ),
     );
     if (email == null || email.isEmpty || !mounted) return;
-    // On failure the API layer already shows a bilingual error toast and
-    // returns null; no extra dialog here.
+    // The API reports errors and returns null on failure.
     final resp = await showEasyLoading(() => ChaldeaServerApi.adminRecoverUser(userId: widget.userId, email: email));
     if (resp == null || !mounted) return;
     _showRecoveryResult(resp);
   }
 
-  // Shows the backend-provided bilingual details (link validity, binding
-  // behavior) and reminders so the admin can relay them to the user.
   void _showRecoveryResult(AdminRecoverResponse resp) {
     final details = Language.isZH ? resp.detailsZh : resp.details;
     final reminders = Language.isZH ? resp.remindersZh : resp.reminders;
@@ -294,10 +276,6 @@ class _AdminUserDetailPageState extends State<AdminUserDetailPage> {
   }
 }
 
-// Dialog that lets an admin type a new password before resetting.
-// On Confirm: validates input — empty or invalid passwords are rejected with a
-// toast and the dialog stays open; a valid password pops the dialog with the
-// value so the caller can invoke the API.
 class _ResetPasswordDialog extends StatefulWidget {
   const _ResetPasswordDialog();
 
@@ -315,9 +293,7 @@ class _ResetPasswordDialogState extends State<_ResetPasswordDialog> {
     super.dispose();
   }
 
-  // Wraps validatePassword so an empty field is also flagged as invalid.
-  // validatePassword itself returns null for empty (callers decide), but a
-  // reset password dialog must not submit an empty value.
+  // validatePassword allows empty input; this dialog requires a password.
   String? _validate(String? value) {
     if (value == null || value.isEmpty) {
       return S.current.validation_required;

@@ -21,12 +21,7 @@ import java.util.zip.ZipException
 import java.util.zip.ZipFile
 
 /**
- * Native XAPK installer (ADR 0004): streams the base + selected
- * config splits from the XAPK ZIP directly into a
- * PackageInstaller.Session — no intermediate extraction, ZIP64-safe,
- * CRC verified while streaming. States are pushed to Dart through the
- * `chaldea.narumi.cc/xapk` EventChannel as
- * `{phase, progress, bytes, totalBytes, error, message}` maps.
+ * Streams selected APK splits into a PackageInstaller session and emits install events.
  */
 class XapkInstaller(private val context: Context) : EventChannel.StreamHandler {
 
@@ -46,12 +41,9 @@ class XapkInstaller(private val context: Context) : EventChannel.StreamHandler {
 
     private var sink: EventChannel.EventSink? = null
 
-    // ---- EventChannel ------------------------------------------------------
-
     override fun onListen(args: Any?, events: EventChannel.EventSink?) {
         sink = events
-        // replay current state so a re-subscribed page (e.g. after
-        // navigation) sees where the flow is
+        // Replay the current state on subscription.
         lastEvent?.let { state -> events?.success(state) }
     }
 
@@ -80,8 +72,6 @@ class XapkInstaller(private val context: Context) : EventChannel.StreamHandler {
         error?.let { put("error", it) }
         message?.let { put("message", it) }
     }
-
-    // ---- public API (MethodChannel entry points, called on main thread) ----
 
     fun parseAsync(path: String, result: MethodChannel.Result) {
         executor.execute {
@@ -125,8 +115,6 @@ class XapkInstaller(private val context: Context) : EventChannel.StreamHandler {
         }
     }
 
-    // ---- internals ----------------------------------------------------------
-
     private fun parse(path: String): XapkManifest {
         val file = File(path)
         if (!file.exists() || !file.isFile) {
@@ -153,11 +141,8 @@ class XapkInstaller(private val context: Context) : EventChannel.StreamHandler {
     }
 
     /**
-     * Best-effort app display name + default icon for the parse
-     * summary. Prefers the XAPK root icon.png (a pure zip read); when
-     * absent, extracts the base split APK and reads its real label/icon
-     * (XapkAppInfoReader). Never fails the parse: any error just yields
-     * the manifest name and no icon.
+     * Prefers the root icon, then base APK resources.
+     * Metadata failures fall back to the manifest name without failing the parse.
      */
     private fun readAppInfo(path: String, manifest: XapkManifest): Pair<String, String?> {
         var appName = manifest.appName
@@ -260,11 +245,7 @@ class XapkInstaller(private val context: Context) : EventChannel.StreamHandler {
     }
 
     /**
-     * Commit the session and block the worker thread until a terminal
-     * status arrives. STATUS_PENDING_USER_ACTION launches the system
-     * confirmation activity (the only user-consent layer besides the
-     * in-app Install button); the final success/failure broadcast
-     * ends the wait.
+     * Waits for installation on the worker thread, launching system confirmation if required.
      */
     private fun commitAndAwait(
         installer: PackageInstaller,
@@ -329,10 +310,7 @@ class XapkInstaller(private val context: Context) : EventChannel.StreamHandler {
         }
 
         val statusIntent = Intent(statusAction).setPackage(context.packageName)
-        // The status receiver MUST be mutable: PackageInstaller fills in
-        // the status extras at delivery time, and targeting U+ rejects
-        // immutable senders with "The commit() status receiver should
-        // come from a mutable PendingIntent".
+        // PackageInstaller adds status extras, so the PendingIntent must be mutable.
         val flags = PendingIntent.FLAG_UPDATE_CURRENT or
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 PendingIntent.FLAG_MUTABLE

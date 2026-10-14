@@ -1,9 +1,3 @@
-// ChangeUsernamePage: form to update the user's display name.
-// On success: secrets.user is updated (preserving accessToken) and the
-// page pops; ProfilePage refreshes via its _pushAndRefresh await.
-// The top of the page uses ValueHeader (large icon + label + current
-// value) instead of the old InfoBanner to fill the empty space meaningfully.
-
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:material_ui/material_ui.dart';
 

@@ -1,7 +1,3 @@
-// BrandArea: login page brand header — circular app icon + "Chaldea"
-// wordmark + "FGO Game Helper" tagline. Per design.md D7, uses the project's
-// existing app_icon_logo.png asset in place of the design's text "C" badge.
-
 import 'package:material_ui/material_ui.dart';
 
 class BrandArea extends StatelessWidget {

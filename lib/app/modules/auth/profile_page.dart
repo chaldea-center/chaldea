@@ -1,9 +1,3 @@
-// ProfilePage: hub for the logged-in user.
-// Layout: ProfileCard + Personal Info SectionCard + Account Actions SectionCard
-// + (if accessToken empty) Migrate Account ActionRow
-// + (if isAdmin) Admin Tools SectionCard with User Management.
-// Logout pops back to settings; sub-pages push and refresh on pop.
-
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/chaldea_server.dart';

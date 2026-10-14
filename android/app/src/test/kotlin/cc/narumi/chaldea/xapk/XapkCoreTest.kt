@@ -15,12 +15,7 @@ import java.util.zip.ZipFile
 import java.util.zip.ZipOutputStream
 
 /**
- * JVM unit tests for the pure XAPK core: manifest parsing and ABI
- * split selection (see docs/xapk-install.md §6).
- *
- * Manifest fixtures mirror the verified FGO artifacts in temp/xapk:
- * JP 2.138.1 (base + arm64_v8a / combined) and KR 8.0.1 (with an
- * empty expansions array).
+ * Manifest parsing and ABI selection fixtures cover JP split APKs and KR empty expansions.
  */
 class XapkCoreTest {
 
@@ -48,8 +43,6 @@ class XapkCoreTest {
           ]
         }
     """.trimIndent()
-
-    // ---- parseManifest -----------------------------------------------------
 
     @Test
     fun parsesCombinedJpManifest() {
@@ -117,8 +110,6 @@ class XapkCoreTest {
         }
     }
 
-    // ---- abiOfSplitId ------------------------------------------------------
-
     @Test
     fun splitIdAbiMapping() {
         assertEquals("arm64-v8a", XapkCore.abiOfSplitId("config.arm64_v8a"))
@@ -128,8 +119,6 @@ class XapkCoreTest {
         assertNull(XapkCore.abiOfSplitId("config.en"))
         assertNull(XapkCore.abiOfSplitId("config.xxhdpi"))
     }
-
-    // ---- selectSplits ------------------------------------------------------
 
     private val splits = listOf(
         XapkSplit("com.aniplex.fategrandorder.apk", "base", 44244064L),
@@ -146,8 +135,7 @@ class XapkCoreTest {
     @Test
     fun combinedPackageOn64BitDeviceSkipsV7a() {
         val selected = XapkCore.selectSplits(splits, listOf("arm64-v8a", "armeabi-v7a"))
-        // SUPPORTED_ABIS ordering: primary ABI first, so arm64 device
-        // installing a combined XAPK should still only write arm64-v8a
+        // Combined archives select the device's preferred ABI.
         assertEquals(listOf("base", "config.arm64_v8a"), selected.map { it.id })
     }
 
@@ -170,8 +158,6 @@ class XapkCoreTest {
         val selected = XapkCore.selectSplits(v7aOnly, listOf("armeabi-v7a", "armeabi"))
         assertEquals(listOf("base", "config.armeabi_v7a"), selected.map { it.id })
     }
-
-    // ---- readRootIconBase64 / extractSplitToFile ---------------------------
 
     @Test
     fun readRootIconBase64ReturnsEntryWhenPresent() {

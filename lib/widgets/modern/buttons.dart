@@ -1,8 +1,3 @@
-// PrimaryButton / SecondaryButton: thin wrappers around FilledButton /
-// OutlinedButton that bake in the 48px height + 8px radius (matching the
-// design tokens). A `danger` flag swaps to error/onError. The `style` param
-// merges over defaults for per-call overrides.
-
 import 'package:material_ui/material_ui.dart';
 
 class PrimaryButton extends StatelessWidget {

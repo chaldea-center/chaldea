@@ -1,18 +1,6 @@
-// AccentContainer: a card-like container with an optional thick accent border
-// on the left side. Uses a custom ShapeBorder (AccentBorder) to draw
-// non-uniform borders — thick accent on left, thin border on other sides —
-// with proper rounded corners. Flutter's BoxDecoration requires uniform
-// border colors when borderRadius is set, so ShapeBorder via ShapeDecoration
-// is the idiomatic way to achieve this visual without gradient hacks or
-// nested containers.
-
 import 'package:material_ui/material_ui.dart';
 
-/// A card-like container with an optional thick accent border on the left
-/// side (primary variant) or a simple uniform border (non-primary variant).
-///
-/// Uses [AccentBorder] via [ShapeDecoration] to draw non-uniform borders
-/// with proper rounded corners — no gradient hacks or nested containers.
+/// A rounded container with an optional left accent border.
 class AccentContainer extends StatelessWidget {
   final bool primary;
   final Color? accentColor;
@@ -46,8 +34,7 @@ class AccentContainer extends StatelessWidget {
     final border = borderColor ?? cs.outlineVariant;
     final bg = backgroundColor ?? cs.surfaceContainer;
 
-    // The border/accent occupies space on the edges; add it to the user's
-    // padding so the child doesn't overlap with the border.
+    // Include border widths in padding to keep the child clear of the border.
     final edgeInsets = primary
         ? EdgeInsets.fromLTRB(accentWidth, borderWidth, borderWidth, borderWidth)
         : EdgeInsets.all(borderWidth);
@@ -69,14 +56,7 @@ class AccentContainer extends StatelessWidget {
   }
 }
 
-/// A [ShapeBorder] that draws a thick accent strip on the left side and a
-/// thin uniform border on all sides, with proper rounded corners.
-///
-/// When [accentWidth] is narrower than [borderRadius], the strip's right
-/// edge gets an elliptical corner (x = borderRadius - accentWidth,
-/// y = borderRadius) sharing the outer arc's center, so the strip wraps
-/// around the corner smoothly instead of being cut flat mid-curve.
-/// When [accentWidth] is 0, only the thin uniform border is drawn.
+/// A rounded border with a left accent strip; zero [accentWidth] draws only the border.
 class AccentBorder extends ShapeBorder {
   final BorderRadius borderRadius;
   final Color accentColor;
@@ -123,12 +103,7 @@ class AccentBorder extends ShapeBorder {
       );
     }
 
-    // Accent strip on the left. When the strip is narrower than the corner
-    // radius, build a dedicated path whose right edge has a smaller rounded
-    // corner (radius R - W) so the strip wraps around the corner smoothly
-    // instead of being cut flat mid-curve. When the strip is wider than (or
-    // equal to) the radius, the right edge sits in the straight section and
-    // a simple clipped rectangle suffices.
+    // Narrow strips use elliptical inner corners to follow the outer border.
     if (accentWidth > 0) {
       final R = resolvedRadius.topLeft.x;
       final W = accentWidth;
@@ -144,22 +119,13 @@ class AccentBorder extends ShapeBorder {
         canvas.restore();
       } else {
         final path = Path();
-        // Start at the top of the outer left straight edge.
         path.moveTo(L, T + R);
-        // Outer top-left arc (clockwise) to the top edge.
         path.arcToPoint(Offset(L + R, T), radius: Radius.circular(R), clockwise: true);
-        // Inner top-left arc (counter-clockwise) back to the straight right
-        // edge. Elliptical with x=R-W, y=R — shares the same center (L+R,
-        // T+R) as the outer arc, so the strip maintains full width W down
-        // to y=T+R and curves smoothly to meet the top edge at the corner.
+        // The inner ellipse shares the outer corner's center.
         path.arcToPoint(Offset(L + W, T + R), radius: Radius.elliptical(R - W, R), clockwise: false);
-        // Straight right edge down to where the bottom inner arc begins.
         path.lineTo(L + W, B - R);
-        // Inner bottom-left arc (counter-clockwise) to the bottom edge.
         path.arcToPoint(Offset(L + R, B), radius: Radius.elliptical(R - W, R), clockwise: false);
-        // Outer bottom-left arc (clockwise) back to the left straight edge.
         path.arcToPoint(Offset(L, B - R), radius: Radius.circular(R), clockwise: true);
-        // Close with the straight left edge back to the start.
         path.close();
         canvas.drawPath(path, accentPaint);
       }

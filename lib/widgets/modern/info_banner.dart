@@ -1,8 +1,3 @@
-// InfoBanner: card-style banner for info / success / warning / danger
-// messages. Uses StateColors for semantic colors and ColorScheme.error
-// for danger. Each variant gets a 4px left accent strip in its semantic
-// color via AccentContainer, making the variant instantly recognizable.
-
 import 'package:material_ui/material_ui.dart';
 
 import 'accent_container.dart';

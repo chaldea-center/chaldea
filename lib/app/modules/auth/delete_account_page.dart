@@ -1,8 +1,3 @@
-// DeleteAccountPage: destructive action with explicit confirmation.
-// Layout: danger banner (icon + title + warning) + consequences card
-// (4 list items with X icons) + password input + destructive button +
-// cancel link. On success: clear user, pop to root, push LoginPage.
-
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:material_ui/material_ui.dart';
 

@@ -8,29 +8,19 @@ import android.util.Base64
 import java.io.ByteArrayOutputStream
 
 /**
- * Reads the display label and default icon out of a standalone APK
- * (the XAPK base split) without installing it. The archive is parsed
- * with PackageManager.getPackageArchiveInfo, then its ApplicationInfo
- * is pointed back at the archive so the public
- * getResourcesForApplication resolves labelRes/icon — the classic
- * "icon of an uninstalled APK" trick. Android-only; the fallback used
- * when the XAPK carries no root icon.png (ADR 0004).
+ * Reads an uninstalled APK's label and icon as a fallback for missing XAPK metadata.
  */
 object XapkAppInfoReader {
 
     /**
-     * @return (displayLabel, pngBase64Icon); either may be null when
-     *   the APK cannot be parsed or lacks the corresponding resource.
-     *   Never throws: failures degrade to nulls.
+     * @return label and PNG base64 icon; unavailable values are null.
      */
     fun readLabelAndIcon(pm: PackageManager, apkPath: String): Pair<String?, String?> {
         val appInfo = runCatching {
             pm.getPackageArchiveInfo(apkPath, PackageManager.GET_META_DATA)?.applicationInfo
         }.getOrNull() ?: return null to null
 
-        // getResourcesForApplication builds its AssetManager from these
-        // paths, so pointing them at the archive makes its resources
-        // (label, icon) resolvable without installing the app.
+        // Resolve resources from the archive rather than an installed package.
         appInfo.sourceDir = apkPath
         appInfo.publicSourceDir = apkPath
         val res = runCatching { pm.getResourcesForApplication(appInfo) }.getOrNull()
@@ -48,8 +38,7 @@ object XapkAppInfoReader {
                 val drawable = res.getDrawable(appInfo.icon, null) ?: return@runCatching null
                 val bmp = when (drawable) {
                     is BitmapDrawable -> drawable.bitmap
-                    // adaptive icons (API 26+) and other composite drawables
-                    // have no direct bitmap — render them onto a canvas
+                    // Render non-bitmap drawables, including adaptive icons.
                     else -> {
                         val w = drawable.intrinsicWidth.coerceAtLeast(1)
                         val h = drawable.intrinsicHeight.coerceAtLeast(1)

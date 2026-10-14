@@ -1,9 +1,4 @@
-// InfoRow: a custom info-display row with leading icon, title, subtitle,
-// right-aligned value, and optional chevron. Kept as a custom widget (not
-// ListTile) because ListTile's title/subtitle styling is fixed and cannot be
-// inverted. The `prominence` field swaps which line is large/bright vs.
-// small/grey — used in profile/admin pages where sometimes the value should
-// dominate (e.g. email shown large with a small "Email" label).
+// Prominence controls whether the label or value receives emphasis.
 
 import 'package:material_ui/material_ui.dart';
 
@@ -41,8 +36,7 @@ class InfoRow extends StatelessWidget {
     final cs = theme.colorScheme;
 
     final bool titleProminent = prominence == InfoRowProminence.title;
-    // Match ListTile's M3 styling: bodyLarge (w400) for title, bodySmall (w400)
-    // for subtitle. The prominence distinction is purely size-based, not weight.
+    // Prominence changes text size, not weight.
     final TextStyle prominentStyle = theme.textTheme.bodyLarge!.copyWith(color: danger ? cs.error : cs.onSurface);
     final TextStyle mutedStyle = theme.textTheme.bodySmall!.copyWith(color: cs.onSurfaceVariant);
 

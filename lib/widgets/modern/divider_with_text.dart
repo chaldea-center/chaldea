@@ -1,5 +1,3 @@
-// DividerWithText: horizontal rule with a centered label.
-
 import 'package:material_ui/material_ui.dart';
 
 class DividerWithText extends StatelessWidget {

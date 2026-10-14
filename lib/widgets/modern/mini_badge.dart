@@ -1,8 +1,3 @@
-// MiniBadge: a compact label badge with colored background. Smaller than
-// Material Chip — tight padding, 10px font, 4px radius. Used for role tags
-// (admin), status indicators, and similar inline labels where Chip's default
-// sizing is too large.
-
 import 'package:material_ui/material_ui.dart';
 
 class MiniBadge extends StatelessWidget {

@@ -64,14 +64,7 @@ class MainActivity: FlutterActivity() {
         }
     }
 
-    // Install capability for direct installs (docs/adr/0003):
-    // [declared] — the merged manifest requests REQUEST_INSTALL_PACKAGES. This is
-    // the UI gate, probed at runtime so build flavors (or a build server stripping
-    // the permission) need no channel-specific Dart code.
-    // [granted] — the user allowed "install unknown apps" for this app. Always
-    // true below Android 8, where the app-op does not exist.
-    // [manufacturer] — Build.MANUFACTURER, used by the XAPK install page to
-    // highlight the matching vendor guidance entry.
+    // Distinguish the manifest permission from the user grant; both gate direct installs.
     private fun installCapability(): Map<String, Any> {
         val declared = try {
             val info = packageManager.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS)
@@ -87,9 +80,7 @@ class MainActivity: FlutterActivity() {
         )
     }
 
-    // The "install unknown apps" grant can only be given in system settings,
-    // so deep-link to this app's page there. The user re-taps Install after
-    // returning (permission-first flow, see docs/adr/0003).
+    // The user grants install permission in settings, then taps Install again.
     private fun openInstallPermissionSettings() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startActivity(

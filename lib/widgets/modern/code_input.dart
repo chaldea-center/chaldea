@@ -1,6 +1,4 @@
-// CodeInput: N-cell OTP input. Auto-advances on input, retreats on
-// backspace, and distributes pasted digits across cells. Exposes the
-// concatenated value via [onChanged].
+// OTP input with automatic focus movement and digit paste handling.
 
 import 'package:flutter/services.dart';
 
@@ -49,8 +47,7 @@ class _CodeInputState extends State<CodeInput> {
   void _notify() => widget.onChanged?.call(_concat());
 
   void _onChanged(int index, String value) {
-    // Handle paste: if the user pastes a multi-char string into one cell,
-    // distribute the digits across all cells starting from `index`.
+    // Distribute pasted digits from the current cell.
     if (value.length > 1) {
       final digits = value.replaceAll(RegExp(r'[^\d]'), '');
       for (var i = 0; i < digits.length && (index + i) < widget.length; i++) {
@@ -95,8 +92,6 @@ class _CodeInputState extends State<CodeInput> {
 
   @override
   Widget build(BuildContext context) {
-    // Input fill/border colors come from ThemeData (inputDecorationTheme +
-    // colorScheme) since AppThemeData no longer carries input fields.
     final themeData = Theme.of(context);
     final cs = themeData.colorScheme;
     return Row(

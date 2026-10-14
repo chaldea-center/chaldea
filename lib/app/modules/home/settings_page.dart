@@ -348,8 +348,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Widget get userTile {
     String? subtitle;
-    // Per design D5: migration reminder > email-not-bound reminder > none.
-    // When not logged in, no subtitle.
+    // Show the migration reminder before the missing-email reminder.
     final user = db.settings.secrets.user;
     final token = user.accessToken ?? '';
     final legacySecret = user.secret ?? '';

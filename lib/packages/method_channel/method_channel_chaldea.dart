@@ -73,10 +73,7 @@ class MethodChannelChaldea {
     return null;
   }
 
-  /// Silent probe of the Android install capability:
-  /// [InstallCapability.declared] gates all direct-install UI;
-  /// [InstallCapability.granted] is verified per flow;
-  /// [InstallCapability.manufacturer] feeds vendor guidance.
+  /// Reads the manifest declaration, user grant and manufacturer without prompting.
   static Future<InstallCapability?> getInstallCapability() async {
     assert(PlatformU.isAndroid);
     if (!PlatformU.isAndroid) return null;
@@ -113,10 +110,7 @@ class MethodChannelChaldea {
     }
   }
 
-  /// Preflight-parse an XAPK: returns the manifest summary the install
-  /// page shows before the user taps Install. Throws [PlatformException]
-  /// with code FILE_NOT_FOUND / NOT_ZIP / NO_MANIFEST / NO_BASE_SPLIT /
-  /// MISSING_SPLIT / SIZE_MISMATCH on invalid files.
+  /// Parses the XAPK summary; invalid files throw [PlatformException].
   static Future<XapkManifestInfo?> parseXapk(String path) async {
     assert(PlatformU.isAndroid);
     if (!PlatformU.isAndroid) return null;
@@ -125,23 +119,19 @@ class MethodChannelChaldea {
     return XapkManifestInfo.fromMap(Map<String, dynamic>.from(result));
   }
 
-  /// Start the native XAPK install flow (ADR 0004). Returns as soon as
-  /// the flow starts; states stream through [xapkEvents].
+  /// Starts native installation; progress and results arrive through [xapkEvents].
   static Future<bool> installXapk(String path) async {
     assert(PlatformU.isAndroid);
     if (!PlatformU.isAndroid) return false;
     try {
       return await kMethodChannel.invokeMethod<bool>('xapkInstall', path) ?? false;
     } on PlatformException catch (e, s) {
-      // keep the bool contract; log the native error for debugging
       logger.e('xapkInstall failed: ${e.code} ${e.message}', e, s);
       return false;
     }
   }
 
-  /// XAPK install state stream backed by the `chaldea.narumi.cc/xapk`
-  /// EventChannel. Emits [XapkInstallEvent]s; replays the current
-  /// state on (re)subscription.
+  /// Installation events, including the current state on subscription.
   static Stream<XapkInstallEvent> get xapkEvents {
     _xapkEvents ??= const EventChannel('chaldea.narumi.cc/xapk')
         .receiveBroadcastStream()

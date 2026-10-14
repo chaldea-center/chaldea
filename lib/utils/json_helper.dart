@@ -15,8 +15,7 @@ class JsonHelper {
 
   static final _executor = workerManager;
 
-  /// Below this size tasks run on the calling isolate: the worker round-trip
-  /// and queue wait would outweigh the tiny synchronous cost.
+  /// Small tasks run locally to avoid worker overhead.
   static const _minWorkerSize = 10 * 1024;
 
   static Completer<void>? _completer;
@@ -36,8 +35,7 @@ class JsonHelper {
       _initiated = true;
       completer.complete();
     } catch (e, s) {
-      // No jobs are submitted until initialization succeeds. Drop a failed
-      // pool so a later explicit retry can initialize again.
+      // Discard failed initialization so a later call can retry.
       await workerManager.dispose();
       completer.completeError(e, s);
     } finally {
@@ -116,8 +114,7 @@ class JsonHelper {
     });
   }
 
-  // Build worker closures outside the scope-owning stack so they only capture
-  // transferable input and never the caller's cancellation state.
+  // Keep worker closures independent of the caller's cancellation scope.
   static dynamic Function() _stringAction(String data) =>
       () => _decodeString(data);
   static dynamic Function() _bytesAction(List<int> bytes) =>
@@ -130,8 +127,7 @@ class JsonHelper {
     return _executor.execute(() => _measureWorker(action));
   }
 
-  /// This callback runs in the worker. Do not access the caller's log sink or
-  /// statistics here; return only the result and fixed-size timing metadata.
+  /// Returns worker timing to the caller without accessing its logger or statistics.
   static Future<_WorkerTiming<R>> _measureWorker<R>(FutureOr<R> Function() action) async {
     final sw = Stopwatch()..start();
     try {
@@ -143,8 +139,7 @@ class JsonHelper {
     }
   }
 
-  /// Game data may contain private-use placeholder chars, replace them before
-  /// parsing so every caller gets the plain text.
+  /// Replaces game-data placeholder characters before parsing.
   static dynamic _decodeString<T>(String text) {
     return jsonDecode(kReplaceDWChars(text));
   }
@@ -162,9 +157,8 @@ class JsonHelper {
   }
 }
 
-/// Owns only one caller's jobs; cancellation leaves unrelated worker jobs alive.
-/// Computation has no deadline: slow devices may keep working until the caller
-/// explicitly cancels. Initialization is shared and is never disposed here.
+/// Cancels only this caller's jobs; shared initialization and other callers are unaffected.
+/// Computation continues until completion or explicit cancellation.
 class JsonWorkerScope {
   final _jobs = <Cancelable<dynamic>>{};
   final _cancellation = Completer<void>();

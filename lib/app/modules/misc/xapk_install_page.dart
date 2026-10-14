@@ -14,16 +14,7 @@ import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
-/// XAPK direct-install page (ADR 0004, docs/xapk-install.md).
-///
-/// Accepts either a local [filePath] (e.g. picked via the file picker
-/// or passed from another page) or a remote [url] (downloaded first).
-/// URL mode never auto-downloads: the URL tile offers a manual
-/// download/redownload button. Once a local file is available
-/// (downloaded or picked) the file tile shows its path and hosts the
-/// install button. Plain .apk files fall back to the existing
-/// ACTION_VIEW install path. The install itself runs natively; states
-/// stream through [MethodChannelChaldea.xapkEvents].
+/// Installs a local APK/XAPK or manually downloads one from [url].
 class XapkInstallPage extends StatefulWidget {
   final String? filePath;
   final String? url;
@@ -36,13 +27,7 @@ class XapkInstallPage extends StatefulWidget {
 
 enum _FlowPhase { idle, downloading, parsing, parsed, installing, confirming, success, failed }
 
-/// Centralized mutable view-model for the XAPK install flow.
-///
-/// Owns every piece of flow/file state (phase, source file, download,
-/// parse result, install event) plus the derived flags the UI relies on
-/// ([installEnabled], [isApk]). The page writes its fields inside
-/// `setState`; read-only concerns stay as getters here so the UI never
-/// recomputes them in multiple places.
+/// File, download and install state shared by the page.
 class XapkFlowModel {
   _FlowPhase phase = _FlowPhase.idle;
 
@@ -74,12 +59,6 @@ class XapkFlowModel {
   /// True when the selected file is a plain .apk (no manifest.json).
   bool get isApk => sourcePath?.toLowerCase().endsWith('.apk') ?? false;
 
-  /// Phases in which the file, even if present, cannot be installed.
-  ///
-  /// Decided by exclusion (default = installable) rather than inclusion so
-  /// that a newly added phase naturally stays installable. ``downloading`` /
-  /// ``parsing`` / ``idle`` coincidentally clear [sourcePath], but listing
-  /// them here keeps the guard self-contained regardless of that coupling.
   static const _nonInstallablePhases = {
     _FlowPhase.idle,
     _FlowPhase.downloading,
@@ -88,11 +67,7 @@ class XapkFlowModel {
     _FlowPhase.confirming,
   };
 
-  /// Whether the Install button is enabled. The button is always rendered
-  /// while a file is selected — a previous failure or success must never
-  /// hide it, only disable it. A plain .apk is installable as soon as it is
-  /// present (no manifest.json); a XAPK only after a successful parse, so a
-  /// parse failure keeps the button visible but disabled.
+  /// APKs can be installed directly; XAPKs require a successful parse.
   bool get installEnabled {
     if (_nonInstallablePhases.contains(phase)) return false;
     if (sourcePath == null) return false;
@@ -101,7 +76,6 @@ class XapkFlowModel {
 }
 
 class _XapkInstallPageState extends State<XapkInstallPage> {
-  /// Mutable flow/file state (+ derived UI flags). See [XapkFlowModel].
   final XapkFlowModel _flow = XapkFlowModel();
 
   bool canInstall = false;
@@ -141,8 +115,6 @@ class _XapkInstallPageState extends State<XapkInstallPage> {
     super.dispose();
   }
 
-  // ---- flow entry points ---------------------------------------------------
-
   Future<void> _pickFile() async {
     if (_flow.phase == _FlowPhase.downloading) {
       final cancelAndPick = await _showCancelDownloadDialog(context);
@@ -160,8 +132,7 @@ class _XapkInstallPageState extends State<XapkInstallPage> {
     await _startWithFile(file.path!);
   }
 
-  /// Enter URL mode: no auto-download, but an already-downloaded file
-  /// (from a previous session) is picked up and parsed immediately.
+  /// Reuse an existing download without starting a new one.
   Future<void> _enterUrlMode(String url) async {
     final name = Uri.tryParse(url)?.pathSegments.lastOrNull;
     final saveName = (name != null && name.contains('.')) ? name : 'download.xapk';
@@ -197,8 +168,7 @@ class _XapkInstallPageState extends State<XapkInstallPage> {
       _flow.installEvent = null;
     });
     if (path.toLowerCase().endsWith('.apk')) {
-      // plain APK: parse summary unavailable (no manifest.json) — offer the
-      // existing ACTION_VIEW path directly
+      // Plain APKs use the system installer without XAPK parsing.
       setState(() => _flow.phase = _FlowPhase.parsed);
       return;
     }
@@ -332,8 +302,6 @@ class _XapkInstallPageState extends State<XapkInstallPage> {
     }
   }
 
-  // ---- install events -------------------------------------------------------
-
   void _onInstallEvent(XapkInstallEvent event) {
     if (!mounted) return;
     switch (event.phase) {
@@ -362,8 +330,6 @@ class _XapkInstallPageState extends State<XapkInstallPage> {
         });
     }
   }
-
-  // ---- error mapping ----------------------------------------------------------
 
   String _errorMessage(Object e) {
     final code = e is PlatformException ? e.code : null;
@@ -405,8 +371,6 @@ class _XapkInstallPageState extends State<XapkInstallPage> {
     }
   }
 
-  // ---- UI ---------------------------------------------------------------------
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -430,9 +394,7 @@ class _XapkInstallPageState extends State<XapkInstallPage> {
 
   Widget _buildGrantCard() {
     if (granted) return const SizedBox.shrink();
-    // If the build never declared REQUEST_INSTALL_PACKAGES (e.g. Google Play)
-    // there is no permission to grant — showing "open settings" would lead to
-    // a dead link, so we only guide the user to third-party tools.
+    // Builds without install permission need third-party installation tools.
     final canGrant = canInstall;
     return Card(
       margin: const EdgeInsets.all(8),
@@ -480,8 +442,6 @@ class _XapkInstallPageState extends State<XapkInstallPage> {
       ],
     );
   }
-
-  // ---- URL tile (download state only) --------------------------------------
 
   bool get _downloadEnabled =>
       _flow.phase != _FlowPhase.downloading &&
@@ -545,8 +505,6 @@ class _XapkInstallPageState extends State<XapkInstallPage> {
       ],
     );
   }
-
-  // ---- file tile (local file + install) ------------------------------------
 
   Widget _buildFileCard() {
     return TileGroup(
@@ -757,9 +715,7 @@ class _XapkInstallPageState extends State<XapkInstallPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(S.current.xapk_not_supported_hint, style: style),
-                  // Shown on every build on purpose: many users get a version
-                  // without REQUEST_INSTALL_PACKAGES (e.g. Google Play) and
-                  // otherwise fail to understand why nothing happens.
+                  // Also explain builds that omit install permission.
                   const SizedBox(height: 8),
                   Text(S.current.xapk_no_install_permission_hint, style: style),
                 ],
