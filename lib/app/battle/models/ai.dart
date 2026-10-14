@@ -8,6 +8,9 @@ import 'battle.dart';
 /// - currently only check mainAis
 /// - Should allow [NiceAiActType.skillIdCheckbuff] too
 
+const int _grandDualAssassinWarId = 8405;
+const int _grandDualAssassinFreeBaseSvtAiId = 94150530;
+
 mixin _AiManagerBase {
   bool hasOnlyOneSkill(List<NiceAi> ais) {
     return ais.where((ai) => ai.aiAct.type == NiceAiActType.skillId && ai.aiAct.skill != null).length == 1;
@@ -177,11 +180,10 @@ class SvtAiManager with _AiManagerBase {
 
   /// For now this is exclusively for Grand Duel Assassin's AI
   Future<void> reactionPlayerActionStart(BattleData battleData, BattleServantData actor) async {
-    final questId = battleData.niceQuest?.id ?? 0;
-    if (aiCollection == null ||
-        !ConstGameData.grandDuelAssassinFreeQuestIds.contains(questId) ||
-        enemyAi?.aiId != ConstGameData.grandDualAssassinFreeBaseSvtAiId)
+    final warId = battleData.niceQuest?.warId ?? 0;
+    if (aiCollection == null || warId != _grandDualAssassinWarId || enemyAi?.aiId != _grandDualAssassinFreeBaseSvtAiId) {
       return;
+    }
 
     final mainAis = NiceAiCollection.sortedAis(aiCollection!.mainAis);
     for (final ai in mainAis) {

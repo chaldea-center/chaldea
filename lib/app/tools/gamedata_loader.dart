@@ -304,7 +304,6 @@ class GameDataLoader {
                   options: Options(responseType: ResponseType.bytes),
                   t: t,
                 ),
-
                 detail: fv.filename,
               );
             } finally {
@@ -735,7 +734,7 @@ class GameDataLoader {
         },
       );
     } catch (_) {
-      if (timedOut) throw TimeoutException('Loading timed out.');
+      if (timedOut) throw TimeoutException('Loading timed out: $url');
       rethrow;
     } finally {
       timer?.cancel();

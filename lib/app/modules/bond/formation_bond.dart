@@ -871,7 +871,13 @@ class _BondQuestPicker extends StatelessWidget {
             },
           ).showDialog(context);
         },
-        child: Text(quest == null ? '0' : '${quest.id}/${quest.phase}'),
+        child: Text(
+          quest == null
+              ? '0'
+              : quest.phases.length > 1
+              ? '${quest.id}/${quest.phase}'
+              : '${quest.id}',
+        ),
       ),
     );
   }

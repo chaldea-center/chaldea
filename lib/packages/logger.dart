@@ -61,7 +61,10 @@ _LoggerWrap get logger => _logger;
 extension LoggerUtils on Logger {
   static void initiateLoggerPath([String? fp]) {
     DioException.readableStringBuilder = (DioException e) {
-      final buffer = StringBuffer('DioException [${e.response?.statusCode ?? ""} ${e.type.name}]: ');
+      final buffer = StringBuffer(
+        'DioException [${e.response?.statusCode ?? ""} ${e.type.name}]: '
+        '${e.requestOptions.method} ${e.requestOptions.uri}; ',
+      );
       if (e.error != null) {
         buffer.write('Error: ${e.error}');
       }
