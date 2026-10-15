@@ -175,7 +175,7 @@ class FunctionExecutor {
             type: skillInfoType ?? SkillInfoType.skillAdditional,
             skillLv: askillLv,
           );
-          await aSkillInfo.activate(battleData, activator: activator);
+          await aSkillInfo.activate(battleData, activator: activator, preferredEnemy: targetedEnemy);
         }
       }
     });

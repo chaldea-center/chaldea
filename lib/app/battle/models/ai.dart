@@ -181,16 +181,18 @@ class SvtAiManager with _AiManagerBase {
   /// For now this is exclusively for Grand Duel Assassin's AI
   Future<void> reactionPlayerActionStart(BattleData battleData, BattleServantData actor) async {
     final warId = battleData.niceQuest?.warId ?? 0;
-    if (aiCollection == null || warId != _grandDualAssassinWarId || enemyAi?.aiId != _grandDualAssassinFreeBaseSvtAiId) {
+    if (aiCollection == null ||
+        warId != _grandDualAssassinWarId ||
+        enemyAi?.aiId != _grandDualAssassinFreeBaseSvtAiId) {
       return;
     }
 
     final mainAis = NiceAiCollection.sortedAis(aiCollection!.mainAis);
-    for (final ai in mainAis) {
-      // grande dual assassin hardcoded logic for func target
-      final targetIndex = battleData.turnCount % 3 - 1;
-      final target = battleData.onFieldAllyServants.getOrNull(targetIndex);
+    // grande dual assassin hardcoded logic for func target
+    final targetIndex = (battleData.turnCount - 1) % 3;
+    final target = battleData.onFieldAllyServants.getOrNull(targetIndex);
 
+    for (final ai in mainAis) {
       if (ai.actNum == NiceAiActNum.reactionPlayeractionstart &&
           await AiCondEvaluator.evaluate(ai, battleData, actor, target)) {
         if (ai.aiAct.type != NiceAiActType.skillId) {
