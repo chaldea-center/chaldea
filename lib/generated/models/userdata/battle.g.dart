@@ -803,6 +803,7 @@ FormationBondOption _$FormationBondOptionFromJson(Map json) => $checkedCreate('F
     excludedSvts: $checkedConvert('excludedSvts', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
     excludedCes: $checkedConvert('excludedCes', (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet()),
     maxCandidateTeams: $checkedConvert('maxCandidateTeams', (v) => (v as num?)?.toInt() ?? 100),
+    maxServants: $checkedConvert('maxServants', (v) => (v as num?)?.toInt() ?? 6),
     searchFixedAscensions: $checkedConvert('searchFixedAscensions', (v) => v as bool? ?? true),
   );
   return val;
@@ -824,6 +825,7 @@ Map<String, dynamic> _$FormationBondOptionToJson(FormationBondOption instance) =
   'excludedSvts': instance.excludedSvts.toList(),
   'excludedCes': instance.excludedCes.toList(),
   'maxCandidateTeams': instance.maxCandidateTeams,
+  'maxServants': instance.maxServants,
   'searchFixedAscensions': instance.searchFixedAscensions,
 };
 

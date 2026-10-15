@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_size_text/auto_size_text.dart';
 
 import 'package:chaldea/app/app.dart';
@@ -62,11 +64,44 @@ class BondExcludedCards extends StatelessWidget {
   }
 }
 
+/// Search lifetime is separate from candidate availability and score proof.
+enum BondSolverRunState {
+  idle,
+  preparing,
+  searching,
+  completed,
+  cancelled,
+  failed;
+
+  bool get isRunning => this == preparing || this == searching;
+
+  String conclusion(BondSolverResult? result) {
+    if (result?.provenOptimal != true) return 'Maximum not proven';
+    return result!.best == null ? 'No feasible team' : 'Maximum proven';
+  }
+
+  String describe(BondSolverResult? result) => switch (this) {
+    idle => 'Not started',
+    preparing => 'Preparing…',
+    searching =>
+      result?.provenOptimal != true
+          ? 'Searching…'
+          : result!.best == null
+          ? 'No feasible team · Finishing…'
+          : 'Maximum proven · Collecting candidates…',
+    completed => result?.provenOptimal == true ? 'Completed · ${conclusion(result)}' : 'Ended · Maximum not proven',
+    cancelled => 'Cancelled · ${conclusion(result)}',
+    failed => 'Failed · ${conclusion(result)}',
+  };
+}
+
 /// Renders immutable search output using the current display-only teapot multiplier.
 class BondSolverResultsTab extends StatelessWidget {
   static final _ascensions = Expando<Map<int, BondAscensionRequirement>>();
 
   BondAscensionRequirement _ascensionRequirement(BondSolvedTeam team, BondSolvedSlot slot) {
+    final prepared = team.cachedAscensionRequirement(slot.position);
+    if (prepared != null) return prepared;
     final quest = this.quest;
     if (quest == null) return const BondAscensionRequirement([], []);
     final cache = _ascensions[team] ??= {};
@@ -86,8 +121,10 @@ class BondSolverResultsTab extends StatelessWidget {
   final BattleTeamSetup formation;
   final FormationBondOption option;
   final QuestPhase? quest;
-  final bool solving;
-  final String status;
+  final BondSolverRunState runState;
+
+  bool get solving => runState.isRunning;
+  String get status => runState.describe(solved);
   final String? error;
   final VoidCallback? onCancel;
 
@@ -97,8 +134,7 @@ class BondSolverResultsTab extends StatelessWidget {
     required this.formation,
     required this.option,
     required this.quest,
-    required this.solving,
-    required this.status,
+    required this.runState,
     required this.error,
     required this.onCancel,
   });
@@ -135,9 +171,18 @@ class BondSolverResultsTab extends StatelessWidget {
   Widget _summary(BuildContext context, BondSolverResult? result) {
     final best = result?.best;
     final colorScheme = Theme.of(context).colorScheme;
-    final statusIcon = (result?.provenOptimal == true && !solving)
-        ? Icons.verified_outlined
-        : (solving ? Icons.search : (error != null ? Icons.error_outline : Icons.info_outline));
+    final statusIcon = switch (runState) {
+      BondSolverRunState.failed => Icons.error_outline,
+      BondSolverRunState.cancelled => Icons.cancel_outlined,
+      BondSolverRunState.preparing || BondSolverRunState.searching => Icons.search,
+      _ =>
+        result?.provenOptimal == true
+            ? best == null
+                  ? Icons.search_off
+                  : Icons.verified_outlined
+            : Icons.info_outline,
+    };
+    final failed = runState == BondSolverRunState.failed;
     return Card(
       margin: const EdgeInsets.fromLTRB(12, 8, 12, 8),
       child: Column(
@@ -164,24 +209,24 @@ class BondSolverResultsTab extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
             child: Row(
               children: [
-                Icon(statusIcon, size: 16, color: error != null ? colorScheme.error : colorScheme.onSurfaceVariant),
+                Icon(statusIcon, size: 16, color: failed ? colorScheme.error : colorScheme.onSurfaceVariant),
                 const SizedBox(width: 6),
                 Expanded(
                   child: Semantics(
                     button: true,
-                    label: error ?? status,
+                    label: status,
                     hint: S.current.details,
                     child: Tooltip(
                       message: S.current.details,
                       child: InkWell(
                         borderRadius: BorderRadius.circular(4),
-                        onTap: () => _showStatusDetails(context, error ?? status),
+                        onTap: () => _showStatusDetails(context),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 4),
                           child: Text(
-                            error ?? status,
+                            status,
                             style: Theme.of(context).textTheme.bodySmall
-                                ?.copyWith(color: error != null ? colorScheme.error : colorScheme.onSurfaceVariant),
+                                ?.copyWith(color: failed ? colorScheme.error : colorScheme.onSurfaceVariant),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -192,13 +237,12 @@ class BondSolverResultsTab extends StatelessWidget {
                 ),
                 if (solving && onCancel != null) ...[
                   const SizedBox(width: 8),
-                  TextButton(onPressed: onCancel, child: Text(S.current.cancel)),
+                  FilledButton(onPressed: onCancel, child: Text(S.current.cancel)),
                 ],
               ],
             ),
           ),
-          if (solving)
-            const Padding(padding: EdgeInsets.fromLTRB(16, 0, 16, 8), child: LinearProgressIndicator(minHeight: 2)),
+          if (solving) const Padding(padding: EdgeInsets.fromLTRB(16, 0, 16, 8), child: _DiscreteSearchIndicator()),
         ],
       ),
     );
@@ -215,7 +259,14 @@ class BondSolverResultsTab extends StatelessWidget {
 
   String _formatBond(int value) => value.format(compact: false, groupSeparator: ',');
 
-  void _showStatusDetails(BuildContext context, String message) {
+  String get _candidateCoverage =>
+      'Up to ${option.maxCandidateTeams.clamp(1, 200)} candidate teams are retained. '
+      'Feasible or equal-score teams may be omitted. '
+      'The maximum proof applies only to the highest score under the selected settings; '
+      'lower-score candidates are not globally ranked.';
+
+  void _showStatusDetails(BuildContext context) {
+    final message = [status, ?error, if (solved != null) _candidateCoverage].join('\n\n');
     SimpleConfirmDialog(
       title: Text(S.current.search),
       content: SelectableText(message),
@@ -226,15 +277,16 @@ class BondSolverResultsTab extends StatelessWidget {
   }
 
   Widget _emptyState(BuildContext context, BondSolverResult? result) {
-    final message =
-        error ??
-        (solving
-            ? 'No feasible team found yet'
-            : result == null
-            ? 'Solve to collect candidate teams'
-            : result.provenOptimal
-            ? 'No feasible team'
-            : 'No team found before the search stopped');
+    final message = result?.provenOptimal == true && result?.best == null
+        ? 'No feasible team under the current settings'
+        : switch (runState) {
+            BondSolverRunState.idle => 'Solve to collect candidate teams',
+            BondSolverRunState.preparing => 'Candidate teams will appear here',
+            BondSolverRunState.searching => 'No candidate teams yet',
+            BondSolverRunState.cancelled => 'No team found before cancellation',
+            BondSolverRunState.failed => 'No team available. Open search details for the error.',
+            BondSolverRunState.completed => 'No team found before the search ended',
+          };
     return Padding(
       padding: const EdgeInsets.all(24),
       child: Center(
@@ -458,23 +510,57 @@ class BondSolverResultsTab extends StatelessWidget {
             trailing: Text('${solved.elapsedMilliseconds} ms'),
           ),
           ListTile(dense: true, title: const Text('Candidate items'), trailing: Text('${solved.itemCount}')),
-          ListTile(
-            dense: true,
-            title: const Text('Score proof'),
-            trailing: Text(
-              solved.provenOptimal
-                  ? 'Proven'
-                  : solving
-                  ? 'In progress'
-                  : 'Unproven',
+          ListTile(dense: true, title: const Text('Search conclusion'), trailing: Text(runState.conclusion(solved))),
+          Padding(padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8), child: Text(_candidateCoverage)),
+        ],
+      ),
+    );
+  }
+}
+
+/// A low-frequency activity cue, not a completion percentage.
+class _DiscreteSearchIndicator extends StatefulWidget {
+  const _DiscreteSearchIndicator();
+  @override
+  State<_DiscreteSearchIndicator> createState() => _DiscreteSearchIndicatorState();
+}
+
+class _DiscreteSearchIndicatorState extends State<_DiscreteSearchIndicator> {
+  int segment = 0;
+  late final Timer timer;
+  @override
+  void initState() {
+    super.initState();
+    timer = Timer.periodic(const Duration(milliseconds: 250), (_) {
+      if (mounted) setState(() => segment = (segment + 1) % 5);
+    });
+  }
+
+  @override
+  void dispose() {
+    timer.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    return Semantics(
+      label: S.current.search,
+      child: Row(
+        children: [
+          for (var i = 0; i < 5; i++) ...[
+            if (i > 0) const SizedBox(width: 3),
+            Expanded(
+              child: Container(
+                height: 3,
+                decoration: BoxDecoration(
+                  color: i == segment ? colors.primary : colors.surfaceContainerHighest,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
             ),
-          ),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Text(
-              'Equivalent concrete teams are not counted. Shown teams represent effect groups found during the search.',
-            ),
-          ),
+          ],
         ],
       ),
     );

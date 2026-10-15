@@ -1332,6 +1332,17 @@ class S {
     return Intl.message('Bond Bonus', name: 'bond_bonus', desc: '', locale: localeName, args: []);
   }
 
+  /// `All settings in positions beyond this limit will be cleared (servants, support, CEs, Grand, etc.).`
+  String get bond_clear_excess_positions {
+    return Intl.message(
+      'All settings in positions beyond this limit will be cleared (servants, support, CEs, Grand, etc.).',
+      name: 'bond_clear_excess_positions',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Bond Craft`
   String get bond_craft {
     return Intl.message('Bond Craft', name: 'bond_craft', desc: '', locale: localeName, args: []);
@@ -1356,6 +1367,11 @@ class S {
   /// `Bond Limit`
   String get bond_limit {
     return Intl.message('Bond Limit', name: 'bond_limit', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Max servants`
+  String get bond_max_servants {
+    return Intl.message('Max servants', name: 'bond_max_servants', desc: '', locale: localeName, args: []);
   }
 
   /// `Search fixed servant ascensions`

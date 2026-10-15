@@ -1366,7 +1366,7 @@ enum BondReleaseReference {
 @JsonSerializable()
 class FormationBondOption {
   BattleTeamFormation teamFormation;
-  // quest reference stored as id/phase; restore falls back to null if unresolvable
+  // Keep the id/phase reference when loading fails so it can be retried.
   BattleQuestInfo? quest;
   bool enableEvent;
   // <eventId, <campaign idx, enabled>>
@@ -1382,11 +1382,14 @@ class FormationBondOption {
   Set<int> excludedSvts;
   Set<int> excludedCes;
   int maxCandidateTeams;
+
+  /// Usable formation positions, including support.
+  int maxServants;
   bool searchFixedAscensions;
 
   FormationBondOption({
     BattleTeamFormation? teamFormation,
-    this.quest,
+    BattleQuestInfo? quest,
     this.enableEvent = true,
     Map<int, Map<int, bool>>? campaigns,
     this.fixedDate,
@@ -1400,14 +1403,21 @@ class FormationBondOption {
     Set<int>? excludedSvts,
     Set<int>? excludedCes,
     this.maxCandidateTeams = 100,
+    this.maxServants = 6,
     this.searchFixedAscensions = true,
-  }) : teamFormation = teamFormation ?? BattleTeamFormation(),
+  }) : quest = quest ?? BattleQuestInfo(id: 94137202, phase: 1, enemyHash: null),
+       teamFormation = teamFormation ?? BattleTeamFormation(),
        campaigns = campaigns ?? {},
        svtBonus = svtBonus ?? List.generate(6, (_) => FormationBondSvtBonus()),
        excludedSvts = excludedSvts ?? {},
        excludedCes = excludedCes ?? {};
 
-  factory FormationBondOption.fromJson(Map<String, dynamic> json) => _$FormationBondOptionFromJson(json);
+  factory FormationBondOption.fromJson(Map<String, dynamic> json) {
+    final option = _$FormationBondOptionFromJson(json);
+    // The new-construction default must not replace an existing empty selection.
+    if (json['quest'] == null) option.quest = null;
+    return option;
+  }
 
   Map<String, dynamic> toJson() => _$FormationBondOptionToJson(this);
 }

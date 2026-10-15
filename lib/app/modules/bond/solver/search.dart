@@ -1,5 +1,7 @@
 import 'dart:math' as math;
 
+import 'work.dart';
+
 /// Sentinel for an unreachable value.
 ///
 /// Kept within JavaScript's safe integer range (2^53 - 1) so that
@@ -164,6 +166,7 @@ class BondSearch {
   int? _nodeLimit;
   int _visitedNodes = 0;
   int _seedVisited = 0;
+  int _workTicks = 0;
   void Function(BondSearchResult)? _onProgress;
   final Stopwatch _progressClock = Stopwatch();
   int _lastProgressMs = -250;
@@ -177,6 +180,30 @@ class BondSearch {
     int maxCandidateNodes = 100000,
     void Function(BondSearchResult)? onProgress,
   }) {
+    late BondSearchResult result;
+    for (final _ in solveSteps(
+      problem,
+      maxNodes: maxNodes,
+      maxTies: maxTies,
+      maxCandidates: maxCandidates,
+      maxTieNodes: maxTieNodes,
+      maxCandidateNodes: maxCandidateNodes,
+      onProgress: onProgress,
+      onComplete: (value) => result = value,
+    )) {}
+    return result;
+  }
+
+  static Iterable<void> solveSteps(
+    BondSearchProblem problem, {
+    int? maxNodes,
+    int maxTies = 20,
+    int maxTieNodes = 100000,
+    int maxCandidates = 100,
+    int maxCandidateNodes = 100000,
+    void Function(BondSearchResult)? onProgress,
+    required void Function(BondSearchResult) onComplete,
+  }) sync* {
     if (maxNodes != null && maxNodes < 0) throw ArgumentError.value(maxNodes, 'maxNodes');
     if (maxTies < 1) throw ArgumentError.value(maxTies, 'maxTies');
     if (maxTieNodes < 0) throw ArgumentError.value(maxTieNodes, 'maxTieNodes');
@@ -185,14 +212,14 @@ class BondSearch {
     final search = BondSearch._(problem, maxNodes, maxTies, maxCandidates);
     search._onProgress = onProgress;
     search._progressClock.start();
-    search._prepare();
+    yield* search._prepareSteps();
     if (search._dp[0][search._dpMaxBudget] != kImpossibleScore) {
-      search._seedFeasible(0, 0);
+      yield* search._seedSteps(0, 0);
     }
-    if (search._best != null) search._improveSeed();
+    if (search._best != null) yield* search._improveSeedSteps();
     search._reportProgress();
     search._nodeLimit = maxNodes;
-    search._visit(0, 0);
+    yield* search._visitSteps(0, 0);
     final provenOptimal = !search._interrupted;
     search._scoreProven = provenOptimal;
     final primaryNodes = search._visitedNodes;
@@ -204,7 +231,7 @@ class BondSearch {
         .._nodeLimit = maxTieNodes
         .._visitedOffset = primaryNodes
         .._visitedNodes = 0;
-      search._visit(0, 0);
+      yield* search._visitSteps(0, 0);
       tieNodes = search._visitedNodes;
     }
     final allTiesCollected = provenOptimal && !search._interrupted && !search._tiesTruncated;
@@ -216,16 +243,18 @@ class BondSearch {
         .._nodeLimit = maxCandidateNodes
         .._visitedOffset = primaryNodes + tieNodes
         .._visitedNodes = 0;
-      search._visit(0, 0);
+      yield* search._visitSteps(0, 0);
     }
-    return BondSearchResult(
-      best: search._best,
-      ties: List.unmodifiable(search._ties),
-      candidates: List.unmodifiable(search._candidates),
-      tieGroupCounts: List.unmodifiable(search._tieGroupCounts),
-      provenOptimal: provenOptimal,
-      allTiesCollected: allTiesCollected,
-      visitedNodes: search._visitedOffset + search._visitedNodes,
+    onComplete(
+      BondSearchResult(
+        best: search._best,
+        ties: List.unmodifiable(search._ties),
+        candidates: List.unmodifiable(search._candidates),
+        tieGroupCounts: List.unmodifiable(search._tieGroupCounts),
+        provenOptimal: provenOptimal,
+        allTiesCollected: allTiesCollected,
+        visitedNodes: search._visitedOffset + search._visitedNodes,
+      ),
     );
   }
 
@@ -245,36 +274,42 @@ class BondSearch {
     );
   }
 
-  bool _seedFeasible(int p, int spent) {
-    if (_seedVisited++ >= 20000) return false;
+  Iterable<void> _seedSteps(int p, int spent) sync* {
+    if (_seedVisited++ >= 20000) return;
     if (p == problem.positions.length) {
       _acceptLeaf(spent);
-      return _best != null;
+      return;
     }
     for (final item in _seedOrderedItems[p]) {
+      if (++_workTicks % 128 == 0) yield null;
       if (spent + item.cost > problem.maxCost || !_capacityAvailable(item)) continue;
       _chosen[p] = item;
       _changeCapacity(item, 1);
-      final feasible = _selectedIdsMatch(p + 1) && _seedFeasible(p + 1, spent + item.cost);
+      if (_selectedIdsMatch(p + 1)) yield* _seedSteps(p + 1, spent + item.cost);
+      final feasible = _best != null;
       _changeCapacity(item, -1);
       _chosen[p] = null;
-      if (feasible) return true;
+      if (feasible) return;
     }
-    return false;
+    return;
   }
 
-  void _improveSeed() {
+  Iterable<void> _improveSeedSteps() sync* {
     for (var pass = 0; pass < 2; pass++) {
+      if (++_workTicks % 128 == 0) yield null;
       var improved = false;
       for (var p = 0; p < problem.positions.length; p++) {
+        if (++_workTicks % 128 == 0) yield null;
         final base = _best!;
         _chosen.setAll(0, base.items);
         for (final item in base.items) {
+          if (++_workTicks % 128 == 0) yield null;
           _changeCapacity(item, 1);
         }
         final old = base.items[p];
         _changeCapacity(old, -1);
         for (final item in _orderedItems[p]) {
+          if (++_workTicks % 128 == 0) yield null;
           final cost = base.totalCost - old.cost + item.cost;
           if (cost > problem.maxCost || !_capacityAvailable(item)) continue;
           _chosen[p] = item;
@@ -285,6 +320,7 @@ class BondSearch {
         _chosen[p] = old;
         _changeCapacity(old, 1);
         for (final item in base.items) {
+          if (++_workTicks % 128 == 0) yield null;
           _changeCapacity(item, -1);
         }
         _chosen.fillRange(0, _chosen.length, null);
@@ -307,7 +343,7 @@ class BondSearch {
     return _match(servantDimensions) != null && _match(ceDimensions, ce: true) != null;
   }
 
-  void _prepare() {
+  Iterable<void> _prepareSteps() sync* {
     final n = problem.positions.length;
     final profiles = problem.receiverProfileCount;
     if (n > 6 || profiles < 0 || problem.baseBond < 0 || problem.maxCost < 0) {
@@ -325,7 +361,9 @@ class BondSearch {
     _maxSourceRates = List.generate(n, (_) => List<int>.filled(profiles, 0));
     _maxSourceValues = List.generate(n, (_) => List<int>.filled(profiles, 0));
     for (final (p, position) in problem.positions.indexed) {
+      if (++_workTicks % 128 == 0) yield null;
       for (final item in position.items) {
+        if (++_workTicks % 128 == 0) yield null;
         if (item.cost < 0 || item.teamRates.length != profiles || item.teamValues.length != profiles) {
           throw ArgumentError('invalid item at position $p');
         }
@@ -337,22 +375,25 @@ class BondSearch {
           throw ArgumentError('invalid servant class at position $p');
         }
         for (final ci in item.ownedCeClassIndices) {
+          if (++_workTicks % 128 == 0) yield null;
           if (ci < 0 || ci >= _ownedCeClassUsed.length) {
             throw ArgumentError('invalid CE class at position $p');
           }
         }
         for (var r = 0; r < profiles; r++) {
+          if (++_workTicks % 128 == 0) yield null;
           _maxSourceRates[p][r] = math.max(_maxSourceRates[p][r], item.teamRates[r]);
           _maxSourceValues[p][r] = math.max(_maxSourceValues[p][r], item.teamValues[r]);
         }
       }
     }
-    _buildCapacitySourceBounds(n, profiles);
+    yield* _buildCapacitySourceBoundsSteps(n, profiles);
 
     final optimistic = List.generate(n, (_) => <BondSearchItem, int>{});
     _orderedItems = [];
     _seedOrderedItems = [];
     for (var p = 0; p < n; p++) {
+      if (++_workTicks % 128 == 0) yield null;
       final list = List<BondSearchItem>.of(problem.positions[p].items);
       _seedOrderedItems.add(
         List<BondSearchItem>.of(list)..sort((a, b) {
@@ -364,6 +405,7 @@ class BondSearch {
         }),
       );
       for (final item in list) {
+        if (++_workTicks % 128 == 0) yield null;
         final profile = item.receiverProfile;
         if (profile == null) {
           optimistic[p][item] = 0;
@@ -372,13 +414,14 @@ class BondSearch {
         var rate = item.selfRate + item.teamRates[profile];
         var value = item.selfValue + item.teamValues[profile];
         for (var q = 0; q < n; q++) {
+          if (++_workTicks % 128 == 0) yield null;
           if (q == p) continue;
           rate += _maxSourceRates[q][profile];
           value += _maxSourceValues[q][profile];
         }
         optimistic[p][item] = _upperSlot(_firstValues[p], rate, value);
       }
-      list.sort((a, b) {
+      yield* bondSortSteps(list, (a, b) {
         final c = optimistic[p][b]!.compareTo(optimistic[p][a]!);
         return c != 0 ? c : a.cost.compareTo(b.cost);
       });
@@ -394,12 +437,16 @@ class BondSearch {
     const impossible = kImpossibleScore;
     _dp = List.generate(n + 1, (_) => List<int>.filled(budget + 1, impossible));
     for (var b = 0; b <= budget; b++) {
+      if (++_workTicks % 128 == 0) yield null;
       _dp[n][b] = 0;
     }
     for (var p = n - 1; p >= 0; p--) {
+      if (++_workTicks % 128 == 0) yield null;
       for (var b = 0; b <= budget; b++) {
+        if (++_workTicks % 128 == 0) yield null;
         var best = impossible;
         for (final item in _orderedItems[p]) {
+          if (++_workTicks % 128 == 0) yield null;
           if (item.cost > b) continue;
           final tail = _dp[p + 1][b - item.cost];
           if (tail == impossible) continue;
@@ -410,17 +457,20 @@ class BondSearch {
     }
   }
 
-  void _buildCapacitySourceBounds(int n, int profiles) {
+  Iterable<void> _buildCapacitySourceBoundsSteps(int n, int profiles) sync* {
     final groups = problem.ownedCeClassCapacities.length + 1;
     _sourceRateMaxByGroup = List.generate(n + 1, (_) => List.generate(profiles, (_) => List<int>.filled(groups, 0)));
     _sourceValueMaxByGroup = List.generate(n + 1, (_) => List.generate(profiles, (_) => List<int>.filled(groups, 0)));
     for (var p = n - 1; p >= 0; p--) {
+      if (++_workTicks % 128 == 0) yield null;
       for (var r = 0; r < profiles; r++) {
+        if (++_workTicks % 128 == 0) yield null;
         final rates = _sourceRateMaxByGroup[p][r];
         final values = _sourceValueMaxByGroup[p][r];
         rates.setAll(0, _sourceRateMaxByGroup[p + 1][r]);
         values.setAll(0, _sourceValueMaxByGroup[p + 1][r]);
         for (final item in problem.positions[p].items) {
+          if (++_workTicks % 128 == 0) yield null;
           final group = item.ownedCeClassIndices.isEmpty ? 0 : item.ownedCeClassIndices.first + 1;
           rates[group] = math.max(rates[group], item.teamRates[r]);
           values[group] = math.max(values[group], item.teamValues[r]);
@@ -461,7 +511,7 @@ class BondSearch {
     return total;
   }
 
-  void _visit(int p, int spent) {
+  Iterable<void> _visitSteps(int p, int spent) sync* {
     if (_interrupted) return;
     if (_nodeLimit != null && _visitedNodes >= _nodeLimit!) {
       _interrupted = true;
@@ -486,11 +536,13 @@ class BondSearch {
     }
     final group = problem.positions[p].symmetryGroup;
     for (final item in _orderedItems[p]) {
+      if (++_workTicks % 128 == 0) yield null;
       if (item.cost > remaining) continue;
       if (!_capacityAvailable(item)) continue;
       if (group != null) {
         var previousOrder = -1;
         for (var q = 0; q < p; q++) {
+          if (++_workTicks % 128 == 0) yield null;
           if (problem.positions[q].symmetryGroup == group) {
             previousOrder = _chosen[q]!.symmetryOrder;
           }
@@ -499,7 +551,7 @@ class BondSearch {
       }
       _chosen[p] = item;
       _changeCapacity(item, 1);
-      _visit(p + 1, spent + item.cost);
+      yield* _visitSteps(p + 1, spent + item.cost);
       _changeCapacity(item, -1);
       _chosen[p] = null;
       if (_interrupted) return;
