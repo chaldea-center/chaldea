@@ -19,7 +19,7 @@ import '../../modules/battle/formation/formation_card.dart';
 import '../_shared/select_svt.dart';
 import '../_shared/select_svt_equip.dart';
 import '../_shared/select_user_equip.dart';
-import '../combine/svt_combine.dart';
+import '../enhance/svt_combine.dart';
 import '../runtime.dart';
 import 'deck_list.dart';
 

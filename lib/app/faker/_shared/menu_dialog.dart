@@ -12,8 +12,9 @@ import 'package:chaldea/utils/extension.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 import '../../modules/import_data/import_https_page.dart';
-import '../combine/svt_combine.dart';
-import '../combine/svt_equip_combine.dart';
+import '../enhance/class_board.dart';
+import '../enhance/svt_combine.dart';
+import '../enhance/svt_equip_combine.dart';
 import '../event/box_gacha.dart';
 import '../event/random_mission_loop.dart';
 import '../event/recipe.dart';
@@ -83,7 +84,7 @@ class _FakerMenuDialogState extends State<FakerMenuDialog> with FakerRuntimeStat
                     fmtVer('top = ', gameTop.hash, gameTop.timestamp),
                     fmtVer('timer=', timerData.hash ?? "", timerData.timestamp),
                   ],
-                  'data=${gameTop.dataVer} date=${gameTop.dateVer > 100000 ? gameTop.dateVer.sec2date().toCustomString(year: false, second: false) : gameTop.dateVer}',
+                  'data=${gameTop.dataVer.toString().padRight(4)} date=${gameTop.dateVer > 100000 ? gameTop.dateVer.sec2date().toCustomString(year: false, second: false) : gameTop.dateVer}',
                 ].join('\n'),
                 style: Theme.of(context).textTheme.bodySmall?.merge(kMonoStyle),
               ),
@@ -130,6 +131,43 @@ class _FakerMenuDialogState extends State<FakerMenuDialog> with FakerRuntimeStat
             title: S.current.enhance,
             buttons: [
               _ButtonData(
+                icon: Icons.storage,
+                name: S.current.svt_second_archive,
+                enabled: isLoggedIn,
+                onTap: () {
+                  router.pushPage(SvtStoragePage(runtime: runtime));
+                },
+              ),
+              _ButtonData(
+                icon: FontAwesomeIcons.users.data,
+                name: S.current.servant,
+                enabled: isLoggedIn,
+                onTap: () {
+                  router.pushPage(SvtCombinePage(runtime: runtime));
+                },
+              ),
+              _ButtonData(
+                icon: FontAwesomeIcons.streetView.data,
+                name: S.current.craft_essence,
+                enabled: isLoggedIn,
+                onTap: () {
+                  router.pushPage(SvtEquipCombinePage(runtime: runtime));
+                },
+              ),
+              _ButtonData(
+                icon: FontAwesomeIcons.starOfDavid.data,
+                name: S.current.class_board,
+                enabled: isLoggedIn,
+                onTap: () {
+                  router.pushPage(FakerClassBoardListPage(runtime: runtime));
+                },
+              ),
+            ],
+          ),
+          buildGroup(
+            title: S.current.event,
+            buttons: [
+              _ButtonData(
                 icon: FontAwesomeIcons.dice.data,
                 name: S.current.gacha,
                 enabled: isLoggedIn,
@@ -143,35 +181,6 @@ class _FakerMenuDialogState extends State<FakerMenuDialog> with FakerRuntimeStat
                 enabled: isLoggedIn,
                 onTap: () {
                   router.pushPage(UserEventMissionReceivePage(runtime: runtime));
-                },
-              ),
-              _ButtonData(
-                icon: FontAwesomeIcons.users.data,
-                name: '从者强化',
-                enabled: isLoggedIn,
-                onTap: () {
-                  router.pushPage(SvtCombinePage(runtime: runtime));
-                },
-              ),
-              _ButtonData(
-                icon: FontAwesomeIcons.streetView.data,
-                name: '礼装强化',
-                enabled: isLoggedIn,
-                onTap: () {
-                  router.pushPage(SvtEquipCombinePage(runtime: runtime));
-                },
-              ),
-            ],
-          ),
-          buildGroup(
-            title: S.current.event,
-            buttons: [
-              _ButtonData(
-                icon: Icons.storage,
-                name: S.current.svt_second_archive,
-                enabled: isLoggedIn,
-                onTap: () {
-                  router.pushPage(SvtStoragePage(runtime: runtime));
                 },
               ),
               _ButtonData(

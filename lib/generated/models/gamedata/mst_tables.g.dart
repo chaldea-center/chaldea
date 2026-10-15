@@ -355,6 +355,8 @@ UserClassBoardSquareEntity _$UserClassBoardSquareEntityFromJson(Map json) => Use
   classBoardBaseId: json['classBoardBaseId'],
   classBoardSquareIds: json['classBoardSquareIds'],
   classBoardUnlockSquareIds: json['classBoardUnlockSquareIds'],
+  updatedAt: json['updatedAt'],
+  createdAt: json['createdAt'],
 );
 
 UserPresentBoxEntity _$UserPresentBoxEntityFromJson(Map json) => UserPresentBoxEntity(

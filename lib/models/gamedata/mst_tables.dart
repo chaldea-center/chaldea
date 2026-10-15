@@ -1526,8 +1526,8 @@ class UserClassBoardSquareEntity with DataEntityBase<_IntStr> {
   int classBoardBaseId;
   List<int> classBoardSquareIds;
   List<int> classBoardUnlockSquareIds;
-  // int updatedAt;
-  // int createdAt;
+  int updatedAt;
+  int createdAt;
 
   @override
   _IntStr get primaryKey => classBoardBaseId;
@@ -1539,10 +1539,14 @@ class UserClassBoardSquareEntity with DataEntityBase<_IntStr> {
     dynamic classBoardBaseId,
     dynamic classBoardSquareIds,
     dynamic classBoardUnlockSquareIds,
+    dynamic updatedAt,
+    dynamic createdAt,
   }) : userId = _toInt(userId),
        classBoardBaseId = _toInt(classBoardBaseId),
        classBoardSquareIds = _toIntList(classBoardSquareIds),
-       classBoardUnlockSquareIds = _toIntList(classBoardUnlockSquareIds);
+       classBoardUnlockSquareIds = _toIntList(classBoardUnlockSquareIds),
+       updatedAt = _toInt(updatedAt),
+       createdAt = _toInt(createdAt);
 
   factory UserClassBoardSquareEntity.fromJson(Map<String, dynamic> data) => _$UserClassBoardSquareEntityFromJson(data);
 }
