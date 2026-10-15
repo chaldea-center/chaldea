@@ -420,6 +420,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "class_board": MessageLookupByLibrary.simpleMessage("Class Score"),
     "class_board_square": MessageLookupByLibrary.simpleMessage("Sign"),
     "clear": MessageLookupByLibrary.simpleMessage("Clear"),
+    "clear_backup": MessageLookupByLibrary.simpleMessage("Clear Backups"),
     "clear_cache": MessageLookupByLibrary.simpleMessage("Clear Cache"),
     "clear_cache_finish": MessageLookupByLibrary.simpleMessage("Cache cleared"),
     "clear_cache_hint": MessageLookupByLibrary.simpleMessage("Including illustrations, voices"),

@@ -280,6 +280,7 @@
   "class_board": "Class Score",
   "class_board_square": "Sign",
   "clear": "Clear",
+  "clear_backup": "Clear Backups",
   "clear_cache": "Clear Cache",
   "clear_cache_finish": "Cache cleared",
   "clear_cache_hint": "Including illustrations, voices",

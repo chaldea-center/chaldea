@@ -271,6 +271,7 @@
   "class_board": "職階星圖",
   "class_board_square": "星宮",
   "clear": "清空",
+  "clear_backup": "清除備份",
   "clear_cache": "清除暫存",
   "clear_cache_finish": "暫存已清除",
   "clear_cache_hint": "包括卡面語音等",

@@ -1928,6 +1928,11 @@ class S {
     return Intl.message('Clear', name: 'clear', desc: '', locale: localeName, args: []);
   }
 
+  /// `Clear Backups`
+  String get clear_backup {
+    return Intl.message('Clear Backups', name: 'clear_backup', desc: '', locale: localeName, args: []);
+  }
+
   /// `Clear Cache`
   String get clear_cache {
     return Intl.message('Clear Cache', name: 'clear_cache', desc: '', locale: localeName, args: []);

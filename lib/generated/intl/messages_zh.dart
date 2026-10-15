@@ -388,6 +388,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "class_board": MessageLookupByLibrary.simpleMessage("职阶星图"),
     "class_board_square": MessageLookupByLibrary.simpleMessage("星宫"),
     "clear": MessageLookupByLibrary.simpleMessage("清空"),
+    "clear_backup": MessageLookupByLibrary.simpleMessage("清除备份"),
     "clear_cache": MessageLookupByLibrary.simpleMessage("清除缓存"),
     "clear_cache_finish": MessageLookupByLibrary.simpleMessage("缓存已清理"),
     "clear_cache_hint": MessageLookupByLibrary.simpleMessage("包括卡面语音等"),
