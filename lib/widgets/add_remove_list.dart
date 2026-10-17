@@ -7,11 +7,12 @@ import 'tile_items.dart';
 /// The item builder receives a removal callback so the list can support
 /// different affordances, such as long-pressing a game-card icon.
 class AddRemoveList<T> extends StatelessWidget {
-  final String title;
+  final Widget title;
   final String? subtitle;
   final List<T> items;
+  final Widget? leading;
   final String? addTooltip;
-  final VoidCallback onAdd;
+  final VoidCallback? onAdd;
   final ValueChanged<T> onRemove;
   final Widget Function(BuildContext context, T item, VoidCallback onRemove) itemBuilder;
   final Widget? emptyState;
@@ -21,8 +22,9 @@ class AddRemoveList<T> extends StatelessWidget {
     required this.title,
     this.subtitle,
     required this.items,
+    this.leading,
     this.addTooltip,
-    required this.onAdd,
+    this.onAdd,
     required this.onRemove,
     required this.itemBuilder,
     this.emptyState,
@@ -35,7 +37,8 @@ class AddRemoveList<T> extends StatelessWidget {
       children: [
         ListTile(
           dense: true,
-          title: Text(title),
+          leading: leading,
+          title: title,
           subtitle: subtitle == null ? null : Text(subtitle!),
           trailing: IconButton(
             tooltip: addTooltip,
@@ -46,7 +49,7 @@ class AddRemoveList<T> extends StatelessWidget {
         ),
         if (items.isNotEmpty)
           Padding(
-            padding: const EdgeInsetsDirectional.fromSTEB(12, 0, 12, 12),
+            padding: const EdgeInsetsDirectional.fromSTEB(16, 0, 16, 12),
             child: Wrap(
               spacing: 8,
               runSpacing: 8,

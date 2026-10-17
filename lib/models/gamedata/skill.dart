@@ -1215,6 +1215,24 @@ class SvtSkillRelease {
   factory SvtSkillRelease.fromJson(Map<String, dynamic> json) => _$SvtSkillReleaseFromJson(json);
 
   Map<String, dynamic> toJson() => _$SvtSkillReleaseToJson(this);
+
+  /// Same condGroup semantics as [CommonRelease.check]: within one condGroup all conditions must
+  /// pass (AND), any fully-passed condGroup is enough (OR). Null = undetermined.
+  static bool? check(List<SvtSkillRelease> releases, bool? Function(SvtSkillRelease release) test) {
+    if (releases.isEmpty) return true;
+    Map<int, Set<bool?>> results = {};
+    for (final release in releases) {
+      final v = test(release);
+      results.putIfAbsent(release.condGroup, () => {}).add(v);
+    }
+    if (results.values.any((e) => e.length == 1 && e.single == true)) {
+      return true;
+    }
+    if (results.values.every((e) => e.contains(false))) {
+      return false;
+    }
+    return null;
+  }
 }
 
 @JsonSerializable()

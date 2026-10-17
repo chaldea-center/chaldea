@@ -212,6 +212,12 @@ abstract class FakerAgent<
     required int32_t skillNum,
     required int32_t currentSkillLv,
   });
+  Future<FResponse> servantTreasureDeviceCombine({
+    required int64_t baseUsrSvtId,
+    required int32_t selectTdIndex,
+    required int32_t selectTdId,
+    required List<int64_t> materialSvtIds,
+  });
   Future<FResponse> storageTakein({required List<int64_t> userSvtIds});
   Future<FResponse> storageTakeout({required List<int64_t> userSvtIds});
 

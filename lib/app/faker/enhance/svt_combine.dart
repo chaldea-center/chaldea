@@ -4,6 +4,7 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/app/modules/common/misc.dart';
 import 'package:chaldea/generated/l10n.dart';
+import 'package:chaldea/models/gamedata/mst_data.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -26,6 +27,13 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
   late final runtime = widget.runtime;
   late final user = agent.user;
   late final options = user.svtCombine;
+
+  final _selection = _SvtCombineSelection();
+
+  List<UserServantEntity> get _npMaterials {
+    _selection.materialUserSvtIds.removeWhere((id) => mstData.userSvt[id] == null);
+    return _selection.materialUserSvtIds.map((id) => mstData.userSvt[id]).whereType<UserServantEntity>().toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -143,6 +151,36 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
     }
     materialCounts = Item.sortMapByPriority(materialCounts, removeZero: false, reversed: false);
     List<Widget> children = [
+      ListTile(
+        dense: true,
+        title: Text(baseUserSvt == null ? '🔐 isLock' : '🔐 isLock = ${baseUserSvt.isLocked()}'),
+        trailing: IconButton(
+          onPressed: baseUserSvt == null
+              ? null
+              : () async {
+                  final userSvt =
+                      mstData.userSvt[options.baseUserSvtId] ?? mstData.userSvtStorage[options.baseUserSvtId];
+                  if (userSvt == null) return;
+                  if (userSvt.isLocked()) {
+                    final confirm = await SimpleConfirmDialog(
+                      title: const Text('解锁从者'),
+                      content: Text('确定解锁 ${userSvt.dbSvt?.lName.l ?? "#${userSvt.svtId}"}？'),
+                    ).showDialog(context);
+                    if (!mounted || confirm != true) return;
+                  }
+                  await runtime.runTask(
+                    () => runtime.agent.cardStatusSync(
+                      changeUserSvtIds: userSvt.isLocked() ? [] : [userSvt.id],
+                      revokeUserSvtIds: userSvt.isLocked() ? [userSvt.id] : [],
+                      isStorage: mstData.userSvtStorage.containsKey(options.baseUserSvtId),
+                      isLock: true,
+                      isChoice: false,
+                    ),
+                  );
+                },
+          icon: const Icon(Icons.change_circle_outlined),
+        ),
+      ),
       DividerWithTitle(title: S.current.enhance),
       FilterGroup<int>(
         title: Text(S.current.rarity),
@@ -621,6 +659,95 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
         ),
       ]);
 
+      // NP upgrade: consumes same servant dupes; target lv = base lv + sum of material NP lvs
+      final tdCandidates = svt.noblePhantasms.where((td) => td.num == 1).toList();
+      final availableTds = tdCandidates.where((td) => _isTdAvailable(td, baseUserSvt, collection)).toList();
+      if (availableTds.isNotEmpty && svt.type == SvtType.normal) {
+        final npTd =
+            availableTds.firstWhereOrNull((td) => td.id == _selection.treasureDeviceId) ??
+            availableTds.reduce((a, b) => b.priority > a.priority ? b : a);
+        _selection.treasureDeviceId = npTd.id;
+        final npLv = baseUserSvt.treasureDeviceLv1;
+        final npMaterials = _npMaterials;
+        final gainLv = npMaterials.fold<int>(0, (sum, e) => sum + e.treasureDeviceLv1);
+        final targetLv = npLv + gainLv > 5 ? 5 : npLv + gainLv;
+        final qpCost = _npCombineQp(svt.rarity, npLv, targetLv);
+        final userGame = mstData.user ?? agent.user.userGame;
+        final qpEnough = (userGame?.qp ?? 0) >= qpCost;
+        final lockedCount = npMaterials.where((e) => e.isLocked()).length;
+        children.addAll([
+          DividerWithTitle(title: S.current.noble_phantasm_level),
+          AddRemoveList<UserServantEntity>(
+            leading: CommandCardWidget(card: npTd.card, width: 42),
+            title: Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(text: 'Lv. $npLv/5'),
+                  if (npMaterials.isNotEmpty) ...[
+                    const TextSpan(text: ' → '),
+                    TextSpan(
+                      text: 'Lv. $targetLv/5',
+                      style: targetLv > 5
+                          ? TextStyle(color: Theme.of(context).colorScheme.error, fontWeight: FontWeight.bold)
+                          : null,
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            subtitle: npMaterials.isEmpty ? null : 'QP ${qpCost.formatSep()}${qpEnough ? "" : "（不足）"}',
+            items: npMaterials,
+            onAdd: npLv >= 5 ? null : _selectNpMaterials,
+            onRemove: (e) => setState(() => _selection.materialUserSvtIds.remove(e.id)),
+            itemBuilder: (context, item, onRemove) => InkWell(
+              onLongPress: onRemove,
+              child:
+                  item.dbSvt?.iconBuilder(
+                    context: context,
+                    overrideIcon: item.icon,
+                    text: '${item.isLocked() ? "🔐" : ""}Lv${item.lv}\nNP${item.treasureDeviceLv1}',
+                    width: 42,
+                    option: ImageWithTextOption(fontSize: 10),
+                  ) ??
+                  Text('#${item.svtId}'),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            child: Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              alignment: WrapAlignment.center,
+              children: [
+                for (final td in tdCandidates)
+                  _buildTdButton(td, selected: td.id == npTd.id, enabled: availableTds.contains(td)),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Center(
+              child: Wrap(
+                spacing: 8,
+                alignment: WrapAlignment.center,
+                children: [
+                  TextButton(
+                    onPressed: lockedCount == 0 ? null : _unlockNpMaterials,
+                    child: Text('${S.current.unlock} ($lockedCount)'),
+                  ),
+                  FilledButton(
+                    onPressed: npMaterials.isEmpty || npLv >= 5 || !qpEnough || lockedCount > 0
+                        ? null
+                        : () => _npCombine(npTd, npMaterials, targetLv, qpCost),
+                    child: Text(S.current.enhance),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ]);
+      }
+
       // command code
       final userSvtCmdCode = mstData.userSvtCommandCode[baseUserSvt.svtId];
       children.addAll([
@@ -629,8 +756,8 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
           alignment: .center,
           crossAxisAlignment: .center,
           children: [
-            ...List.generate(svt.cards.length, (index) {
-              final cardType = svt.cards[index];
+            ...svt.cards.indexed.map((item) {
+              final (index, cardType) = item;
               final userCCId = userSvtCmdCode?.userCommandCodeIds.getOrNull(index) ?? -1;
               final keyNum = mstData.userItem[_getCommandCodeUnlockKey(cardType)]?.num ?? 0;
               Widget cardWidget = ImageWithText(
@@ -781,11 +908,133 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
         onSelected: (userSvt) {
           runtime.lockTask(() {
             options.baseUserSvtId = userSvt.id;
+            _selection.clear();
             if (mounted) setState(() {});
           });
         },
       ),
     );
+  }
+
+  bool _isTdAvailable(NiceTd td, UserServantEntity baseUserSvt, UserServantCollectionEntity? collection) {
+    if (td.num != 1) return false;
+    if (td.condQuestId > 0 && !mstData.isQuestPhaseClear(td.condQuestId, td.condQuestPhase)) return false;
+    if (baseUserSvt.lv < td.condLv) return false;
+    if ((collection?.friendshipRank ?? 0) < td.condFriendshipRank) return false;
+    return SvtSkillRelease.check(
+          td.releaseConditions,
+          (cond) => switch (cond.condType) {
+            CondType.questClear => mstData.isQuestClear(cond.condTargetId),
+            CondType.questClearPhase => mstData.isQuestPhaseClear(cond.condTargetId, cond.condNum),
+            CondType.equipWithTargetCostume => collection?.costumeIds.contains(cond.condNum) == true,
+            _ => null,
+          },
+        ) !=
+        false;
+  }
+
+  Widget _buildTdButton(NiceTd td, {required bool selected, required bool enabled}) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final style = OutlinedButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4));
+    return OutlinedButton(
+      onPressed: enabled ? () => setState(() => _selection.treasureDeviceId = td.id) : null,
+      style: selected
+          ? style.copyWith(
+              backgroundColor: WidgetStatePropertyAll(colorScheme.secondaryContainer),
+              foregroundColor: WidgetStatePropertyAll(colorScheme.onSecondaryContainer),
+            )
+          : style,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CommandCardWidget(card: td.card, width: 36),
+          const SizedBox(width: 6),
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('${td.lName.l} ${td.rank}'.trim(), maxLines: 1, overflow: TextOverflow.ellipsis),
+              Text(
+                '${td.id}/${td.num}/${td.priority}',
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Theme.of(context).colorScheme.outline),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _selectNpMaterials() async {
+    final baseUserSvt = mstData.userSvt[options.baseUserSvtId];
+    if (baseUserSvt == null) return;
+    // svtMaterialTd svtId = baseSvtId + 1
+    final materialTdSvtId = db.gameData.servantsById[baseUserSvt.svtId + 1]?.type == SvtType.svtMaterialTd
+        ? baseUserSvt.svtId + 1
+        : null;
+    await router.pushBuilder(
+      builder: (context) => SelectUserSvtPage(
+        runtime: runtime,
+        filterOverride: (userSvt, mstData) {
+          return userSvt.id != baseUserSvt.id &&
+              (userSvt.svtId == baseUserSvt.svtId || userSvt.svtId == materialTdSvtId) &&
+              _isCleanNpMaterial(userSvt, mstData);
+        },
+        onSelected: (userSvt) {
+          if (!mounted) return;
+          final npLv = mstData.userSvt[options.baseUserSvtId]?.treasureDeviceLv1 ?? 0;
+          final gainLv = _selection.materialUserSvtIds.fold<int>(
+            0,
+            (sum, id) => sum + (mstData.userSvt[id]?.treasureDeviceLv1 ?? 0),
+          );
+          if (npLv + gainLv + userSvt.treasureDeviceLv1 > 5) {
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('宝具等级上限为 5，该从者会超出上限')));
+            return;
+          }
+          setState(() => _selection.materialUserSvtIds.add(userSvt.id));
+        },
+      ),
+    );
+  }
+
+  Future<void> _unlockNpMaterials() async {
+    final lockedIds = _npMaterials.where((e) => e.isLocked()).map((e) => e.id).toList();
+    if (lockedIds.isEmpty) return;
+    await runtime.runTask(
+      () => runtime.agent.cardStatusSync(
+        changeUserSvtIds: const [],
+        revokeUserSvtIds: lockedIds,
+        isStorage: false,
+        isLock: true,
+        isChoice: false,
+      ),
+    );
+  }
+
+  Future<void> _npCombine(NiceTd td, List<UserServantEntity> materials, int targetLv, int qpCost) async {
+    final baseUserSvt = mstData.userSvt[options.baseUserSvtId];
+    if (baseUserSvt == null) return;
+    final confirm = await SimpleConfirmDialog(
+      title: const Text('宝具强化'),
+      content: Text(
+        'NP Lv.${baseUserSvt.treasureDeviceLv1} → Lv.$targetLv\n'
+        '材料 ${materials.length} 张（将被消耗）\n'
+        'QP ${qpCost.formatSep()}',
+      ),
+    ).showDialog(context);
+    if (!mounted || confirm != true) return;
+    await runtime.runTask(() async {
+      final lockedIds = materials.where((e) => e.isLocked()).map((e) => e.id).toList();
+      if (lockedIds.isNotEmpty) {
+        throw SilentException('Unlock ${lockedIds.length}/${materials.length} cards first');
+      }
+      await runtime.agent.servantTreasureDeviceCombine(
+        baseUsrSvtId: baseUserSvt.id,
+        selectTdIndex: td.num,
+        selectTdId: td.id,
+        materialSvtIds: materials.map((e) => e.id).toList(),
+      );
+    });
   }
 
   bool checkSvtLvExceed(int userSvtId) {
@@ -819,6 +1068,16 @@ int _getCommandCodeUnlockKey(int cardType) {
   int? keyId = {CardType.quick.value: 5000, CardType.arts.value: 5001, CardType.buster.value: 5002}[cardType];
   if (keyId != null) return keyId;
   throw UnimplementedError('Unknown CardType $cardType');
+}
+
+class _SvtCombineSelection {
+  final Set<int> materialUserSvtIds = {};
+  int? treasureDeviceId;
+
+  void clear() {
+    materialUserSvtIds.clear();
+    treasureDeviceId = null;
+  }
 }
 
 class _SkillCombineMultiLevelDialog extends StatefulWidget {
@@ -960,4 +1219,22 @@ class __SkillCombineMultiLevelStateDialog extends State<_SkillCombineMultiLevelD
       if (mounted) setState(() {});
     }
   }
+}
+
+/// Estimated QP cost of NP level-up; display only — the server is authoritative.
+/// 5000 QP at ★1 Lv.1, doubling per rarity and per NP level; ★0 follows the ★2 tier.
+int _npCombineQp(int rarity, int curLv, int targetLv) =>
+    (5000 << ((rarity <= 0 ? 2 : rarity) - 1) << (curLv - 1)) * ((1 << (targetLv - curLv)) - 1);
+
+/// A "clean" NP material: lv 1, no foukun, active skills at lv 1, no append skill investment.
+/// Append skill lv 1 = shared per-svtId unlock only; lv > 1 = per-instance investment.
+bool _isCleanNpMaterial(UserServantEntity userSvt, MasterDataManager mstData) {
+  final svt = userSvt.dbEntity;
+  return svt != null &&
+      (svt.type == SvtType.normal || svt.type == SvtType.svtMaterialTd) &&
+      userSvt.lv == 1 &&
+      userSvt.adjustHp == 0 &&
+      userSvt.adjustAtk == 0 &&
+      userSvt.skillLvs.every((lv) => lv == 1) &&
+      mstData.getSvtAppendSkillLvs(userSvt).every((lv) => lv <= 1);
 }

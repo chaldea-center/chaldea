@@ -33,7 +33,7 @@ class BondExcludedCards extends StatelessWidget {
   Widget build(BuildContext context) {
     final sorted = ids.toList()..sort();
     return AddRemoveList<int>(
-      title: title,
+      title: Text(title),
       // subtitle: sorted.isEmpty ? 'No cards excluded' : '${sorted.length} excluded · long press a card to remove',
       items: sorted,
       onAdd: onAdd,

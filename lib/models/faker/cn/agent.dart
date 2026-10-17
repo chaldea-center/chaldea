@@ -757,6 +757,25 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
   }
 
   @override
+  Future<FResponse> servantTreasureDeviceCombine({
+    required int64_t baseUsrSvtId,
+    required int32_t selectTdIndex,
+    required int32_t selectTdId,
+    required List<int64_t> materialSvtIds,
+  }) {
+    return _acPhp(
+      key: 'cardcombinetd',
+      nid: 'card_combine_td',
+      params2: {
+        "baseUserSvtId": baseUsrSvtId,
+        "num": selectTdIndex,
+        "treasureDeviceId": selectTdId,
+        "materialUserSvtIds": jsonEncode(materialSvtIds),
+      },
+    );
+  }
+
+  @override
   Future<FResponse> storageTakein({required List<int64_t> userSvtIds}) {
     return _acPhp(key: 'storagetakein', nid: 'storage_takein', params1: {"userSvtIds": jsonEncode(userSvtIds)});
   }

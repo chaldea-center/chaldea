@@ -19,6 +19,7 @@ class SelectUserSvtPage extends StatefulWidget {
   final String? Function(UserServantEntity userSvt, MasterDataManager mstData, List<int>? inUseUserSvtIds)? getStatus;
   final List<int>? inUseUserSvtIds;
   final ValueChanged<UserServantEntity>? onSelected;
+  final bool? Function(UserServantEntity userSvt, MasterDataManager mstData)? filterOverride;
 
   const SelectUserSvtPage({
     super.key,
@@ -26,6 +27,7 @@ class SelectUserSvtPage extends StatefulWidget {
     this.getStatus = defaultGetStatus,
     this.inUseUserSvtIds,
     this.onSelected,
+    this.filterOverride,
   });
 
   static String defaultGetStatus(UserServantEntity userSvt, MasterDataManager mstData, List<int>? inUseUserSvtIds) {
@@ -98,9 +100,11 @@ class _SelectUserSvtPageState extends State<SelectUserSvtPage> {
     }
 
     bool filter(UserServantEntity userSvt) {
+      final override = widget.filterOverride?.call(userSvt, mstData);
+      if (override != null) return override;
       final svt = db.gameData.servantsById[userSvt.svtId];
       if (svt == null || svt.collectionNo <= 0) return false;
-      if (!userSvt.isLocked()) return false;
+      if (!userSvtFilterData.locked.matchOne(userSvt.isLocked())) return false;
       if (eventSvtIds[userSvtFilterData.eventId]?.svtIds.contains(userSvt.svtId) == false) return false;
       final coinNum = mstData.userSvtCoin[userSvt.svtId]?.num ?? 0;
       final combineTypes = userSvtFilterData.availableCombines.options.where((combineType) {
@@ -190,6 +194,16 @@ class _SelectUserSvtPageState extends State<SelectUserSvtPage> {
                 },
                 planMode: false,
                 extraFilters: (_, update) => [
+                  FilterGroup<bool>(
+                    title: Text('Lock status'),
+                    options: const [false, true],
+                    values: userSvtFilterData.locked,
+                    optionBuilder: (v) => Text(v ? '🔐 Locked' : 'Unlocked'),
+                    onFilterChanged: (value, _) {
+                      if (mounted) setState(() {});
+                      update();
+                    },
+                  ),
                   FilterGroup<UserSvtCombineType>(
                     title: Text('Available Combine Type'),
                     showMatchAll: true,
@@ -225,11 +239,12 @@ class _SelectUserSvtPageState extends State<SelectUserSvtPage> {
               itemBuilder: (context, index) {
                 final userSvt = userSvts[index];
                 final svt = db.gameData.servantsById[userSvt.svtId];
+                final entity = svt ?? db.gameData.entities[userSvt.svtId];
                 final status = widget.getStatus?.call(userSvt, mstData, widget.inUseUserSvtIds);
                 Widget child;
-                if (svt == null) {
+                if (entity == null) {
                   child = Text(['${userSvt.svtId}', ?status].join('\n'));
-                } else {
+                } else if (svt != null) {
                   child = svt.iconBuilder(
                     context: context,
                     text: status,
@@ -237,16 +252,21 @@ class _SelectUserSvtPageState extends State<SelectUserSvtPage> {
                     jumpToDetail: false,
                     option: ImageWithTextOption(padding: EdgeInsets.fromLTRB(4, 0, 4, 2), fontSize: 12),
                   );
+                } else {
+                  child = GameCardMixin.cardIconBuilder(
+                    context: context,
+                    icon: entity.icon,
+                    text: status,
+                    option: ImageWithTextOption(padding: EdgeInsets.fromLTRB(4, 0, 4, 2), fontSize: 12),
+                  );
                 }
                 child = GestureDetector(
-                  child: child,
                   onTap: () {
                     Navigator.pop(context);
                     widget.onSelected?.call(userSvt);
                   },
-                  onLongPress: () {
-                    router.push(url: Routes.servantI(userSvt.svtId));
-                  },
+                  onLongPress: () => router.push(url: Routes.servantI(userSvt.svtId)),
+                  child: child,
                 );
                 return child;
               },

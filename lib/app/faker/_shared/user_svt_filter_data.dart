@@ -7,10 +7,11 @@ import 'package:chaldea/models/models.dart';
 class UserServantFilterData with FilterDataMixin {
   final svtType = FilterGroupData<SvtType>();
   final availableCombines = FilterGroupData<UserSvtCombineType>();
+  final locked = FilterGroupData<bool>(options: {true});
   int eventId = 0;
 
   @override
-  List<FilterGroupData> get groups => [svtType, availableCombines];
+  List<FilterGroupData> get groups => [svtType, availableCombines, locked];
 
   @override
   void reset() {

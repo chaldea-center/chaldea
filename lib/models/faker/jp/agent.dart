@@ -460,6 +460,21 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
   }
 
   @override
+  Future<FResponse> servantTreasureDeviceCombine({
+    required int64_t baseUsrSvtId,
+    required int32_t selectTdIndex,
+    required int32_t selectTdId,
+    required List<int64_t> materialSvtIds,
+  }) {
+    final request = FRequestJP(network: network, path: '/card/combineTd');
+    request.addFieldInt64("baseUserSvtId", baseUsrSvtId);
+    request.addFieldInt32("num", selectTdIndex);
+    request.addFieldInt32("treasureDeviceId", selectTdId);
+    request.addFieldStr("materialUserSvtIds", jsonEncode(materialSvtIds));
+    return request.beginRequestAndCheckError('card_combine_td');
+  }
+
+  @override
   Future<FResponse> storageTakein({required List<int64_t> userSvtIds}) {
     final request = FRequestJP(network: network, path: '/storage/takein');
     request.addFieldStr("userSvtIds", network.catMouseGame.encodeJsonMsgpackBase64(userSvtIds));
