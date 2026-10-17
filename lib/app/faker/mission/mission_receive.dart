@@ -19,6 +19,8 @@ import 'package:chaldea/widgets/widgets.dart';
 
 import '../runtime.dart';
 
+const int kAnyCardGiftId = -1;
+
 class UserEventMissionReceivePage extends StatefulWidget {
   final FakerRuntime runtime;
   final int? initId;
@@ -152,6 +154,9 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
     } else {
       giftObjectIds.sort(Item.compare2);
     }
+    if (mm.id == MasterMission.kExtraMasterMissionId) {
+      giftObjectIds.insert(0, kAnyCardGiftId);
+    }
     havingGifts.options.retainAll(giftObjectIds);
     notHavingGifts.options.retainAll(giftObjectIds);
     if (mounted) setState(() {});
@@ -162,17 +167,24 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
     selectedMissions.retainWhere(isMissionClear);
     final missions = (_mm?.missions ?? const []).where((mission) {
       final gifts = mission.gifts.map((e) => e.objectId).toSet();
+      if (gifts.any((id) => db.gameData.entities.containsKey(id))) gifts.add(kAnyCardGiftId);
       if (havingGifts.isNotEmpty && !havingGifts.matchAny(gifts)) return false;
       if (notHavingGifts.isNotEmpty && notHavingGifts.matchAny(gifts)) return false;
       if (!progressFilter.matchOne(getMissionProgress(mission.id))) return false;
       return true;
     }).toList();
     missions.sort2((e) => e.dispNo);
+    final solvable = _collectSolvable(_mm);
     return Scaffold(
       appBar: AppBar(
         title: Text(S.current.master_mission),
         actions: [
-          if (_mm != null)
+          if (_mm != null) ...[
+            IconButton(
+              onPressed: solvable.merged.isEmpty ? null : solveMissions,
+              icon: const Icon(Icons.calculate),
+              tooltip: S.current.drop_calc_solve,
+            ),
             IconButton(
               onPressed: () {
                 router.push(
@@ -182,7 +194,7 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
               },
               icon: Icon(Icons.info_outline),
             ),
-          runtime.buildHistoryButton(context),
+          ],
           runtime.buildMenuButton(context),
         ],
       ),
@@ -400,6 +412,14 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
                     combined: true,
                     shrinkWrap: true,
                     optionBuilder: (v) {
+                      if (v == kAnyCardGiftId) {
+                        return GameCardMixin.cardIconBuilder(
+                          context: context,
+                          icon: Atlas.assetItem(4),
+                          height: 36,
+                          padding: const EdgeInsets.all(2),
+                        );
+                      }
                       return GameCardMixin.anyCardItemBuilder(
                         context: context,
                         id: v,
@@ -431,11 +451,6 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
           alignment: MainAxisAlignment.center,
           spacing: 4,
           children: [
-            FilledButton.icon(
-              onPressed: solveMissions,
-              icon: const Icon(Icons.search),
-              label: Text(S.current.drop_calc_solve),
-            ),
             FilledButton(
               onPressed: selectedMissions.isEmpty ? null : receiveMissions,
               child: Text('Receive ×${selectedMissions.length}'),
@@ -479,8 +494,9 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
     ).showDialog(context);
   }
 
-  Future<void> solveMissions() async {
-    final mm = _mm;
+  /// Unfinished missions of [mm] that the custom-mission solver can convert, merged by condition key.
+  /// An empty result means nothing to solve — also drives the solve button's disabled state.
+  ({Map<String, CustomMission> merged, List<EventMission> multiDetailMissions}) _collectSolvable(MasterMission? mm) {
     final merged = <String, CustomMission>{};
     final multiDetailMissions = <EventMission>[];
     for (final mission in mm?.missions ?? <EventMission>[]) {
@@ -488,7 +504,7 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
       final customMission = CustomMission.fromEventMission(mission);
       if (customMission == null) continue;
       // Match the first condition that fromEventMission can actually convert.
-      final cond = mission.conds.firstWhere((cond) {
+      final cond = mission.conds.firstWhereOrNull((cond) {
         return cond.missionProgressType == MissionProgressType.clear &&
             cond.condType == CondType.missionConditionDetail &&
             cond.details.any((detail) {
@@ -497,6 +513,7 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
                   !(type == CustomMissionType.quest && detail.targetIds.length == 1 && detail.targetIds.first == 0);
             });
       });
+      if (cond == null) continue;
       customMission.count =
           (cond.targetNum -
                   (runtime.condCheck.getEventMissionProgressNum(cond.condType, cond.targetIds, cond.targetNum) ?? 0))
@@ -507,6 +524,13 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
       final previous = merged[key];
       if (previous == null || customMission.count > previous.count) merged[key] = customMission;
     }
+    return (merged: merged, multiDetailMissions: multiDetailMissions);
+  }
+
+  Future<void> solveMissions() async {
+    final mm = _mm;
+    final solvable = _collectSolvable(mm);
+    final merged = solvable.merged;
     if (merged.isEmpty) {
       await SimpleConfirmDialog(
         title: Text(S.current.drop_calc_solve),
@@ -515,14 +539,14 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
       ).showDialog(context);
       return;
     }
-    if (multiDetailMissions.isNotEmpty) {
+    if (solvable.multiDetailMissions.isNotEmpty) {
       final confirmed = await SimpleConfirmDialog(
         title: const Text('Multiple mission condition details'),
         scrollable: true,
         content: Text(
           [
             'These missions contain multiple details. Remaining counts use the first detail progress.',
-            for (final mission in multiDetailMissions) '${mission.dispNo}. ${mission.name}',
+            for (final mission in solvable.multiDetailMissions) '${mission.dispNo}. ${mission.name}',
           ].join('\n'),
         ),
       ).showDialog(context);
