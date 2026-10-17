@@ -7,46 +7,32 @@ import 'package:crypto/crypto.dart';
 import 'package:worker_manager/worker_manager.dart';
 
 import '../packages/file_plus/file_plus.dart';
+import '../packages/logger.dart';
 import 'constants.dart';
 import 'task_observer.dart';
+import 'worker_pool_lifecycle.dart';
 
 class JsonHelper {
   JsonHelper._();
 
   static final _executor = workerManager;
+  static final _workers = Zone.root.run(
+    () => WorkerPoolLifecycle(
+      initialize: _executor.init,
+      dispose: _executor.dispose,
+      onDisposeError: (e, s) => logger.e('dispose JSON workers failed', e, s),
+    ),
+  );
 
   /// Small tasks run locally to avoid worker overhead.
   static const _minWorkerSize = 10 * 1024;
 
-  static Completer<void>? _completer;
-  static bool _initiated = false;
+  /// Hold across a whole operation, including gaps with no queued worker jobs.
+  static void Function() retainWorkers() => _workers.retain();
 
-  static Future<void> init() {
-    if (_initiated) return Future.value();
-    if (_completer != null) return _completer!.future;
-    final completer = _completer = Completer<void>();
-    unawaited(_initialize(completer));
-    return completer.future;
-  }
+  static Future<void> init() => _workers.init();
 
-  static Future<void> _initialize(Completer<void> completer) async {
-    try {
-      await workerManager.init();
-      _initiated = true;
-      completer.complete();
-    } catch (e, s) {
-      // Discard failed initialization so a later call can retry.
-      await workerManager.dispose();
-      completer.completeError(e, s);
-    } finally {
-      if (identical(_completer, completer)) _completer = null;
-    }
-  }
-
-  static Future<void> dispose() async {
-    _initiated = false;
-    return _executor.dispose();
-  }
+  static Future<void> dispose() => _workers.dispose();
 
   static Future<dynamic> decodeString<T>(String data, {JsonWorkerScope? scope}) async {
     scope?.check();
@@ -89,28 +75,32 @@ class JsonHelper {
   }) {
     return TaskObserver.wall('$task.request', () async {
       scope?.check();
-      if (scope == null) {
-        await init();
-      } else {
-        await scope.wait(init());
-      }
-      scope?.check();
-      final measured = TaskObserver.enabled;
-      final job = _dispatchWorker(action, measured);
-      scope?._jobs.add(job);
-      dynamic result;
+      final release = retainWorkers();
+      Cancelable<dynamic>? job;
       try {
-        result = scope == null ? await job : await scope.wait(job);
+        if (scope == null) {
+          await init();
+        } else {
+          await scope.wait(init());
+        }
+        scope?.check();
+        final measured = TaskObserver.enabled;
+        job = _dispatchWorker(action, measured);
+        // A caller can stop waiting before its underlying job settles.
+        unawaited(job.then<void>((_) => release(), onError: (Object e, StackTrace s) => release()));
+        scope?._jobs.add(job);
+        dynamic result = scope == null ? await job : await scope.wait(job);
+        if (!measured) return result as R;
+        result = result as _WorkerTiming<R>;
+        TaskObserver.record(task, kind, result.elapsedUs, isolate: 'worker', failed: result.failed);
+        if (result.failed) {
+          Error.throwWithStackTrace(result.error!, result.stack!);
+        }
+        return result.value as R;
       } finally {
         scope?._jobs.remove(job);
+        if (job == null) release();
       }
-      if (!measured) return result as R;
-      result = result as _WorkerTiming<R>;
-      TaskObserver.record(task, kind, result.elapsedUs, isolate: 'worker', failed: result.failed);
-      if (result.failed) {
-        Error.throwWithStackTrace(result.error!, result.stack!);
-      }
-      return result.value as R;
     });
   }
 

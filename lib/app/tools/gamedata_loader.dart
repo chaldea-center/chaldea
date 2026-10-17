@@ -742,6 +742,8 @@ class _LoadRun {
   Future<GameData?> get future => _result!.future;
   final network = CancelToken();
   final workers = JsonWorkerScope();
+  // Keep the pool alive for the entire load, including network and file-I/O waits.
+  final _releaseWorkers = JsonHelper.retainWorkers();
   final tmp = _GameLoadingTempData();
   final _cancellation = Completer<void>();
   final _writes = <Future<void>>[];
@@ -796,6 +798,7 @@ class _LoadRun {
     _writes.clear();
     final result = _result!;
     _result = null;
+    _releaseWorkers();
     result.complete(data);
   }
 }
