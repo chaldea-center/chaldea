@@ -948,6 +948,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "quest_enemy_summary_hint": MessageLookupByLibrary.simpleMessage(
       "主线Free本中敌人信息的汇总，任何属性均可能被服务器所覆盖，仅供参考。\n*特殊*特性指仅部分敌人持有的特性。",
     ),
+    "quest_field_buffs": MessageLookupByLibrary.simpleMessage("场地 Buff"),
     "quest_fields": MessageLookupByLibrary.simpleMessage("场地"),
     "quest_fixed_drop": MessageLookupByLibrary.simpleMessage("固定掉落"),
     "quest_fixed_drop_short": MessageLookupByLibrary.simpleMessage("掉落"),

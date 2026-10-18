@@ -1036,6 +1036,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "quest_enemy_summary_hint": MessageLookupByLibrary.simpleMessage(
       "A summary for enemies in free quest from Main Story, any property may be overridden from server. Only for reference.\n*Special* Trait means only part of enemies have this trait.",
     ),
+    "quest_field_buffs": MessageLookupByLibrary.simpleMessage("Field Buffs"),
     "quest_fields": MessageLookupByLibrary.simpleMessage("Fields"),
     "quest_fixed_drop": MessageLookupByLibrary.simpleMessage("Drops"),
     "quest_fixed_drop_short": MessageLookupByLibrary.simpleMessage("Drops"),

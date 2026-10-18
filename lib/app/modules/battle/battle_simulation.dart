@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:flutter/gestures.dart';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
@@ -23,6 +25,7 @@ import 'formation/formation_storage.dart';
 import 'simulation/battle_log.dart';
 import 'simulation/combat_action_selector.dart';
 import 'simulation/custom_skill_activator.dart';
+import 'simulation/field_detail.dart';
 import 'simulation/recorder.dart';
 import 'simulation/svt_detail.dart';
 
@@ -405,6 +408,31 @@ class _BattleSimulationPageState extends State<BattleSimulationPage> {
             ),
           ),
         ),
+        if (battleData.fieldBuffs.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: '${S.current.quest_field_buffs}: ',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        router.pushPage(FieldBuffDetailPage(battleData: battleData));
+                      },
+                  ),
+                  for (final buff in battleData.fieldBuffs)
+                    WidgetSpan(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 2),
+                        child: BattleBuffIcon(buff: buff, size: 16),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
         const Divider(thickness: 1, height: 8),
         Center(
           child: BattleRecorderPanel(

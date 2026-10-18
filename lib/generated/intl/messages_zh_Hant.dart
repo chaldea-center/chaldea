@@ -950,6 +950,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "quest_enemy_summary_hint": MessageLookupByLibrary.simpleMessage(
       "主線FQ中敵人資訊的匯總, 任何屬性均可能被伺服器所覆蓋, 僅供參考。\n*特殊*特性指僅部分敵人持有的特性。",
     ),
+    "quest_field_buffs": MessageLookupByLibrary.simpleMessage("場地 Buff"),
     "quest_fields": MessageLookupByLibrary.simpleMessage("場地"),
     "quest_fixed_drop": MessageLookupByLibrary.simpleMessage("固定掉落"),
     "quest_fixed_drop_short": MessageLookupByLibrary.simpleMessage("掉落"),

@@ -803,6 +803,7 @@
   "quest_disallow_laplace_share_hint": null,
   "quest_edit_hint": null,
   "quest_enemy_summary_hint": "フリークエストの敵編成まとめにある各属性は、サーバーによって上書きされる可能性があり、あくまで参考程度に考えてください。\n*特殊*特性とは、敵の一部のみがその特性を持っていることを示します。",
+  "quest_field_buffs": null,
   "quest_fields": "フィールド",
   "quest_fixed_drop": "必定のドロップ",
   "quest_fixed_drop_short": "ドロップ",

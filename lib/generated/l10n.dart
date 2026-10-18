@@ -5207,6 +5207,11 @@ class S {
     );
   }
 
+  /// `Field Buffs`
+  String get quest_field_buffs {
+    return Intl.message('Field Buffs', name: 'quest_field_buffs', desc: '', locale: localeName, args: []);
+  }
+
   /// `Fields`
   String get quest_fields {
     return Intl.message('Fields', name: 'quest_fields', desc: '', locale: localeName, args: []);
