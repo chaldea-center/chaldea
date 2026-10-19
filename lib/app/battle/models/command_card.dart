@@ -199,7 +199,12 @@ class CombatAction {
 
   Future<void> confirmCardSelection(BattleData battleData) async {
     if (actor.isPlayer && isValid(battleData)) {
-      await actor.activateBuff(battleData, BuffAction.functionConfirmCommand, card: cardData);
+      await actor.activateBuff(
+        battleData,
+        BuffAction.functionConfirmCommand,
+        opponent: battleData.getTargetedEnemy(actor),
+        card: cardData,
+      );
     }
   }
 
