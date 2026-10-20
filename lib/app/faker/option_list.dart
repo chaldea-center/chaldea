@@ -7,6 +7,8 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/custom_dialogs.dart';
 
+import '_shared/faker_ui.dart';
+
 class BattleOptionListPage extends StatefulWidget {
   final AutoLoginData data;
   final ValueChanged<({int index, AutoBattleOptions option})>? onSelected;
@@ -50,34 +52,36 @@ class _BattleOptionListPageState extends State<BattleOptionListPage> {
               ]
             : [],
       ),
-      body: RadioGroup<int>(
-        groupValue: canEdit ? data.curBattleOptionIndex : null,
-        onChanged: (index) {
-          if (sorting) return;
-          if (index == null) return;
-          final option = data.battleOptions[index];
-          if (widget.onSelected != null) {
-            widget.onSelected!((index: index, option: option));
-            Navigator.pop(context, (index: index, option: option));
-          } else {
-            setState(() {
-              data.curBattleOptionIndex = index;
-            });
-          }
-        },
-        child: sorting && canEdit
-            ? ReorderableListView(
-                children: [for (final (index, option) in data.battleOptions.indexed) buildOne(index, option)],
-                onReorderItem: (int oldIndex, int newIndex) {
-                  setState(() {
-                    final selectedItem = data.curBattleOption;
-                    final item = data.battleOptions.removeAt(oldIndex);
-                    data.battleOptions.insert(newIndex, item);
-                    data.curBattleOptionIndex = data.battleOptions.indexOf(selectedItem);
-                  });
-                },
-              )
-            : ListView(children: [for (final (index, option) in data.battleOptions.indexed) buildOne(index, option)]),
+      body: FakerTileTheme(
+        child: RadioGroup<int>(
+          groupValue: canEdit ? data.curBattleOptionIndex : null,
+          onChanged: (index) {
+            if (sorting) return;
+            if (index == null) return;
+            final option = data.battleOptions[index];
+            if (widget.onSelected != null) {
+              widget.onSelected!((index: index, option: option));
+              Navigator.pop(context, (index: index, option: option));
+            } else {
+              setState(() {
+                data.curBattleOptionIndex = index;
+              });
+            }
+          },
+          child: sorting && canEdit
+              ? ReorderableListView(
+                  children: [for (final (index, option) in data.battleOptions.indexed) buildOne(index, option)],
+                  onReorderItem: (int oldIndex, int newIndex) {
+                    setState(() {
+                      final selectedItem = data.curBattleOption;
+                      final item = data.battleOptions.removeAt(oldIndex);
+                      data.battleOptions.insert(newIndex, item);
+                      data.curBattleOptionIndex = data.battleOptions.indexOf(selectedItem);
+                    });
+                  },
+                )
+              : ListView(children: [for (final (index, option) in data.battleOptions.indexed) buildOne(index, option)]),
+        ),
       ),
     );
   }

@@ -9,6 +9,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
+import '../_shared/faker_ui.dart';
 import '../present_box/present_box.dart';
 import '../runtime.dart';
 
@@ -101,9 +102,7 @@ class _BoxGachaDrawPageState extends State<BoxGachaDrawPage> with FakerRuntimeSt
       ),
       body: PopScope(
         canPop: !runtime.runningTask.value,
-        child: ListTileTheme.merge(
-          dense: true,
-          visualDensity: VisualDensity.compact,
+        child: FakerTileTheme(
           child: Column(
             children: [
               headerInfo,
@@ -308,24 +307,6 @@ class _BoxGachaDrawPageState extends State<BoxGachaDrawPage> with FakerRuntimeSt
         ),
       ],
     ];
-    return SafeArea(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          for (final btns in btnGroups)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-              child: Wrap(
-                alignment: WrapAlignment.center,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                spacing: 4,
-                runSpacing: 2,
-                children: btns,
-              ),
-            ),
-          const SizedBox(height: 8),
-        ],
-      ),
-    );
+    return FakerActionBar(groups: btnGroups);
   }
 }

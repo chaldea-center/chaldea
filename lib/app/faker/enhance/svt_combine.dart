@@ -11,6 +11,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 import '../../modules/battle/formation/formation_card.dart';
+import '../_shared/faker_ui.dart';
 import '../_shared/select_svt.dart';
 import '../runtime.dart';
 
@@ -68,9 +69,7 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
       ),
       body: PopScope(
         canPop: !runtime.runningTask.value,
-        child: ListTileTheme.merge(
-          dense: true,
-          visualDensity: VisualDensity.compact,
+        child: FakerTileTheme(
           child: Column(
             children: [
               headerInfo,
@@ -699,8 +698,8 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
             items: npMaterials,
             onAdd: npLv >= 5 ? null : _selectNpMaterials,
             onRemove: (e) => setState(() => _selection.materialUserSvtIds.remove(e.id)),
-            itemBuilder: (context, item, onRemove) => InkWell(
-              onLongPress: onRemove,
+            itemBuilder: (context, item, handle) => InkWell(
+              onLongPress: handle.longPress,
               child:
                   item.dbSvt?.iconBuilder(
                     context: context,
@@ -880,25 +879,7 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
         ),
       ],
     ];
-    return SafeArea(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          for (final btns in btnGroups)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-              child: Wrap(
-                alignment: WrapAlignment.center,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                spacing: 4,
-                runSpacing: 2,
-                children: btns,
-              ),
-            ),
-          const SizedBox(height: 8),
-        ],
-      ),
-    );
+    return FakerActionBar(groups: btnGroups);
   }
 
   void selectBaseUserSvt() {

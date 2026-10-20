@@ -738,6 +738,8 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
       final resp = await agent.battleResult(
         battleId: battleEntity.id,
         resultType: BattleResultType.win,
+        // `options.winType` is persisted and editable but intentionally not sent
+        // yet: only `normal` has been exercised on this path.
         winResult: BattleWinResultType.normal,
         action: BattleDataActionList(
           logs: actionLogs,

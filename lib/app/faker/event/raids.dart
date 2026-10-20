@@ -4,6 +4,7 @@ import 'package:chaldea/models/faker/shared/agent.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
+import '../_shared/faker_ui.dart';
 import '../runtime.dart';
 
 class EventRaidsPage extends StatefulWidget {
@@ -49,7 +50,9 @@ class _EventRaidsPageState extends State<EventRaidsPage> with SingleTickerProvid
           ),
         ],
       ),
-      body: ListView.builder(itemBuilder: (context, index) => buildRaid(raids[index]), itemCount: raids.length),
+      body: FakerTileTheme(
+        child: ListView.builder(itemBuilder: (context, index) => buildRaid(raids[index]), itemCount: raids.length),
+      ),
     );
   }
 

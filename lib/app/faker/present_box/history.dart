@@ -8,6 +8,7 @@ import 'package:chaldea/models/gamedata/mst_data.dart';
 import 'package:chaldea/models/gamedata/quest.dart';
 import 'package:chaldea/utils/extension.dart';
 
+import '../_shared/faker_ui.dart';
 import '../runtime.dart';
 
 class UserPresentHistoryPage extends StatefulWidget {
@@ -45,10 +46,12 @@ class UserPresentHistoryPageState extends State<UserPresentHistoryPage> with Fak
           runtime.buildMenuButton(context),
         ],
       ),
-      body: ListView.separated(
-        itemBuilder: (context, index) => buildPresentHistory(presents[index]),
-        separatorBuilder: (_, _) => const Divider(),
-        itemCount: presents.length,
+      body: FakerTileTheme(
+        child: ListView.separated(
+          itemBuilder: (context, index) => buildPresentHistory(presents[index]),
+          separatorBuilder: (_, _) => const Divider(),
+          itemCount: presents.length,
+        ),
       ),
     );
   }

@@ -10,6 +10,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 import '../../modules/battle/formation/formation_card.dart';
+import '../_shared/faker_ui.dart';
 import '../_shared/select_svt_equip.dart';
 import '../runtime.dart';
 import '../runtimes/combine.dart';
@@ -66,9 +67,7 @@ class _SvtEquipCombinePageState extends State<SvtEquipCombinePage> with FakerRun
           runtime.buildMenuButton(context),
         ],
       ),
-      body: ListTileTheme.merge(
-        dense: true,
-        visualDensity: VisualDensity.compact,
+      body: FakerTileTheme(
         child: Column(
           children: [
             headerInfo,
@@ -552,25 +551,7 @@ class _SvtEquipCombinePageState extends State<SvtEquipCombinePage> with FakerRun
         ),
       ],
     ];
-    return SafeArea(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          for (final btns in btnGroups)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-              child: Wrap(
-                alignment: WrapAlignment.center,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                spacing: 4,
-                runSpacing: 2,
-                children: btns,
-              ),
-            ),
-          const SizedBox(height: 8),
-        ],
-      ),
-    );
+    return FakerActionBar(groups: btnGroups);
   }
 
   bool checkSvtLvExceed(int userSvtId) {

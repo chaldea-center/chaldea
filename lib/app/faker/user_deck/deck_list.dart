@@ -11,6 +11,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/material.dart';
 
 import '../../modules/battle/formation/formation_card.dart';
+import '../_shared/faker_ui.dart';
 import '../runtime.dart';
 import 'deck_setup.dart';
 
@@ -144,10 +145,9 @@ class UserDeckListPageState extends State<UserDeckListPage> {
             ),
           ),
           if (noEventDeckFound)
-            SafeArea(
-              child: OverflowBar(
-                alignment: MainAxisAlignment.center,
-                children: [
+            FakerActionBar(
+              groups: [
+                [
                   FilledButton(
                     onPressed: () async {
                       await router.pushPage(
@@ -170,7 +170,7 @@ class UserDeckListPageState extends State<UserDeckListPage> {
                     child: Text('New Event Deck ${widget.eventDeckParam?.deckNo}'),
                   ),
                 ],
-              ),
+              ],
             ),
         ],
       ),

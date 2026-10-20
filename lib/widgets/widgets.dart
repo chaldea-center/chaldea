@@ -26,4 +26,5 @@ export 'text.dart';
 export 'theme.dart';
 export 'tile_items.dart';
 export 'timer_update.dart';
+export 'value_card.dart';
 export 'widget_builders.dart';

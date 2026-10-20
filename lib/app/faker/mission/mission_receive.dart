@@ -17,6 +17,7 @@ import 'package:chaldea/packages/platform/platform.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
+import '../_shared/faker_ui.dart';
 import '../runtime.dart';
 
 const int kAnyCardGiftId = -1;
@@ -198,24 +199,26 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
           runtime.buildMenuButton(context),
         ],
       ),
-      body: Column(
-        children: [
-          buildHeader(),
-          Expanded(
-            child: Scrollbar(
-              trackVisibility: PlatformU.isDesktopOrWeb,
-              controller: scrollController,
-              child: ListView.builder(
+      body: FakerTileTheme(
+        child: Column(
+          children: [
+            buildHeader(),
+            Expanded(
+              child: Scrollbar(
+                trackVisibility: PlatformU.isDesktopOrWeb,
                 controller: scrollController,
-                itemCount: missions.length,
-                itemBuilder: (context, index) {
-                  return buildEventMission(missions[index], missions);
-                },
+                child: ListView.builder(
+                  controller: scrollController,
+                  itemCount: missions.length,
+                  itemBuilder: (context, index) {
+                    return buildEventMission(missions[index], missions);
+                  },
+                ),
               ),
             ),
-          ),
-          SafeArea(child: buildButtonBar()),
-        ],
+            SafeArea(child: buildButtonBar()),
+          ],
+        ),
       ),
     );
   }
@@ -447,14 +450,14 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
             setState(() {});
           },
         ),
-        OverflowBar(
-          alignment: MainAxisAlignment.center,
-          spacing: 4,
-          children: [
-            FilledButton(
-              onPressed: selectedMissions.isEmpty ? null : receiveMissions,
-              child: Text('Receive ×${selectedMissions.length}'),
-            ),
+        FakerActionBar(
+          groups: [
+            [
+              FilledButton(
+                onPressed: selectedMissions.isEmpty ? null : receiveMissions,
+                child: Text('Receive ×${selectedMissions.length}'),
+              ),
+            ],
           ],
         ),
         const SizedBox(height: 4),

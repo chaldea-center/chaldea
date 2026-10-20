@@ -8,6 +8,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
+import '../_shared/faker_ui.dart';
 import '../runtime.dart';
 import 'coin_room.dart';
 import 'shop.dart';
@@ -66,10 +67,12 @@ class ShopEventListPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(title: Text(S.current.shop)),
-      body: ListView.separated(
-        itemBuilder: (context, index) => children[index],
-        separatorBuilder: (context, _) => const Divider(),
-        itemCount: children.length,
+      body: FakerTileTheme(
+        child: ListView.separated(
+          itemBuilder: (context, index) => children[index],
+          separatorBuilder: (context, _) => const Divider(),
+          itemCount: children.length,
+        ),
       ),
     );
   }

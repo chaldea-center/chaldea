@@ -9,6 +9,7 @@ import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
+import '../_shared/faker_ui.dart';
 import '../runtime.dart';
 
 class TreasureBoxDrawPage extends StatefulWidget {
@@ -47,16 +48,18 @@ class _TreasureBoxDrawPageState extends State<TreasureBoxDrawPage> with FakerRun
           runtime.buildMenuButton(context),
         ],
       ),
-      body: ListView(
-        children: [
-          for (final box in treasureBoxes) ...[buildBox(box), const Divider()],
-          Center(
-            child: Padding(padding: .symmetric(vertical: 16), child: Text(S.current.statistics_title)),
-          ),
-          const Divider(indent: 16, endIndent: 16),
-          for (final box in treasureBoxes) ...[buildStatBox(box), const Divider(indent: 16, endIndent: 16)],
-          ?buildEventPoint(),
-        ],
+      body: FakerTileTheme(
+        child: ListView(
+          children: [
+            for (final box in treasureBoxes) ...[buildBox(box), const Divider()],
+            Center(
+              child: Padding(padding: .symmetric(vertical: 16), child: Text(S.current.statistics_title)),
+            ),
+            const Divider(indent: 16, endIndent: 16),
+            for (final box in treasureBoxes) ...[buildStatBox(box), const Divider(indent: 16, endIndent: 16)],
+            ?buildEventPoint(),
+          ],
+        ),
       ),
     );
   }

@@ -10,6 +10,7 @@ import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
+import '../_shared/faker_ui.dart';
 import '../faker.dart';
 import '../runtime.dart';
 import 'account_edit.dart';
@@ -103,28 +104,30 @@ class _FakerAccountsPageState extends State<FakerAccountsPage> {
           ),
         ],
       ),
-      body: sorting
-          ? ReorderableListView(
-              onReorderItem: (oldIndex, newIndex) {
-                final item = users.removeAt(oldIndex);
-                users.insert(newIndex, item);
-                for (final (index, user) in users.indexed) {
-                  user.priority = index + 1;
-                }
-                setState(() {});
-              },
-              children: [for (final user in users) itemBuilder(context, user)],
-            )
-          : ListView.separated(
-              itemCount: users.length + 1,
-              itemBuilder: (context, index) {
-                if (index < users.length) {
-                  return itemBuilder(context, users[index]);
-                }
-                return buildButtons(users);
-              },
-              separatorBuilder: (context, index) => const Divider(indent: 16, endIndent: 16),
-            ),
+      body: FakerTileTheme(
+        child: sorting
+            ? ReorderableListView(
+                onReorderItem: (oldIndex, newIndex) {
+                  final item = users.removeAt(oldIndex);
+                  users.insert(newIndex, item);
+                  for (final (index, user) in users.indexed) {
+                    user.priority = index + 1;
+                  }
+                  setState(() {});
+                },
+                children: [for (final user in users) itemBuilder(context, user)],
+              )
+            : ListView.separated(
+                itemCount: users.length + 1,
+                itemBuilder: (context, index) {
+                  if (index < users.length) {
+                    return itemBuilder(context, users[index]);
+                  }
+                  return buildButtons(users);
+                },
+                separatorBuilder: (context, index) => const Divider(indent: 16, endIndent: 16),
+              ),
+      ),
     );
   }
 

@@ -7,6 +7,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/custom_dialogs.dart';
 import 'package:chaldea/widgets/tile_items.dart';
 
+import '_shared/faker_ui.dart';
 import 'runtime.dart';
 
 /// Configure [AutoBattleOptions.battleMissionValueDict] submitted with each
@@ -129,69 +130,71 @@ class _BattleMissionValuePageState extends State<BattleMissionValuePage> {
           ),
         ],
       ),
-      body: ListView(
-        children: [
-          TileGroup(
-            header: S.current.quest,
-            children: [
-              ListTile(
-                dense: true,
-                title: const Text('Current Quest'),
-                subtitle: Text('${questPhase.lDispName} (${options.questId}/${options.questPhase})'),
-                trailing: const Tooltip(message: 'Quest indiv filter active', child: Icon(Icons.check)),
-                onTap: questPhase.routeTo,
-              ),
-            ],
-          ),
-          TileGroup(
-            header: S.current.master_mission,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
-                child: DropdownButtonFormField<MasterMission?>(
-                  initialValue: _selectedMasterMission,
-                  items: [
-                    const DropdownMenuItem(value: null, child: Text('Not selected')),
-                    for (final mm in masterMissions)
-                      DropdownMenuItem(value: mm, child: Text('#${mm.id} · ${mm.missions.length} missions')),
-                  ],
-                  onChanged: (v) => setState(() => _selectedMasterMission = v),
-                ),
-              ),
-            ],
-          ),
-          if (_selectedMasterMission != null) ...[
+      body: FakerTileTheme(
+        child: ListView(
+          children: [
             TileGroup(
-              header: 'Mission Values',
+              header: S.current.quest,
               children: [
-                for (final key in missionEntries.keys.toList()..sort())
-                  _buildKeyTile(context, key, missionEntries[key]!),
-                if (missionEntries.isEmpty)
-                  const ListTile(dense: true, title: Text('No battleMissionValue missions in this MasterMission')),
+                ListTile(
+                  dense: true,
+                  title: const Text('Current Quest'),
+                  subtitle: Text('${questPhase.lDispName} (${options.questId}/${options.questPhase})'),
+                  trailing: const Tooltip(message: 'Quest indiv filter active', child: Icon(Icons.check)),
+                  onTap: questPhase.routeTo,
+                ),
               ],
             ),
-          ],
-          TileGroup(
-            header: 'Custom Entries',
-            children: [
-              for (final e in customEntries) _buildCustomTile(e),
-              ListTile(
-                dense: true,
-                title: const Text('Add custom key-value'),
-                leading: const Icon(Icons.add),
-                onTap: _addCustom,
+            TileGroup(
+              header: S.current.master_mission,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 12),
+                  child: DropdownButtonFormField<MasterMission?>(
+                    initialValue: _selectedMasterMission,
+                    items: [
+                      const DropdownMenuItem(value: null, child: Text('Not selected')),
+                      for (final mm in masterMissions)
+                        DropdownMenuItem(value: mm, child: Text('#${mm.id} · ${mm.missions.length} missions')),
+                    ],
+                    onChanged: (v) => setState(() => _selectedMasterMission = v),
+                  ),
+                ),
+              ],
+            ),
+            if (_selectedMasterMission != null) ...[
+              TileGroup(
+                header: 'Mission Values',
+                children: [
+                  for (final key in missionEntries.keys.toList()..sort())
+                    _buildKeyTile(context, key, missionEntries[key]!),
+                  if (missionEntries.isEmpty)
+                    const ListTile(dense: true, title: Text('No battleMissionValue missions in this MasterMission')),
+                ],
               ),
             ],
-          ),
-          const Padding(
-            padding: EdgeInsets.all(16),
-            child: Text(
-              'Non-empty dict will be submitted with each battle result (win) request. '
-              'A confirmation dialog is shown when the battle loop starts.',
-              style: TextStyle(fontSize: 12),
+            TileGroup(
+              header: 'Custom Entries',
+              children: [
+                for (final e in customEntries) _buildCustomTile(e),
+                ListTile(
+                  dense: true,
+                  title: const Text('Add custom key-value'),
+                  leading: const Icon(Icons.add),
+                  onTap: _addCustom,
+                ),
+              ],
             ),
-          ),
-        ],
+            const Padding(
+              padding: EdgeInsets.all(16),
+              child: Text(
+                'Non-empty dict will be submitted with each battle result (win) request. '
+                'A confirmation dialog is shown when the battle loop starts.',
+                style: TextStyle(fontSize: 12),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

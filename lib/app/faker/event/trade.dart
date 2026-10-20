@@ -10,6 +10,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
+import '../_shared/faker_ui.dart';
 import '../runtime.dart';
 
 class UserEventTradePage extends StatefulWidget {
@@ -47,16 +48,18 @@ class _UserEventTradePageState extends State<UserEventTradePage>
     if (data.userEventTrade == null) {
       return Scaffold(
         appBar: AppBar(title: Text(S.current.event_trade)),
-        body: ListView(
-          children: [
-            for (final trade in userEventTrades)
-              ListTile(
-                title: Text(db.gameData.events[trade.eventId]?.shownName ?? trade.eventId.toString()),
-                onTap: () {
-                  selectTrade(trade);
-                },
-              ),
-          ],
+        body: FakerTileTheme(
+          child: ListView(
+            children: [
+              for (final trade in userEventTrades)
+                ListTile(
+                  title: Text(db.gameData.events[trade.eventId]?.shownName ?? trade.eventId.toString()),
+                  onTap: () {
+                    selectTrade(trade);
+                  },
+                ),
+            ],
+          ),
         ),
       );
     }
@@ -121,85 +124,87 @@ class _UserEventTradePageState extends State<UserEventTradePage>
           ),
         ),
       ),
-      body: TabBarView(
-        controller: tabController,
-        children: [
-          Column(
-            children: [
-              ListTile(
-                dense: true,
-                leading: IconButton(
-                  onPressed: () {
-                    setState(() {
-                      sortByEndTime = !sortByEndTime;
-                    });
-                  },
-                  icon: Icon(Icons.sort_by_alpha),
-                ),
-                contentPadding: EdgeInsets.zero,
-                title: Wrap(
-                  spacing: 2,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: [
-                    Text('${S.current.item_own}:\n24h:', style: TextStyle(fontSize: 10)),
-                    for (final itemId in consumeItemIds.reversed)
-                      Item.iconBuilder(
-                        context: context,
-                        item: null,
-                        itemId: itemId,
-                        text: [
-                          mstData.getItemOrSvtNum(itemId).format(),
-                          (demandItems[itemId] ?? 0).round().format(),
-                        ].join('\n'),
-                      ),
-                  ],
-                ),
-                trailing: TextButton(
-                  onPressed: data.tradeInfos.keys.any((e) => data.getLeastReceiveNum(e).floor() > 0)
-                      ? () {
-                          final storeIdxs = data.tradeInfos.keys
-                              .where((e) => data.getLeastReceiveNum(e).floor() > 0)
-                              .map((e) => data.tradeInfos[e]!.storeIdx)
-                              .toList();
-                          if (storeIdxs.isEmpty) {
-                            EasyLoading.showError('No available store');
-                            return;
+      body: FakerTileTheme(
+        child: TabBarView(
+          controller: tabController,
+          children: [
+            Column(
+              children: [
+                ListTile(
+                  dense: true,
+                  leading: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        sortByEndTime = !sortByEndTime;
+                      });
+                    },
+                    icon: Icon(Icons.sort_by_alpha),
+                  ),
+                  contentPadding: EdgeInsets.zero,
+                  title: Wrap(
+                    spacing: 2,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      Text('${S.current.item_own}:\n24h:', style: TextStyle(fontSize: 10)),
+                      for (final itemId in consumeItemIds.reversed)
+                        Item.iconBuilder(
+                          context: context,
+                          item: null,
+                          itemId: itemId,
+                          text: [
+                            mstData.getItemOrSvtNum(itemId).format(),
+                            (demandItems[itemId] ?? 0).round().format(),
+                          ].join('\n'),
+                        ),
+                    ],
+                  ),
+                  trailing: TextButton(
+                    onPressed: data.tradeInfos.keys.any((e) => data.getLeastReceiveNum(e).floor() > 0)
+                        ? () {
+                            final storeIdxs = data.tradeInfos.keys
+                                .where((e) => data.getLeastReceiveNum(e).floor() > 0)
+                                .map((e) => data.tradeInfos[e]!.storeIdx)
+                                .toList();
+                            if (storeIdxs.isEmpty) {
+                              EasyLoading.showError('No available store');
+                              return;
+                            }
+                            SimpleConfirmDialog(
+                              title: Text('Receive All'),
+                              content: Text(storeIdxs.join(' / ')),
+                              onTapOk: () {
+                                runTask(
+                                  () => runtime.agent.eventTradeReceive(
+                                    eventId: data.eventId,
+                                    tradeStoreIdxs: [],
+                                    receiveNum: 0,
+                                    cancelTradeFlag: 0,
+                                  ),
+                                );
+                              },
+                            ).showDialog(context);
                           }
-                          SimpleConfirmDialog(
-                            title: Text('Receive All'),
-                            content: Text(storeIdxs.join(' / ')),
-                            onTapOk: () {
-                              runTask(
-                                () => runtime.agent.eventTradeReceive(
-                                  eventId: data.eventId,
-                                  tradeStoreIdxs: [],
-                                  receiveNum: 0,
-                                  cancelTradeFlag: 0,
-                                ),
-                              );
-                            },
-                          ).showDialog(context);
-                        }
-                      : null,
-                  child: Text('Receive All'),
+                        : null,
+                    child: Text('Receive All'),
+                  ),
                 ),
-              ),
-              kDefaultDivider,
-              Expanded(
-                child: ListView.separated(
-                  itemBuilder: (context, index) => buildTrade(tradeGoodsList[index]),
-                  itemCount: tradeGoodsList.length,
-                  separatorBuilder: (context, index) => const Divider(height: 4, indent: 16, endIndent: 16),
+                kDefaultDivider,
+                Expanded(
+                  child: ListView.separated(
+                    itemBuilder: (context, index) => buildTrade(tradeGoodsList[index]),
+                    itemCount: tradeGoodsList.length,
+                    separatorBuilder: (context, index) => const Divider(height: 4, indent: 16, endIndent: 16),
+                  ),
                 ),
-              ),
-            ],
-          ),
-          buildPickups(),
-          ListView.builder(
-            itemBuilder: (context, index) => buildResult(data.userEventTrade!.resultList[index]),
-            itemCount: data.userEventTrade?.resultList.length ?? 0,
-          ),
-        ],
+              ],
+            ),
+            buildPickups(),
+            ListView.builder(
+              itemBuilder: (context, index) => buildResult(data.userEventTrade!.resultList[index]),
+              itemCount: data.userEventTrade?.resultList.length ?? 0,
+            ),
+          ],
+        ),
       ),
     );
   }

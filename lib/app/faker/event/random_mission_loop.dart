@@ -12,6 +12,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
+import '../_shared/faker_ui.dart';
 import '../option_list.dart';
 import '../runtime.dart';
 import '../runtimes/event.dart';
@@ -60,23 +61,25 @@ class _RandomMissionLoopPageState extends State<RandomMissionLoopPage> with Fake
           runtime.buildMenuButton(context),
         ],
       ),
-      body: Column(
-        children: [
-          battleDetailSection,
-          Expanded(
-            child: ListView(
-              children: [
-                ...optionTiles,
-                ...optionTiles2,
+      body: FakerTileTheme(
+        child: Column(
+          children: [
+            battleDetailSection,
+            Expanded(
+              child: ListView(
+                children: [
+                  ...optionTiles,
+                  ...optionTiles2,
 
-                // questTiles,
-                statTiles,
-                ongoingMissions,
-              ],
+                  // questTiles,
+                  statTiles,
+                  ongoingMissions,
+                ],
+              ),
             ),
-          ),
-          ...buttonBar,
-        ],
+            ...buttonBar,
+          ],
+        ),
       ),
     );
   }
@@ -97,11 +100,9 @@ class _RandomMissionLoopPageState extends State<RandomMissionLoopPage> with Fake
         '  ${agent.user.lastRequestOptions?.key} ${agent.user.lastRequestOptions?.success}',
         style: Theme.of(context).textTheme.bodySmall,
       ),
-      SafeArea(
-        child: OverflowBar(
-          alignment: MainAxisAlignment.center,
-          spacing: 4,
-          children: [
+      FakerActionBar(
+        groups: [
+          [
             runtime.buildCircularProgress(
               context: context,
               showElapsed: true,
@@ -139,7 +140,7 @@ class _RandomMissionLoopPageState extends State<RandomMissionLoopPage> with Fake
               text: 'StopLoop',
             ),
           ],
-        ),
+        ],
       ),
     ];
   }

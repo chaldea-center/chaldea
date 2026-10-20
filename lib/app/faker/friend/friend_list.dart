@@ -5,6 +5,7 @@ import 'package:chaldea/models/gamedata/mst_tables.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 
+import '../_shared/faker_ui.dart';
 import '../runtime.dart';
 
 class FriendListPage extends StatefulWidget {
@@ -40,52 +41,52 @@ class FriendListPageState extends State<FriendListPage> with FakerRuntimeStateMi
     final int friendCount = mstData.tblFriend.where((e) => e.status == FriendStatus.friend.value).length;
     return Scaffold(
       appBar: AppBar(title: const Text('Friends'), actions: [runtime.buildHistoryButton(context)]),
-      body: Column(
-        children: [
-          const SizedBox(height: 8),
-          FilterGroup<int>(
-            values: friendStatusFilter,
-            options: allStatus,
-            optionBuilder: (value) => Text(FriendStatus.fromValue(value).name),
-            combined: true,
-            onFilterChanged: (optionData, _) {
-              if (mounted) setState(() {});
-            },
-          ),
-          FilterGroup<TblFriendFlag>(
-            values: friendFlagFilter,
-            options: const [.toFriendidLock, .toUseridLock],
-            optionBuilder: (value) => Text(value.dispName),
-            combined: true,
-            onFilterChanged: (optionData, _) {
-              if (mounted) setState(() {});
-            },
-          ),
-          Expanded(
-            child: ListView.separated(
-              controller: scrollController,
-              itemBuilder: (context, index) => buildFriend(index, friends[index]),
-              separatorBuilder: (context, index) => const Divider(height: 8, indent: 16, endIndent: 16),
-              itemCount: friends.length,
+      body: FakerTileTheme(
+        child: Column(
+          children: [
+            const SizedBox(height: 8),
+            FilterGroup<int>(
+              values: friendStatusFilter,
+              options: allStatus,
+              optionBuilder: (value) => Text(FriendStatus.fromValue(value).name),
+              combined: true,
+              onFilterChanged: (optionData, _) {
+                if (mounted) setState(() {});
+              },
             ),
-          ),
-          SafeArea(
-            child: OverflowBar(
-              alignment: MainAxisAlignment.center,
-              spacing: 8,
-              children: [
-                runtime.buildCircularProgress(context: context),
-                FilledButton(
-                  onPressed: () async {
-                    runtime.runTask(runtime.agent.friendTop);
-                  },
-                  child: Text('Refresh'),
-                ),
-                Text('$friendCount/${mstData.user?.friendKeep}', style: Theme.of(context).textTheme.bodySmall),
+            FilterGroup<TblFriendFlag>(
+              values: friendFlagFilter,
+              options: const [.toFriendidLock, .toUseridLock],
+              optionBuilder: (value) => Text(value.dispName),
+              combined: true,
+              onFilterChanged: (optionData, _) {
+                if (mounted) setState(() {});
+              },
+            ),
+            Expanded(
+              child: ListView.separated(
+                controller: scrollController,
+                itemBuilder: (context, index) => buildFriend(index, friends[index]),
+                separatorBuilder: (context, index) => const Divider(height: 8, indent: 16, endIndent: 16),
+                itemCount: friends.length,
+              ),
+            ),
+            FakerActionBar(
+              groups: [
+                [
+                  runtime.buildCircularProgress(context: context),
+                  FilledButton(
+                    onPressed: () async {
+                      runtime.runTask(runtime.agent.friendTop);
+                    },
+                    child: Text('Refresh'),
+                  ),
+                  Text('$friendCount/${mstData.user?.friendKeep}', style: Theme.of(context).textTheme.bodySmall),
+                ],
               ],
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

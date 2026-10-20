@@ -8,6 +8,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
+import '../_shared/faker_ui.dart';
 import '../runtime.dart';
 
 enum ClassBoardSquareState { available, unreleased, released, blank }
@@ -184,24 +185,26 @@ class _FakerClassBoardListPageState extends State<FakerClassBoardListPage> with 
       });
     return Scaffold(
       appBar: AppBar(title: Text(S.current.class_board), actions: [runtime.buildMenuButton(context)]),
-      body: ListView.separated(
-        itemCount: boards.length,
-        separatorBuilder: (_, _) => kDefaultDivider,
-        itemBuilder: (context, index) {
-          final board = boards[index];
-          final rules = ClassBoardRules(
-            board: board,
-            progress: mstData.userClassBoardSquare[board.id],
-            isLockOpen: (_) => false,
-          );
-          return ListTile(
-            leading: db.getIconImage(board.btnIcon, width: 40, aspectRatio: 1),
-            title: Text(board.dispName),
-            subtitle: _ClassBoardProgress(rules: rules),
-            trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-            onTap: () => router.pushPage(FakerClassBoardDetailPage(runtime: runtime, board: board)),
-          );
-        },
+      body: FakerTileTheme(
+        child: ListView.separated(
+          itemCount: boards.length,
+          separatorBuilder: (_, _) => kDefaultDivider,
+          itemBuilder: (context, index) {
+            final board = boards[index];
+            final rules = ClassBoardRules(
+              board: board,
+              progress: mstData.userClassBoardSquare[board.id],
+              isLockOpen: (_) => false,
+            );
+            return ListTile(
+              leading: db.getIconImage(board.btnIcon, width: 40, aspectRatio: 1),
+              title: Text(board.dispName),
+              subtitle: _ClassBoardProgress(rules: rules),
+              trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+              onTap: () => router.pushPage(FakerClassBoardDetailPage(runtime: runtime, board: board)),
+            );
+          },
+        ),
       ),
     );
   }

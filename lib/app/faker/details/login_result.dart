@@ -13,6 +13,7 @@ import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
+import '../_shared/faker_ui.dart';
 import '../runtime.dart';
 
 class LoginResultPage extends StatefulWidget {
@@ -118,26 +119,28 @@ class _LoginResultPageState extends State<LoginResultPage> {
           runtime.buildMenuButton(context),
         ],
       ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: FilterGroup(
-              options: _LoginResultDataType.values,
-              values: typeFilter,
-              combined: true,
-              optionBuilder: (v) => Text(v.name),
-              onFilterChanged: (optionData, lastChanged) => setState(() {}),
+      body: FakerTileTheme(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: FilterGroup(
+                options: _LoginResultDataType.values,
+                values: typeFilter,
+                combined: true,
+                optionBuilder: (v) => Text(v.name),
+                onFilterChanged: (optionData, lastChanged) => setState(() {}),
+              ),
             ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemBuilder: (context, index) => children[index],
-              // separatorBuilder: (_, _) => kIndentDivider,
-              itemCount: children.length,
+            Expanded(
+              child: ListView.builder(
+                itemBuilder: (context, index) => children[index],
+                // separatorBuilder: (_, _) => kIndentDivider,
+                itemCount: children.length,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

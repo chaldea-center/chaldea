@@ -18,6 +18,12 @@ import '../shop/coin_room.dart';
 import '../shop/ex_room_shop.dart';
 import '../shop/shop.dart';
 
+/// Presents listed per reminder block; anything beyond this is summarised.
+const int _kMaxPresentRows = 10;
+
+/// Days before expiry at which a present starts being listed.
+const int _kPresentWarningDays = 30;
+
 class FakerReminders extends StatelessWidget {
   final FakerRuntime runtime;
   final MasterDataManager mstData;
@@ -309,27 +315,48 @@ class FakerReminders extends StatelessWidget {
     }
   }
 
+  /// Presents expiring within [_kPresentWarningDays] days, capped at
+  /// [_kMaxPresentRows] rows.
+  ///
+  /// A present box can hold hundreds of entries, and the row only has to tell
+  /// the player to go clear it, so the earliest ones are listed and the rest are
+  /// summarised in one trailing row.
   Iterable<Widget> getPresents(BuildContext context, int now) sync* {
+    final expiring = <({UserPresentBoxEntity present, int expireAt})>[];
     for (final present in mstData.userPresentBox) {
       final expireAt = present.getExpireAt(runtime.gameData.timerData.items[present.objectId]);
-      if (expireAt < now + 30 * kSecsPerDay) {
-        final gift = present.toGift();
-
-        yield ListTile(
-          leading: Icon(Icons.card_giftcard),
-          title: Text.rich(
-            TextSpan(
-              children: [
-                CenterWidgetSpan(child: gift.iconBuilder(context: context, width: 24)),
-                TextSpan(text: ' ${gift.shownName} ×${gift.num}'),
-              ],
-            ),
-          ),
-          subtitle: Text(expireAt.sec2date().toCustomString()),
-          trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-          onTap: () => router.pushPage(UserPresentBoxManagePage(runtime: runtime)),
-        );
+      if (expireAt < now + _kPresentWarningDays * kSecsPerDay) {
+        expiring.add((present: present, expireAt: expireAt));
       }
+    }
+    expiring.sort((a, b) => a.expireAt.compareTo(b.expireAt));
+
+    for (final (:present, :expireAt) in expiring.take(_kMaxPresentRows)) {
+      final gift = present.toGift();
+      yield ListTile(
+        leading: Icon(Icons.card_giftcard),
+        title: Text.rich(
+          TextSpan(
+            children: [
+              CenterWidgetSpan(child: gift.iconBuilder(context: context, width: 24)),
+              TextSpan(text: ' ${gift.shownName} ×${gift.num}'),
+            ],
+          ),
+        ),
+        subtitle: Text(expireAt.sec2date().toCustomString()),
+        trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+        onTap: () => router.pushPage(UserPresentBoxManagePage(runtime: runtime)),
+      );
+    }
+
+    if (expiring.length > _kMaxPresentRows) {
+      yield ListTile(
+        leading: Icon(Icons.more_horiz),
+        title: Text('${expiring.length - _kMaxPresentRows} more presents expiring'),
+        subtitle: Text('${expiring.length} presents expire within $_kPresentWarningDays days'),
+        trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+        onTap: () => router.pushPage(UserPresentBoxManagePage(runtime: runtime)),
+      );
     }
   }
 

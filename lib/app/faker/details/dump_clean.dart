@@ -14,6 +14,8 @@ import 'package:chaldea/utils/basic.dart';
 import 'package:chaldea/utils/extension.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
+import '../_shared/faker_ui.dart';
+
 class DumpRespCleanPage extends StatefulWidget {
   final String fakerBaseDir;
   final String fakerDir;
@@ -110,39 +112,41 @@ class _DumpRespCleanPageState extends State<DumpRespCleanPage> {
           IconButton(onPressed: () => loadData(widget.fakerDir), icon: Icon(Icons.filter_2), tooltip: 'Faker Dir'),
         ],
       ),
-      body: ListView(
-        children: [
-          Center(
-            child: FilterGroup<_SortType>(
-              combined: true,
-              padding: .zero,
-              options: _SortType.values,
-              values: FilterRadioData.nonnull(sortType),
-              optionBuilder: (value) => Text(value.name),
-              onFilterChanged: (v, _) {
-                sortType = v.radioValue ?? sortType;
-                if (mounted) setState(() {});
-              },
+      body: FakerTileTheme(
+        child: ListView(
+          children: [
+            Center(
+              child: FilterGroup<_SortType>(
+                combined: true,
+                padding: .zero,
+                options: _SortType.values,
+                values: FilterRadioData.nonnull(sortType),
+                optionBuilder: (value) => Text(value.name),
+                onFilterChanged: (v, _) {
+                  sortType = v.radioValue ?? sortType;
+                  if (mounted) setState(() {});
+                },
+              ),
             ),
-          ),
-          ListTile(
-            dense: true,
-            title: Text('${Maths.sum(fileGroups.values.map((e) => e.files.length))} files'),
-            subtitle: Text(listedFolder),
-          ),
-          const Divider(),
-          for (final group in groups)
             ListTile(
-              title: Text(group.key),
-              subtitle: Text(formatBytes(group.totalSize)),
-              trailing: Text(group.files.length.toString()),
-              enabled: group.files.isNotEmpty,
-              onTap: () async {
-                await router.pushPage(_DumpFileList(files: group.files));
-                if (mounted) setState(() {});
-              },
+              dense: true,
+              title: Text('${Maths.sum(fileGroups.values.map((e) => e.files.length))} files'),
+              subtitle: Text(listedFolder),
             ),
-        ],
+            const Divider(),
+            for (final group in groups)
+              ListTile(
+                title: Text(group.key),
+                subtitle: Text(formatBytes(group.totalSize)),
+                trailing: Text(group.files.length.toString()),
+                enabled: group.files.isNotEmpty,
+                onTap: () async {
+                  await router.pushPage(_DumpFileList(files: group.files));
+                  if (mounted) setState(() {});
+                },
+              ),
+          ],
+        ),
       ),
     );
   }

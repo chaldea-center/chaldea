@@ -12,7 +12,6 @@ import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/battle/formation/formation_card.dart';
 import 'package:chaldea/app/modules/common/builders.dart';
-import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/app/modules/craft_essence/craft_list.dart';
 import 'package:chaldea/app/modules/servant/servant_list.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -27,6 +26,7 @@ import 'package:chaldea/utils/notification.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
+import '_shared/faker_ui.dart';
 import '_shared/history.dart';
 import 'battle_mission_value_page.dart';
 import 'details/dialogs.dart';
@@ -57,6 +57,20 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
 
   AutoBattleOptions get battleOption => agent.user.curBattleOption;
 
+  /// Collapse progress of the pinned status header (0 expanded, 1 collapsed),
+  /// published to the app bar crossfade. The delegate reports progress during
+  /// its own build, so the value is written from a post-frame hook; listeners
+  /// rebuild only the title/ring subtrees instead of the whole page.
+  final ValueNotifier<double> _headerCollapse = ValueNotifier<double>(0);
+
+  void _onHeaderProgress(double progress) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && _headerCollapse.value != progress) {
+        _headerCollapse.value = progress;
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -66,6 +80,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
   @override
   void dispose() {
     _runtime?.removeDependency(this);
+    _headerCollapse.dispose();
     super.dispose();
   }
 
@@ -135,6 +150,71 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
     ].join(' ');
   }
 
+  /// Quest id and phase are metadata the player only verifies, so they sit as
+  /// chips one line tall instead of taking a card row of their own.
+  Widget _questValueChip(String label, {VoidCallback? onPressed}) {
+    return ActionChip(
+      label: Text(label),
+      onPressed: onPressed,
+      visualDensity: VisualDensity.compact,
+      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+    );
+  }
+
+  /// One `label value` pair of the misc info strip; an [onTap] marks an
+  /// editable value with the primary color.
+  Widget _infoText(String label, String value, {VoidCallback? onTap}) {
+    final colors = Theme.of(context).colorScheme;
+    final text = Text.rich(
+      TextSpan(
+        children: [
+          TextSpan(
+            text: '$label ',
+            style: TextStyle(color: colors.onSurfaceVariant),
+          ),
+          TextSpan(
+            text: value,
+            style: onTap == null ? null : TextStyle(color: colors.primary),
+          ),
+        ],
+      ),
+      style: Theme.of(context).textTheme.bodySmall,
+    );
+    return onTap == null ? text : InkWell(onTap: onTap, child: text);
+  }
+
+  /// Phase is picked from the quest's own phase list; typing it by hand only
+  /// produced values the agent then rejected.
+  Future<void> _pickQuestPhase() async {
+    final quest = db.gameData.quests[battleOption.questId];
+    if (quest == null) return;
+    final phase = await showDialog<int>(
+      context: context,
+      builder: (context) => SimpleDialog(
+        title: const Text('Quest Phase'),
+        children: [
+          for (final phase in quest.phases)
+            SimpleDialogOption(
+              onPressed: () => Navigator.pop(context, phase),
+              child: Row(
+                children: [
+                  Expanded(child: Text('Phase $phase')),
+                  if (phase == battleOption.questPhase) const Icon(Icons.check, size: 18),
+                ],
+              ),
+            ),
+        ],
+      ),
+    );
+    if (phase == null || !mounted) return;
+    runtime.lockTask(() async {
+      battleOption.questPhase = phase;
+      if (mounted) setState(() {});
+      await AtlasApi.questPhase(battleOption.questId, battleOption.questPhase, region: runtime.region);
+      if (mounted) setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     if (kIsWeb || _runtime == null) {
@@ -164,62 +244,225 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
             if (confirm == true && context.mounted) Navigator.pop(context);
           },
         ),
-        title: const Text("Fake/Grand Order"),
-        actions: [runtime.buildHistoryButton(context), runtime.buildMenuButton(context)],
+        title: appBarTitle,
+        actions: [appBarProgressRing, runtime.buildHistoryButton(context), runtime.buildMenuButton(context)],
       ),
-      body: PopScope(
-        canPop: false,
-        child: ListTileTheme.merge(
-          dense: true,
-          visualDensity: VisualDensity.compact,
-          // minVerticalPadding: 0,
-          // minTileHeight: 52,
-          child: body,
-        ),
-      ),
+      body: PopScope(canPop: false, child: FakerTileTheme(child: body)),
     );
   }
 
   Widget get body {
-    return Column(
-      children: [
-        headerInfo,
-        // const Divider(),
-        Expanded(
-          child: ListView(
-            children: [
-              optionSelector,
-              const Divider(height: 8),
-              FakerReminders(runtime: runtime),
-              battleDetailSection,
-              battleSetupOptionSection,
-              battleResultOptionSection,
-              battleLoopOptionSection,
-              uncommonSettingSection,
-              miscInfoSection,
-              accountSettingSection,
-              globalSettingSection,
-            ],
+    return DefaultTabController(
+      length: 3,
+      child: Column(
+        children: [
+          Expanded(
+            child: NestedScrollView(
+              headerSliverBuilder: (context, _) => [
+                SliverOverlapAbsorber(
+                  handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                  sliver: SliverPersistentHeader(
+                    pinned: true,
+                    delegate: _StatusHeaderDelegate(
+                      row: statusRow,
+                      items: statusItems,
+                      tabBar: tabBar,
+                      onProgress: _onHeaderProgress,
+                    ),
+                  ),
+                ),
+              ],
+              body: MediaQuery.removePadding(
+                context: context,
+                removeTop: true,
+                child: TabBarView(children: [_tabView(battleTab), _tabView(optionsTab), _tabView(miscTab)]),
+              ),
+            ),
           ),
+          const Divider(height: 1),
+          buttonBar,
+        ],
+      ),
+    );
+  }
+
+  Widget get tabBar {
+    return FixedHeight.tabBar(
+      TabBar(
+        tabs: const [
+          Tab(text: 'Battle'),
+          Tab(text: 'Options'),
+          Tab(text: 'Misc'),
+        ],
+      ),
+    );
+  }
+
+  /// Wraps one tab's rows in a sliver scroll view. [SliverOverlapInjector]
+  /// reserves the pinned header's height, otherwise the rows scroll underneath it.
+  Widget _tabView(List<Widget> children) {
+    return Builder(
+      builder: (context) => CustomScrollView(
+        slivers: [
+          SliverOverlapInjector(handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context)),
+          SliverList(delegate: SliverChildListDelegate(children)),
+        ],
+      ),
+    );
+  }
+
+  List<Widget> get battleTab {
+    return [
+      optionSelector,
+      const Divider(height: 8),
+      FakerReminders(runtime: runtime),
+      battleDetailSection,
+      battleSetupOptionSection,
+    ];
+  }
+
+  List<Widget> get optionsTab {
+    return [
+      optionSelector,
+      const Divider(height: 8),
+      battleResultOptionSection,
+      battleLoopOptionSection,
+      uncommonSettingSection,
+    ];
+  }
+
+  List<Widget> get miscTab {
+    return [miscInfoSection, accountSettingSection, globalSettingSection];
+  }
+
+  /// Swaps the page title for the collapsed status title in two stages, so the
+  /// two never sit on top of each other at a readable opacity.
+  Widget get appBarTitle {
+    // The old title is gone by 0.55 while the new one starts at 0.45; across
+    // that window both stay at 0.18 or below.
+    const double fadeInStart = 0.45, fadeOutEnd = 0.55;
+    return ValueListenableBuilder<double>(
+      valueListenable: _headerCollapse,
+      builder: (context, progress, _) {
+        final oldOpacity = (1 - progress / fadeOutEnd).clamp(0.0, 1.0);
+        final newOpacity = ((progress - fadeInStart) / (1 - fadeInStart)).clamp(0.0, 1.0);
+        return Stack(
+          alignment: Alignment.centerLeft,
+          children: [
+            Opacity(opacity: oldOpacity, child: const Text("Fake/Grand Order")),
+            if (newOpacity > 0) Opacity(opacity: newOpacity, child: collapsedAppBarTitle),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget get appBarProgressRing {
+    return ValueListenableBuilder<double>(
+      valueListenable: _headerCollapse,
+      builder: (context, progress, _) {
+        if (progress <= 0) return const SizedBox.shrink();
+        return ClipRect(
+          child: Align(
+            alignment: Alignment.centerLeft,
+            widthFactor: progress,
+            child: Opacity(
+              opacity: progress,
+              child: runtime.buildCircularProgress(
+                context: context,
+                showElapsed: true,
+                size: 16,
+                padding: .symmetric(horizontal: 8),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  /// Shown instead of the page title once the status card has collapsed.
+  Widget get collapsedAppBarTitle {
+    final userGame = mstData.user ?? agent.user.userGame;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '[${agent.user.serverName}] ${userGame?.displayName ?? "not login"}',
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(fontSize: 15),
         ),
-        const Divider(height: 1),
-        buttonBar,
+        if (userGame != null)
+          TimerUpdate(
+            builder: (context, _) => Text(
+              '${userGame.calCurAp()}/${userGame.actMax} '
+              '${Duration(seconds: (userGame.actRecoverAt - DateTime.now().timestamp)).toString().split('.').first}',
+              style: const TextStyle(fontSize: 11),
+            ),
+          ),
       ],
     );
   }
 
-  Widget get headerInfo {
-    List<Widget> children = [];
+  Widget get statusRow {
     final userGame = mstData.user ?? agent.user.userGame;
-    List<InlineSpan> subtitle = [TextSpan(text: userGame?.friendCode ?? '')];
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        children: [
+          GestureDetector(
+            onTap: () => setState(() {}),
+            child: runtime.buildCircularProgress(context: context, showElapsed: true, size: 20),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '[${agent.user.serverName}] ${userGame?.displayName ?? "not login"}',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                statusInfo,
+              ],
+            ),
+          ),
+          if (userGame != null)
+            TimerUpdate(
+              builder: (context, time) {
+                return Tooltip(
+                  message: userGame.actRecoverAt.sec2date().toCustomString(year: false),
+                  child: SelectionContainer.disabled(
+                    child: Text(
+                      '${userGame.calCurAp()}/${userGame.actMax}'
+                      '\n${Duration(seconds: (userGame.actRecoverAt - DateTime.now().timestamp)).toString().split('.').first}',
+                      textAlign: TextAlign.end,
+                      style: const TextStyle(fontSize: 12),
+                    ),
+                  ),
+                );
+              },
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget get statusInfo {
+    final userGame = mstData.user ?? agent.user.userGame;
+    List<InlineSpan> info = [TextSpan(text: userGame?.friendCode ?? '')];
     if (mstData.isLoggedIn) {
       void onTapPresentBox() => router.pushPage(UserPresentBoxManagePage(runtime: runtime));
-      subtitle.addAll([
+      info.addAll([
         TextSpan(text: '  '),
         CenterWidgetSpan(
           child: db.getIconImage(
             "https://static.atlasacademy.io/file/aa-fgo-extract-jp/Terminal/OrdealCall/TerminalAtlas/status_icongift_open.png",
-            width: 24,
+            width: 20,
             onTap: onTapPresentBox,
           ),
         ),
@@ -235,12 +478,12 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
 
     if (runtime.agentData.loginResultHistory.isNotEmpty) {
       void onTapBonus() => router.pushPage(LoginResultPage(runtime: runtime));
-      subtitle.addAll([
+      info.addAll([
         TextSpan(text: '  '),
         CenterWidgetSpan(
           child: db.getIconImage(
             "https://static.atlasacademy.io/file/aa-fgo-extract-jp/Terminal/OrdealCall/CommonUIAtlas/icon_play.png",
-            width: 20,
+            width: 18,
             onTap: onTapBonus,
           ),
         ),
@@ -253,76 +496,40 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
       ]);
     }
 
-    children.add(
-      ListTile(
-        dense: true,
-        minTileHeight: 48,
-        visualDensity: VisualDensity.compact,
-        minLeadingWidth: 20,
-        leading: Container(
-          constraints: const BoxConstraints(maxWidth: 20, maxHeight: 20),
-          child: GestureDetector(
-            onTap: () {
-              setState(() {});
-            },
-            child: runtime.buildCircularProgress(context: context, showElapsed: true, size: 20),
-          ),
-        ),
-        title: Text('[${agent.user.serverName}] ${userGame?.displayName ?? "not login"}'),
-        subtitle: Text.rich(TextSpan(children: subtitle)),
-        trailing: userGame == null
-            ? null
-            : TimerUpdate(
-                builder: (context, time) {
-                  return Tooltip(
-                    message: userGame.actRecoverAt.sec2date().toCustomString(year: false),
-                    child: SelectionContainer.disabled(
-                      child: Text(
-                        '${userGame.calCurAp()}/${userGame.actMax}\n${Duration(seconds: (userGame.actRecoverAt - DateTime.now().timestamp)).toString().split('.').first}',
-                        textAlign: TextAlign.end,
-                        style: const TextStyle(fontSize: 12),
-                      ),
-                    ),
-                  );
-                },
+    return Text.rich(
+      TextSpan(children: info),
+      style: const TextStyle(fontSize: 12),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+    );
+  }
+
+  Widget get statusItems {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        children: [
+          for (final itemId in <int>{
+            Items.stoneId,
+            ...Items.loginSaveItems,
+            ...?db.gameData.quests[battleOption.questId]?.consumeItem.map((e) => e.itemId),
+          })
+            Padding(
+              padding: const EdgeInsetsDirectional.only(end: 10),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Item.iconBuilder(context: context, item: null, itemId: itemId, width: 20),
+                  Text(
+                    '×${mstData.getItemOrSvtNum(itemId, defaultValue: agent.user.userItems[itemId] ?? 0)}',
+                    style: const TextStyle(fontSize: 12),
+                  ),
+                ],
               ),
+            ),
+        ],
       ),
-    );
-
-    children.add(
-      Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        alignment: AlignmentDirectional.centerStart,
-        child: Text.rich(
-          TextSpan(
-            children: [
-              for (final itemId in <int>{
-                Items.stoneId,
-                ...Items.loginSaveItems,
-                ...?db.gameData.quests[battleOption.questId]?.consumeItem.map((e) => e.itemId),
-              })
-                TextSpan(
-                  children: [
-                    CenterWidgetSpan(
-                      child: Item.iconBuilder(context: context, item: null, itemId: itemId, width: 20),
-                    ),
-                    TextSpan(text: '×', style: TextStyle(fontSize: 12)),
-                    TextSpan(
-                      text: '${mstData.getItemOrSvtNum(itemId, defaultValue: agent.user.userItems[itemId] ?? 0)}  ',
-                    ),
-                  ],
-                ),
-            ],
-            style: TextStyle(fontSize: 14),
-          ),
-        ),
-      ),
-    );
-
-    return Container(
-      color: Theme.of(context).colorScheme.tertiaryContainer,
-      padding: const EdgeInsets.only(bottom: 4),
-      child: Column(mainAxisSize: MainAxisSize.min, children: children),
     );
   }
 
@@ -347,40 +554,37 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
 
   Widget get miscInfoSection {
     final gameTop = agent.network.gameTop;
-    final trailingStyle = TextStyle(fontSize: Theme.of(context).textTheme.bodySmall?.fontSize);
     List<Widget> children = [
-      ListTile(
-        dense: true,
-        title: Text.rich(
-          TextSpan(
-            children: [
-              TextSpan(text: 'AppVer='),
-              SharedBuilder.textButtonSpan(
-                context: context,
-                text: gameTop.appVer,
-                onTap: () {
-                  InputCancelOkDialog(
-                    title: 'App Version',
-                    validate: (s) => AppVersion.tryParse(s) != null,
-                    initValue: gameTop.appVer,
-                    onSubmit: (s) {
-                      final v = AppVersion.tryParse(s);
-                      if (v != null && mounted) {
-                        setState(() {
-                          gameTop.appVer = s;
-                        });
-                      }
-                    },
-                  ).showDialog(context);
-                },
-              ),
-              TextSpan(
-                text:
-                    '  DataVer=${gameTop.dataVer}'
-                    '\nDateVer=${gameTop.dateVer.sec2date().toStringShort(omitSec: true)}',
-              ),
-            ],
-          ),
+      // Versions are read-only metadata, so they stay one wrapped text strip
+      // instead of earning a card each.
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 6, 16, 6),
+        child: Wrap(
+          spacing: 16,
+          runSpacing: 2,
+          children: [
+            _infoText(
+              'AppVer',
+              gameTop.appVer,
+              onTap: () {
+                InputCancelOkDialog(
+                  title: 'App Version',
+                  validate: (s) => AppVersion.tryParse(s) != null,
+                  initValue: gameTop.appVer,
+                  onSubmit: (s) {
+                    final v = AppVersion.tryParse(s);
+                    if (v != null && mounted) {
+                      setState(() {
+                        gameTop.appVer = s;
+                      });
+                    }
+                  },
+                ).showDialog(context);
+              },
+            ),
+            _infoText('DataVer', '${gameTop.dataVer}'),
+            _infoText('DateVer', gameTop.dateVer.sec2date().toCustomString(year: true, second: false)),
+          ],
         ),
       ),
     ];
@@ -388,25 +592,25 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
     if (userGame != null) {
       final curLv = ConstData.userLevel[userGame.lv];
       final nextLv = ConstData.userLevel[userGame.lv + 1];
+      final exp = userGame.exp - (curLv?.requiredExp ?? 0);
+      final expTotal = nextLv == null ? 0 : nextLv.requiredExp - (curLv?.requiredExp ?? 0);
+      final expLeft = nextLv == null ? null : nextLv.requiredExp - userGame.exp;
       children.add(
         ListTile(
           dense: true,
           title: const Text('Master Lv'),
           trailing: Text(
-            ['Lv.${userGame.lv}', if (nextLv != null) userGame.exp - nextLv.requiredExp].join('\n'),
-            textAlign: TextAlign.end,
-            style: trailingStyle,
+            [
+              'Lv.${userGame.lv}',
+              if (expLeft != null) 'NEXT ${expLeft.format(compact: false, groupSeparator: ',')}',
+            ].join(' · '),
+            style: Theme.of(context).textTheme.bodySmall,
           ),
         ),
       );
-      if (curLv != null && nextLv != null && userGame.exp >= curLv.requiredExp && userGame.exp <= nextLv.requiredExp) {
+      if (expTotal > 0) {
         children.add(
-          BondProgress(
-            value: userGame.exp - curLv.requiredExp,
-            total: nextLv.requiredExp - curLv.requiredExp,
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            minHeight: 4,
-          ),
+          BondProgress(value: exp, total: expTotal, padding: const EdgeInsets.symmetric(horizontal: 16), minHeight: 4),
         );
       }
 
@@ -431,6 +635,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
   Widget get battleDetailSection {
     final battleEntity = runtime.agentData.curBattle ?? runtime.agentData.lastBattle;
     final lastResult = runtime.agentData.lastBattleResultData;
+    final resultType = BattleResultType.values.firstWhereOrNull((e) => e.value == lastResult?.battleResult);
     List<Widget> children = [];
     if (battleEntity == null) {
       children.add(const ListTile(dense: true, title: Text('No battle')));
@@ -444,49 +649,67 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
           dropItems.addNum(drop.objectId, drop.num);
         }
       }
-      children.addAll([
-        ListTile(
-          dense: true,
-          title: Text(
-            _describeQuest(
-              battleEntity.questId,
-              battleEntity.questPhase,
-              battleEntity.battleInfo?.enemyDeck.map((e) => e.svts.length).join('-'),
-            ),
-          ),
-          subtitle: Wrap(
-            children: [
-              for (final itemId in dropItems.keys.toList()..sort((a, b) => Item.compare2(a, b)))
-                db.gameData.craftEssencesById.containsKey(itemId)
-                    ? db.gameData.craftEssencesById[itemId]!.iconBuilder(
-                        context: context,
-                        height: 36,
-                        text: '+${dropItems[itemId]!.format()}',
-                      )
-                    : Item.iconBuilder(
-                        context: context,
-                        item: null,
-                        itemId: itemId,
-                        height: 36,
-                        text: [
-                          '+${dropItems[itemId]!.format()}',
-                          mstData.getItemOrSvtNum(itemId, eventIds: [battleEntity.eventId]).format(),
-                        ].join('\n'),
-                      ),
-            ],
-          ),
-          trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-          onTap: () {
-            router.push(url: Routes.questI(battleEntity.questId, battleEntity.questPhase));
+      children.add(
+        SimpleAccordion(
+          headerBuilder: (context, _) {
+            final resultName = lastResult != null && lastResult.battleId == battleEntity.id ? resultType?.name : null;
+            return ListTile(
+              dense: true,
+              title: Text(
+                _describeQuest(
+                  battleEntity.questId,
+                  battleEntity.questPhase,
+                  battleEntity.battleInfo?.enemyDeck.map((e) => e.svts.length).join('-'),
+                ),
+              ),
+              subtitle: Text([?resultName, if (dropItems.isNotEmpty) '${dropItems.length} drops'].join(' · ')),
+              trailing: IconButton(
+                tooltip: 'Open quest',
+                visualDensity: VisualDensity.compact,
+                onPressed: () => router.push(url: Routes.questI(battleEntity.questId, battleEntity.questPhase)),
+                icon: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+              ),
+            );
+          },
+          contentBuilder: (context) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: FormationCard(
+                    formation: BattleTeamFormationX.fromBattleEntity(battleEntity: battleEntity, mstData: mstData),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+                  child: Wrap(
+                    children: [
+                      for (final itemId in dropItems.keys.toList()..sort((a, b) => Item.compare2(a, b)))
+                        db.gameData.craftEssencesById.containsKey(itemId)
+                            ? db.gameData.craftEssencesById[itemId]!.iconBuilder(
+                                context: context,
+                                height: 36,
+                                text: '+${dropItems[itemId]!.format()}',
+                              )
+                            : Item.iconBuilder(
+                                context: context,
+                                item: null,
+                                itemId: itemId,
+                                height: 36,
+                                text: [
+                                  '+${dropItems[itemId]!.format()}',
+                                  mstData.getItemOrSvtNum(itemId, eventIds: [battleEntity.eventId]).format(),
+                                ].join('\n'),
+                              ),
+                    ],
+                  ),
+                ),
+              ],
+            );
           },
         ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: FormationCard(
-            formation: BattleTeamFormationX.fromBattleEntity(battleEntity: battleEntity, mstData: mstData),
-          ),
-        ),
-      ]);
+      );
     }
     children.add(
       SimpleAccordion(
@@ -599,8 +822,6 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
         db.gameData.quests[battleOption.questId]?.flags.contains(QuestFlag.raid) == true) {
       children.add(_buildRaidTile(battleEntity));
     }
-
-    final resultType = BattleResultType.values.firstWhereOrNull((e) => e.value == lastResult?.battleResult);
 
     // request options
     final saveData = agent.user.lastRequestOptions;
@@ -752,240 +973,231 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
     return TileGroup(
       header: 'Loop Options',
       children: [
-        ListTile(
-          dense: true,
-          title: const Text('Battle Count'),
-          trailing: TextButton(
-            onPressed: () {
-              runtime.lockTask(() {
-                InputCancelOkDialog.number(
-                  title: 'Battle Count',
-                  initValue: battleOption.loopCount,
-                  validate: (v) => v > 0,
-                  onSubmit: (v) {
-                    battleOption.loopCount = v;
-                    if (mounted) setState(() {});
-                  },
-                ).showDialog(context);
-              });
-            },
-            child: Text(battleOption.loopCount.toString()),
-          ),
+        ValueCardRow(
+          cards: [
+            ValueCard(
+              label: 'Battle Count',
+              value: battleOption.loopCount.toString(),
+              onTap: () {
+                runtime.lockTask(() {
+                  InputCancelOkDialog.number(
+                    title: 'Battle Count',
+                    initValue: battleOption.loopCount,
+                    validate: (v) => v > 0,
+                    onSubmit: (v) {
+                      battleOption.loopCount = v;
+                      if (mounted) setState(() {});
+                    },
+                  ).showDialog(context);
+                });
+              },
+            ),
+          ],
         ),
-        ListTile(
-          dense: true,
+        const Divider(indent: 16, endIndent: 16, height: 1),
+        AddRemoveList<int>(
+          inline: true,
           title: const Text('Apples for recover (ordered)'),
-          subtitle: Wrap(
-            spacing: 4,
-            runSpacing: 4,
-            children: [
-              for (final recoverId in battleOption.recoverIds)
-                CachedImage(
-                  imageUrl: apRecovers.firstWhereOrNull((e) => e.id == recoverId)?.icon,
-                  width: 32,
-                  height: 32 * 144 / 132,
-                  onTap: () {
-                    battleOption.recoverIds.remove(recoverId);
-                    setState(() {});
-                  },
-                ),
-            ],
-          ),
-          trailing: IconButton(
-            onPressed: () async {
-              final recover = await RecoverSelectDialog(
-                recovers: apRecovers,
-                mstData: mstData,
-                validateCount: false,
-                title: 'Recover AP (Option)',
-              ).showDialog<RecoverEntity>(context);
-              if (recover != null && !battleOption.recoverIds.contains(recover.id)) {
-                battleOption.recoverIds.add(recover.id);
-              }
-              if (mounted) setState(() {});
-            },
-            icon: const Icon(Icons.add_circle),
+          items: battleOption.recoverIds,
+          spacing: 4,
+          runSpacing: 4,
+          onAdd: () async {
+            final recover = await RecoverSelectDialog(
+              recovers: apRecovers,
+              mstData: mstData,
+              validateCount: false,
+              title: 'Recover AP (Option)',
+            ).showDialog<RecoverEntity>(context);
+            if (recover != null && !battleOption.recoverIds.contains(recover.id)) {
+              battleOption.recoverIds.add(recover.id);
+            }
+            if (mounted) setState(() {});
+          },
+          onRemove: (recoverId) {
+            setState(() {
+              battleOption.recoverIds.remove(recoverId);
+            });
+          },
+          itemBuilder: (context, recoverId, handle) => GestureDetector(
+            onTap: handle.tap,
+            onLongPress: handle.longPress,
+            child: CachedImage(
+              imageUrl: apRecovers.firstWhereOrNull((e) => e.id == recoverId)?.icon,
+              width: 32,
+              height: 32 * 144 / 132,
+            ),
           ),
         ),
-        CheckboxListTile.adaptive(
+        SwitchListTile.adaptive(
           dense: true,
           value: battleOption.waitApRecover,
           title: const Text("Wait AP recover"),
           onChanged: (v) {
             runtime.lockTask(() {
               setState(() {
-                battleOption.waitApRecover = v!;
+                battleOption.waitApRecover = v;
               });
             });
           },
-          controlAffinity: ListTileControlAffinity.trailing,
         ),
-        CheckboxListTile.adaptive(
+        SwitchListTile.adaptive(
           dense: true,
           value: battleOption.waitApRecoverGold,
           title: const Text("Wait AP changed before eating Golden Fruit"),
           onChanged: (v) {
             runtime.lockTask(() {
               setState(() {
-                battleOption.waitApRecoverGold = v!;
+                battleOption.waitApRecoverGold = v;
               });
             });
           },
-          controlAffinity: ListTileControlAffinity.trailing,
         ),
-        CheckboxListTile.adaptive(
+        SwitchListTile.adaptive(
           dense: true,
           value: battleOption.goldApplePrior,
           title: const Text("Prefer to eat Golden Fruit right after AP changed"),
           onChanged: (v) {
             runtime.lockTask(() {
               setState(() {
-                battleOption.goldApplePrior = v!;
+                battleOption.goldApplePrior = v;
               });
             });
           },
-          controlAffinity: ListTileControlAffinity.trailing,
         ),
-        ListTile(
-          dense: true,
+        const Divider(indent: 16, endIndent: 16, height: 1),
+        AddRemoveList<int>(
+          inline: true,
           title: const Text("Target drops (stop current loop if reach any)"),
-          subtitle: Wrap(
-            spacing: 2,
-            runSpacing: 2,
-            children: [
-              for (final itemId in battleOption.targetDrops.keys.toList()..sort(Item.compare))
-                GestureDetector(
-                  onLongPress: () {
-                    runtime.lockTask(() {
-                      setState(() {
-                        battleOption.targetDrops.remove(itemId);
-                      });
-                    });
-                  },
-                  child: GameCardMixin.anyCardItemBuilder(
-                    context: context,
-                    id: itemId,
-                    width: 42,
-                    text: battleOption.targetDrops[itemId]!.toString(),
-                    onTap: () {
-                      InputCancelOkDialog.number(
-                        title: 'Target Num of "${GameCardMixin.anyCardItemName(itemId).l}"',
-                        initValue: battleOption.targetDrops[itemId],
-                        validate: (v) => v >= 0,
-                        onSubmit: (v) {
-                          runtime.lockTask(() {
-                            if (mounted) {
-                              setState(() {
-                                battleOption.targetDrops[itemId] = v;
-                              });
-                            }
-                          });
-                        },
-                      ).showDialog(context);
-                    },
-                  ),
-                ),
-            ],
-          ),
-          trailing: IconButton(
-            onPressed: () async {
-              runtime.lockTask(() async {
-                final itemIdStr = await InputCancelOkDialog.number(
-                  title: 'Item id or CE id',
-                  validate: (v) => v > 0,
-                ).showDialog<String>(context);
-                if (itemIdStr == null) return;
-                final itemId = int.parse(itemIdStr);
-                final itemName = db.gameData.craftEssencesById[itemId]?.lName.l ?? db.gameData.items[itemId]?.lName.l;
-                if (itemName == null) {
-                  EasyLoading.showError("Invalid id");
-                  return;
-                }
-                if (!mounted) return;
-                final itemNumStr = await InputCancelOkDialog.number(
-                  title: 'Stop if "$itemName" total drop num ≥',
-                  validate: (v) => v >= 0,
-                ).showDialog<String>(context);
-                if (itemNumStr == null) return;
-                final itemNum = int.parse(itemNumStr);
-                if (itemNum < 0) return;
-                battleOption.targetDrops[itemId] = itemNum;
-                if (mounted) setState(() {});
+          items: battleOption.targetDrops.keys.toList()..sort(Item.compare),
+          spacing: 2,
+          runSpacing: 2,
+          onAdd: () async {
+            runtime.lockTask(() async {
+              final itemIdStr = await InputCancelOkDialog.number(
+                title: 'Item id or CE id',
+                validate: (v) => v > 0,
+              ).showDialog<String>(context);
+              if (itemIdStr == null) return;
+              final itemId = int.parse(itemIdStr);
+              final itemName = db.gameData.craftEssencesById[itemId]?.lName.l ?? db.gameData.items[itemId]?.lName.l;
+              if (itemName == null) {
+                EasyLoading.showError("Invalid id");
+                return;
+              }
+              if (!mounted) return;
+              final itemNumStr = await InputCancelOkDialog.number(
+                title: 'Stop if "$itemName" total drop num ≥',
+                validate: (v) => v >= 0,
+              ).showDialog<String>(context);
+              if (itemNumStr == null) return;
+              final itemNum = int.parse(itemNumStr);
+              if (itemNum < 0) return;
+              battleOption.targetDrops[itemId] = itemNum;
+              if (mounted) setState(() {});
+            });
+          },
+          onRemove: (itemId) {
+            runtime.lockTask(() {
+              setState(() {
+                battleOption.targetDrops.remove(itemId);
               });
-            },
-            icon: const Icon(Icons.add_circle),
+            });
+          },
+          onSecondary: (itemId) {
+            InputCancelOkDialog.number(
+              title: 'Target Num of "${GameCardMixin.anyCardItemName(itemId).l}"',
+              initValue: battleOption.targetDrops[itemId],
+              validate: (v) => v >= 0,
+              onSubmit: (v) {
+                runtime.lockTask(() {
+                  if (mounted) {
+                    setState(() {
+                      battleOption.targetDrops[itemId] = v;
+                    });
+                  }
+                });
+              },
+            ).showDialog(context);
+          },
+          itemBuilder: (context, itemId, handle) => GestureDetector(
+            onTap: handle.tap,
+            onLongPress: handle.longPress,
+            child: GameCardMixin.anyCardItemBuilder(
+              context: context,
+              id: itemId,
+              width: 42,
+              text: battleOption.targetDrops[itemId]!.toString(),
+              onTap: handle.tap,
+            ),
           ),
         ),
-        ListTile(
-          dense: true,
+        const Divider(indent: 16, endIndent: 16, height: 1),
+        AddRemoveList<int>(
+          inline: true,
           // title: const Text("Target drop (retire/cancel if no target drop)"),
           title: const Text("Win target drops (win battle if reaches any, otherwise retire/cancel)"),
-          subtitle: Wrap(
-            spacing: 2,
-            runSpacing: 2,
-            children: [
-              for (final itemId in battleOption.winTargetItemNum.keys.toList()..sort(Item.compare))
-                GestureDetector(
-                  onLongPress: () {
-                    runtime.lockTask(() {
-                      setState(() {
-                        battleOption.winTargetItemNum.remove(itemId);
-                      });
-                    });
-                  },
-                  child: GameCardMixin.anyCardItemBuilder(
-                    context: context,
-                    id: itemId,
-                    width: 42,
-                    text: battleOption.winTargetItemNum[itemId]?.toString(),
-                    onTap: () {
-                      InputCancelOkDialog.number(
-                        title: 'Win Target Num of "${GameCardMixin.anyCardItemName(itemId).l}"',
-                        initValue: battleOption.winTargetItemNum[itemId],
-                        validate: (v) => v > 0,
-                        onSubmit: (v) {
-                          runtime.lockTask(() {
-                            if (mounted) {
-                              setState(() {
-                                battleOption.winTargetItemNum[itemId] = v;
-                              });
-                            }
-                          });
-                        },
-                      ).showDialog(context);
-                    },
-                  ),
-                ),
-            ],
-          ),
-          trailing: IconButton(
-            onPressed: () async {
-              runtime.lockTask(() async {
-                final itemIdStr = await InputCancelOkDialog(
-                  title: 'Item id or CE id',
-                  keyboardType: TextInputType.number,
-                  validate: (s) => (int.tryParse(s) ?? -1) > 0,
-                ).showDialog<String>(context);
-                if (itemIdStr == null) return;
-                final itemId = int.parse(itemIdStr);
-                final itemName = db.gameData.craftEssencesById[itemId]?.lName.l ?? db.gameData.items[itemId]?.lName.l;
-                if (itemName == null) {
-                  EasyLoading.showError("Invalid id");
-                  return;
-                }
-                if (!mounted) return;
-                final itemNumStr = await InputCancelOkDialog.number(
-                  title: 'Win if "$itemName" drop num ≥',
-                  validate: (v) => v > 0,
-                ).showDialog<String>(context);
-                if (itemNumStr == null) return;
-                final itemNum = int.parse(itemNumStr);
-                if (itemNum <= 0) return;
-                battleOption.winTargetItemNum[itemId] = itemNum;
-                if (mounted) setState(() {});
+          items: battleOption.winTargetItemNum.keys.toList()..sort(Item.compare),
+          spacing: 2,
+          runSpacing: 2,
+          onAdd: () async {
+            runtime.lockTask(() async {
+              final itemIdStr = await InputCancelOkDialog(
+                title: 'Item id or CE id',
+                keyboardType: TextInputType.number,
+                validate: (s) => (int.tryParse(s) ?? -1) > 0,
+              ).showDialog<String>(context);
+              if (itemIdStr == null) return;
+              final itemId = int.parse(itemIdStr);
+              final itemName = db.gameData.craftEssencesById[itemId]?.lName.l ?? db.gameData.items[itemId]?.lName.l;
+              if (itemName == null) {
+                EasyLoading.showError("Invalid id");
+                return;
+              }
+              if (!mounted) return;
+              final itemNumStr = await InputCancelOkDialog.number(
+                title: 'Win if "$itemName" drop num ≥',
+                validate: (v) => v > 0,
+              ).showDialog<String>(context);
+              if (itemNumStr == null) return;
+              final itemNum = int.parse(itemNumStr);
+              if (itemNum <= 0) return;
+              battleOption.winTargetItemNum[itemId] = itemNum;
+              if (mounted) setState(() {});
+            });
+          },
+          onRemove: (itemId) {
+            runtime.lockTask(() {
+              setState(() {
+                battleOption.winTargetItemNum.remove(itemId);
               });
-            },
-            icon: const Icon(Icons.add_circle),
+            });
+          },
+          onSecondary: (itemId) {
+            InputCancelOkDialog.number(
+              title: 'Win Target Num of "${GameCardMixin.anyCardItemName(itemId).l}"',
+              initValue: battleOption.winTargetItemNum[itemId],
+              validate: (v) => v > 0,
+              onSubmit: (v) {
+                runtime.lockTask(() {
+                  if (mounted) {
+                    setState(() {
+                      battleOption.winTargetItemNum[itemId] = v;
+                    });
+                  }
+                });
+              },
+            ).showDialog(context);
+          },
+          itemBuilder: (context, itemId, handle) => GestureDetector(
+            onTap: handle.tap,
+            onLongPress: handle.longPress,
+            child: GameCardMixin.anyCardItemBuilder(
+              context: context,
+              id: itemId,
+              width: 42,
+              text: battleOption.winTargetItemNum[itemId]?.toString(),
+              onTap: handle.tap,
+            ),
           ),
         ),
       ],
@@ -1005,7 +1217,9 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
     // Quest Info, Lottery / box gacha progress shown as quest subtitle
     String? questInfoText;
     if (userQuest != null) {
-      questInfoText = 'phase ${userQuest.questPhase}  clear ${userQuest.clearNum}  challenge ${userQuest.challengeNum}';
+      questInfoText =
+          'phase ${userQuest.questPhase}/${quest?.phases.length ?? '-'}  '
+          'clear ${userQuest.clearNum}  challenge ${userQuest.challengeNum}';
       List<EventLottery> lotteries = quest?.logicEvent?.lotteries ?? [];
       if (lotteries.isEmpty && quest?.warId == 8407) {
         lotteries = (runtime.gameData.timerData.events[80586] ?? db.gameData.events[80586])?.lotteries ?? [];
@@ -1039,54 +1253,35 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
         title: Text(_describeQuest(battleOption.questId, battleOption.questPhase, null)),
         subtitle: questInfoText == null ? null : Text(questInfoText),
         onTap: () => router.push(url: Routes.questI(battleOption.questId, battleOption.questPhase)),
-        trailing: TextButton(
-          onPressed: () {
-            runtime.lockTask(() {
-              InputCancelOkDialog.number(
-                title: 'Quest ID',
-                initValue: battleOption.questId,
-                onSubmit: (questId) async {
-                  if (await runtime.battle.selectQuest(questId)) {
-                    _onChangeQuest();
-                  }
-                  if (mounted) setState(() {});
-                },
-              ).showDialog(context);
-            });
-          },
-          child: Text(battleOption.questId.toString()),
-        ),
       ),
-      ListTile(
-        dense: true,
-        title: const Text("Quest Phase"),
-        subtitle: Text('phases: ${quest?.phases.join('/') ?? '-'}'),
-        trailing: TextButton(
-          onPressed: quest == null
-              ? null
-              : () {
-                  runtime.lockTask(() {
-                    InputCancelOkDialog.number(
-                      title: 'Quest Phase',
-                      initValue: battleOption.questPhase,
-                      onSubmit: (phase) async {
-                        if (quest.phases.contains(phase)) {
-                          battleOption.questPhase = phase;
-                        } else {
-                          EasyLoading.showError('Invalid Phase');
-                        }
-                        if (mounted) setState(() {});
-                        await AtlasApi.questPhase(
-                          battleOption.questId,
-                          battleOption.questPhase,
-                          region: runtime.region,
-                        );
-                        if (mounted) setState(() {});
-                      },
-                    ).showDialog(context);
-                  });
-                },
-          child: Text(battleOption.questPhase.toString()),
+      Padding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+        child: Wrap(
+          spacing: 8,
+          runSpacing: 4,
+          children: [
+            _questValueChip(
+              'ID ${battleOption.questId}',
+              onPressed: () {
+                runtime.lockTask(() {
+                  InputCancelOkDialog.number(
+                    title: 'Quest ID',
+                    initValue: battleOption.questId,
+                    onSubmit: (questId) async {
+                      if (await runtime.battle.selectQuest(questId)) {
+                        _onChangeQuest();
+                      }
+                      if (mounted) setState(() {});
+                    },
+                  ).showDialog(context);
+                });
+              },
+            ),
+            _questValueChip(
+              'phase ${battleOption.questPhase}/${quest != null && quest.phases.isNotEmpty ? Maths.max(quest.phases) : "-"}',
+              onPressed: quest == null || quest.phases.isEmpty ? null : _pickQuestPhase,
+            ),
+          ],
         ),
       ),
     ]);
@@ -1118,8 +1313,8 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
       children.add(
         ListTile(
           dense: true,
-          title: Text('${campaigns.length} ${S.current.event_campaign}'),
-          subtitle: Text(campaigns.map((e) => e.lName.l).join(' / '), maxLines: 1, overflow: TextOverflow.ellipsis),
+          title: Text(campaigns.map((e) => e.lName.l).join(' · '), maxLines: 1, overflow: TextOverflow.ellipsis),
+          subtitle: Text('${campaigns.length} ${S.current.event_campaign}'),
           onTap: () {
             SimpleDialog(
               title: Text(S.current.event_campaign),
@@ -1152,87 +1347,100 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
     // Support
     children.addAll([
       DividerWithTitle(title: S.current.support_servant_short, indent: 16),
-      ListTile(
-        dense: true,
+      AddRemoveList<int>(
+        inline: true,
         title: Text(S.current.support_servant),
-        subtitle: Wrap(
-          spacing: 4,
-          runSpacing: 4,
-          children: [
-            if (battleOption.supportSvtIds.isEmpty) Text(S.current.general_any),
-            for (final svtId in battleOption.supportSvtIds)
-              GestureDetector(
-                onLongPress: () {
-                  db.gameData.servantsById[svtId]?.routeTo();
+        items: battleOption.supportSvtIds.toList(),
+        emptyState: Text(S.current.general_any),
+        onAdd: () {
+          runtime.lockTask(() {
+            router.pushPage(
+              ServantListPage(
+                pinged: db.settings.gameplay.pinnedSvtIds.toList(),
+                showSecondaryFilter: true,
+                onSelected: (svt) {
+                  if (!svt.isUserSvt) {
+                    EasyLoading.showError('Not playable');
+                    return;
+                  }
+                  battleOption.supportSvtIds.add(svt.id);
+                  if (mounted) setState(() {});
                 },
-                child: GameCardMixin.cardIconBuilder(
-                  context: context,
-                  icon: db.gameData.servantsById[svtId]?.borderedIcon ?? Atlas.common.emptySvtIcon,
-                  width: 36,
-                  onTap: () {
-                    runtime.lockTask(() {
-                      battleOption.supportSvtIds.remove(svtId);
-                      if (mounted) setState(() {});
-                    });
-                  },
-                ),
               ),
-          ],
-        ),
-        trailing: IconButton(
-          onPressed: () {
-            runtime.lockTask(() {
-              router.pushPage(
-                ServantListPage(
-                  pinged: db.settings.gameplay.pinnedSvtIds.toList(),
-                  showSecondaryFilter: true,
-                  onSelected: (svt) {
-                    if (!svt.isUserSvt) {
-                      EasyLoading.showError('Not playable');
-                      return;
-                    }
-                    battleOption.supportSvtIds.add(svt.id);
-                    if (mounted) setState(() {});
-                  },
-                ),
-              );
-            });
-          },
-          icon: const Icon(Icons.add_circle),
+            );
+          });
+        },
+        onRemove: (svtId) {
+          runtime.lockTask(() {
+            battleOption.supportSvtIds.remove(svtId);
+            if (mounted) setState(() {});
+          });
+        },
+        onSecondary: (svtId) => db.gameData.servantsById[svtId]?.routeTo(),
+        itemBuilder: (context, svtId, handle) => GestureDetector(
+          onTap: handle.tap,
+          onLongPress: handle.longPress,
+          child: GameCardMixin.cardIconBuilder(
+            context: context,
+            icon: db.gameData.servantsById[svtId]?.borderedIcon ?? Atlas.common.emptySvtIcon,
+            width: 36,
+          ),
         ),
       ),
 
-      ListTile(
-        dense: true,
+      const Divider(indent: 16, endIndent: 16, height: 1),
+      AddRemoveList<int>(
+        inline: true,
         title: Text(
           '${S.current.craft_essence_short} (${S.current.max_limit_break} ${battleOption.supportEquipMaxLimitBreak})',
         ),
-        subtitle: Wrap(
-          spacing: 4,
-          runSpacing: 4,
-          children: [
-            if (battleOption.supportEquipIds.isEmpty) Text(S.current.general_any),
-            for (final ceId in battleOption.supportEquipIds)
-              GestureDetector(
-                onLongPress: () {
-                  db.gameData.craftEssencesById[ceId]?.routeTo();
+        items: battleOption.supportEquipIds.toList(),
+        emptyState: Text(S.current.general_any),
+        onAdd: () {
+          runtime.lockTask(() {
+            router.pushPage(
+              CraftListPage(
+                pinnedGroups: db.settings.gameplay.pinnedSvtEquipGroups(quest, null),
+                onSelected: (ce) {
+                  if (ce.collectionNo <= 0) {
+                    EasyLoading.showError('Not playable');
+                    return;
+                  }
+                  battleOption.supportEquipIds.add(ce.id);
+                  if (mounted) setState(() {});
                 },
-                child: GameCardMixin.cardIconBuilder(
-                  context: context,
-                  icon: db.gameData.craftEssencesById[ceId]?.borderedIcon ?? Atlas.common.emptyCeIcon,
-                  width: 36,
-                  onTap: () {
-                    runtime.lockTask(() {
-                      battleOption.supportEquipIds.remove(ceId);
-                      if (mounted) setState(() {});
-                    });
-                  },
-                ),
               ),
-          ],
+            );
+          });
+        },
+        onRemove: (ceId) {
+          runtime.lockTask(() {
+            battleOption.supportEquipIds.remove(ceId);
+            if (mounted) setState(() {});
+          });
+        },
+        onSecondary: (ceId) => db.gameData.craftEssencesById[ceId]?.routeTo(),
+        itemBuilder: (context, ceId, handle) => GestureDetector(
+          onTap: handle.tap,
+          onLongPress: handle.longPress,
+          child: GameCardMixin.cardIconBuilder(
+            context: context,
+            icon: db.gameData.craftEssencesById[ceId]?.borderedIcon ?? Atlas.common.emptyCeIcon,
+            width: 36,
+          ),
         ),
-        trailing: IconButton(
-          onPressed: () {
+      ),
+    ]);
+
+    if (questPhase?.isUseGrandBoard == true || quest?.war?.parentWarId == WarId.grandBoardWar) {
+      children.add(const Divider(indent: 16, endIndent: 16, height: 1));
+      children.add(
+        AddRemoveList<int>(
+          inline: true,
+          title: Text('$kStarChar2 ${S.current.grand_servant} - ${S.current.craft_essence_short}'),
+          items: battleOption.grandSupportEquipIds.toList(),
+          emptyState: Text(S.current.general_any),
+          onAdd: () {
             runtime.lockTask(() {
               router.pushPage(
                 CraftListPage(
@@ -1242,66 +1450,28 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
                       EasyLoading.showError('Not playable');
                       return;
                     }
-                    battleOption.supportEquipIds.add(ce.id);
+                    battleOption.grandSupportEquipIds.add(ce.id);
                     if (mounted) setState(() {});
                   },
                 ),
               );
             });
           },
-          icon: const Icon(Icons.add_circle),
-        ),
-      ),
-    ]);
-
-    if (questPhase?.isUseGrandBoard == true || quest?.war?.parentWarId == WarId.grandBoardWar) {
-      children.add(
-        ListTile(
-          dense: true,
-          title: Text('$kStarChar2 ${S.current.grand_servant} - ${S.current.craft_essence_short}'),
-          subtitle: Wrap(
-            spacing: 4,
-            runSpacing: 4,
-            children: [
-              if (battleOption.grandSupportEquipIds.isEmpty) Text(S.current.general_any),
-              for (final ceId in battleOption.grandSupportEquipIds)
-                GestureDetector(
-                  onLongPress: () {
-                    db.gameData.craftEssencesById[ceId]?.routeTo();
-                  },
-                  child: GameCardMixin.cardIconBuilder(
-                    context: context,
-                    icon: db.gameData.craftEssencesById[ceId]?.borderedIcon ?? Atlas.common.emptyCeIcon,
-                    width: 36,
-                    onTap: () {
-                      runtime.lockTask(() {
-                        battleOption.grandSupportEquipIds.remove(ceId);
-                        if (mounted) setState(() {});
-                      });
-                    },
-                  ),
-                ),
-            ],
-          ),
-          trailing: IconButton(
-            onPressed: () {
-              runtime.lockTask(() {
-                router.pushPage(
-                  CraftListPage(
-                    pinnedGroups: db.settings.gameplay.pinnedSvtEquipGroups(quest, null),
-                    onSelected: (ce) {
-                      if (ce.collectionNo <= 0) {
-                        EasyLoading.showError('Not playable');
-                        return;
-                      }
-                      battleOption.grandSupportEquipIds.add(ce.id);
-                      if (mounted) setState(() {});
-                    },
-                  ),
-                );
-              });
-            },
-            icon: const Icon(Icons.add_circle),
+          onRemove: (ceId) {
+            runtime.lockTask(() {
+              battleOption.grandSupportEquipIds.remove(ceId);
+              if (mounted) setState(() {});
+            });
+          },
+          onSecondary: (ceId) => db.gameData.craftEssencesById[ceId]?.routeTo(),
+          itemBuilder: (context, ceId, handle) => GestureDetector(
+            onTap: handle.tap,
+            onLongPress: handle.longPress,
+            child: GameCardMixin.cardIconBuilder(
+              context: context,
+              icon: db.gameData.craftEssencesById[ceId]?.borderedIcon ?? Atlas.common.emptyCeIcon,
+              width: 36,
+            ),
           ),
         ),
       );
@@ -1358,7 +1528,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
 
     children.add(DividerWithTitle(title: Transl.itemNames('星見のティーポット').l));
     children.add(
-      CheckboxListTile.adaptive(
+      SwitchListTile.adaptive(
         dense: true,
         value: battleOption.useCampaignItem,
         secondary: Item.iconBuilder(context: context, item: null, itemId: Items.teapotId, jumpToDetail: false),
@@ -1380,7 +1550,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
         onChanged: (v) {
           runtime.lockTask(() {
             setState(() {
-              battleOption.useCampaignItem = v!;
+              battleOption.useCampaignItem = v;
             });
           });
         },
@@ -1433,14 +1603,14 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
     // AP Half
     children.add(const Divider());
     children.add(
-      CheckboxListTile.adaptive(
+      SwitchListTile.adaptive(
         dense: true,
         value: battleOption.isApHalf,
         title: const Text("During AP Half Event"),
         onChanged: (v) {
           runtime.lockTask(() {
             setState(() {
-              battleOption.isApHalf = v!;
+              battleOption.isApHalf = v;
             });
           });
         },
@@ -1461,101 +1631,91 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
   }
 
   Widget get battleResultOptionSection {
+    // Only these two are meaningful for the settle request; a value persisted
+    // by an older build (none / lose / interruption) would break the dropdown.
+    const resultTypes = [BattleResultType.win, BattleResultType.cancel];
     return TileGroup(
       header: 'Battle Result Options',
       children: [
-        ListTile(
-          dense: true,
-          title: const Text('Result Type'),
-          trailing: DropdownButton<BattleResultType>(
-            isDense: true,
-            value: battleOption.resultType,
-            alignment: AlignmentDirectional.centerEnd,
-            items: [
-              for (final type in [BattleResultType.win, BattleResultType.cancel])
-                DropdownMenuItem(value: type, child: Text(type.name)),
-            ],
-            onChanged: (v) {
-              runtime.lockTask(() {
-                setState(() {
-                  if (v != null) battleOption.resultType = v;
+        ValueCardRow(
+          cards: [
+            ValueCard<BattleResultType>(
+              label: 'Result Type',
+              optionValue: resultTypes.contains(battleOption.resultType)
+                  ? battleOption.resultType
+                  : BattleResultType.win,
+              options: resultTypes,
+              optionLabel: (type) => type.name,
+              onSelected: (v) {
+                runtime.lockTask(() {
+                  setState(() {
+                    battleOption.resultType = v;
+                  });
                 });
-              });
-            },
-          ),
+              },
+            ),
+            // Editable but not consumed yet: settling a battle still hardcodes
+            // `winResult`, so changing this value has no effect on the request.
+            ValueCard<BattleWinResultType>(
+              label: 'Win Type',
+              optionValue: battleOption.winType,
+              options: BattleWinResultType.values,
+              optionLabel: (type) => type.name,
+              onSelected: (v) {
+                runtime.lockTask(() {
+                  setState(() {
+                    battleOption.winType = v;
+                  });
+                });
+              },
+            ),
+          ],
         ),
-        // ListTile(
-        //   dense: true,
-        //   title: const Text('Win Type'),
-        //   trailing: DropdownButton<BattleWinResultType>(
-        //     isDense: true,
-        //     value: battleOptions.winType,
-        //     alignment: AlignmentDirectional.centerEnd,
-        //     items: [
-        //       for (final type in BattleWinResultType.values) DropdownMenuItem(value: type, child: Text(type.name)),
-        //     ],
-        //     onChanged: (v) {
-        //       runtime.lockTask(() {
-        //         setState(() {
-        //           if (v != null) battleOptions.winType = v;
-        //         });
-        //       });
-        //     },
-        //   ),
-        // ),
-        ListTile(
-          dense: true,
-          title: const Text('Each wave turns'),
-          trailing: TextButton(
-            onPressed: () {
-              runtime.lockTask(() {
-                InputCancelOkDialog(
-                  title: 'Each wave turns',
-                  initValue: battleOption.usedTurnArray.join(','),
-                  onSubmit: (s) {
-                    try {
-                      if (s.isEmpty) {
-                        battleOption.usedTurnArray = [];
-                      } else {
-                        final turns = s.split(RegExp(r'[,/\- ]+')).map(int.parse).toList();
-                        battleOption.usedTurnArray = turns;
+        ValueCardRow(
+          cards: [
+            ValueCard(
+              label: 'Each wave turns',
+              value: battleOption.usedTurnArray.isEmpty ? 'empty' : battleOption.usedTurnArray.join(','),
+              onTap: () {
+                runtime.lockTask(() {
+                  InputCancelOkDialog(
+                    title: 'Each wave turns',
+                    initValue: battleOption.usedTurnArray.join(','),
+                    onSubmit: (s) {
+                      try {
+                        if (s.isEmpty) {
+                          battleOption.usedTurnArray = [];
+                        } else {
+                          final turns = s.split(RegExp(r'[,/\- ]+')).map(int.parse).toList();
+                          battleOption.usedTurnArray = turns;
+                        }
+                      } catch (e) {
+                        EasyLoading.showError(e.toString());
+                        return;
                       }
-                    } catch (e) {
-                      EasyLoading.showError(e.toString());
-                      return;
-                    }
-                    if (mounted) setState(() {});
-                  },
-                ).showDialog(context);
-              });
-            },
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 180),
-              child: Text(battleOption.usedTurnArray.isEmpty ? 'empty' : battleOption.usedTurnArray.toString()),
+                      if (mounted) setState(() {});
+                    },
+                  ).showDialog(context);
+                });
+              },
             ),
-          ),
-        ),
-        ListTile(
-          dense: true,
-          title: const Text('Action Logs'),
-          trailing: TextButton(
-            onPressed: () {
-              runtime.lockTask(() {
-                InputCancelOkDialog(
-                  title: 'Action Logs',
-                  initValue: battleOption.actionLogs,
-                  onSubmit: (s) {
-                    battleOption.actionLogs = s;
-                    if (mounted) setState(() {});
-                  },
-                ).showDialog(context);
-              });
-            },
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 180),
-              child: Text(battleOption.actionLogs.isEmpty ? 'empty' : battleOption.actionLogs),
+            ValueCard(
+              label: 'Action Logs',
+              value: battleOption.actionLogs.isEmpty ? 'empty' : battleOption.actionLogs,
+              onTap: () {
+                runtime.lockTask(() {
+                  InputCancelOkDialog(
+                    title: 'Action Logs',
+                    initValue: battleOption.actionLogs,
+                    onSubmit: (s) {
+                      battleOption.actionLogs = s;
+                      if (mounted) setState(() {});
+                    },
+                  ).showDialog(context);
+                });
+              },
             ),
-          ),
+          ],
         ),
       ],
     );
@@ -1566,31 +1726,29 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
     return TileGroup(
       header: 'Other Options',
       children: [
-        CheckboxListTile.adaptive(
+        SwitchListTile.adaptive(
           dense: true,
           value: battleOption.stopIfBondLimit,
           title: const Text("Stop if Bond Limit"),
           onChanged: (v) {
             runtime.lockTask(() {
               setState(() {
-                battleOption.stopIfBondLimit = v!;
+                battleOption.stopIfBondLimit = v;
               });
             });
           },
-          controlAffinity: ListTileControlAffinity.trailing,
         ),
-        CheckboxListTile.adaptive(
+        SwitchListTile.adaptive(
           dense: true,
           value: battleOption.supportEquipMaxLimitBreak,
           title: Text('${S.current.support_servant} - ${S.current.craft_essence_short} ${S.current.max_limit_break}'),
           onChanged: (v) {
             runtime.lockTask(() {
               setState(() {
-                battleOption.supportEquipMaxLimitBreak = v!;
+                battleOption.supportEquipMaxLimitBreak = v;
               });
             });
           },
-          controlAffinity: ListTileControlAffinity.trailing,
         ),
         CheckboxListTile.adaptive(
           dense: true,
@@ -1619,46 +1777,43 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
           },
           controlAffinity: ListTileControlAffinity.trailing,
         ),
-        CheckboxListTile.adaptive(
+        SwitchListTile.adaptive(
           dense: true,
           value: battleOption.enfoceRefreshSupport,
           title: const Text("Force Refresh Support"),
           onChanged: (v) {
             runtime.lockTask(() {
               setState(() {
-                battleOption.enfoceRefreshSupport = v!;
+                battleOption.enfoceRefreshSupport = v;
               });
             });
           },
-          controlAffinity: ListTileControlAffinity.trailing,
         ),
-        CheckboxListTile.adaptive(
+        SwitchListTile.adaptive(
           dense: true,
           value: battleOption.checkQuestCondition,
           title: const Text("Check quest release condition"),
           onChanged: (v) {
             runtime.lockTask(() {
               setState(() {
-                battleOption.checkQuestCondition = v!;
+                battleOption.checkQuestCondition = v;
               });
             });
           },
-          controlAffinity: ListTileControlAffinity.trailing,
         ),
-        CheckboxListTile.adaptive(
+        SwitchListTile.adaptive(
           dense: true,
           value: battleOption.customAliveUniqueId,
           title: const Text("Custom Alive UniqueIds"),
           onChanged: (v) {
             runtime.lockTask(() {
               setState(() {
-                battleOption.customAliveUniqueId = v!;
+                battleOption.customAliveUniqueId = v;
               });
             });
           },
-          controlAffinity: ListTileControlAffinity.trailing,
         ),
-        CheckboxListTile.adaptive(
+        SwitchListTile.adaptive(
           dense: true,
           value: battleOption.enableSkillShift,
           title: const Text("Enable skillShift"),
@@ -1666,11 +1821,10 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
           onChanged: (v) {
             runtime.lockTask(() {
               setState(() {
-                battleOption.enableSkillShift = v!;
+                battleOption.enableSkillShift = v;
               });
             });
           },
-          controlAffinity: ListTileControlAffinity.trailing,
         ),
         ListTile(
           dense: true,
@@ -1695,43 +1849,43 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
             if (mounted) setState(() {});
           },
         ),
-        CheckboxListTile.adaptive(
+        SwitchListTile.adaptive(
           dense: true,
           value: battleOption.sendFriendRequest,
           title: const Text("Send Friend Request"),
           onChanged: (v) {
             runtime.lockTask(() {
               setState(() {
-                battleOption.sendFriendRequest = v!;
+                battleOption.sendFriendRequest = v;
               });
             });
           },
-          controlAffinity: ListTileControlAffinity.trailing,
         ),
-        ListTile(
-          dense: true,
-          title: const Text('Battle Duration(seconds)'),
-          trailing: TextButton(
-            onPressed: () {
-              runtime.lockTask(() {
-                InputCancelOkDialog(
-                  title: 'Battle Duration',
-                  initValue: battleOption.battleDuration?.toString(),
-                  keyboardType: TextInputType.number,
-                  validate: (s) => s.isEmpty || (int.tryParse(s) ?? -1) > (agent.user.region == Region.jp ? 20 : 40),
-                  onSubmit: (s) {
-                    if (s.isEmpty) {
-                      battleOption.battleDuration = null;
-                    } else {
-                      battleOption.battleDuration = int.parse(s);
-                    }
-                    if (mounted) setState(() {});
-                  },
-                ).showDialog(context);
-              });
-            },
-            child: Text(battleOption.battleDuration?.toString() ?? S.current.general_default),
-          ),
+        ValueCardRow(
+          cards: [
+            ValueCard(
+              label: 'Battle Duration (s)',
+              value: battleOption.battleDuration?.toString() ?? S.current.general_default,
+              onTap: () {
+                runtime.lockTask(() {
+                  InputCancelOkDialog(
+                    title: 'Battle Duration',
+                    initValue: battleOption.battleDuration?.toString(),
+                    keyboardType: TextInputType.number,
+                    validate: (s) => s.isEmpty || (int.tryParse(s) ?? -1) > (agent.user.region == Region.jp ? 20 : 40),
+                    onSubmit: (s) {
+                      if (s.isEmpty) {
+                        battleOption.battleDuration = null;
+                      } else {
+                        battleOption.battleDuration = int.parse(s);
+                      }
+                      if (mounted) setState(() {});
+                    },
+                  ).showDialog(context);
+                });
+              },
+            ),
+          ],
         ),
       ],
     );
@@ -1780,94 +1934,66 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
               }
             },
           ),
-        ListTile(
-          dense: true,
+        AddRemoveList<int>(
+          inline: true,
           title: const Text('Notify when AP recovered at'),
-          subtitle: FilterGroup<int>(
-            padding: const EdgeInsets.only(top: 4),
-            options: agent.user.recoveredAps.toList()..sort2((e) => e == 0 ? 999 : e),
-            values: FilterGroupData(),
-            optionBuilder: (v) => v == 0 ? Text(agent.user.userGame?.actMax.toString() ?? 'Full') : Text(v.toString()),
-            onFilterChanged: (_, lastChanged) {
-              setState(() {
-                if (lastChanged != null) {
-                  agent.user.recoveredAps.remove(lastChanged);
-                  agent.network.setLocalNotification(removedAps: [lastChanged]);
-                }
-              });
-            },
-          ),
-          trailing: IconButton(
-            onPressed: () {
-              InputCancelOkDialog.number(
-                title: 'AP',
-                helperText: '0 = Max AP (${(mstData.user ?? agent.user.userGame)?.actMax})',
-                validate: (v) {
-                  return v >= 0 && v < 200 && v < Maths.max(ConstData.userLevel.values.map((e) => e.maxAp));
-                },
-                onSubmit: (v) {
-                  agent.user.recoveredAps.add(v);
-                  agent.network.setLocalNotification();
-                  if (mounted) setState(() {});
-                },
-              ).showDialog(context);
-            },
-            icon: const Icon(Icons.add),
+          items: agent.user.recoveredAps.toList()..sort2((e) => e == 0 ? 999 : e),
+          spacing: 4,
+          runSpacing: 4,
+          onAdd: () {
+            InputCancelOkDialog.number(
+              title: 'AP',
+              helperText: '0 = Max AP (${(mstData.user ?? agent.user.userGame)?.actMax})',
+              validate: (v) {
+                return v >= 0 && v < 200 && v < Maths.max(ConstData.userLevel.values.map((e) => e.maxAp));
+              },
+              onSubmit: (v) {
+                agent.user.recoveredAps.add(v);
+                agent.network.setLocalNotification();
+                if (mounted) setState(() {});
+              },
+            ).showDialog(context);
+          },
+          onRemove: (ap) {
+            setState(() {
+              agent.user.recoveredAps.remove(ap);
+              agent.network.setLocalNotification(removedAps: [ap]);
+            });
+          },
+          itemBuilder: (context, ap, handle) => GestureDetector(
+            onTap: handle.tap,
+            onLongPress: handle.longPress,
+            child: Chip(
+              label: Text(ap == 0 ? (agent.user.userGame?.actMax.toString() ?? 'Full') : ap.toString()),
+              visualDensity: VisualDensity.compact,
+              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
           ),
         ),
-        Wrap(
-          alignment: WrapAlignment.center,
-          children: [
-            TextButton(
-              onPressed: () async {
-                final pendings = await LocalNotificationUtil.plugin.pendingNotificationRequests();
-                if (pendings.isEmpty) {
-                  EasyLoading.showInfo('No notifications');
-                  return;
-                }
-                pendings.sort2((e) => e.id);
-                router.showDialog(
-                  builder: (context) {
-                    return SimpleDialog(
-                      title: Text('${pendings.length} Pending Notifications'),
-                      children: divideList([
-                        for (final notification in pendings)
-                          ListTile(
-                            dense: true,
-                            contentPadding: EdgeInsets.symmetric(horizontal: 24),
-                            title: Text(notification.title ?? 'no title'),
-                            subtitle: Text(
-                              [if (kDebugMode) 'id ${notification.id}', '${notification.body}'].join('\n'),
-                            ),
-                          ),
-                      ], const Divider(height: 1)),
-                    );
-                  },
-                );
-              },
-              child: const Text('Notifications'),
-            ),
-            if (AlarmX.isSupported)
-              TextButton(
+        Center(
+          child: Wrap(
+            alignment: WrapAlignment.center,
+            children: [
+              OutlinedButton(
                 onPressed: () async {
-                  final alarms = await AlarmX.getAlarms();
-                  if (alarms.isEmpty) {
-                    EasyLoading.showInfo('No alarm');
+                  final pendings = await LocalNotificationUtil.plugin.pendingNotificationRequests();
+                  if (pendings.isEmpty) {
+                    EasyLoading.showInfo('No notifications');
                     return;
                   }
-                  alarms.sort2((e) => e.id);
+                  pendings.sort2((e) => e.id);
                   router.showDialog(
                     builder: (context) {
                       return SimpleDialog(
-                        title: Text('${alarms.length} Alarms'),
+                        title: Text('${pendings.length} Pending Notifications'),
                         children: divideList([
-                          for (final alarm in alarms)
+                          for (final notification in pendings)
                             ListTile(
                               dense: true,
                               contentPadding: EdgeInsets.symmetric(horizontal: 24),
-                              title: Text(alarm.notificationSettings.title),
+                              title: Text(notification.title ?? 'no title'),
                               subtitle: Text(
-                                [if (kDebugMode) 'id ${alarm.id}', alarm.notificationSettings.body].join('\n'),
+                                [if (kDebugMode) 'id ${notification.id}', '${notification.body}'].join('\n'),
                               ),
                             ),
                         ], const Divider(height: 1)),
@@ -1875,52 +2001,78 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
                     },
                   );
                 },
-                child: const Text('Alarms'),
+                child: const Text('Notifications'),
               ),
-          ],
-        ),
-        ListTile(
-          dense: true,
-          title: Text('Limited-Time Shop hints'),
-          subtitle: Wrap(
-            spacing: 4,
-            runSpacing: 4,
-            children: [
-              for (final targetId in agent.user.shopTargetIds)
-                GameCardMixin.anyCardItemBuilder(
-                  context: context,
-                  id: targetId,
-                  width: 36,
-                  onTap: () {
-                    runtime.lockTask(() {
-                      agent.user.shopTargetIds.remove(targetId);
-                      if (mounted) setState(() {});
-                    });
+              if (AlarmX.isSupported)
+                TextButton(
+                  onPressed: () async {
+                    final alarms = await AlarmX.getAlarms();
+                    if (alarms.isEmpty) {
+                      EasyLoading.showInfo('No alarm');
+                      return;
+                    }
+                    alarms.sort2((e) => e.id);
+                    router.showDialog(
+                      builder: (context) {
+                        return SimpleDialog(
+                          title: Text('${alarms.length} Alarms'),
+                          children: divideList([
+                            for (final alarm in alarms)
+                              ListTile(
+                                dense: true,
+                                contentPadding: EdgeInsets.symmetric(horizontal: 24),
+                                title: Text(alarm.notificationSettings.title),
+                                subtitle: Text(
+                                  [if (kDebugMode) 'id ${alarm.id}', alarm.notificationSettings.body].join('\n'),
+                                ),
+                              ),
+                          ], const Divider(height: 1)),
+                        );
+                      },
+                    );
                   },
+                  child: const Text('Alarms'),
                 ),
             ],
           ),
-          trailing: IconButton(
-            onPressed: () {
-              if (runtime.runningTask.value) return;
-              InputCancelOkDialog.number(
-                title: 'Item id or Card id',
-                onSubmit: (targetId) {
-                  if (!db.gameData.entities.containsKey(targetId) &&
-                      !db.gameData.commandCodesById.containsKey(targetId) &&
-                      !db.gameData.items.containsKey(targetId) &&
-                      !runtime.gameData.teapots.containsKey(targetId)) {
-                    EasyLoading.showError("Invalid item id or card id");
-                    return;
-                  }
-                  runtime.lockTask(() {
-                    agent.user.shopTargetIds.add(targetId);
-                    if (mounted) setState(() {});
-                  });
-                },
-              ).showDialog(context);
-            },
-            icon: const Icon(Icons.add_circle),
+        ),
+        const Divider(),
+        AddRemoveList<int>(
+          inline: true,
+          title: const Text('Limited-Time Shop hints'),
+          items: agent.user.shopTargetIds.toList(),
+          spacing: 4,
+          runSpacing: 4,
+          onAdd: () {
+            if (runtime.runningTask.value) return;
+            InputCancelOkDialog.number(
+              title: 'Item id or Card id',
+              onSubmit: (targetId) {
+                if (!db.gameData.entities.containsKey(targetId) &&
+                    !db.gameData.commandCodesById.containsKey(targetId) &&
+                    !db.gameData.items.containsKey(targetId) &&
+                    !runtime.gameData.teapots.containsKey(targetId)) {
+                  EasyLoading.showError("Invalid item id or card id");
+                  return;
+                }
+                runtime.lockTask(() {
+                  agent.user.shopTargetIds.add(targetId);
+                  if (mounted) setState(() {});
+                });
+              },
+            ).showDialog(context);
+          },
+          onRemove: (targetId) {
+            runtime.lockTask(() {
+              agent.user.shopTargetIds.remove(targetId);
+              if (mounted) setState(() {});
+            });
+          },
+          itemBuilder: (context, targetId, handle) => GestureDetector(
+            onLongPress: handle.longPress,
+            // No secondary action here, so let the card fall back to opening
+            // the item's detail page on tap.
+            child: GameCardMixin.anyCardItemBuilder(context: context, id: targetId, width: 36),
           ),
         ),
       ],
@@ -1976,13 +2128,13 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
           },
         ),
         const Divider(),
-        CheckboxListTile.adaptive(
+        SwitchListTile.adaptive(
           dense: true,
           value: fakerSettings.dumpResponse,
           title: const Text('Dump Responses'),
           onChanged: (v) {
             setState(() {
-              fakerSettings.dumpResponse = v!;
+              fakerSettings.dumpResponse = v;
             });
           },
         ),
@@ -2005,77 +2157,36 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
   Widget get buttonBar {
     final bool loggedIn = mstData.isLoggedIn, inBattle = runtime.agentData.curBattle != null;
 
-    List<List<Widget>> btnGroups = [
-      [
+    final List<Widget> tools = [
+      buildCompactButton(
+        onPressed: () async {
+          if (agent.user.lastRequestOptions?.success == false) {
+            final confirm = await SimpleConfirmDialog(
+              title: Text(S.current.warning),
+              content: Text("Last request not sent, still login?", style: TextStyle(color: Colors.red)),
+            ).showDialog(context);
+            if (confirm != true) return;
+          }
+          if (mounted) {
+            await SimpleConfirmDialog(title: const Text('Login'), onTapOk: _startLogin).showDialog(context);
+          }
+        },
+        text: 'login',
+      ),
+      buildCompactButton(
+        enabled: loggedIn && !inBattle,
+        onPressed: () async {
+          final buyCount = await ApSeedExchangeCountDialog(mstData: mstData).showDialog<int>(context);
+          if (buyCount != null) {
+            await runtime.runTask(() => agent.terminalApSeedExchange(buyCount));
+          }
+          if (mounted) setState(() {});
+        },
+        text: 'seed',
+      ),
+      if (inBattle)
         buildCompactButton(
-          onPressed: () {
-            runtime.runTask(agent.gamedataTop);
-          },
-          text: 'gamedata',
-        ),
-        buildCompactButton(
-          // enabled: !inBattle,
-          onPressed: () async {
-            if (agent.user.lastRequestOptions?.success == false) {
-              final confirm = await SimpleConfirmDialog(
-                title: Text(S.current.warning),
-                content: Text("Last request not sent, still login?", style: TextStyle(color: Colors.red)),
-              ).showDialog(context);
-              if (confirm != true) return;
-            }
-            if (mounted) {
-              await SimpleConfirmDialog(title: const Text('Login'), onTapOk: _startLogin).showDialog(context);
-            }
-          },
-          text: 'login',
-        ),
-        buildCompactButton(
-          enabled: loggedIn && !inBattle,
-          onPressed: () async {
-            final buyCount = await ApSeedExchangeCountDialog(mstData: mstData).showDialog<int>(context);
-            if (buyCount != null) {
-              await runtime.runTask(() => agent.terminalApSeedExchange(buyCount));
-            }
-            if (mounted) setState(() {});
-          },
-          text: 'seed',
-        ),
-      ],
-      [
-        buildCompactButton(
-          enabled: loggedIn && !inBattle,
-          onPressed: () async {
-            final recover = await showDialog<RecoverEntity>(
-              context: context,
-              useRootNavigator: false,
-              builder: (context) => RecoverSelectDialog(recovers: apRecovers, mstData: mstData),
-            );
-            if (recover != null) {
-              switch (recover.recoverType) {
-                case RecoverType.commandSpell:
-                  EasyLoading.showError('Recover by command spell not supported');
-                  break;
-                case RecoverType.stone:
-                  await runtime.runTask(() => agent.shopPurchaseByStone(id: recover.targetId, num: 1));
-                  break;
-                case RecoverType.item:
-                  await runtime.runTask(() => agent.itemRecover(recoverId: recover.id, num: 1));
-                  break;
-              }
-            }
-            if (mounted) setState(() {});
-          },
-          text: 'recover',
-        ),
-        buildCompactButton(
-          enabled: loggedIn && !inBattle,
-          onPressed: () async {
-            runtime.runTask(() => runtime.battle.battleSetupWithOptions(battleOption));
-          },
-          text: 'b.setup',
-        ),
-        buildCompactButton(
-          enabled: loggedIn && inBattle,
+          enabled: loggedIn,
           onPressed: () async {
             runtime.runTask(() async {
               final battleEntity = runtime.agentData.curBattle!;
@@ -2087,193 +2198,207 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
             });
           },
           text: 'b.result',
-        ),
-      ],
-      [
+        )
+      else
         buildCompactButton(
-          enabled: loggedIn && !inBattle,
-          onPressed: () {
-            InputCancelOkDialog.number(
-              title: 'Start Looping Battle',
-              autofocus: battleOption.loopCount <= 0,
-              initValue: battleOption.loopCount == 0 ? 1 : battleOption.loopCount,
-              validate: (v) => v > 0,
-              onSubmit: (v) {
-                battleOption.loopCount = v;
-                runtime.runTask(() => runtime.withWakeLock('loop-$hashCode', runtime.battle.startLoop));
-              },
-            ).showDialog(context);
+          enabled: loggedIn,
+          onPressed: () async {
+            runtime.runTask(() => runtime.battle.battleSetupWithOptions(battleOption));
           },
-          text: [if (battleOption.useCampaignItem) '🫖', 'Loop ×${battleOption.loopCount}'].join(''),
+          text: 'b.setup',
         ),
-        buildCompactButton(
-          onPressed: () {
-            agent.network.stopFlag = true;
-          },
-          text: 'Stop',
-        ),
-        PopupMenuButton(
-          itemBuilder: (context) => [
-            // PopupMenuItem(
-            //   child: const Text('gamedata'),
-            //   onTap: () {
-            //     runtime.runTask(agent.gamedataTop);
-            //   },
-            // ),
-            PopupMenuItem(
-              enabled: loggedIn && !inBattle,
-              onTap: () {
-                runtime.runTask(agent.homeTop);
-              },
-              child: const Text('home'),
-            ),
-            // PopupMenuItem(
-            //   enabled: loggedIn && !inBattle,
-            //   onTap: () {
-            //     runtime.runTask(() async {
-            //       final dir = Directory(agent.network.fakerDir);
-            //       final files = dir
-            //           .listSync(followLinks: false)
-            //           .whereType<File>()
-            //           .where((e) => e.path.endsWith('.json') && e.path.contains('battle') && e.path.contains('setup'))
-            //           .toList();
-            //       final modified = DateTime.now().subtract(const Duration(days: 2));
-            //       files.removeWhere((e) => e.statSync().modified.isBefore(modified));
-            //       files.sort2((e) => e.path, reversed: true);
-            //       if (files.isEmpty) {
-            //         EasyLoading.showError('not found');
-            //         return;
-            //       }
-            //       final data = FateTopLogin.parseAny(jsonDecode(files.first.readAsStringSync()));
-            //       agentData.curBattle = data.mstData.battles.firstOrNull ?? agentData.curBattle;
-            //     });
-            //   },
-            //   child: const Text('loadBattle'),
-            // ),
-            PopupMenuItem(
-              child: const Text('Break'),
-              onTap: () {
-                if (mounted) {
-                  runtime.runningTask.value = false;
-                  agent.network.breakAndClearTask();
-                }
-              },
-            ),
-            PopupMenuItem(
-              child: const Text('Stop Loop'),
-              onTap: () {
-                if (mounted) {
-                  runtime.battle.stopLoopFlag = true;
-                }
-              },
-            ),
-            PopupMenuItem(
-              enabled: loggedIn,
-              onTap: () async {
+    ];
+
+    final List<Widget> primary = [
+      buildCompactButton(onPressed: () => agent.network.stopFlag = true, text: 'Stop'),
+      FilledButton(
+        onPressed: loggedIn && !inBattle
+            ? () {
                 InputCancelOkDialog.number(
-                  title: 'Seed Count (waiting)',
+                  title: 'Start Looping Battle',
+                  autofocus: battleOption.loopCount <= 0,
+                  initValue: battleOption.loopCount == 0 ? 1 : battleOption.loopCount,
                   validate: (v) => v > 0,
                   onSubmit: (v) {
-                    runtime.runTask(
-                      () => runtime.withWakeLock('seed-wait-$hashCode', () => runtime.battle.seedWait(v)),
-                    );
+                    battleOption.loopCount = v;
+                    runtime.runTask(() => runtime.withWakeLock('loop-$hashCode', runtime.battle.startLoop));
+                  },
+                ).showDialog(context);
+              }
+            : null,
+        style: FilledButton.styleFrom(
+          minimumSize: const Size(96, 36),
+          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+        ),
+        child: Text([if (battleOption.useCampaignItem) '🫖', 'Loop ×${battleOption.loopCount}'].join('')),
+      ),
+      PopupMenuButton(
+        itemBuilder: (context) => <PopupMenuEntry>[
+          // Connection and AP resources
+          PopupMenuItem(
+            onTap: () {
+              runtime.runTask(agent.gamedataTop);
+            },
+            child: const Text('gamedata'),
+          ),
+          PopupMenuItem(
+            enabled: loggedIn && !inBattle,
+            onTap: () {
+              runtime.runTask(agent.homeTop);
+            },
+            child: const Text('home'),
+          ),
+          PopupMenuItem(
+            enabled: loggedIn && !inBattle,
+            onTap: () {
+              _recoverAp();
+            },
+            child: const Text('recover'),
+          ),
+          const PopupMenuDivider(),
+          // Single battle steps
+          PopupMenuItem(
+            enabled: loggedIn,
+            onTap: () async {
+              InputCancelOkDialog.number(
+                title: 'Seed Count (waiting)',
+                validate: (v) => v > 0,
+                onSubmit: (v) {
+                  runtime.runTask(() => runtime.withWakeLock('seed-wait-$hashCode', () => runtime.battle.seedWait(v)));
+                },
+              ).showDialog(context);
+            },
+            child: const Text('Seed-wait'),
+          ),
+          PopupMenuItem(
+            enabled: !runtime.runningTask.value && inBattle,
+            onTap: () async {
+              runtime.runTask(() async {
+                runtime.agentData.curBattle = null;
+              });
+            },
+            child: const Text('Clear Battle'),
+          ),
+          const PopupMenuDivider(),
+          // Destructive actions
+          PopupMenuItem(
+            child: const Text('Break'),
+            onTap: () {
+              if (mounted) {
+                runtime.runningTask.value = false;
+                agent.network.breakAndClearTask();
+              }
+            },
+          ),
+          PopupMenuItem(
+            child: const Text('Stop Loop'),
+            onTap: () {
+              if (mounted) {
+                runtime.battle.stopLoopFlag = true;
+              }
+            },
+          ),
+          const PopupMenuDivider(),
+          // Diagnostics and debug
+          if (agent is FakerAgentJP)
+            PopupMenuItem(
+              child: const Text('SessionId'),
+              onTap: () {
+                InputCancelOkDialog(
+                  title: 'SessionId (${agent.network.gameTop.region.upper})',
+                  initValue: agent.network.cookies['SessionId'],
+                  onSubmit: (s) {
+                    if (s.trim().isEmpty) return;
+                    agent.network.cookies['SessionId'] = s;
+                    if (mounted) setState(() {});
                   },
                 ).showDialog(context);
               },
-              child: const Text('Seed-wait'),
             ),
-            if (agent is FakerAgentJP)
-              PopupMenuItem(
-                child: const Text('SessionId'),
-                onTap: () {
-                  InputCancelOkDialog(
-                    title: 'SessionId (${agent.network.gameTop.region.upper})',
-                    initValue: agent.network.cookies['SessionId'],
-                    onSubmit: (s) {
-                      if (s.trim().isEmpty) return;
-                      agent.network.cookies['SessionId'] = s;
-                      if (mounted) setState(() {});
-                    },
-                  ).showDialog(context);
-                },
-              ),
-            if (agent is FakerAgentCN)
-              PopupMenuItem(
-                child: const Text('sgusk'),
-                onTap: () {
-                  InputCancelOkDialog(
-                    title: 'sgusk (${agent.network.gameTop.region.upper})',
-                    initValue: (agent as FakerAgentCN).usk,
-                    onSubmit: (s) {
-                      if (s.trim().isEmpty) return;
-                      (agent as FakerAgentCN).usk = CryptData.encryptMD5Usk(s);
-                      if (mounted) setState(() {});
-                    },
-                  ).showDialog(context);
-                },
-              ),
+          if (agent is FakerAgentCN)
             PopupMenuItem(
-              enabled: !runtime.runningTask.value && inBattle,
-              onTap: () async {
-                runtime.runTask(() async {
-                  runtime.agentData.curBattle = null;
-                });
+              child: const Text('sgusk'),
+              onTap: () {
+                InputCancelOkDialog(
+                  title: 'sgusk (${agent.network.gameTop.region.upper})',
+                  initValue: (agent as FakerAgentCN).usk,
+                  onSubmit: (s) {
+                    if (s.trim().isEmpty) return;
+                    (agent as FakerAgentCN).usk = CryptData.encryptMD5Usk(s);
+                    if (mounted) setState(() {});
+                  },
+                ).showDialog(context);
               },
-              child: const Text('Clear Battle'),
             ),
-            if (kDebugMode) PopupMenuItem(onTap: _testFunc, child: const Text('Test')),
-          ],
-        ),
-      ],
-    ];
-    return SafeArea(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ValueListenableBuilder(
-            valueListenable: runtime.activeToast,
-            builder: (context, msg, _) {
-              if (msg == null) return const SizedBox.shrink();
-              Widget child = Text(
-                msg,
-                style: Theme.of(context).textTheme.bodySmall,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.start,
-              );
-              return InkWell(
-                onTap: () {
-                  SimpleConfirmDialog(
-                    title: Text('Message'),
-                    scrollable: true,
-                    showCancel: false,
-                    content: Text(msg),
-                  ).showDialog(context);
-                },
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                  width: double.infinity,
-                  alignment: Alignment.center,
-                  child: child,
-                ),
-              );
-            },
-          ),
-          for (final btns in btnGroups)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-              child: Wrap(
-                alignment: WrapAlignment.center,
-                crossAxisAlignment: WrapCrossAlignment.center,
-                spacing: 4,
-                runSpacing: 2,
-                children: btns,
-              ),
-            ),
-          const SizedBox(height: 8),
+          if (kDebugMode) PopupMenuItem(onTap: _testFunc, child: const Text('Test')),
         ],
       ),
+    ];
+
+    final message = ValueListenableBuilder(
+      valueListenable: runtime.activeToast,
+      builder: (context, msg, _) {
+        if (msg == null) return const SizedBox.shrink();
+        Widget child = Text(
+          msg,
+          style: Theme.of(context).textTheme.bodySmall,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          textAlign: TextAlign.start,
+        );
+        return InkWell(
+          onTap: () {
+            SimpleConfirmDialog(
+              title: Text('Message'),
+              scrollable: true,
+              showCancel: false,
+              content: Text(msg),
+            ).showDialog(context);
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            width: double.infinity,
+            alignment: Alignment.center,
+            child: child,
+          ),
+        );
+      },
     );
+
+    // The tool row only holds pre-battle actions, so it folds away while a task
+    // runs and leaves the control row next to the thumb.
+    return ValueListenableBuilder<bool>(
+      valueListenable: runtime.runningTask,
+      builder: (context, running, _) => AnimatedSize(
+        duration: const Duration(milliseconds: 200),
+        curve: Curves.easeOutCubic,
+        alignment: Alignment.bottomCenter,
+        child: FakerActionBar(groups: [if (!running) tools, primary], message: message),
+      ),
+    );
+  }
+
+  Future<void> _recoverAp() async {
+    final recover = await showDialog<RecoverEntity>(
+      context: context,
+      useRootNavigator: false,
+      builder: (context) => RecoverSelectDialog(recovers: apRecovers, mstData: mstData),
+    );
+    if (recover != null) {
+      switch (recover.recoverType) {
+        case RecoverType.commandSpell:
+          EasyLoading.showError('Recover by command spell not supported');
+          break;
+        case RecoverType.stone:
+          await runtime.runTask(() => agent.shopPurchaseByStone(id: recover.targetId, num: 1));
+          break;
+        case RecoverType.item:
+          await runtime.runTask(() => agent.itemRecover(recoverId: recover.id, num: 1));
+          break;
+      }
+    }
+    if (mounted) setState(() {});
   }
 
   String? _hideEventDeck;
@@ -2474,4 +2599,71 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
       }
     });
   }
+}
+
+/// Pins only the tab bar once scrolled: [maxExtent] also shows the account row
+/// and the item row, [minExtent] leaves them to the app bar title.
+class _StatusHeaderDelegate extends SliverPersistentHeaderDelegate {
+  _StatusHeaderDelegate({required this.row, required this.items, required this.tabBar, required this.onProgress});
+
+  static const double kRowHeight = 56;
+  static const double kItemsHeight = 28;
+  static const double kTabHeight = 32;
+
+  final Widget row;
+  final Widget items;
+  final Widget tabBar;
+  final ValueChanged<double> onProgress;
+
+  double _progress = -1;
+
+  double get _collapsible => kRowHeight + kItemsHeight;
+
+  @override
+  double get maxExtent => _collapsible + kTabHeight;
+
+  @override
+  double get minExtent => kTabHeight;
+
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    final progress = (shrinkOffset / _collapsible).clamp(0.0, 1.0);
+    final fading = 1 - progress;
+    final colors = Theme.of(context).colorScheme;
+    if (progress != _progress) {
+      _progress = progress;
+      onProgress(progress);
+    }
+    return Material(
+      color: colors.surfaceContainer,
+      child: SizedBox(
+        height: maxExtent - shrinkOffset,
+        child: ClipRect(
+          child: Stack(
+            children: [
+              Positioned(top: 0, left: 0, right: 0, height: kRowHeight, child: row),
+              if (progress < 1)
+                Positioned(
+                  top: kRowHeight,
+                  left: 0,
+                  right: 0,
+                  height: kItemsHeight,
+                  child: Opacity(opacity: fading, child: items),
+                ),
+              Positioned(
+                top: _collapsible * fading,
+                left: 0,
+                right: 0,
+                height: kTabHeight,
+                child: Material(color: colors.surface, child: tabBar),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  bool shouldRebuild(covariant _StatusHeaderDelegate oldDelegate) => true;
 }

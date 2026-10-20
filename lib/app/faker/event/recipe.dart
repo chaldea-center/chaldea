@@ -9,6 +9,7 @@ import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
+import '../_shared/faker_ui.dart';
 import '../runtime.dart';
 
 class CreateRecipePage extends StatefulWidget {
@@ -65,38 +66,39 @@ class _CreateRecipePageState extends State<CreateRecipePage>
           runtime.buildMenuButton(context),
         ],
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView(
-              children: [
-                for (final recipe in recipes) ...[buildRecipe(recipe), const Divider()],
-                Center(
-                  child: Padding(padding: .symmetric(vertical: 16), child: Text(S.current.statistics_title)),
-                ),
-                const Divider(indent: 16, endIndent: 16),
-                ...buildStat(),
-                ?buildEventPoint(),
-              ],
-            ),
-          ),
-          kDefaultDivider,
-          SafeArea(
-            child: OverflowBar(
-              spacing: 4,
-              children: [
-                for (final itemId in itemIds)
-                  Item.iconBuilder(
-                    context: context,
-                    item: null,
-                    itemId: itemId,
-                    width: 40,
-                    text: mstData.getItemOrSvtNum(itemId).format(),
+      body: FakerTileTheme(
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView(
+                children: [
+                  for (final recipe in recipes) ...[buildRecipe(recipe), const Divider()],
+                  Center(
+                    child: Padding(padding: .symmetric(vertical: 16), child: Text(S.current.statistics_title)),
                   ),
+                  const Divider(indent: 16, endIndent: 16),
+                  ...buildStat(),
+                  ?buildEventPoint(),
+                ],
+              ),
+            ),
+            kDefaultDivider,
+            FakerActionBar(
+              groups: [
+                [
+                  for (final itemId in itemIds)
+                    Item.iconBuilder(
+                      context: context,
+                      item: null,
+                      itemId: itemId,
+                      width: 40,
+                      text: mstData.getItemOrSvtNum(itemId).format(),
+                    ),
+                ],
               ],
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

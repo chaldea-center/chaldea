@@ -12,6 +12,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
+import '../_shared/faker_ui.dart';
 import '../enhance/svt_combine.dart';
 import '../runtime.dart';
 import 'filter.dart';
@@ -171,19 +172,21 @@ class _UserPresentBoxManagePageState extends State<UserPresentBoxManagePage> wit
           runtime.buildMenuButton(context),
         ],
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: items.isEmpty
-                ? Center(child: CircularProgressIndicator())
-                : ListView.builder(
-                    itemBuilder: (context, index) => buildPresent(shownPresents[index]),
-                    itemCount: shownPresents.length,
-                  ),
-          ),
-          kDefaultDivider,
-          SafeArea(child: buttonBar(shownPresents)),
-        ],
+      body: FakerTileTheme(
+        child: Column(
+          children: [
+            Expanded(
+              child: items.isEmpty
+                  ? Center(child: CircularProgressIndicator())
+                  : ListView.builder(
+                      itemBuilder: (context, index) => buildPresent(shownPresents[index]),
+                      itemCount: shownPresents.length,
+                    ),
+            ),
+            kDefaultDivider,
+            SafeArea(child: buttonBar(shownPresents)),
+          ],
+        ),
       ),
     );
   }

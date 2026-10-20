@@ -7,6 +7,8 @@ import 'package:chaldea/models/gamedata/mst_data.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 
+import '../_shared/faker_ui.dart';
+
 class SelectGachaSubPage extends StatefulWidget {
   final Region region;
   final MasterDataManager mstData;
@@ -54,9 +56,9 @@ class _SelectGachaSubPageState extends State<SelectGachaSubPage> {
             ),
           ),
           if (widget.onSelected != null)
-            SafeArea(
-              child: OverflowBar(
-                children: [
+            FakerActionBar(
+              groups: [
+                [
                   FilledButton(
                     onPressed: () {
                       Navigator.pop(context);
@@ -65,7 +67,7 @@ class _SelectGachaSubPageState extends State<SelectGachaSubPage> {
                     child: Text('Set Default'),
                   ),
                 ],
-              ),
+              ],
             ),
         ],
       ),

@@ -9,6 +9,7 @@ import 'package:chaldea/models/gamedata/mst_data.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 
+import '../_shared/faker_ui.dart';
 import '../runtime.dart';
 import 'shop.dart';
 
@@ -48,41 +49,42 @@ class _ExRoomShopPageState extends State<ExRoomShopPage> with FakerRuntimeStateM
         title: Text(Transl.enums(ShopType.exRoomShop, (e) => e.shopType).l),
         actions: [runtime.buildMenuButton(context)],
       ),
-      body: Column(
-        children: [
-          SingleChildScrollView(
-            scrollDirection: .horizontal,
-            child: FilterGroup<int>(
-              options: groups.keys.toList(),
-              values: FilterRadioData(curDayKey),
-              optionBuilder: (v) => Text(
-                ShopDailyInfo.fmtDayKey(v),
-                style: todayKey == v ? const TextStyle(decoration: .underline, fontWeight: .bold) : null,
-              ),
-              onFilterChanged: (v, _) {
-                curDayKey = v.radioValue;
-                if (mounted) setState(() {});
-              },
-            ),
-          ),
-          const Divider(height: 8),
-          Expanded(child: ListView(children: [for (final shop in shownDailyShops) buildShop(shop)])),
-          SafeArea(
-            child: OverflowBar(
-              spacing: 8,
-              children: [
-                runtime.buildCircularProgress(context: context),
-                buildCompactButton(
-                  text: 'home',
-                  onPressed: () async {
-                    await agent.homeTop();
-                    if (mounted) setState(() {});
-                  },
+      body: FakerTileTheme(
+        child: Column(
+          children: [
+            SingleChildScrollView(
+              scrollDirection: .horizontal,
+              child: FilterGroup<int>(
+                options: groups.keys.toList(),
+                values: FilterRadioData(curDayKey),
+                optionBuilder: (v) => Text(
+                  ShopDailyInfo.fmtDayKey(v),
+                  style: todayKey == v ? const TextStyle(decoration: .underline, fontWeight: .bold) : null,
                 ),
+                onFilterChanged: (v, _) {
+                  curDayKey = v.radioValue;
+                  if (mounted) setState(() {});
+                },
+              ),
+            ),
+            const Divider(height: 8),
+            Expanded(child: ListView(children: [for (final shop in shownDailyShops) buildShop(shop)])),
+            FakerActionBar(
+              groups: [
+                [
+                  runtime.buildCircularProgress(context: context),
+                  buildCompactButton(
+                    text: 'home',
+                    onPressed: () async {
+                      await agent.homeTop();
+                      if (mounted) setState(() {});
+                    },
+                  ),
+                ],
               ],
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

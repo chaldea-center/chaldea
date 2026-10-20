@@ -130,6 +130,8 @@ class _FakerHistoryViewerState extends State<FakerHistoryViewer> {
       ),
       body: DefaultTextStyle.merge(
         overflow: TextOverflow.ellipsis,
+        // A history log keeps its own tighter rows instead of the shared faker
+        // tile height.
         child: ListTileTheme.merge(
           minTileHeight: 24,
           dense: true,

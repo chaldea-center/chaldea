@@ -10,6 +10,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 import '../runtime.dart';
+import 'faker_ui.dart';
 
 class SelectUserEquipPage extends StatefulWidget {
   final FakerRuntime runtime;
@@ -77,47 +78,49 @@ class _SelectUserEquipPageState extends State<SelectUserEquipPage> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              itemBuilder: (context, index) {
-                final userEquip = userEquips[index];
-                final equip = db.gameData.mysticCodes[userEquip.equipId];
-                final nextLvExp = equip?.expRequired.getOrNull(userEquip.lv - 1);
-                return ListTile(
-                  selected: widget.inUseUserEquipId == userEquip.id,
-                  leading: equip?.iconBuilder(context: context, width: 32) ?? const SizedBox(width: 32),
-                  title: Text(equip?.lName.l ?? 'No.${userEquip.equipId}'),
-                  subtitle: equip == null ? null : Text('No.${userEquip.equipId}'),
-                  trailing: Column(
-                    crossAxisAlignment: .end,
-                    mainAxisSize: .min,
-                    children: [
-                      Text('Lv.${userEquip.lv}'),
-                      if (nextLvExp != null)
-                        Text(
-                          '-${(nextLvExp - userEquip.exp).formatSep()}',
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                    ],
-                  ),
-                  onTap: () {
-                    Navigator.pop(context);
-                    widget.onSelected?.call(userEquip);
-                  },
-                  onLongPress: () {
-                    router.push(url: Routes.mysticCodeI(userEquip.equipId));
-                  },
-                );
-              },
-              itemCount: userEquips.length,
+      body: FakerTileTheme(
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                itemBuilder: (context, index) {
+                  final userEquip = userEquips[index];
+                  final equip = db.gameData.mysticCodes[userEquip.equipId];
+                  final nextLvExp = equip?.expRequired.getOrNull(userEquip.lv - 1);
+                  return ListTile(
+                    selected: widget.inUseUserEquipId == userEquip.id,
+                    leading: equip?.iconBuilder(context: context, width: 32) ?? const SizedBox(width: 32),
+                    title: Text(equip?.lName.l ?? 'No.${userEquip.equipId}'),
+                    subtitle: equip == null ? null : Text('No.${userEquip.equipId}'),
+                    trailing: Column(
+                      crossAxisAlignment: .end,
+                      mainAxisSize: .min,
+                      children: [
+                        Text('Lv.${userEquip.lv}'),
+                        if (nextLvExp != null)
+                          Text(
+                            '-${(nextLvExp - userEquip.exp).formatSep()}',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                      ],
+                    ),
+                    onTap: () {
+                      Navigator.pop(context);
+                      widget.onSelected?.call(userEquip);
+                    },
+                    onLongPress: () {
+                      router.push(url: Routes.mysticCodeI(userEquip.equipId));
+                    },
+                  );
+                },
+                itemCount: userEquips.length,
+              ),
             ),
-          ),
-          kDefaultDivider,
-          SafeArea(child: buttonBar),
-        ],
+            kDefaultDivider,
+            SafeArea(child: buttonBar),
+          ],
+        ),
       ),
     );
   }

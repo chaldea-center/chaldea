@@ -42,14 +42,14 @@ class BondExcludedCards extends StatelessWidget {
     );
   }
 
-  Widget _card(BuildContext context, int id, VoidCallback remove) {
+  Widget _card(BuildContext context, int id, AddRemoveHandle handle) {
     final card = servant ? db.gameData.servantsById[id] : db.gameData.craftEssencesById[id];
     final name = card?.lName.l ?? '#$id';
     return Semantics(
       label: '$name, ${S.current.long_press_to_remove}',
       child: InkWell(
         onTap: card?.routeTo,
-        onLongPress: remove,
+        onLongPress: handle.longPress,
         child:
             card?.iconBuilder(context: context, width: 42) ??
             GameCardMixin.cardIconBuilder(

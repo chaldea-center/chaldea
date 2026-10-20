@@ -18,6 +18,7 @@ import 'package:chaldea/widgets/widgets.dart';
 
 import '../../modules/common/filter_group.dart';
 import '../../modules/import_data/autologin/read_auth_page.dart';
+import '../_shared/faker_ui.dart';
 import '../runtime.dart';
 
 class FakerAccountEditPage extends StatefulWidget {
@@ -49,67 +50,69 @@ class _FakerAccountEditPageState extends State<FakerAccountEditPage> {
         title: Text('[${user.serverName}] ${user.userGame?.displayName ?? ""} ${user.userGame?.friendCode}'),
         actions: [?runtime?.buildHistoryButton(context)],
       ),
-      body: ListView(
-        padding: const EdgeInsets.only(bottom: 16),
-        children: [
-          if (user is AutoLoginDataCN) ...buildCNRows(user),
-          if (user is AutoLoginDataJP) ...buildJPRows(user),
-          DividerWithTitle(title: '${S.current.general_export}/${S.current.general_import}', height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              FilledButton(
-                onPressed: () {
-                  String output;
-                  try {
-                    output = JsonEncoder.withIndent('  ').convert(user);
-                    copyToClipboard(output, toast: true);
-                  } catch (e) {
-                    output = e.toString();
-                    EasyLoading.showError(output);
-                  }
-                  setState(() {
-                    _textEditController.text = output;
-                  });
-                },
-                child: Text(S.current.general_export),
-              ),
-              const SizedBox(width: 8),
-              FilledButton(
-                onPressed: () async {
-                  try {
-                    final prevUser = this.user;
-                    final data = Map<String, dynamic>.from(jsonDecode(_textEditController.text));
-                    final newUser = widget.onImportJson(data);
-                    if (newUser.runtimeType != prevUser.runtimeType) {
-                      EasyLoading.showError('RuntimeType changed: ${prevUser.runtimeType}->${newUser.runtimeType}');
-                      return;
+      body: FakerTileTheme(
+        child: ListView(
+          padding: const EdgeInsets.only(bottom: 16),
+          children: [
+            if (user is AutoLoginDataCN) ...buildCNRows(user),
+            if (user is AutoLoginDataJP) ...buildJPRows(user),
+            DividerWithTitle(title: '${S.current.general_export}/${S.current.general_import}', height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                FilledButton(
+                  onPressed: () {
+                    String output;
+                    try {
+                      output = JsonEncoder.withIndent('  ').convert(user);
+                      copyToClipboard(output, toast: true);
+                    } catch (e) {
+                      output = e.toString();
+                      EasyLoading.showError(output);
                     }
-                    this.user = newUser;
-                    EasyLoading.showSuccess('Re-enter this page to refresh');
-                  } catch (e) {
-                    EasyLoading.showError(e.toString());
-                  } finally {
-                    if (mounted) setState(() {});
-                  }
-                },
-                child: Text(S.current.general_import),
-              ),
-            ],
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-            child: TextField(
-              controller: _textEditController,
-              decoration: InputDecoration(
-                labelText: 'config',
-                border: OutlineInputBorder(),
-                floatingLabelBehavior: FloatingLabelBehavior.always,
-              ),
-              maxLines: 10,
+                    setState(() {
+                      _textEditController.text = output;
+                    });
+                  },
+                  child: Text(S.current.general_export),
+                ),
+                const SizedBox(width: 8),
+                FilledButton(
+                  onPressed: () async {
+                    try {
+                      final prevUser = this.user;
+                      final data = Map<String, dynamic>.from(jsonDecode(_textEditController.text));
+                      final newUser = widget.onImportJson(data);
+                      if (newUser.runtimeType != prevUser.runtimeType) {
+                        EasyLoading.showError('RuntimeType changed: ${prevUser.runtimeType}->${newUser.runtimeType}');
+                        return;
+                      }
+                      this.user = newUser;
+                      EasyLoading.showSuccess('Re-enter this page to refresh');
+                    } catch (e) {
+                      EasyLoading.showError(e.toString());
+                    } finally {
+                      if (mounted) setState(() {});
+                    }
+                  },
+                  child: Text(S.current.general_import),
+                ),
+              ],
             ),
-          ),
-        ],
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              child: TextField(
+                controller: _textEditController,
+                decoration: InputDecoration(
+                  labelText: 'config',
+                  border: OutlineInputBorder(),
+                  floatingLabelBehavior: FloatingLabelBehavior.always,
+                ),
+                maxLines: 10,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

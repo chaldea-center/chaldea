@@ -12,6 +12,7 @@ import 'package:chaldea/widgets/widgets.dart';
 
 import '../../modules/common/builders.dart';
 import '../../modules/craft_essence/craft_list.dart';
+import '../_shared/faker_ui.dart';
 import '../runtime.dart';
 import 'select_sub.dart';
 import 'user_status_flag.dart';
@@ -72,9 +73,7 @@ class _GachaDrawPageState extends State<GachaDrawPage> with FakerRuntimeStateMix
       ),
       body: PopScope(
         canPop: !runtime.runningTask.value,
-        child: ListTileTheme.merge(
-          dense: true,
-          visualDensity: VisualDensity.compact,
+        child: FakerTileTheme(
           child: Column(
             children: [
               headerInfo,
@@ -889,25 +888,6 @@ class _GachaDrawPageState extends State<GachaDrawPage> with FakerRuntimeStateMix
         ),
       ],
     ];
-    return SafeArea(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          for (final btns in btnGroups)
-            if (btns.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                child: Wrap(
-                  alignment: WrapAlignment.center,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  spacing: 4,
-                  runSpacing: 2,
-                  children: btns,
-                ),
-              ),
-          const SizedBox(height: 8),
-        ],
-      ),
-    );
+    return FakerActionBar(groups: btnGroups);
   }
 }
