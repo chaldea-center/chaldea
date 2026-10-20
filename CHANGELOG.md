@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.6.2
+
+- Added team max bond solver
+- Support XAPK installation
+- Windows/Linux: one-click in-app upgrade (testing)
+- Bug fix
+
 ## 2.6.1
 
 - Support Bond 16, foukun 3000
