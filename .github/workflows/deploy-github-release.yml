@@ -125,7 +125,10 @@ jobs:
         if: matrix.target == 'android'
         run: |
           flutter build ${{ matrix.build_target }} -v --release --flavor=github
+          dart ./scripts/patch_before_build.dart android-play
+          flutter pub get
           flutter build appbundle -v --release --flavor=play
+          dart ./scripts/verify_aab_16kb.dart build/app/outputs/bundle/playRelease/app-play-release.aab
 
       # Package the build.
       - name: Copy VC redistributables to release directory for Windows

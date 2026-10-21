@@ -16,8 +16,8 @@ void main(List<String> args) {
     // _patchLinux();
   } else if (target == 'android' && ref == 'refs/heads/main') {
     // _patchAndroidPreview();
-  } else if (target == 'fdroid') {
-    patchFDroid();
+  } else if (target == 'fdroid' || target == 'android-play') {
+    patchNoGromore();
   } else if (target == 'web') {
     patchWebIconKeepAlive();
   }
@@ -58,22 +58,88 @@ void patchAndroidPreview() {
   print('set applicationIdSuffix=.preview and app_name=Chaldea Preview');
 }
 
-void patchFDroid() {
-  File('lib/packages/ads/ad_mobile.dart').deleteSync();
+/// Removes flutter_gromore_ads before building the Play App Bundle.
+///
+/// Pangle mediation-sdk 5.9.2.8 ships arm64 libraries whose PT_LOAD alignment
+/// is 4 KB; Google Play rejects such bundles on 16 KB page-size devices.
+/// F-Droid uses the same patch because the SDK is not FOSS-compatible.
+///
+/// Strict by design: an unexpected source layout or a stale reference fails
+/// the build instead of silently producing a non-compliant bundle.
+void patchNoGromore() {
+  const packageName = 'flutter_gromore_ads';
+  const adsPath = 'lib/packages/ads/ads.dart';
+  const mobilePath = 'lib/packages/ads/ad_mobile.dart';
 
-  File file = File('lib/packages/ads/ads.dart');
-  file.writeAsStringSync(file.readAsStringSync().replaceAll('ad_mobile.dart', 'ad_stub.dart'));
-
-  file = File('pubspec.yaml');
-  file.writeAsStringSync(file.readAsLinesSync().where((e) => !e.trim().startsWith('flutter_gromore_ads:')).join('\n'));
-
-  // ignore: unused_element
-  void _removeLines(String fp, Pattern trailing) {
-    final file = File(fp);
-    List<String> lines = file.readAsLinesSync();
-    lines = lines.map((line) => trailing.allMatches(line.trim()).isEmpty ? line : '').toList();
-    file.writeAsStringSync(lines.join('\n'));
+  final pubspec = File('pubspec.yaml');
+  final ads = File(adsPath);
+  final mobile = File(mobilePath);
+  if (!pubspec.existsSync() || !ads.existsSync()) {
+    throw 'Run from the repository root: pubspec.yaml or $adsPath is missing.';
   }
+
+  final pubspecSource = pubspec.readAsStringSync();
+  final adsSource = ads.readAsStringSync();
+  final dependencyPattern = RegExp(r'^[ \t]*flutter_gromore_ads:[^\n]*\n?', multiLine: true);
+  final importPattern = RegExp(
+    r"import 'ad_stub\.dart' if \(dart\.library\.io\) 'ad_mobile\.dart' "
+    r"if \(dart\.library\.js\) 'ad_web\.dart';",
+  );
+  final dependencies = dependencyPattern.allMatches(pubspecSource).toList();
+  final imports = importPattern.allMatches(adsSource).toList();
+
+  if (dependencies.isEmpty && imports.isEmpty && !mobile.existsSync()) {
+    print('[patch-no-gromore] already applied');
+    return;
+  }
+  if (dependencies.length != 1 || imports.length != 1 || !mobile.existsSync()) {
+    throw '[patch-no-gromore] unexpected source layout: '
+        'pubspec matches=${dependencies.length}, ads.dart matches=${imports.length}, '
+        'ad_mobile.dart exists=${mobile.existsSync()}. Refusing a partial patch.';
+  }
+
+  // The only supported reference is the conditional import in ads.dart.
+  final strayRefs = Directory('lib')
+      .listSync(recursive: true)
+      .whereType<File>()
+      .where((file) => file.path.endsWith('.dart') && file.path != adsPath)
+      .where((file) => file.readAsStringSync().contains('ad_mobile.dart'))
+      .map((file) => file.path)
+      .toList();
+  if (strayRefs.isNotEmpty) {
+    throw '[patch-no-gromore] unexpected ad_mobile.dart references: ${strayRefs.join(', ')}';
+  }
+
+  pubspec.writeAsStringSync(pubspecSource.replaceFirst(dependencyPattern, ''));
+  ads.writeAsStringSync(
+    adsSource.replaceFirst(importPattern, "import 'ad_stub.dart' if (dart.library.js) 'ad_web.dart';"),
+  );
+  mobile.deleteSync();
+  print('[patch-no-gromore] removed $packageName and switched ads.dart to the stub');
+
+  final flutter = Platform.isWindows ? 'flutter.bat' : 'flutter';
+  final pubGet = Process.runSync(flutter, ['pub', 'get'], runInShell: true);
+  stdout.write(pubGet.stdout);
+  stderr.write(pubGet.stderr);
+  if (pubGet.exitCode != 0) {
+    throw '[patch-no-gromore] flutter pub get failed with exit code ${pubGet.exitCode}';
+  }
+
+  final stale = <String, bool>{
+    'pubspec.yaml': File('pubspec.yaml').readAsStringSync().contains(packageName),
+    'pubspec.lock': File('pubspec.lock').readAsStringSync().contains('  $packageName:'),
+    '.flutter-plugins-dependencies': File('.flutter-plugins-dependencies').readAsStringSync().contains(packageName),
+    '.dart_tool/package_config.json': File('.dart_tool/package_config.json')
+        .readAsStringSync()
+        .contains('"$packageName"'),
+    'ads.dart': File(adsPath).readAsStringSync().contains('ad_mobile.dart'),
+    'ad_mobile.dart': File(mobilePath).existsSync(),
+  };
+  final failed = stale.entries.where((entry) => entry.value).map((entry) => entry.key).toList();
+  if (failed.isNotEmpty) {
+    throw '[patch-no-gromore] stale references after pub get: ${failed.join(', ')}';
+  }
+  print('[patch-no-gromore] verified: no $packageName reference remains');
 }
 
 // ---------------------------------------------------------------------------
