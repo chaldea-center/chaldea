@@ -22,7 +22,7 @@
 
 `svtBonus[position].addRate/addValue` 作用于该位置实际存在的从者。`isBond15` 与 `isBondReachLimit` **仅对编队固定的自有从者有效**：前者提供全队 +250 RateCount，后者令该位置得分为零，但不删除它提供的全队效果。自由位置忽略这两个标志。助战位置忽略两者。
 
-所有标为助战的位置均用无特性的虚拟从者替代。助战不产出羁绊、不消耗 COST、不占自有从者或礼装容量；只搜索未固定的助战礼装。固定的助战 equip3 仅在该位置的 Grand Board 条件成立时生效；自由助战 equip3 不搜索。助战礼装的佩戴者条件对空特性求值，目标条件仍对实际队伍目标求值。前排每个助战提供全队 +40 RateCount；前排自有从者仅自身 +200，均受 `frontlineBonus` 开关控制。多个助战按手动公式逐个计入，不依赖“最多一个助战”的旧假设。
+所有标为助战的位置均用无特性的虚拟从者替代。助战不产出羁绊、不消耗 COST、不占自有从者或礼装容量；只搜索未固定的助战 equip1。该位置标记 `grandSvt` 且关卡 `isUseGrandBoard` 时，equip3 与自有冠位位同样参与搜索（未固定则枚举自由助战礼装类，已固定则计入其固定效果）；未标记或非 Grand Board 关卡时 equip3 一律忽略。助战两个礼装位不得装入同一具体礼装（同类时 equip3 只用其余 ID）。助战礼装的佩戴者条件对空特性求值，目标条件仍对实际队伍目标求值。前排每个助战提供全队 +40 RateCount；前排自有从者仅自身 +200，均受 `frontlineBonus` 开关控制。多个助战按手动公式逐个计入，不依赖“最多一个助战”的旧假设。
 
 ### 编队位置上限与默认关卡
 
@@ -32,11 +32,25 @@
 
 仅 `FormationBondOption` 新建构造函数使用硬编码默认关卡 94137202/1。已有保存的 0/空引用不迁移，显示原值。关卡选择行优先显示已加载 QuestPhase；加载期间用配置 ID/phase、本地 Quest 名称及 BasicQuestPhaseDetail 基础羁绊预览，缺失数据用横杠。失败保留 ID 供重试，Solve 仍要求完整 QuestPhase；无效 ID 不发请求。
 
+### 助战位置不会被自动推断
+
+某个位置是否为助战只能来自用户设置。`BattleTeamFormation` 的构造、`toJson`/`fromJson` 往返、`BattleTeamSetup.toFormationData()` 都不得为空位补出 `SvtSaveData(supportType: friend)`。助战可以放在任意位置、也可以一个都没有，因此不能按“第三位是助战位”的旧假设回填——否则把助战放在别处且第三位留空时会多出一个助战，完全没有助战时同样会被凭空加上。
+
+“第三位默认放助战”只在明确的初始化点声明：`BattleOptions.formation` 新建时把 `svts[2]` 设为 `SupportSvtType.friend`（战斗模拟），羁绊页在全空编队首次打开时对 `option.teamFormation` 做同样处理（`formation_bond.initState`）。`PlayerSvtData.isEmpty` 已把“标为助战但没有从者”视为非空，`toFormationData()` 因此能忠实保留助战标记，无需再补。
+
 ### 2.2 COST、筛选和唯一性
 
 预算默认为 `ConstData.userLevel[ConstData.maxUserLevel]!.maxCost`；`maxUserLevel` getter 已存在。自有位置 COST 为该灵基的 `overwriteCost ?? cost` 加 equip1 礼装 COST；固定与自由位置都计入，助战及 equip3 不计入。
 
-自由从者候选可按当前 region 是否实装、favorite、`bond >= X` 和自定义 ID 排除；自由礼装可按 region 和自定义 ID 排除。固定成员不被过滤。region 发布表缺失时不能把“未知”当成“已实装”：返回明确的数据不可验证状态，或在 UI 中要求关闭此筛选。
+自由从者候选可按当前 region 是否实装、favorite、`bond >= X` 和自定义 ID 排除；自由礼装可按 region、自定义 ID 排除，并按 `favoriteSvtEquipOnly` 只保留持有（`CraftStatus.favorite`，即 owned）的候选。该开关只作用于自有位礼装：助战是借来的，玩家的持有情况与它无关，因此助战礼装不受持有筛选限制，但仍受 region 与自定义 ID 排除约束。实现上持有判断并入自有可用性判定（`_loadFreeCesSteps` 的 `canOwn`），不能写在礼装级别的 `continue` 里，否则会连助战候选一起砍掉。
+
+从者与礼装是两个独立开关（`favoriteSvtOnly` / `favoriteSvtEquipOnly`，旧 `favoriteOnly` 键迁移为 `favoriteSvtOnly`）。`favoriteSvtOnly` 开启时，队伍页选从者传入 `PreferPlayerSvtDataSource.current`（携带账号实际等级/羁绊/冠位数据），关闭时传 `none`。选从者后若账号数据中该从者为 favorite 且 `grandSvt` 而当前槽位未标记冠位，弹窗确认是否标记（`svt_selector._confirmGrandSvt`）；数据来源为 current 时通常已自动标记，不再弹窗。固定成员不被过滤。region 发布表缺失时不能把“未知”当成“已实装”：返回明确的数据不可验证状态，或在 UI 中要求关闭此筛选。
+
+### 候选规模报告
+
+`BondSolverResult.candidateSvtIds` / `candidateCeIds` 供结果页顶部显示本次求解实际可用的候选数量，两者都取自原始候选池（等价归并**之前**），因此不受 `pruneDominatedCes` 影响、也无需依赖剪枝的执行时序。候选礼装只统计带条件的（`CeBondEffect.hasCondition`）：无条件礼装彼此可互换，求解器对它们只保留一个代表，报告出来恒为 1 且没有意义；助战礼装不计入，见上一节。
+
+两者为 `null` 表示队伍没有对应的自由位、候选池从未构建——这与“构建过却为空”的 `0` 是不同状态，前者 UI 应整行隐藏而不是显示一个误导性的 0。筛选或关卡改动会把结果整个清空（`formation_bond.clearResults`），候选行随之消失，无需另行标记过期。
 
 关卡中所有 `RestrictionType.individuality` 条目按 `Restriction.checkSvtIndiv` 的 `equal`/`notEqual` 语义逐一判断。从者特性取当前 Quest EventId 与所选灵基下的有效 individuality；自由候选在按特性/COST 去重**之前**筛选，避免合法灵基被错误合并。固定自有从者不受用户设置的排除筛选。`searchFixedAscensions` 默认开启，此时输入灵基不满足关卡限制则报错；开启时固定 ID 并枚举普通灵基及灵衣，按各灵基判断特性、COST 与限制，只要存在合法灵基即可求解。固定礼装、Bond 15／上限与 Grand 标志保留；虚拟助战没有可验证的实际从者，不进行此项检查。其他 restriction 类型目前不在本求解器支持的编队约束范围内。
 
@@ -44,9 +58,9 @@
 
 Formation Bond 是独立于 Bond Bonus 查阅页的模块，提供 `Input` 和 `Results` 两个标签。`User.formationBondOption` 是编队、活动、前排、茶壶、COST 和从者／礼装筛选的唯一持久化配置。默认页面直接引用当前用户的该对象，不在加载时复制；若队伍六个位置均为空，第三位置预设为空助战（`SupportSvtType.friend`）。外部调用方若需临时配置，先深拷贝用户配置、覆盖关卡和编队等字段，再以 `FormationBondPage(option: ...)` 传入；页面直接使用该对象，不写回 User。空助战位须能完整序列化。
 
-页面编辑会立即改变所持有的配置对象；`saveData()` 在离开页面时把运行时编队和关卡写回该对象。对默认页面，点击 Solve 且 QuestPhase 已准备成功后才显式调用 `db.saveUserData()`。由于默认页面持有 User 中的同一对象，其他途径保存 UserData 时，也可能提前持久化已编辑字段；当前实现不提供“点击 Solve 前绝不落盘”的隔离保证。求解时复制一次当前配置，并覆盖为运行时编队和已加载关卡，形成不受随后 UI 编辑影响的搜索输入；算法直接读取其中的 COST 和筛选字段。结果只在当前页面展示，不持久化。切换用户后需重新建立该标签的状态，不能把前一个用户的配置写入新用户。
+页面编辑会立即改变所持有的配置对象；`saveData()` 在离开页面时把运行时编队和关卡写回该对象。对默认页面（`userBacked`），每次共享输入编辑（`updateSharedInput`）与茶壶倍数修改都调用 `db.notifyUserdata()` 标记脏数据，由 10 秒去抖保存落盘；离开页面时若已恢复完成，再显式 `db.saveUserData()` 兜底——web 关标签页／刷新没有生命周期保存，仅靠去抖会丢近期编辑。点击 Solve 且 QuestPhase 已准备成功后同样显式保存。由于默认页面持有 User 中的同一对象，其他途径保存 UserData 时，也可能提前持久化已编辑字段；当前实现不提供“点击 Solve 前绝不落盘”的隔离保证。求解时复制一次当前配置，并覆盖为运行时编队和已加载关卡，形成不受随后 UI 编辑影响的搜索输入；算法直接读取其中的 COST 和筛选字段。结果只在当前页面展示，不持久化。切换用户后需重新建立该标签的状态，不能把前一个用户的配置写入新用户。
 
-同一自有从者 ID 在全队最多出现一次，即使它的不同灵基属于不同效果类。同一自有礼装身份最多出现一次，即使普通与满破版本被保留为不同候选；一般身份为具体 ID，`bond_rules.dart` 的 `BondCeIdentity` 可配置多 ID 身份族。英灵逢魔（CollectionNo 1973–1979、ID 9308100–9308160）视为同一身份，自由候选只用 9308100，排除任一成员即排除全族自由候选。1972 是另一张礼装，不属于此族。固定自有礼装保留具体 ID，且与自由 equip1／Grand equip3 共占一个族名额；助战可以与自有位置重复礼装身份。固定自有位置如已违反唯一性，输入不可行。现阶段没有礼装持有份数数据，故按不同礼装 ID 计容量。
+同一自有从者 ID 在全队最多出现一次，即使它的不同灵基属于不同效果类。同一自有礼装身份最多出现一次，即使普通与满破版本被保留为不同候选；一般身份为具体 ID，`bond_rules.dart` 的 `BondCeIdentity` 可配置多 ID 身份族。英灵逢魔（CollectionNo 1973–1979、ID 9308100–9308160）视为同一身份，自由候选只保留一个代表：用户持有（favorite）的成员中 ID 最小者，无人持有时回退为 ID 最小者（9308100）；族内成员羁绊效果一致，代表选择只改变具体 ID。排除任一成员即排除全族自由候选。1972 是另一张礼装，不属于此族。固定自有礼装保留具体 ID，且与自由 equip1／Grand equip3 共占一个族名额；助战可以与自有位置重复礼装身份。固定自有位置如已违反唯一性，输入不可行。现阶段没有礼装持有份数数据，故按不同礼装 ID 计容量。
 
 ### 实装参考与灵衣特性
 

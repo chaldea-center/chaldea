@@ -363,11 +363,10 @@ class BattleTeamFormation {
     @protected List<SvtSaveData?>? onFieldSvts,
     @protected List<SvtSaveData?>? backupSvts,
   }) : mysticCode = mysticCode ?? MysticCodeSaveData(),
+       // Never invent data for absent slots here: whether a position holds a
+       // support servant is the user's choice, set when a setup is created.
        svts = svts != null && svts.isNotEmpty
-           ? List.generate(
-               max(6, svts.length),
-               (index) => svts.getOrNull(index) ?? (index == 2 ? SvtSaveData(supportType: .friend) : null),
-             )
+           ? List.generate(max(6, svts.length), (index) => svts.getOrNull(index))
            : [
                ...List.generate(3, (index) => onFieldSvts?.getOrNull(index)),
                ...List.generate(3, (index) => backupSvts?.getOrNull(index)),
@@ -1376,7 +1375,8 @@ class FormationBondOption {
   bool frontlineBonus;
   int teapotTimes;
   int? maxCost;
-  bool favoriteOnly;
+  bool favoriteSvtOnly;
+  bool favoriteSvtEquipOnly;
   BondReleaseReference releaseReference;
   int maxBond;
   Set<int> excludedSvts;
@@ -1397,7 +1397,8 @@ class FormationBondOption {
     this.frontlineBonus = true,
     this.teapotTimes = 1,
     this.maxCost,
-    this.favoriteOnly = true,
+    this.favoriteSvtOnly = true,
+    this.favoriteSvtEquipOnly = true,
     this.releaseReference = BondReleaseReference.jp,
     this.maxBond = 15,
     Set<int>? excludedSvts,
@@ -1416,6 +1417,11 @@ class FormationBondOption {
     final option = _$FormationBondOptionFromJson(json);
     // The new-construction default must not replace an existing empty selection.
     if (json['quest'] == null) option.quest = null;
+    if (json['favoriteSvtOnly'] == null && json['favoriteOnly'] is bool) {
+      final legacy = json['favoriteOnly'] as bool;
+      option.favoriteSvtOnly = legacy;
+      option.favoriteSvtEquipOnly = legacy;
+    }
     return option;
   }
 

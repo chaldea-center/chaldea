@@ -84,6 +84,13 @@ class _FormationBondPageState extends State<FormationBondPage> with SingleTicker
   final BattleTeamSetup formation = BattleTeamSetup();
   QuestPhase? questEntity;
 
+  // Both exclusion pickers keep a page-local filter: they must survive
+  // repeated picking inside this page, but mutating the shared
+  // db.runtimeData filters would leak into the servant list and team setup
+  // pages, which read the same instances.
+  final _excludeSvtFilter = SvtFilterData(useGrid: true);
+  final _excludeCeFilter = CraftFilterData(useGrid: true)..obtain.options = {CEObtain.davinciBondBonus};
+
   void updateSharedInput(VoidCallback change) {
     if (!mounted) return;
     final hadSearch = _runtime.solving || _runtime.solverResult != null;
@@ -92,6 +99,7 @@ class _FormationBondPageState extends State<FormationBondPage> with SingleTicker
       change();
       _runtime.clearResults();
     });
+    if (_runtime.userBacked) db.notifyUserdata();
     if (hadSearch) EasyLoading.showToast('Search results are outdated. Solve again.');
   }
 
@@ -133,6 +141,7 @@ class _FormationBondPageState extends State<FormationBondPage> with SingleTicker
     _runtime.resultRevision.dispose();
     _tabController.dispose();
     if (_runtime.restored) saveData();
+    if (_runtime.userBacked) unawaited(db.saveUserData());
     super.dispose();
   }
 
@@ -400,6 +409,9 @@ class _FormationBondPageState extends State<FormationBondPage> with SingleTicker
               formation: formation,
               quest: quest,
               playerRegion: Region.jp,
+              playerSvtSource: option.favoriteSvtOnly
+                  ? PreferPlayerSvtDataSource.current
+                  : PreferPlayerSvtDataSource.none,
               onChanged: () => updateSharedInput(() {}),
             ),
           ],
@@ -536,6 +548,7 @@ class _FormationBondPageState extends State<FormationBondPage> with SingleTicker
                   setState(() {
                     if (v != null) option.teapotTimes = v;
                   });
+                  if (_runtime.userBacked) db.notifyUserdata();
                 },
               ),
             ),
@@ -703,8 +716,16 @@ class _FormationBondPageState extends State<FormationBondPage> with SingleTicker
           SwitchListTile.adaptive(
             dense: true,
             title: Text(S.current.favorite),
-            value: option.favoriteOnly,
-            onChanged: (v) => updateSharedInput(() => option.favoriteOnly = v),
+            subtitle: Text(S.current.servant),
+            value: option.favoriteSvtOnly,
+            onChanged: (v) => updateSharedInput(() => option.favoriteSvtOnly = v),
+          ),
+          SwitchListTile.adaptive(
+            dense: true,
+            title: Text(S.current.favorite),
+            subtitle: Text('${S.current.craft_essence} (${S.current.card_status_owned})'),
+            value: option.favoriteSvtEquipOnly,
+            onChanged: (v) => updateSharedInput(() => option.favoriteSvtEquipOnly = v),
           ),
           ListTile(
             dense: true,
@@ -728,7 +749,7 @@ class _FormationBondPageState extends State<FormationBondPage> with SingleTicker
         onAdd: () {
           router.pushPage(
             ServantListPage(
-              filterData: SvtFilterData(useGrid: true),
+              filterData: _excludeSvtFilter,
               onSelected: (svt) {
                 if (mounted) updateSharedInput(() => option.excludedSvts.add(svt.id));
               },
@@ -744,7 +765,7 @@ class _FormationBondPageState extends State<FormationBondPage> with SingleTicker
         onAdd: () {
           router.pushPage(
             CraftListPage(
-              filterData: CraftFilterData(useGrid: true)..obtain.options = {CEObtain.davinciBondBonus},
+              filterData: _excludeCeFilter,
               onSelected: (ce) {
                 if (mounted) updateSharedInput(() => option.excludedCes.add(ce.id));
               },

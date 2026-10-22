@@ -32,6 +32,7 @@ class ServantSelector extends StatelessWidget {
   final DragTargetAccept<PlayerSvtData>? onDragCE;
   final bool enableEdit;
   final ValueNotifier<String?> hovered;
+  final PreferPlayerSvtDataSource? playerSvtSource;
 
   ServantSelector({
     super.key,
@@ -43,6 +44,7 @@ class ServantSelector extends StatelessWidget {
     this.onDragCE,
     this.enableEdit = true,
     required this.hovered,
+    this.playerSvtSource,
   });
 
   SvtFilterData get svtFilterData => db.runtimeData.svtFilters.current;
@@ -107,8 +109,14 @@ class ServantSelector extends StatelessWidget {
             router.pushPage(
               ServantListPage(
                 planMode: false,
-                onSelected: (selectedSvt) {
-                  playerSvtData.onSelectServant(selectedSvt, region: playerRegion, jpTime: questPhase?.jpOpenAt);
+                onSelected: (selectedSvt) async {
+                  playerSvtData.onSelectServant(
+                    selectedSvt,
+                    source: playerSvtSource,
+                    region: playerRegion,
+                    jpTime: questPhase?.jpOpenAt,
+                  );
+                  await _confirmGrandSvt(context, selectedSvt);
                   onChanged();
                 },
                 filterData: svtFilterData,
@@ -279,6 +287,17 @@ class ServantSelector extends StatelessWidget {
       padding: const EdgeInsets.all(2),
       child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.center, children: children),
     );
+  }
+
+  Future<void> _confirmGrandSvt(BuildContext context, Servant selectedSvt) async {
+    if (playerSvtData.grandSvt) return;
+    final status = selectedSvt.status;
+    if (!status.favorite || !status.grandSvt) return;
+    final confirmed = await SimpleConfirmDialog(
+      title: Text(S.current.grand_servant),
+      content: Text('Mark ${selectedSvt.lName.l} as ${S.current.grand_servant}?'),
+    ).showDialog(context);
+    if (confirmed == true && context.mounted) playerSvtData.grandSvt = true;
   }
 
   Widget _stackActions({

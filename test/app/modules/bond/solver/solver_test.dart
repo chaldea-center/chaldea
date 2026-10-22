@@ -10,14 +10,16 @@ import '../../../../test_init.dart';
 FormationBondOption _withFilters(
   FormationBondOption option, {
   int? maxCost,
-  bool? favoriteOnly,
+  bool? favoriteSvtOnly,
+  bool? favoriteSvtEquipOnly,
   BondReleaseReference? releaseReference,
   int? maxBond,
   Set<int>? excludedSvts,
   Set<int>? excludedCes,
 }) {
   if (maxCost != null) option.maxCost = maxCost;
-  if (favoriteOnly != null) option.favoriteOnly = favoriteOnly;
+  if (favoriteSvtOnly != null) option.favoriteSvtOnly = favoriteSvtOnly;
+  if (favoriteSvtEquipOnly != null) option.favoriteSvtEquipOnly = favoriteSvtEquipOnly;
   if (releaseReference != null) option.releaseReference = releaseReference;
   if (maxBond != null) option.maxBond = maxBond;
   if (excludedSvts != null) option.excludedSvts = excludedSvts;
@@ -81,7 +83,8 @@ void main() {
       maxServants: 2,
       enableEvent: false,
       maxCost: 999,
-      favoriteOnly: false,
+      favoriteSvtOnly: false,
+      favoriteSvtEquipOnly: false,
       maxBond: 0,
       maxCandidateTeams: 5,
       excludedSvts: db.gameData.servantsById.keys.toSet()..removeAll(servants.map((svt) => svt.id)),
@@ -120,7 +123,7 @@ void main() {
     var received = 0;
     var started = false;
     final search = FormationBondSolver.solveProgressively(
-      option: FormationBondOption(enableEvent: false, favoriteOnly: false, maxBond: 0),
+      option: FormationBondOption(enableEvent: false, favoriteSvtOnly: false, favoriteSvtEquipOnly: false, maxBond: 0),
       quest: QuestPhase(bond: 1000),
       formation: BattleTeamSetup(),
       onSearchStarted: () => started = true,
@@ -159,7 +162,8 @@ void main() {
     final option = _withFilters(
       FormationBondOption(enableEvent: false),
       maxCost: 999,
-      favoriteOnly: false,
+      favoriteSvtOnly: false,
+      favoriteSvtEquipOnly: false,
       releaseReference: BondReleaseReference.jp,
       maxBond: 0,
       excludedSvts: servants.map((svt) => svt.id).toSet()..removeAll([sabers[5].id, others[5].id]),
@@ -219,7 +223,8 @@ void main() {
       option: _withFilters(
         option,
         maxCost: 999,
-        favoriteOnly: false,
+        favoriteSvtOnly: false,
+        favoriteSvtEquipOnly: false,
         releaseReference: BondReleaseReference.jp,
         maxBond: 0,
       ),
@@ -235,7 +240,8 @@ void main() {
       option: _withFilters(
         option,
         maxCost: 999,
-        favoriteOnly: false,
+        favoriteSvtOnly: false,
+        favoriteSvtEquipOnly: false,
         releaseReference: BondReleaseReference.jp,
         maxBond: 0,
       ),
@@ -429,7 +435,8 @@ void main() {
       option: _withFilters(
         option,
         maxCost: 999,
-        favoriteOnly: false,
+        favoriteSvtOnly: false,
+        favoriteSvtEquipOnly: false,
         releaseReference: BondReleaseReference.jp,
         maxBond: 0,
       ),
@@ -470,7 +477,14 @@ void main() {
     final option = FormationBondOption(enableEvent: false);
     final extra = QuestPhaseExtraDetail()..setValue('isUseGrandBoard', 1);
     final quest = QuestPhase(bond: 1000, extraDetail: extra);
-    _withFilters(option, maxCost: 999, favoriteOnly: false, releaseReference: BondReleaseReference.jp, maxBond: 0);
+    _withFilters(
+      option,
+      maxCost: 999,
+      favoriteSvtOnly: false,
+      favoriteSvtEquipOnly: false,
+      releaseReference: BondReleaseReference.jp,
+      maxBond: 0,
+    );
     final baseline = FormationBondSolver.solve(option: option, quest: quest, formation: formation, maxNodes: 100000);
     option.svtBonus[5]
       ..isBond15 = true
@@ -606,7 +620,14 @@ void main() {
     }
     final option = FormationBondOption(enableEvent: false);
     final quest = QuestPhase(bond: 1000);
-    _withFilters(option, maxCost: 999, favoriteOnly: false, releaseReference: BondReleaseReference.jp, maxBond: 0);
+    _withFilters(
+      option,
+      maxCost: 999,
+      favoriteSvtOnly: false,
+      favoriteSvtEquipOnly: false,
+      releaseReference: BondReleaseReference.jp,
+      maxBond: 0,
+    );
     final baseline = FormationBondSolver.solve(
       option: option,
       quest: quest,
@@ -636,7 +657,14 @@ void main() {
     final extra = QuestPhaseExtraDetail()..setValue('isUseGrandBoard', 1);
     final quest = QuestPhase(bond: 1000, extraDetail: extra);
     final option = FormationBondOption(enableEvent: false);
-    _withFilters(option, maxCost: 999, favoriteOnly: false, releaseReference: BondReleaseReference.jp, maxBond: 0);
+    _withFilters(
+      option,
+      maxCost: 999,
+      favoriteSvtOnly: false,
+      favoriteSvtEquipOnly: false,
+      releaseReference: BondReleaseReference.jp,
+      maxBond: 0,
+    );
     final baseline = FormationBondSolver.solve(
       option: option,
       quest: quest,
@@ -659,7 +687,13 @@ void main() {
     final option = FormationBondOption(enableEvent: false);
     final quest = QuestPhase(bond: 1000);
     final result = FormationBondSolver.solve(
-      option: _withFilters(option, favoriteOnly: false, releaseReference: BondReleaseReference.jp, maxBond: 0),
+      option: _withFilters(
+        option,
+        favoriteSvtOnly: false,
+        favoriteSvtEquipOnly: false,
+        releaseReference: BondReleaseReference.jp,
+        maxBond: 0,
+      ),
       quest: quest,
       formation: formation,
     );
@@ -777,7 +811,8 @@ void main() {
             : trial < 8
             ? 65
             : 45,
-        favoriteOnly: false,
+        favoriteSvtOnly: false,
+        favoriteSvtEquipOnly: false,
         releaseReference: BondReleaseReference.jp,
         maxBond: 0,
         excludedSvts: Set.of(excludedSvts),
@@ -832,7 +867,13 @@ void main() {
     var started = false;
     final updates =
         await FormationBondSolver.solveProgressively(
-          option: _withFilters(option, favoriteOnly: false, releaseReference: BondReleaseReference.jp, maxBond: 0),
+          option: _withFilters(
+            option,
+            favoriteSvtOnly: false,
+            favoriteSvtEquipOnly: false,
+            releaseReference: BondReleaseReference.jp,
+            maxBond: 0,
+          ),
           quest: quest,
           formation: formation,
           onSearchStarted: () => started = true,
@@ -880,7 +921,8 @@ void main() {
       option: _withFilters(
         option,
         maxCost: 999,
-        favoriteOnly: false,
+        favoriteSvtOnly: false,
+        favoriteSvtEquipOnly: false,
         releaseReference: BondReleaseReference.jp,
         maxBond: 0,
       ),

@@ -613,7 +613,10 @@ class BattleTeamSetup {
 }
 
 class BattleOptions extends BattleOptionsRuntime {
-  BattleTeamSetup formation = BattleTeamSetup();
+  /// Slot 3 starts as a support servant for a brand-new team, matching the
+  /// in-game habit. Set here at creation rather than during conversions, so
+  /// saving a team never changes which positions are support ones.
+  BattleTeamSetup formation = BattleTeamSetup()..svts[2].supportType = SupportSvtType.friend;
 
   @override
   BattleOptions copy() {

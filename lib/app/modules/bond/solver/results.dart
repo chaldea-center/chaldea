@@ -10,6 +10,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 import '../../battle/formation/formation_card.dart';
+import '../../common/builders.dart';
 import 'solver.dart';
 
 /// The card grid shared by the two solver exclusion lists.
@@ -242,6 +243,7 @@ class BondSolverResultsTab extends StatelessWidget {
               ],
             ),
           ),
+          if (result != null) _candidatePools(context, result),
           if (solving) const Padding(padding: EdgeInsets.fromLTRB(16, 0, 16, 8), child: _DiscreteSearchIndicator()),
         ],
       ),
@@ -357,56 +359,63 @@ class BondSolverResultsTab extends StatelessWidget {
     final base = (quest?.bond ?? 0) * option.teapotTimes;
     final deltaGroup = AutoSizeGroup();
     final totalGroup = AutoSizeGroup();
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        for (var p = 0; p < 6; p++)
-          Expanded(
-            flex: 10,
-            child: Builder(
-              builder: (context) {
-                final slot = byPosition[p];
-                if (slot == null || slot.isSupport || slot.servantId == null) {
-                  return Center(child: Text('–', style: Theme.of(context).textTheme.bodySmall));
-                }
-                final requirement = _ascensionRequirement(team, slot);
-                final total = slot.bond * option.teapotTimes;
-                final delta = total == 0 ? 0 : total - base;
-                return InkWell(
-                  onTap: () => _showTraitBondCes(context, team, slot),
-                  borderRadius: BorderRadius.circular(4),
-                  child: Container(
-                    decoration: requirement.restricted
-                        ? BoxDecoration(
-                            border: Border(bottom: BorderSide(color: Theme.of(context).colorScheme.error, width: 1.5)),
-                          )
-                        : null,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        AutoSizeText(
-                          delta >= 0 ? '+$delta' : '$delta',
-                          group: deltaGroup,
-                          maxLines: 1,
-                          minFontSize: 8,
-                          style: Theme.of(context).textTheme.labelSmall,
+    return Center(
+      child: Container(
+        constraints: const BoxConstraints(maxWidth: FormationCard.kContentWidth),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            for (var p = 0; p < 6; p++)
+              Expanded(
+                flex: 10,
+                child: Builder(
+                  builder: (context) {
+                    final slot = byPosition[p];
+                    if (slot == null || slot.isSupport || slot.servantId == null) {
+                      return Center(child: Text('–', style: Theme.of(context).textTheme.bodySmall));
+                    }
+                    final requirement = _ascensionRequirement(team, slot);
+                    final total = slot.bond * option.teapotTimes;
+                    final delta = total == 0 ? 0 : total - base;
+                    return InkWell(
+                      onTap: () => _showTraitBondCes(context, team, slot),
+                      borderRadius: BorderRadius.circular(4),
+                      child: Container(
+                        decoration: requirement.restricted
+                            ? BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(color: Theme.of(context).colorScheme.error, width: 1.5),
+                                ),
+                              )
+                            : null,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            AutoSizeText(
+                              delta >= 0 ? '+$delta' : '$delta',
+                              group: deltaGroup,
+                              maxLines: 1,
+                              minFontSize: 8,
+                              style: Theme.of(context).textTheme.labelSmall,
+                            ),
+                            AutoSizeText(
+                              '$total',
+                              group: totalGroup,
+                              maxLines: 1,
+                              minFontSize: 9,
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          ],
                         ),
-                        AutoSizeText(
-                          '$total',
-                          group: totalGroup,
-                          maxLines: 1,
-                          minFontSize: 9,
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-        const Expanded(flex: 8, child: SizedBox.shrink()),
-      ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            const Expanded(flex: 8, child: SizedBox.shrink()),
+          ],
+        ),
+      ),
     );
   }
 
@@ -479,6 +488,75 @@ class BondSolverResultsTab extends StatelessWidget {
               }),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  /// How much the search was allowed to draw from. A null id list means that
+  /// pool was never built — the team had no free slot for it — so the whole
+  /// row collapses rather than reporting a misleading zero.
+  Widget _candidatePools(BuildContext context, BondSolverResult result) {
+    final svtIds = result.candidateSvtIds;
+    final ceIds = result.candidateCeIds;
+    if (svtIds == null && ceIds == null) return const SizedBox.shrink();
+    final colorScheme = Theme.of(context).colorScheme;
+    final style = Theme.of(context).textTheme.bodySmall;
+    Widget label(IconData icon, String text, {Color? color, bool tappable = false}) => Row(
+      mainAxisSize: .min,
+      children: [
+        Icon(icon, size: 16, color: color ?? colorScheme.onSurfaceVariant),
+        const SizedBox(width: 6),
+        Text(
+          text,
+          style: style?.copyWith(color: color, decoration: tappable ? TextDecoration.underline : null),
+        ),
+      ],
+    );
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
+      child: Wrap(
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: 16,
+        runSpacing: 4,
+        children: [
+          if (svtIds != null) label(Icons.person_outline, '${S.current.servant} ${svtIds.length}'),
+          if (ceIds != null)
+            InkWell(
+              onTap: () => _showCandidateCes(context, ceIds),
+              child: label(
+                Icons.style_outlined,
+                '${S.current.craft_essence} ${ceIds.length}',
+                color: colorScheme.primary,
+                tappable: true,
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _showCandidateCes(BuildContext context, List<int> ceIds) async {
+    final ces = ceIds.map((id) => db.gameData.craftEssencesById[id]).whereType<CraftEssence>().toList();
+    await router.showDialog<void>(
+      context: context,
+      builder: (context) => SimpleConfirmDialog(
+        showCancel: false,
+        title: Text('${S.current.craft_essence} ${ces.length}'),
+        content: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 420),
+          child: ces.isEmpty
+              ? const Text('—')
+              : ConstrainedBox(
+                  constraints: const BoxConstraints(maxHeight: 320),
+                  child: SingleChildScrollView(
+                    child: SharedBuilder.grid<CraftEssence>(
+                      context: context,
+                      items: ces,
+                      builder: (context, ce) => ce.iconBuilder(context: context, width: 42),
+                    ),
+                  ),
+                ),
         ),
       ),
     );

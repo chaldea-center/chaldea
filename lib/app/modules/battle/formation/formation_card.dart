@@ -8,6 +8,9 @@ import 'package:chaldea/widgets/widgets.dart';
 import 'svt_option_editor.dart';
 
 class FormationCard extends StatelessWidget {
+  static const double kCardWidth = 80;
+  static const double kContentWidth = kCardWidth * 6 + 64;
+
   final BattleTeamFormation formation;
   final bool showAllMysticCodeIcon;
   final bool fadeOutMysticCode;
@@ -157,7 +160,7 @@ class FormationCard extends StatelessWidget {
     );
     child = Container(
       padding: const EdgeInsets.symmetric(horizontal: 1),
-      constraints: const BoxConstraints(maxWidth: 80),
+      constraints: const BoxConstraints(maxWidth: kCardWidth),
       child: child,
     );
     return Flexible(flex: 10, child: child);

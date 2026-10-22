@@ -16,7 +16,8 @@ void main() {
     enableEvent: false,
     frontlineBonus: false,
     releaseReference: BondReleaseReference.jp,
-    favoriteOnly: false,
+    favoriteSvtOnly: false,
+    favoriteSvtEquipOnly: false,
     maxBond: 0,
     maxCost: 999,
     // These tests compare pinned ascensions with explicitly enabled searching.
@@ -373,6 +374,16 @@ void main() {
     }
   });
 
+  test('legacy favoriteOnly key migrates to both split filters', () {
+    final json = FormationBondOption().toJson()
+      ..remove('favoriteSvtOnly')
+      ..remove('favoriteSvtEquipOnly')
+      ..['favoriteOnly'] = false;
+    final option = FormationBondOption.fromJson(json);
+    expect(option.favoriteSvtOnly, isFalse);
+    expect(option.favoriteSvtEquipOnly, isFalse);
+  });
+
   test('quest date filters free servants at the release boundary but preserves fixed servants', () {
     final target = db.gameData.servantsById.values.firstWhere(
       (svt) => svt.collectionNo > 0 && svt.isUserSvt && svt.extra.getReleasedAt() > 0,
@@ -489,5 +500,135 @@ void main() {
     }
     expect(target.traits, baseTraits);
     expect(BondReleaseRules.traits(target, 4, 0, BondReleaseReference.jp), contains(Trait.hasCostume.value));
+  });
+
+  test('free family representative prefers the owned member with the smallest id', () {
+    final family = BondCeIdentity.families.single;
+    final saved = <int, CraftStatus?>{};
+    for (final id in [9308130, 9308150]) {
+      final ce = db.gameData.craftEssencesById[id]!;
+      saved[ce.collectionNo] = db.curUser.craftEssences[ce.collectionNo];
+      db.curUser.craftEssences[ce.collectionNo] = CraftStatus(status: CraftStatus.owned);
+    }
+    addTearDown(() {
+      saved.forEach((no, status) {
+        if (status == null) {
+          db.curUser.craftEssences.remove(no);
+        } else {
+          db.curUser.craftEssences[no] = status;
+        }
+      });
+    });
+    final team = formation();
+    for (var p = 0; p < 3; p++) {
+      team.svts[p].equip1 = SvtEquipData();
+    }
+    final option = options()..excludedCes = (db.gameData.craftEssencesById.keys.toSet()..removeAll(family));
+    for (final fast in [false, true]) {
+      final result = solve(team, option, fast: fast);
+      final worn = result.best!.slots.where((s) => family.contains(s.equip1?.id)).toList();
+      expect(worn, hasLength(1));
+      expect(worn.single.equip1!.id, 9308130);
+      checkScores(result, team, option, quest);
+    }
+  });
+
+  test('favoriteSvtEquipOnly keeps only owned craft essences in the free pool', () {
+    final team = formation();
+    for (var p = 0; p < 3; p++) {
+      team.svts[p].equip1 = SvtEquipData();
+    }
+    final pinnedIds = team.svts.skip(3).map((s) => s.equip1.ce?.id).toList();
+    final ce = db.gameData.craftEssencesById[9401060]!;
+    final option = options()..favoriteSvtEquipOnly = true;
+    // Nothing owned: no free CE survives, while pinned CEs are untouched.
+    final empty = solve(team, option);
+    expect(empty.best!.slots.take(3).every((s) => s.equip1 == null), isTrue);
+    expect(empty.best!.slots.skip(3).map((s) => s.equip1?.id).toList(), pinnedIds);
+    final saved = db.curUser.craftEssences[ce.collectionNo];
+    db.curUser.craftEssences[ce.collectionNo] = CraftStatus(status: CraftStatus.owned);
+    addTearDown(() {
+      if (saved == null) {
+        db.curUser.craftEssences.remove(ce.collectionNo);
+      } else {
+        db.curUser.craftEssences[ce.collectionNo] = saved;
+      }
+    });
+    final owned = solve(team, option);
+    expect(owned.best!.slots.take(3).where((s) => s.equip1?.id == ce.id).length, 1);
+    expect(owned.best!.slots.skip(3).map((s) => s.equip1?.id).toList(), pinnedIds);
+    expect(owned.best!.totalBond, greaterThan(empty.best!.totalBond));
+    checkScores(owned, team, option, quest);
+  });
+
+  test('favoriteSvtEquipOnly gates what an owned servant wears, not what a support borrows', () {
+    final borrowed = db.gameData.craftEssencesById[9403520]!;
+    final savedStatus = db.curUser.craftEssences[borrowed.collectionNo];
+    db.curUser.craftEssences.remove(borrowed.collectionNo);
+    addTearDown(() {
+      if (savedStatus != null) db.curUser.craftEssences[borrowed.collectionNo] = savedStatus;
+    });
+    final team = formation();
+    team.svts[0].supportType = SupportSvtType.friend;
+    for (var p = 0; p < 6; p++) {
+      team.svts[p].equip1 = SvtEquipData();
+    }
+    final option = options()
+      ..favoriteSvtEquipOnly = true
+      ..excludedCes = (db.gameData.craftEssencesById.keys.toSet()..remove(borrowed.id));
+    final result = solve(team, option);
+    // A support borrows from someone else, so the user's collection says
+    // nothing about it and the one remaining CE still fits.
+    expect(result.best!.slots[0].equip1?.id, borrowed.id);
+    // Owned servants still cannot wear what the user does not own.
+    expect(result.best!.slots.skip(1).every((s) => s.equip1 == null), isTrue);
+  });
+
+  test('results report the free pool sizes and omit pools that were never built', () {
+    final servants = db.gameData.servantsById.values
+        .where((svt) => svt.collectionNo > 0 && svt.isUserSvt)
+        .take(2)
+        .toList();
+    final ces = fillers();
+    final team = BattleTeamSetup();
+    team.svts[0] = PlayerSvtData.svt(servants[0])..equip1 = SvtEquipData(ce: ces[0]);
+    team.svts[1].equip1 = SvtEquipData(ce: ces[1]);
+    final option = options()
+      ..maxServants = 2
+      ..excludedSvts = (db.gameData.servantsById.keys.toSet()..removeAll(servants.map((svt) => svt.id)));
+    final result = FormationBondSolver.solve(option: option, quest: quest, formation: team, maxNodes: 50000);
+    // Position 2 has no servant, so a pool was built for it.
+    expect(result.candidateSvtIds, isNotNull);
+    expect(result.candidateSvtIds, isNotEmpty);
+    // Every CE was pinned, so no CE pool was built at all — reported as null
+    // rather than as a misleading zero.
+    expect(result.candidateCeIds, isNull);
+  });
+
+  test('a grand support also searches its free equip3 slot', () {
+    final team = formation();
+    team.svts[5]
+      ..supportType = SupportSvtType.friend
+      ..equip1 = SvtEquipData()
+      ..equip3 = SvtEquipData()
+      ..grandSvt = true;
+    final phase = QuestPhase(bond: 1000, extraDetail: QuestPhaseExtraDetail()..setValue('isUseGrandBoard', 1));
+    final option = options();
+    for (final fast in [false, true]) {
+      final result = solve(team, option, phase: phase, fast: fast);
+      final support = result.best!.slots[5];
+      expect(support.isSupport, isTrue);
+      expect(support.equip1, isNotNull);
+      expect(support.equip3, isNotNull);
+      expect(support.equip3!.id, isNot(support.equip1!.id));
+      checkScores(result, team, option, phase);
+    }
+    // Without the grand flag the support has no equip3 at all.
+    team.svts[5].grandSvt = false;
+    for (final fast in [false, true]) {
+      final result = solve(team, option, phase: phase, fast: fast);
+      expect(result.best!.slots[5].equip1, isNotNull);
+      expect(result.best!.slots[5].equip3, isNull);
+    }
   });
 }

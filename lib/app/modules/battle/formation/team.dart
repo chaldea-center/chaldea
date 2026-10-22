@@ -13,6 +13,7 @@ class TeamSetupCard extends StatefulWidget {
   final bool enableEdit;
   final bool showEmptyBackup;
   final VoidCallback? onChanged;
+  final PreferPlayerSvtDataSource? playerSvtSource;
 
   const TeamSetupCard({
     super.key,
@@ -22,6 +23,7 @@ class TeamSetupCard extends StatefulWidget {
     this.enableEdit = true,
     this.showEmptyBackup = true,
     this.onChanged,
+    this.playerSvtSource,
   });
 
   @override
@@ -67,6 +69,7 @@ class _TeamSetupCardState extends State<TeamSetupCard> {
                     playerSvtData: svt,
                     playerRegion: widget.playerRegion,
                     questPhase: widget.quest,
+                    playerSvtSource: widget.playerSvtSource,
                     onChanged: () {
                       if (mounted) setState(() {});
                       widget.onChanged?.call();

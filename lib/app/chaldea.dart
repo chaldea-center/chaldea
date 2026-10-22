@@ -137,7 +137,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WindowListener
       if (msg == AppLifecycleState.resumed.toString()) {
         // Actions when app is resumed
         network.check();
-      } else if (msg == AppLifecycleState.inactive.toString()) {
+      } else if (msg == AppLifecycleState.inactive.toString() || msg == AppLifecycleState.hidden.toString()) {
         db.saveAll();
         if (NetworkManagerBase.hasCalled) {
           try {

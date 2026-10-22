@@ -633,7 +633,7 @@ class _RandomMissionLoopPageState extends State<RandomMissionLoopPage> with Fake
           Center(
             child: Container(
               margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
-              constraints: const BoxConstraints(maxWidth: 80 * kSvtNumPerRow + 64),
+              constraints: const BoxConstraints(maxWidth: FormationCard.kContentWidth),
               child: bondDetail,
             ),
           ),

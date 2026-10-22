@@ -28,8 +28,9 @@ class _CeFirstSupportChoice {
   final List<int> values;
   final BondSolvedCe? ce;
   final Map<int, bool> candidates;
+  final BondSolvedCe? ce3;
 
-  const _CeFirstSupportChoice(this.rates, this.values, this.ce, [this.candidates = const {}]);
+  const _CeFirstSupportChoice(this.rates, this.values, this.ce, [this.candidates = const {}, this.ce3]);
 }
 
 class _CeFirstPosition {
@@ -649,7 +650,7 @@ class _CeFirstSearch {
       if (++_workTicks % 64 == 0) yield null;
       final servant = !position.variableServant ? position.servants.single : selectedServants[p]?.servant;
       final ce1 = position.fixedCe1 ?? ce1At[p] ?? supportChoiceAt[p]?.ce;
-      final ce3 = position.fixedCe3 ?? ce3At[p];
+      final ce3 = position.fixedCe3 ?? ce3At[p] ?? supportChoiceAt[p]?.ce3;
       final bond = servant == null || position.bondLimit ? 0 : _score(position, servant, rates, values);
       final servantVariants = servant == null
           ? const <int, int>{}

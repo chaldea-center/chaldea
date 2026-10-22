@@ -41,6 +41,35 @@ void main() {
     expect(restored.svts[2]?.svtId, isNull);
   });
 
+  test('a support outside slot 3 does not make conversions add another one', () {
+    final team = BattleTeamSetup();
+    team.svts[0].supportType = SupportSvtType.friend;
+    expect(team.svts[2].supportType, SupportSvtType.none);
+
+    final saved = team.toFormationData();
+    expect(saved.svts[2], isNull);
+    final restored = BattleTeamFormation.fromJson(saved.toJson());
+    expect(restored.svts[2], isNull);
+    final supportPositions = [
+      for (int index = 0; index < restored.svts.length; index++)
+        if (restored.svts[index]?.supportType.isSupport ?? false) index,
+    ];
+    expect(supportPositions, [0]);
+  });
+
+  test('a team without any support stays support-free', () {
+    final saved = BattleTeamSetup().toFormationData();
+    expect(saved.svts.every((svt) => svt == null), isTrue);
+    final restored = BattleTeamFormation.fromJson(saved.toJson());
+    expect(restored.svts.any((svt) => svt?.supportType.isSupport ?? false), isFalse);
+  });
+
+  test('battle options still reserve slot 3 for support at creation', () {
+    final options = BattleOptions();
+    expect(options.formation.svts[2].supportType, SupportSvtType.friend);
+    expect(options.copy().formation.svts[2].supportType, SupportSvtType.friend);
+  });
+
   test('formation draft copies a fixed CE independently', () {
     final source = FormationBondOption(
       maxCost: 120,
