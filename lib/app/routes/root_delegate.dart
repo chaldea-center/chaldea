@@ -102,6 +102,15 @@ class AppState extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  bool get consentPending => _consentPending;
+  bool _consentPending = false;
+
+  set consentPending(bool v) {
+    if (_consentPending == v) return;
+    _consentPending = v;
+    notifyListeners();
+  }
 }
 
 class RootAppRouterDelegate extends RouterDelegate<RouteConfiguration>

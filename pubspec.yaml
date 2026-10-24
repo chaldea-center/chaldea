@@ -116,8 +116,7 @@ dependencies:
   video_player_win: ^3.1.0
   wakelock_plus: ^1.8.0
   web: ^1.1.0
-  # webview_flutter: ^4.1.0
-  # webview_flutter_web: ^0.2.2+1
+  webview_flutter: ^4.1.0
   window_manager: ^0.5.0
   worker_manager: ^7.2.2
 

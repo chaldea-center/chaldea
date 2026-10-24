@@ -416,6 +416,10 @@ DisplaySettings _$DisplaySettingsFromJson(Map json) => $checkedCreate('DisplaySe
     globalSelection: $checkedConvert('globalSelection', (v) => v as bool? ?? false),
     forceEdgeSwipePopGesture: $checkedConvert('forceEdgeSwipePopGesture', (v) => v as bool? ?? false),
     ad: $checkedConvert('ad', (v) => v == null ? null : AdSetting.fromJson(Map<String, dynamic>.from(v as Map))),
+    privacy: $checkedConvert(
+      'privacy',
+      (v) => v == null ? null : PrivacySetting.fromJson(Map<String, dynamic>.from(v as Map)),
+    ),
     showDebugFab: $checkedConvert('showDebugFab', (v) => v as bool? ?? false),
   );
   return val;
@@ -444,6 +448,7 @@ Map<String, dynamic> _$DisplaySettingsToJson(DisplaySettings instance) => <Strin
   'globalSelection': instance.globalSelection,
   'forceEdgeSwipePopGesture': instance.forceEdgeSwipePopGesture,
   'ad': instance.ad.toJson(),
+  'privacy': instance.privacy.toJson(),
   'showDebugFab': instance.showDebugFab,
 };
 
@@ -504,6 +509,25 @@ const _$GalleryIconSizeEnumMap = {
   GalleryIconSize.large: 'large',
 };
 
+PrivacySetting _$PrivacySettingFromJson(Map json) => $checkedCreate('PrivacySetting', json, ($checkedConvert) {
+  final val = PrivacySetting(
+    accepted: $checkedConvert('accepted', (v) => v as bool? ?? false),
+    acceptedVersion: $checkedConvert('acceptedVersion', (v) => (v as num?)?.toInt() ?? 0),
+    consentAsked: $checkedConvert('consentAsked', (v) => v as bool? ?? false),
+    crashReportEnabled: $checkedConvert('crashReportEnabled', (v) => v as bool? ?? true),
+    analyticsEnabled: $checkedConvert('analyticsEnabled', (v) => v as bool? ?? true),
+  );
+  return val;
+});
+
+Map<String, dynamic> _$PrivacySettingToJson(PrivacySetting instance) => <String, dynamic>{
+  'accepted': instance.accepted,
+  'acceptedVersion': instance.acceptedVersion,
+  'consentAsked': instance.consentAsked,
+  'crashReportEnabled': instance.crashReportEnabled,
+  'analyticsEnabled': instance.analyticsEnabled,
+};
+
 AdSetting _$AdSettingFromJson(Map json) => $checkedCreate('AdSetting', json, ($checkedConvert) {
   final val = AdSetting(
     enabled: $checkedConvert('enabled', (v) => $enumDecodeNullable(_$AdFeatureStateEnumMap, v) ?? .defaults),
@@ -511,10 +535,9 @@ AdSetting _$AdSettingFromJson(Map json) => $checkedCreate('AdSetting', json, ($c
     appOpen: $checkedConvert('appOpen', (v) => $enumDecodeNullable(_$AdFeatureStateEnumMap, v) ?? .defaults),
     interstitial: $checkedConvert('interstitial', (v) => $enumDecodeNullable(_$AdFeatureStateEnumMap, v) ?? .defaults),
     personalizedAds: $checkedConvert('personalizedAds', (v) => v as bool?),
-    lastAppOpen: $checkedConvert('lastAppOpen', (v) => (v as num?)?.toInt() ?? 0),
-    lastAttRequestTime: $checkedConvert('lastAttRequestTime', (v) => (v as num?)?.toInt() ?? 0),
     attAuthorized: $checkedConvert('attAuthorized', (v) => v as bool?),
-    privacyPolicyAccepted: $checkedConvert('privacyPolicyAccepted', (v) => v as bool? ?? false),
+    lastAttRequestTime: $checkedConvert('lastAttRequestTime', (v) => (v as num?)?.toInt() ?? 0),
+    lastAppOpen: $checkedConvert('lastAppOpen', (v) => (v as num?)?.toInt() ?? 0),
   );
   return val;
 });
@@ -525,10 +548,9 @@ Map<String, dynamic> _$AdSettingToJson(AdSetting instance) => <String, dynamic>{
   'appOpen': _$AdFeatureStateEnumMap[instance.appOpen]!,
   'interstitial': _$AdFeatureStateEnumMap[instance.interstitial]!,
   'personalizedAds': instance.personalizedAds,
-  'lastAppOpen': instance.lastAppOpen,
-  'lastAttRequestTime': instance.lastAttRequestTime,
   'attAuthorized': instance.attAuthorized,
-  'privacyPolicyAccepted': instance.privacyPolicyAccepted,
+  'lastAttRequestTime': instance.lastAttRequestTime,
+  'lastAppOpen': instance.lastAppOpen,
 };
 
 const _$AdFeatureStateEnumMap = {

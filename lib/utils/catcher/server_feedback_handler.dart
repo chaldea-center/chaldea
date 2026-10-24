@@ -56,6 +56,7 @@ class ServerFeedbackHandler extends ReportHandler {
   final Map<String, Uint8List> extraAttachments;
   final bool sendHtml;
   final bool printLogs;
+  final bool requireConsent;
 
   ServerFeedbackHandler({
     this.enableDeviceParameters = true,
@@ -72,10 +73,15 @@ class ServerFeedbackHandler extends ReportHandler {
     this.extraAttachments = const {},
     this.sendHtml = true,
     this.printLogs = false,
+    this.requireConsent = false,
   });
 
   @override
   Future<bool> handle(Report report, BuildContext? context) async {
+    if (requireConsent) {
+      final privacy = db.settings.display.privacy;
+      if (!privacy.consentSatisfied || !privacy.crashReportEnabled) return false;
+    }
     Uint8List? screenshotBytes = await _captureScreenshot();
     Map<String, Uint8List> generatedAttachments = onGenerateAttachments == null ? {} : onGenerateAttachments!();
 

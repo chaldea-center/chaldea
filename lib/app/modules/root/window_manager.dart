@@ -15,6 +15,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 import '../../routes/root_delegate.dart';
+import '../common/blank_page.dart';
 import 'multi_screenshots.dart';
 
 class WindowManager extends StatefulWidget {
@@ -37,6 +38,9 @@ class _WindowManagerState extends State<WindowManager> {
   @override
   Widget build(BuildContext context) {
     if (!root.appState.dataReady) {
+      if (root.appState.consentPending) {
+        return BlankPage(showIndicator: false);
+      }
       return BootstrapPage();
     }
     Widget child;

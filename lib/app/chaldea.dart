@@ -23,7 +23,7 @@ import 'package:chaldea/widgets/screenshot.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 import '../generated/l10n.dart';
-import '../models/db.dart';
+import '../models/models.dart';
 import '../packages/ads/ads.dart';
 import '../packages/language.dart';
 import '../packages/method_channel/method_channel_chaldea.dart';
@@ -31,6 +31,7 @@ import '../packages/network.dart';
 import '../packages/platform/platform.dart';
 import 'app.dart';
 import 'modules/auth/change_email_page.dart';
+import 'modules/home/subpage/privacy_center_page.dart';
 import 'routes/parser.dart';
 import 'tools/app_window.dart';
 
@@ -156,12 +157,34 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WindowListener
     windowManager.addListener(this);
   }
 
+  Future<void> _ensurePrivacyConsent(BuildContext context) async {
+    final privacy = db.settings.display.privacy;
+    final agreedBefore = privacy.accepted;
+    final needAsk = privacy.needsConsent;
+    if (kDebugMode) {
+      debugPrint(
+        '[privacy] accepted=${privacy.accepted} version=${privacy.acceptedVersion}'
+        '/$kPrivacyPolicyVersion asked=${privacy.consentAsked} needAsk=$needAsk',
+      );
+    }
+    if (!needAsk) {
+      rootRouter.appState.consentPending = false;
+      return;
+    }
+    final dialogContext = router.navigatorKey.currentContext ?? kAppKey.currentContext ?? context;
+    final agreed = await PrivacyConsentDialog.show(dialogContext, isUpdate: agreedBefore);
+    if (kDebugMode) debugPrint('[privacy] consent dialog result: $agreed');
+    await applyPrivacyConsent(agreed == true);
+    rootRouter.appState.consentPending = false;
+  }
+
   @override
   void afterFirstLayout(BuildContext context) async {
     AppWindowUtil.setAlwaysOnTop();
     if (PlatformU.isWindows) {
       MethodChannelChaldea.setWindowPos();
     }
+    await _ensurePrivacyConsent(context);
     AppAds.init();
 
     // Silent migration of legacy Worker tokens runs in the background after the

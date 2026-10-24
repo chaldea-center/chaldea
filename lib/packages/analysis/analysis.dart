@@ -15,6 +15,7 @@ class AppAnalysis {
   static final bool isSupported = PlatformU.isAndroid || PlatformU.isIOS;
 
   Future<void> initiate() => Future.value();
+  Future<void> halt() => Future.value();
   Future<String?> startView(String? viewName) => Future.value();
   Future<void> stopView(FutureOr<String?> viewId) => Future.value();
   Future<void> reportError(dynamic error, dynamic stackTrace) => Future.value();

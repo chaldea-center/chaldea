@@ -42,9 +42,7 @@ class AppAdImpl implements AppAdInterface {
   }
 
   @override
-  void setAdEventListener(AdEventCallback? callback) {
-    // Stub: Ad events not supported
-  }
+  void setAdEventListener(AdEventCallback? callback) {}
 
   @override
   Future<bool?> requestAttPermission() => Future.value(null);

@@ -523,6 +523,7 @@ class DisplaySettings {
   bool forceEdgeSwipePopGesture;
 
   AdSetting ad;
+  PrivacySetting privacy;
 
   bool showDebugFab;
 
@@ -549,10 +550,12 @@ class DisplaySettings {
     this.globalSelection = false,
     this.forceEdgeSwipePopGesture = false,
     AdSetting? ad,
+    PrivacySetting? privacy,
     this.showDebugFab = false,
   }) : sortedSvtTabs = sortedSvtTabs?.whereType<SvtTab>().toList() ?? List.of(SvtTab.values),
        hideSvtPlanDetails = hideSvtPlanDetails?.whereType<SvtPlanDetail>().toList() ?? [],
        ad = ad ?? AdSetting(),
+       privacy = privacy ?? PrivacySetting(),
        galleries = galleries ?? {} {
     validateSvtTabs();
   }
@@ -573,49 +576,60 @@ class DisplaySettings {
   Map<String, dynamic> toJson() => _$DisplaySettingsToJson(this);
 }
 
+const int kPrivacyPolicyVersion = 1;
+
+/// Master switch for the consent gate. Temporarily off: no dialog is shown and
+/// no consent state is written, so the app starts straight into data loading.
+/// Flip to true when the policy text is ready for release.
+const bool kPrivacyConsentEnabled = false;
+
+@JsonSerializable()
+class PrivacySetting {
+  bool accepted;
+  int acceptedVersion;
+  bool consentAsked;
+  bool crashReportEnabled;
+  bool analyticsEnabled;
+
+  PrivacySetting({
+    this.accepted = false,
+    this.acceptedVersion = 0,
+    this.consentAsked = false,
+    this.crashReportEnabled = true,
+    this.analyticsEnabled = true,
+  });
+
+  bool get needsConsent =>
+      kPrivacyConsentEnabled && (accepted ? acceptedVersion != kPrivacyPolicyVersion : !consentAsked);
+
+  bool get consentSatisfied => !kPrivacyConsentEnabled || (accepted && acceptedVersion == kPrivacyPolicyVersion);
+
+  factory PrivacySetting.fromJson(Map<String, dynamic> data) => _$PrivacySettingFromJson(data);
+
+  Map<String, dynamic> toJson() => _$PrivacySettingToJson(this);
+}
+
 @JsonSerializable()
 class AdSetting {
-  /// 广告总开关状态（使用AdFeatureState序列化）
-  /// defaults=未设置（跟随远程配置），on=开启，off=关闭
-  /// 注意：本地设置不支持forcedOn，forcedOn仅远程配置可用
+  /// Local settings never use [AdFeatureState.forcedOn]; that value is server-only.
   AdFeatureState enabled;
-
-  /// Banner广告开关状态
   AdFeatureState banner;
-
-  /// 开屏广告开关状态
   AdFeatureState appOpen;
-
-  /// 插屏广告开关状态
   AdFeatureState interstitial;
 
-  /// 个性化广告开关（null=未设置，默认关闭以合规优先）
-  /// true: 允许基于用户兴趣的个性化广告
-  /// false: 仅展示非个性化（上下文）广告
   bool? personalizedAds;
-
-  /// 上次开屏广告展示时间戳
-  int lastAppOpen;
-
-  /// 上次ATT权限请求时间戳（用于防重复弹窗）
+  bool? attAuthorized;
   int lastAttRequestTime;
 
-  /// ATT权限请求结果（null=未请求，true=已授权，false=已拒绝）
-  bool? attAuthorized;
+  int lastAppOpen;
 
-  /// 用户是否已同意隐私政策（广告相关）
-  bool privacyPolicyAccepted;
+  bool get shouldPersonalizeAds => personalizedAds ?? true;
 
-  /// 是否允许个性化广告
-  /// null或false均视为不允许（合规优先原则）
-  bool get shouldPersonalizeAds => personalizedAds == true;
-
-  /// 是否可以请求ATT权限（距上次请求超过7天冷却期，或从未请求）
   bool get canRequestAtt {
-    if (attAuthorized != null) return false; // 已有明确结果，不再请求
-    if (lastAttRequestTime == 0) return true; // 从未请求
+    if (attAuthorized != null) return false;
+    if (lastAttRequestTime == 0) return true;
     final elapsed = DateTime.now().timestamp - lastAttRequestTime;
-    return elapsed > 30 * 24 * 3600; // 30天冷却期
+    return elapsed > 30 * 24 * 3600;
   }
 
   AdSetting({
@@ -624,10 +638,9 @@ class AdSetting {
     this.appOpen = .defaults,
     this.interstitial = .defaults,
     this.personalizedAds,
-    this.lastAppOpen = 0,
-    this.lastAttRequestTime = 0,
     this.attAuthorized,
-    this.privacyPolicyAccepted = false,
+    this.lastAttRequestTime = 0,
+    this.lastAppOpen = 0,
   });
 
   factory AdSetting.fromJson(Map<String, dynamic> data) => _$AdSettingFromJson(data);

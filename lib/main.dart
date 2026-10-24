@@ -11,6 +11,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:chaldea/app/tools/app_window.dart';
 import 'package:chaldea/packages/home_widget.dart';
 
+import 'app/app.dart';
 import 'app/chaldea.dart';
 import 'app/modules/common/blank_page.dart';
 import 'app/modules/home/bootstrap/startup_failed_page.dart';
@@ -33,7 +34,11 @@ void main() async {
   try {
     await _initiateCommon();
     await db.initiate();
-    AppAnalysis.instance.initiate();
+    final privacy = db.settings.display.privacy;
+    rootRouter.appState.consentPending = privacy.needsConsent;
+    if (privacy.consentSatisfied && privacy.analyticsEnabled) {
+      AppAnalysis.instance.initiate();
+    }
     // Silent migration of legacy Worker tokens now runs in
     // _ChaldeaState.afterFirstLayout() — after the first frame renders, so the
     // user never sees a black screen and the app stays interactive.

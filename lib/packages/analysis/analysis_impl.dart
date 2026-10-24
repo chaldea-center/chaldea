@@ -11,6 +11,8 @@ import '../language.dart';
 import 'analysis.dart';
 
 class AppAnalysisImpl implements AppAnalysis {
+  bool _initiated = false;
+
   @override
   Future<void> initiate() async {
     final isInitialized = await Countly.isInitialized();
@@ -36,6 +38,13 @@ class AppAnalysisImpl implements AppAnalysis {
       await Countly.initWithConfig(config);
       // print('Countly init: $msg');
     }
+    _initiated = true;
+  }
+
+  @override
+  Future<void> halt() async {
+    _initiated = false;
+    await Countly.instance.halt();
   }
 
   @override
@@ -45,6 +54,7 @@ class AppAnalysisImpl implements AppAnalysis {
 
   @override
   Future<String?> startView(String? viewName) async {
+    if (!_initiated) return null;
     if (viewName == null) return null;
     final (baseRoute, subpath) = AppAnalysis.splitViewName(viewName);
     if (baseRoute.isEmpty) return null;
@@ -54,6 +64,7 @@ class AppAnalysisImpl implements AppAnalysis {
 
   @override
   Future<void> stopView(FutureOr<String?> viewId) async {
+    if (!_initiated) return;
     String? _viewId;
     if (viewId is Future) {
       _viewId = await viewId;
@@ -67,6 +78,7 @@ class AppAnalysisImpl implements AppAnalysis {
 
   @override
   Future<void> logEvent(String eventId, [Map<String, String>? attributes]) {
+    if (!_initiated) return Future.value();
     return Countly.instance.events.recordEvent(eventId, attributes, 1);
   }
 }

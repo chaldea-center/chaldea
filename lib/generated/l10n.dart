@@ -133,6 +133,26 @@ class S {
     return Intl.message('Ad', name: 'ad', desc: '', locale: localeName, args: []);
   }
 
+  /// `App Open`
+  String get ad_type_app_open {
+    return Intl.message('App Open', name: 'ad_type_app_open', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Banner`
+  String get ad_type_banner {
+    return Intl.message('Banner', name: 'ad_type_banner', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Interstitial`
+  String get ad_type_interstitial {
+    return Intl.message('Interstitial', name: 'ad_type_interstitial', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Ad Types`
+  String get ad_types {
+    return Intl.message('Ad Types', name: 'ad_types', desc: '', locale: localeName, args: []);
+  }
+
   /// `Add`
   String get add {
     return Intl.message('Add', name: 'add', desc: '', locale: localeName, args: []);
@@ -2026,6 +2046,53 @@ class S {
     return Intl.message('Confirm', name: 'confirm', desc: '', locale: localeName, args: []);
   }
 
+  /// `Agree`
+  String get consent_agree {
+    return Intl.message('Agree', name: 'consent_agree', desc: '', locale: localeName, args: []);
+  }
+
+  /// `To provide optional features such as crash diagnostics, product analytics and advertising, we need your consent to process certain device information. If you disagree, these optional features stay off while everything else (including data updates and cloud backup) keeps working. You can withdraw consent, disable personalized ads, or delete your account anytime in Settings → Privacy & Data.`
+  String get consent_body_optional {
+    return Intl.message(
+      'To provide optional features such as crash diagnostics, product analytics and advertising, we need your consent to process certain device information. If you disagree, these optional features stay off while everything else (including data updates and cloud backup) keeps working. You can withdraw consent, disable personalized ads, or delete your account anytime in Settings → Privacy & Data.',
+      name: 'consent_body_optional',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Disagree`
+  String get consent_disagree {
+    return Intl.message('Disagree', name: 'consent_disagree', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Privacy Policy`
+  String get consent_title {
+    return Intl.message('Privacy Policy', name: 'consent_title', desc: '', locale: localeName, args: []);
+  }
+
+  /// `We have updated the Chaldea Privacy Policy. Please review and confirm the updated policy before continuing.`
+  String get consent_update_body {
+    return Intl.message(
+      'We have updated the Chaldea Privacy Policy. Please review and confirm the updated policy before continuing.',
+      name: 'consent_update_body',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Privacy Policy Updated`
+  String get consent_update_title {
+    return Intl.message('Privacy Policy Updated', name: 'consent_update_title', desc: '', locale: localeName, args: []);
+  }
+
+  /// `View Privacy Policy`
+  String get consent_view_policy {
+    return Intl.message('View Privacy Policy', name: 'consent_view_policy', desc: '', locale: localeName, args: []);
+  }
+
   /// `Consumed`
   String get consumed {
     return Intl.message('Consumed', name: 'consumed', desc: '', locale: localeName, args: []);
@@ -2085,6 +2152,22 @@ class S {
   /// `CE`
   String get craft_essence_short {
     return Intl.message('CE', name: 'craft_essence_short', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Crash Diagnostics`
+  String get crash_report {
+    return Intl.message('Crash Diagnostics', name: 'crash_report', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Report crash logs and device info to help fix issues.`
+  String get crash_report_desc {
+    return Intl.message(
+      'Report crash logs and device info to help fix issues.',
+      name: 'crash_report_desc',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
   }
 
   /// `You can add more accounts later in Settings`
@@ -2382,6 +2465,17 @@ class S {
   /// `Delete`
   String get delete {
     return Intl.message('Delete', name: 'delete', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Sign in to delete your account`
+  String get delete_account_login_required {
+    return Intl.message(
+      'Sign in to delete your account',
+      name: 'delete_account_login_required',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
   }
 
   /// `Reason for Deletion`
@@ -4069,6 +4163,37 @@ class S {
     );
   }
 
+  /// `Authorized`
+  String get ios_att_authorized {
+    return Intl.message('Authorized', name: 'ios_att_authorized', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Denied — non-personalized ads only`
+  String get ios_att_denied {
+    return Intl.message(
+      'Denied — non-personalized ads only',
+      name: 'ios_att_denied',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Not yet requested`
+  String get ios_att_not_requested {
+    return Intl.message('Not yet requested', name: 'ios_att_not_requested', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Allow`
+  String get ios_att_request {
+    return Intl.message('Allow', name: 'ios_att_request', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Ad Tracking (iOS)`
+  String get ios_att_title {
+    return Intl.message('Ad Tracking (iOS)', name: 'ios_att_title', desc: '', locale: localeName, args: []);
+  }
+
   /// `Item`
   String get item {
     return Intl.message('Item', name: 'item', desc: '', locale: localeName, args: []);
@@ -4932,9 +5057,9 @@ class S {
     return Intl.message('Condition', name: 'open_condition', desc: '', locale: localeName, args: []);
   }
 
-  /// `Open In Browser`
+  /// `Open in browser`
   String get open_in_browser {
-    return Intl.message('Open In Browser', name: 'open_in_browser', desc: '', locale: localeName, args: []);
+    return Intl.message('Open in browser', name: 'open_in_browser', desc: '', locale: localeName, args: []);
   }
 
   /// `Please open with file manager`
@@ -5018,6 +5143,22 @@ class S {
   /// `Permanent`
   String get permanent {
     return Intl.message('Permanent', name: 'permanent', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Personalized Ads`
+  String get personalized_ads {
+    return Intl.message('Personalized Ads', name: 'personalized_ads', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Off: non-personalized ads only.`
+  String get personalized_ads_desc {
+    return Intl.message(
+      'Off: non-personalized ads only.',
+      name: 'personalized_ads_desc',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
   }
 
   /// `Pin to Top`
@@ -5144,6 +5285,63 @@ class S {
     );
   }
 
+  /// `Agree to the privacy policy to enable optional features`
+  String get privacy_agree_desc {
+    return Intl.message(
+      'Agree to the privacy policy to enable optional features',
+      name: 'privacy_agree_desc',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Privacy & Feedback`
+  String get privacy_and_feedback {
+    return Intl.message('Privacy & Feedback', name: 'privacy_and_feedback', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Privacy & Data`
+  String get privacy_center {
+    return Intl.message('Privacy & Data', name: 'privacy_center', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Contact Us`
+  String get privacy_contact {
+    return Intl.message('Contact Us', name: 'privacy_contact', desc: '', locale: localeName, args: []);
+  }
+
+  /// `We respond to privacy questions and complaints within 15 working days.`
+  String get privacy_contact_desc {
+    return Intl.message(
+      'We respond to privacy questions and complaints within 15 working days.',
+      name: 'privacy_contact_desc',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Data & Privacy`
+  String get privacy_data_switches {
+    return Intl.message('Data & Privacy', name: 'privacy_data_switches', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Privacy Policy`
+  String get privacy_policy {
+    return Intl.message('Privacy Policy', name: 'privacy_policy', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Agreed version`
+  String get privacy_policy_version {
+    return Intl.message('Agreed version', name: 'privacy_policy_version', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Your Rights`
+  String get privacy_your_rights {
+    return Intl.message('Your Rights', name: 'privacy_your_rights', desc: '', locale: localeName, args: []);
+  }
+
   /// `probability`
   String get probability {
     return Intl.message('probability', name: 'probability', desc: '', locale: localeName, args: []);
@@ -5152,6 +5350,22 @@ class S {
   /// `Expectation`
   String get probability_expectation {
     return Intl.message('Expectation', name: 'probability_expectation', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Product Analytics`
+  String get product_analytics {
+    return Intl.message('Product Analytics', name: 'product_analytics', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Anonymous usage statistics to improve features.`
+  String get product_analytics_desc {
+    return Intl.message(
+      'Anonymous usage statistics to improve features.',
+      name: 'product_analytics_desc',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
   }
 
   /// `Progress`
@@ -5505,6 +5719,17 @@ class S {
   /// `Rename`
   String get rename {
     return Intl.message('Rename', name: 'rename', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Report inappropriate ad`
+  String get report_inappropriate_ad {
+    return Intl.message(
+      'Report inappropriate ad',
+      name: 'report_inappropriate_ad',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
   }
 
   /// `Rerun`
@@ -7226,6 +7451,33 @@ class S {
     return Intl.message(
       'CN endpoint for China mainland\nWeb app is only recommended for PC users, Mobile website is laggy and may refresh unexpectedly.',
       name: 'web_domain_choice_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Withdraw Consent`
+  String get withdraw_consent {
+    return Intl.message('Withdraw Consent', name: 'withdraw_consent', desc: '', locale: localeName, args: []);
+  }
+
+  /// `After withdrawing, Chaldea will stop processing data for non-essential features (advertising, crash diagnostics, product analytics). Everything else, including data updates and cloud backup, is unaffected. You can agree again anytime.`
+  String get withdraw_consent_confirm {
+    return Intl.message(
+      'After withdrawing, Chaldea will stop processing data for non-essential features (advertising, crash diagnostics, product analytics). Everything else, including data updates and cloud backup, is unaffected. You can agree again anytime.',
+      name: 'withdraw_consent_confirm',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Ads, crash diagnostics and product analytics stop; everything else keeps working.`
+  String get withdraw_consent_desc {
+    return Intl.message(
+      'Ads, crash diagnostics and product analytics stop; everything else keeps working.',
+      name: 'withdraw_consent_desc',
       desc: '',
       locale: localeName,
       args: [],

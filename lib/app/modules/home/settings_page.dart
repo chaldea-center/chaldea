@@ -21,6 +21,7 @@ import 'subpage/feedback_page.dart';
 import 'subpage/game_data_page.dart';
 import 'subpage/game_server_page.dart';
 import 'subpage/network_settings.dart';
+import 'subpage/privacy_center_page.dart';
 import 'subpage/share_app_dialog.dart';
 import 'subpage/theme_color.dart';
 import 'subpage/translation_setting.dart';
@@ -211,6 +212,13 @@ class _SettingsPageState extends State<SettingsPage> {
                 trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
                 onTap: () {
                   router.popDetailAndPush(child: DisplaySettingPage());
+                },
+              ),
+              ListTile(
+                title: Text(S.current.privacy_center),
+                trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+                onTap: () {
+                  router.popDetailAndPush(child: const PrivacyCenterPage());
                 },
               ),
             ],
