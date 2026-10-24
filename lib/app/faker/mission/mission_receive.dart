@@ -216,7 +216,7 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
                 ),
               ),
             ),
-            SafeArea(child: buildButtonBar()),
+            SafeArea(child: buildButtonBar(missions)),
           ],
         ),
       ),
@@ -395,7 +395,13 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
     return false;
   }
 
-  Widget buildButtonBar() {
+  Widget buildButtonBar(List<EventMission> shownMissions) {
+    final clearIds = [
+      for (final mission in shownMissions)
+        if (isMissionClear(mission.id)) mission.id,
+    ];
+    final allSelected = clearIds.isNotEmpty && clearIds.every(selectedMissions.contains);
+    final showSelectAll = _mm != null && _mm!.id != MasterMission.kExtraMasterMissionId && _mm!.type != .daily;
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -457,6 +463,22 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
                 onPressed: selectedMissions.isEmpty ? null : receiveMissions,
                 child: Text('Receive ×${selectedMissions.length}'),
               ),
+              if (showSelectAll)
+                IconButton(
+                  onPressed: clearIds.isEmpty
+                      ? null
+                      : () {
+                          setState(() {
+                            if (allSelected) {
+                              selectedMissions.removeAll(clearIds);
+                            } else {
+                              selectedMissions.addAll(clearIds);
+                            }
+                          });
+                        },
+                  icon: Icon(allSelected ? Icons.check_box : Icons.square_outlined),
+                  tooltip: 'Select all',
+                ),
             ],
           ],
         ),

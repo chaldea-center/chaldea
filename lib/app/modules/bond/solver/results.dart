@@ -343,7 +343,7 @@ class BondSolverResultsTab extends StatelessWidget {
   }
 
   BattleTeamFormation _previewFormation(BondSolvedTeam team) {
-    final applied = team.applyTo(formation, FormationBondOption.fromJson(option.toJson()));
+    final applied = team.applyTo(formation, option.copy());
     final preview = applied.toFormationData();
     for (final slot in team.slots) {
       if (!slot.isSupport) continue;

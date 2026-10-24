@@ -300,8 +300,9 @@ class FakerReminders extends StatelessWidget {
         ].join(', ');
 
         yield ListTile(
+          dense: true,
           leading: const FaIcon(FontAwesomeIcons.listCheck, size: 18),
-          title: Text('[${Transl.enums(mm.type, (e) => e.missionType).l}] ${mm.getDispName()}'),
+          title: Text('[${Transl.enums(mm.type, (e) => e.missionType).l}] ${mm.getDispName(withId: false)}'),
           subtitle: Text(
             subtitle,
             style: closestEndedAt - now < kSecsPerDay ? TextStyle(color: Theme.of(context).colorScheme.error) : null,
@@ -334,6 +335,7 @@ class FakerReminders extends StatelessWidget {
     for (final (:present, :expireAt) in expiring.take(_kMaxPresentRows)) {
       final gift = present.toGift();
       yield ListTile(
+        dense: true,
         leading: Icon(Icons.card_giftcard),
         title: Text.rich(
           TextSpan(
@@ -351,6 +353,7 @@ class FakerReminders extends StatelessWidget {
 
     if (expiring.length > _kMaxPresentRows) {
       yield ListTile(
+        dense: true,
         leading: Icon(Icons.more_horiz),
         title: Text('${expiring.length - _kMaxPresentRows} more presents expiring'),
         subtitle: Text('${expiring.length} presents expire within $_kPresentWarningDays days'),
@@ -603,6 +606,7 @@ class FakerReminders extends StatelessWidget {
     if (userCoinRoom != null && userCoinRoom.num < maxCoinRoomNum) {
       children.add(
         ListTile(
+          dense: true,
           leading: Item.iconBuilder(context: context, item: Items.grail, width: 32),
           title: Text(S.current.holy_grail_casting),
           onTap: () => router.pushPage(CoinRoomPage(runtime: runtime)),

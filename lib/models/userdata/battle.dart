@@ -333,6 +333,8 @@ class BattleQuestInfo {
 
   Map<String, dynamic> toJson() => _$BattleQuestInfoToJson(this);
 
+  BattleQuestInfo copy() => BattleQuestInfo(id: id, phase: phase, enemyHash: enemyHash, region: region);
+
   static BattleQuestInfo? fromQuery(Map<String, String> query) {
     final id = int.tryParse(query['questId'] ?? "");
     final phase = int.tryParse(query['phase'] ?? "") ?? db.gameData.quests[id]?.phases.lastOrNull;
@@ -1426,6 +1428,31 @@ class FormationBondOption {
   }
 
   Map<String, dynamic> toJson() => _$FormationBondOptionToJson(this);
+
+  FormationBondOption copy() {
+    final option = FormationBondOption(
+      teamFormation: teamFormation.copy(),
+      quest: quest,
+      enableEvent: enableEvent,
+      campaigns: {for (final entry in campaigns.entries) entry.key: Map.of(entry.value)},
+      fixedDate: fixedDate,
+      svtBonus: [for (final bonus in svtBonus) bonus.copy()],
+      frontlineBonus: frontlineBonus,
+      teapotTimes: teapotTimes,
+      maxCost: maxCost,
+      favoriteSvtOnly: favoriteSvtOnly,
+      favoriteSvtEquipOnly: favoriteSvtEquipOnly,
+      releaseReference: releaseReference,
+      maxBond: maxBond,
+      excludedSvts: Set.of(excludedSvts),
+      excludedCes: Set.of(excludedCes),
+      maxCandidateTeams: maxCandidateTeams,
+      maxServants: maxServants,
+      searchFixedAscensions: searchFixedAscensions,
+    );
+    option.quest = quest?.copy();
+    return option;
+  }
 }
 
 @JsonSerializable()
@@ -1440,4 +1467,11 @@ class FormationBondSvtBonus {
   factory FormationBondSvtBonus.fromJson(Map<String, dynamic> json) => _$FormationBondSvtBonusFromJson(json);
 
   Map<String, dynamic> toJson() => _$FormationBondSvtBonusToJson(this);
+
+  FormationBondSvtBonus copy() => FormationBondSvtBonus(
+    addValue: addValue,
+    addRate: addRate,
+    isBond15: isBond15,
+    isBondReachLimit: isBondReachLimit,
+  );
 }

@@ -162,7 +162,7 @@ class _FormationBondPageState extends State<FormationBondPage> with SingleTicker
   String _strRate(int value) => value.format(percent: true, base: 10);
 
   FormationBondOption _buildSolverRequest(QuestPhase quest, BattleTeamSetup team) {
-    final solveOption = FormationBondOption.fromJson(option.toJson());
+    final solveOption = option.copy();
     solveOption.validate(quest);
     solveOption
       ..quest = BattleQuestInfo.quest(quest)

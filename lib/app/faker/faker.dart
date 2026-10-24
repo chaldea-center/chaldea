@@ -1256,32 +1256,35 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
       ),
       Padding(
         padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-        child: Wrap(
-          spacing: 8,
-          runSpacing: 4,
-          children: [
-            _questValueChip(
-              'ID ${battleOption.questId}',
-              onPressed: () {
-                runtime.lockTask(() {
-                  InputCancelOkDialog.number(
-                    title: 'Quest ID',
-                    initValue: battleOption.questId,
-                    onSubmit: (questId) async {
-                      if (await runtime.battle.selectQuest(questId)) {
-                        _onChangeQuest();
-                      }
-                      if (mounted) setState(() {});
-                    },
-                  ).showDialog(context);
-                });
-              },
-            ),
-            _questValueChip(
-              'phase ${battleOption.questPhase}/${quest != null && quest.phases.isNotEmpty ? Maths.max(quest.phases) : "-"}',
-              onPressed: quest == null || quest.phases.isEmpty ? null : _pickQuestPhase,
-            ),
-          ],
+        child: Center(
+          child: Wrap(
+            spacing: 8,
+            runSpacing: 4,
+            alignment: .center,
+            children: [
+              _questValueChip(
+                'ID ${battleOption.questId}',
+                onPressed: () {
+                  runtime.lockTask(() {
+                    InputCancelOkDialog.number(
+                      title: 'Quest ID',
+                      initValue: battleOption.questId,
+                      onSubmit: (questId) async {
+                        if (await runtime.battle.selectQuest(questId)) {
+                          _onChangeQuest();
+                        }
+                        if (mounted) setState(() {});
+                      },
+                    ).showDialog(context);
+                  });
+                },
+              ),
+              _questValueChip(
+                'phase ${battleOption.questPhase}/${quest != null && quest.phases.isNotEmpty ? Maths.max(quest.phases) : "-"}',
+                onPressed: quest == null || quest.phases.isEmpty ? null : _pickQuestPhase,
+              ),
+            ],
+          ),
         ),
       ),
     ]);
@@ -2172,6 +2175,8 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
           }
         },
         text: 'login',
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        foregroundColor: Theme.of(context).colorScheme.onPrimary,
       ),
       buildCompactButton(
         enabled: loggedIn && !inBattle,

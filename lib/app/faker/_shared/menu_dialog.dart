@@ -38,6 +38,13 @@ class _ButtonData {
   const _ButtonData({required this.icon, required this.name, this.enabled = true, required this.onTap});
 }
 
+class _GroupData {
+  final String title;
+  final List<_ButtonData> buttons;
+
+  const _GroupData({required this.title, required this.buttons});
+}
+
 class FakerMenuDialog extends StatefulWidget {
   final FakerRuntime runtime;
   const FakerMenuDialog({super.key, required this.runtime});
@@ -57,7 +64,196 @@ class _FakerMenuDialogState extends State<FakerMenuDialog> with FakerRuntimeStat
 
     final bool isLoggedIn = mstData.isLoggedIn;
 
+    final groups = <_GroupData>[
+      _GroupData(
+        title: 'Data',
+        buttons: [
+          _ButtonData(
+            icon: Icons.history,
+            name: S.current.history,
+            onTap: () {
+              router.pushPage(FakerHistoryViewer(agent: runtime.agent));
+            },
+          ),
+          _ButtonData(
+            icon: Icons.mark_email_unread,
+            name: S.current.present_box,
+            enabled: isLoggedIn,
+            onTap: () {
+              router.pushPage(UserPresentBoxManagePage(runtime: runtime));
+            },
+          ),
+          _ButtonData(
+            icon: Icons.cloud_download,
+            name: S.current.import_data,
+            enabled: isLoggedIn,
+            onTap: () {
+              router.pushPage(ImportHttpPage(mstData: mstData, region: runtime.region));
+            },
+          ),
+          _ButtonData(
+            icon: Icons.content_copy,
+            name: S.current.copy,
+            enabled: isLoggedIn,
+            onTap: () {
+              db.runtimeData.clipBoard.mstData = mstData;
+              EasyLoading.showToast('${S.current.copied} (In-app)');
+            },
+          ),
+        ],
+      ),
+      _GroupData(
+        title: S.current.enhance,
+        buttons: [
+          _ButtonData(
+            icon: Icons.storage,
+            name: S.current.svt_second_archive,
+            enabled: isLoggedIn,
+            onTap: () {
+              router.pushPage(SvtStoragePage(runtime: runtime));
+            },
+          ),
+          _ButtonData(
+            icon: FontAwesomeIcons.users.data,
+            name: S.current.servant,
+            enabled: isLoggedIn,
+            onTap: () {
+              router.pushPage(SvtCombinePage(runtime: runtime));
+            },
+          ),
+          _ButtonData(
+            icon: FontAwesomeIcons.streetView.data,
+            name: S.current.craft_essence,
+            enabled: isLoggedIn,
+            onTap: () {
+              router.pushPage(SvtEquipCombinePage(runtime: runtime));
+            },
+          ),
+          _ButtonData(
+            icon: FontAwesomeIcons.starOfDavid.data,
+            name: S.current.class_board,
+            enabled: isLoggedIn,
+            onTap: () {
+              router.pushPage(FakerClassBoardListPage(runtime: runtime));
+            },
+          ),
+        ],
+      ),
+      _GroupData(
+        title: S.current.event,
+        buttons: [
+          _ButtonData(
+            icon: FontAwesomeIcons.dice.data,
+            name: S.current.gacha,
+            enabled: isLoggedIn,
+            onTap: () {
+              router.pushPage(GachaDrawPage(runtime: runtime));
+            },
+          ),
+          _ButtonData(
+            icon: FontAwesomeIcons.listCheck.data,
+            name: S.current.master_mission,
+            enabled: isLoggedIn,
+            onTap: () {
+              router.pushPage(UserEventMissionReceivePage(runtime: runtime));
+            },
+          ),
+          _ButtonData(
+            icon: Icons.diversity_3,
+            name: 'Friends',
+            enabled: isLoggedIn,
+            onTap: () {
+              router.pushPage(FriendListPage(runtime: runtime));
+            },
+          ),
+          _ButtonData(
+            icon: Icons.shop,
+            name: S.current.shop,
+            enabled: isLoggedIn,
+            onTap: () {
+              router.pushPage(ShopEventListPage(runtime: runtime));
+            },
+          ),
+          if (isLoggedIn && (mstData.mstShopDaily.isNotEmpty || mstData.userShopDaily.isNotEmpty))
+            _ButtonData(
+              icon: Icons.currency_exchange,
+              name: Transl.enums(ShopType.exRoomShop, (e) => e.shopType).l,
+              onTap: () {
+                router.pushPage(ExRoomShopPage(runtime: runtime));
+              },
+            ),
+          if (mstData.userEventTrade.isNotEmpty)
+            _ButtonData(
+              icon: Icons.event,
+              name: S.current.event_trade,
+              onTap: () {
+                router.pushPage(UserEventTradePage(runtime: runtime));
+              },
+            ),
+          if (mstData.userBoxGacha.isNotEmpty)
+            _ButtonData(
+              icon: Icons.event,
+              name: S.current.event_lottery,
+              onTap: () {
+                router.pushPage(BoxGachaDrawPage(runtime: runtime));
+              },
+            ),
+          if (mstData.userEventRandomMission.isNotEmpty)
+            _ButtonData(
+              icon: Icons.event,
+              name: S.current.random_mission,
+              onTap: () {
+                router.pushPage(RandomMissionLoopPage(runtime: runtime));
+              },
+            ),
+          if (isLoggedIn &&
+              runtime.gameData.timerData.events.values.any(
+                (e) => e.treasureBoxes.isNotEmpty && isTimeOpen(e.startedAt, e.shopClosedAt, null),
+              ))
+            _ButtonData(
+              icon: Icons.event,
+              name: S.current.event_treasure_box,
+              onTap: () {
+                router.pushPage(TreasureBoxDrawPage(runtime: runtime));
+              },
+            ),
+          if (isLoggedIn &&
+              runtime.gameData.timerData.events.values.any(
+                (e) => e.recipes.isNotEmpty && isTimeOpen(e.startedAt, e.shopClosedAt, null),
+              ))
+            _ButtonData(
+              icon: Icons.event,
+              name: S.current.event_recipe,
+              onTap: () {
+                router.pushPage(CreateRecipePage(runtime: runtime));
+              },
+            ),
+        ],
+      ),
+    ];
+
+    // Wrap reports max intrinsic width as if every item stayed on one line, so
+    // the dialog is sized from the widest group instead, split into balanced
+    // rows that fit the screen.
+    const double kItemWidth = 56, kItemSpacing = 2, kContentPadding = 24, kMinDialogWidth = 280;
+    int itemCount = 0;
+    for (final group in groups) {
+      if (group.buttons.length > itemCount) itemCount = group.buttons.length;
+    }
+    final double available = MediaQuery.sizeOf(context).width - 80; // Dialog's default insetPadding
+    final int capacity = ((available - kContentPadding * 2 + kItemSpacing) / (kItemWidth + kItemSpacing)).floor().clamp(
+      1,
+      8,
+    );
+    final int rows = itemCount == 0 ? 1 : (itemCount / capacity).ceil();
+    final int perRow = itemCount == 0 ? 1 : (itemCount / rows).ceil();
+    final double contentWidth = perRow * (kItemWidth + kItemSpacing) - kItemSpacing;
+    final double dialogWidth = contentWidth + kContentPadding * 2 < kMinDialogWidth
+        ? kMinDialogWidth
+        : contentWidth + kContentPadding * 2;
+
     return AlertDialog(
+      constraints: BoxConstraints.tightFor(width: dialogWidth),
       title: const Text('Fake/Grand Order', style: TextStyle(fontSize: 18)),
       titlePadding: EdgeInsets.fromLTRB(24, 20, 24, 0),
       contentPadding: EdgeInsets.fromLTRB(24, 4, 24, 20),
@@ -85,176 +281,13 @@ class _FakerMenuDialogState extends State<FakerMenuDialog> with FakerRuntimeStat
                     fmtVer('timer=', timerData.hash ?? "", timerData.timestamp),
                   ],
                   'data=${gameTop.dataVer.toString().padRight(4)} date=${gameTop.dateVer > 100000 ? gameTop.dateVer.sec2date().toCustomString(year: false, second: false) : gameTop.dateVer}',
+                  if (gameTop.assetbundleFolder.isNotEmpty) 'folder=${gameTop.assetbundleFolder}',
                 ].join('\n'),
                 style: Theme.of(context).textTheme.bodySmall?.merge(kMonoStyle),
               ),
             ),
           ),
-          buildGroup(
-            title: 'Data',
-            buttons: [
-              _ButtonData(
-                icon: Icons.history,
-                name: S.current.history,
-                onTap: () {
-                  router.pushPage(FakerHistoryViewer(agent: runtime.agent));
-                },
-              ),
-              _ButtonData(
-                icon: Icons.mark_email_unread,
-                name: S.current.present_box,
-                enabled: isLoggedIn,
-                onTap: () {
-                  router.pushPage(UserPresentBoxManagePage(runtime: runtime));
-                },
-              ),
-              _ButtonData(
-                icon: Icons.cloud_download,
-                name: S.current.import_data,
-                enabled: isLoggedIn,
-                onTap: () {
-                  router.pushPage(ImportHttpPage(mstData: mstData, region: runtime.region));
-                },
-              ),
-              _ButtonData(
-                icon: Icons.content_copy,
-                name: S.current.copy,
-                enabled: isLoggedIn,
-                onTap: () {
-                  db.runtimeData.clipBoard.mstData = mstData;
-                  EasyLoading.showToast('${S.current.copied} (In-app)');
-                },
-              ),
-            ],
-          ),
-          buildGroup(
-            title: S.current.enhance,
-            buttons: [
-              _ButtonData(
-                icon: Icons.storage,
-                name: S.current.svt_second_archive,
-                enabled: isLoggedIn,
-                onTap: () {
-                  router.pushPage(SvtStoragePage(runtime: runtime));
-                },
-              ),
-              _ButtonData(
-                icon: FontAwesomeIcons.users.data,
-                name: S.current.servant,
-                enabled: isLoggedIn,
-                onTap: () {
-                  router.pushPage(SvtCombinePage(runtime: runtime));
-                },
-              ),
-              _ButtonData(
-                icon: FontAwesomeIcons.streetView.data,
-                name: S.current.craft_essence,
-                enabled: isLoggedIn,
-                onTap: () {
-                  router.pushPage(SvtEquipCombinePage(runtime: runtime));
-                },
-              ),
-              _ButtonData(
-                icon: FontAwesomeIcons.starOfDavid.data,
-                name: S.current.class_board,
-                enabled: isLoggedIn,
-                onTap: () {
-                  router.pushPage(FakerClassBoardListPage(runtime: runtime));
-                },
-              ),
-            ],
-          ),
-          buildGroup(
-            title: S.current.event,
-            buttons: [
-              _ButtonData(
-                icon: FontAwesomeIcons.dice.data,
-                name: S.current.gacha,
-                enabled: isLoggedIn,
-                onTap: () {
-                  router.pushPage(GachaDrawPage(runtime: runtime));
-                },
-              ),
-              _ButtonData(
-                icon: FontAwesomeIcons.listCheck.data,
-                name: S.current.master_mission,
-                enabled: isLoggedIn,
-                onTap: () {
-                  router.pushPage(UserEventMissionReceivePage(runtime: runtime));
-                },
-              ),
-              _ButtonData(
-                icon: Icons.diversity_3,
-                name: 'Friends',
-                enabled: isLoggedIn,
-                onTap: () {
-                  router.pushPage(FriendListPage(runtime: runtime));
-                },
-              ),
-              _ButtonData(
-                icon: Icons.shop,
-                name: S.current.shop,
-                enabled: isLoggedIn,
-                onTap: () {
-                  router.pushPage(ShopEventListPage(runtime: runtime));
-                },
-              ),
-              if (isLoggedIn && (mstData.mstShopDaily.isNotEmpty || mstData.userShopDaily.isNotEmpty))
-                _ButtonData(
-                  icon: Icons.currency_exchange,
-                  name: Transl.enums(ShopType.exRoomShop, (e) => e.shopType).l,
-                  onTap: () {
-                    router.pushPage(ExRoomShopPage(runtime: runtime));
-                  },
-                ),
-              if (mstData.userEventTrade.isNotEmpty)
-                _ButtonData(
-                  icon: Icons.event,
-                  name: S.current.event_trade,
-                  onTap: () {
-                    router.pushPage(UserEventTradePage(runtime: runtime));
-                  },
-                ),
-              if (mstData.userBoxGacha.isNotEmpty)
-                _ButtonData(
-                  icon: Icons.event,
-                  name: S.current.event_lottery,
-                  onTap: () {
-                    router.pushPage(BoxGachaDrawPage(runtime: runtime));
-                  },
-                ),
-              if (mstData.userEventRandomMission.isNotEmpty)
-                _ButtonData(
-                  icon: Icons.event,
-                  name: S.current.random_mission,
-                  onTap: () {
-                    router.pushPage(RandomMissionLoopPage(runtime: runtime));
-                  },
-                ),
-              if (isLoggedIn &&
-                  runtime.gameData.timerData.events.values.any(
-                    (e) => e.treasureBoxes.isNotEmpty && isTimeOpen(e.startedAt, e.shopClosedAt, null),
-                  ))
-                _ButtonData(
-                  icon: Icons.event,
-                  name: S.current.event_treasure_box,
-                  onTap: () {
-                    router.pushPage(TreasureBoxDrawPage(runtime: runtime));
-                  },
-                ),
-              if (isLoggedIn &&
-                  runtime.gameData.timerData.events.values.any(
-                    (e) => e.recipes.isNotEmpty && isTimeOpen(e.startedAt, e.shopClosedAt, null),
-                  ))
-                _ButtonData(
-                  icon: Icons.event,
-                  name: S.current.event_recipe,
-                  onTap: () {
-                    router.pushPage(CreateRecipePage(runtime: runtime));
-                  },
-                ),
-            ],
-          ),
+          for (final group in groups) buildGroup(title: group.title, buttons: group.buttons),
         ],
       ),
     );

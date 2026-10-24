@@ -172,7 +172,11 @@ class FakerRuntime {
                       constraints: BoxConstraints(maxWidth: size, maxHeight: size),
                       child: startedAt <= 0 || dt < 0
                           ? const SizedBox.shrink()
-                          : Text(dt.toString(), style: TextStyle(fontSize: 10), textAlign: TextAlign.center),
+                          : Text(
+                              dt.toString(),
+                              style: TextStyle(fontSize: size * 0.5),
+                              textAlign: TextAlign.center,
+                            ),
                     ),
                 ],
               );

@@ -10,12 +10,14 @@ import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/mst_data.dart';
 import 'package:chaldea/models/gamedata/quest.dart';
 import 'package:chaldea/models/models.dart' show GameCardMixin;
+import 'package:chaldea/models/userdata/battle.dart';
 import 'package:chaldea/packages/json_viewer/json_viewer.dart';
 import 'package:chaldea/packages/packages.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 import '../../modules/battle/formation/formation_card.dart';
+import '../../modules/bond/formation_bond.dart';
 import '../_shared/faker_ui.dart';
 import '../_shared/select_svt.dart';
 import '../_shared/select_svt_equip.dart';
@@ -115,7 +117,24 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
               ? 'Event Deck ${eventParam?.eventId}-${eventParam?.deckNo}'
               : 'Deck ${_userDeckEntity?.deckNo ?? widget.activeDeckId} ${_userDeckEntity?.name ?? ""}',
         ),
-        actions: [runtime.buildMenuButton(context)],
+        actions: [
+          IconButton(
+            onPressed: () {
+              final option = db.curUser.formationBondOption.copy()
+                ..teamFormation = BattleTeamFormationX.fromUserDeck(
+                  deckInfo: deckInfo,
+                  mstData: mstData,
+                  questPhase: questPhase,
+                )
+                ..quest = questPhase == null ? null : BattleQuestInfo.quest(questPhase)
+                ..svtBonus = List.generate(6, (_) => FormationBondSvtBonus());
+              router.pushPage(FormationBondPage(option: option));
+            },
+            icon: const Icon(Icons.favorite_outline),
+            tooltip: S.current.bond,
+          ),
+          runtime.buildMenuButton(context),
+        ],
       ),
       body: FakerTileTheme(
         child: Column(

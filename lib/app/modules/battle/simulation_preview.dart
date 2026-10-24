@@ -1276,7 +1276,7 @@ class _SimulationPreviewState extends State<SimulationPreview> {
   /// Mutable maps/lists are deep-copied so the temp page never mutates persisted state.
   FormationBondOption _tempFormationBondOption() {
     final saved = db.userData.curUser.formationBondOption;
-    return FormationBondOption.fromJson(saved.toJson())
+    return saved.copy()
       ..teamFormation = options.formation.copy().toFormationData()
       ..quest = questPhase == null ? null : BattleQuestInfo.quest(questPhase!)
       ..svtBonus = List.generate(6, (_) => FormationBondSvtBonus());
