@@ -136,6 +136,8 @@ class _SelectUserSvtPageState extends State<SelectUserSvtPage> {
             return collection != null && collection.friendshipRank < kBondLvDefaultMax;
           case UserSvtCombineType.ccUnlock:
             return mstData.userSvtCommandCode[userSvt.svtId]?.userCommandCodeIds.any((e) => e == -1) ?? true;
+          case UserSvtCombineType.td:
+            return mstData.hasTdUpgradeCopy(userSvt.svtId);
         }
       }).toList();
       if (!userSvtFilterData.availableCombines.matchAny(combineTypes)) return false;
@@ -210,10 +212,7 @@ class _SelectUserSvtPageState extends State<SelectUserSvtPage> {
                     showInvert: true,
                     options: UserSvtCombineType.values,
                     values: userSvtFilterData.availableCombines,
-                    optionBuilder: (v) => Text(switch (v) {
-                      UserSvtCombineType.bondLessThan10 => 'bond<10',
-                      _ => v.name,
-                    }),
+                    optionBuilder: (v) => Text(v.dispName),
                     onFilterChanged: (value, _) {
                       if (mounted) setState(() {});
                       update();

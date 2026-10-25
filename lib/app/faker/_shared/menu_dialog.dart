@@ -24,7 +24,6 @@ import '../friend/friend_list.dart';
 import '../gacha/gacha_draw.dart';
 import '../mission/mission_receive.dart';
 import '../runtime.dart';
-import '../shop/ex_room_shop.dart';
 import '../shop/shop_event_list.dart';
 import '../storage/svt_storage.dart';
 import 'history.dart';
@@ -174,14 +173,6 @@ class _FakerMenuDialogState extends State<FakerMenuDialog> with FakerRuntimeStat
               router.pushPage(ShopEventListPage(runtime: runtime));
             },
           ),
-          if (isLoggedIn && (mstData.mstShopDaily.isNotEmpty || mstData.userShopDaily.isNotEmpty))
-            _ButtonData(
-              icon: Icons.currency_exchange,
-              name: Transl.enums(ShopType.exRoomShop, (e) => e.shopType).l,
-              onTap: () {
-                router.pushPage(ExRoomShopPage(runtime: runtime));
-              },
-            ),
           if (mstData.userEventTrade.isNotEmpty)
             _ButtonData(
               icon: Icons.event,

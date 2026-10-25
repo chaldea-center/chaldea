@@ -949,13 +949,11 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
   Future<void> _selectNpMaterials() async {
     final baseUserSvt = mstData.userSvt[options.baseUserSvtId];
     if (baseUserSvt == null) return;
-    // svtMaterialTd svtId = baseSvtId + 1
-    final materialTdSvtId = db.gameData.servantsById[baseUserSvt.svtId + 1]?.type == SvtType.svtMaterialTd
-        ? baseUserSvt.svtId + 1
-        : null;
+    final materialTdSvtId = Servant.getMaterialTdSvtId(baseUserSvt.svtId);
     await router.pushBuilder(
       builder: (context) => SelectUserSvtPage(
         runtime: runtime,
+        inUseUserSvtIds: [baseUserSvt.id, ..._selection.materialUserSvtIds],
         filterOverride: (userSvt, mstData) {
           return userSvt.id != baseUserSvt.id &&
               (userSvt.svtId == baseUserSvt.svtId || userSvt.svtId == materialTdSvtId) &&

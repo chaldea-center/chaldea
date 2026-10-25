@@ -30,7 +30,10 @@ enum UserSvtCombineType {
   appendAny,
   bondLimit,
   bondLessThan10,
-  ccUnlock;
+  ccUnlock,
+
+  /// Same-servant copies (or its `svtMaterialTd`) exist and not all are NP5.
+  td;
 
   String get dispName {
     return switch (this) {
@@ -44,6 +47,7 @@ enum UserSvtCombineType {
       .bondLimit => S.current.bond,
       .bondLessThan10 => '${S.current.bond}＜10',
       .ccUnlock => S.current.command_code_short,
+      .td => 'NP',
     };
   }
 }

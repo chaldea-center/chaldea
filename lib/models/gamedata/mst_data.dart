@@ -220,6 +220,27 @@ class MasterDataManager extends MasterDataManagerBase {
   Iterable<UserServantEntity> get userSvtAndStorage => userSvt.followedBy(userSvtStorage);
   UserServantEntity? getUserSvt(int userSvtId) => userSvt[userSvtId] ?? userSvtStorage[userSvtId];
 
+  /// Group-wide: true even for a copy already at NP5. A `svtMaterialTd` id is
+  /// resolved to its base servant first.
+  bool hasTdUpgradeCopy(int svtId) {
+    if (db.gameData.servantsById[svtId] == null) return false;
+    final baseSvtId = Servant.getBaseSvtId(svtId);
+    final materialTdSvtId = Servant.getMaterialTdSvtId(baseSvtId);
+    var copies = 0;
+    var anyBelowMax = false;
+    var hasMaterial = false;
+    for (final other in userSvt) {
+      if (other.svtId == baseSvtId) {
+        copies++;
+        if (other.treasureDeviceLv1 < 5) anyBelowMax = true;
+      } else if (other.svtId == materialTdSvtId) {
+        hasMaterial = true;
+      }
+    }
+    if (!anyBelowMax) return false;
+    return hasMaterial || copies >= 2;
+  }
+
   MagusGrade? get magusGrade {
     if (isQuestClear(4000709)) {
       return MagusGrade.pride;

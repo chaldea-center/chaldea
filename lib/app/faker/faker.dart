@@ -245,7 +245,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
           },
         ),
         title: appBarTitle,
-        actions: [appBarProgressRing, runtime.buildHistoryButton(context), runtime.buildMenuButton(context)],
+        actions: [appBarStatus, runtime.buildHistoryButton(context), runtime.buildMenuButton(context)],
       ),
       body: PopScope(canPop: false, child: FakerTileTheme(child: body)),
     );
@@ -357,7 +357,8 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
     );
   }
 
-  Widget get appBarProgressRing {
+  Widget get appBarStatus {
+    final userGame = mstData.user ?? agent.user.userGame;
     return ValueListenableBuilder<double>(
       valueListenable: _headerCollapse,
       builder: (context, progress, _) {
@@ -368,11 +369,25 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
             widthFactor: progress,
             child: Opacity(
               opacity: progress,
-              child: runtime.buildCircularProgress(
-                context: context,
-                showElapsed: true,
-                size: 16,
-                padding: .symmetric(horizontal: 8),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (userGame != null)
+                    TimerUpdate(
+                      builder: (context, _) => Text(
+                        '${userGame.calCurAp()}/${userGame.actMax}'
+                        '\n${Duration(seconds: (userGame.actRecoverAt - DateTime.now().timestamp)).toString().split('.').first}',
+                        textAlign: TextAlign.end,
+                        style: const TextStyle(fontSize: 11),
+                      ),
+                    ),
+                  runtime.buildCircularProgress(
+                    context: context,
+                    showElapsed: true,
+                    size: 16,
+                    padding: .symmetric(horizontal: 8),
+                  ),
+                ],
               ),
             ),
           ),
@@ -384,25 +399,10 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
   /// Shown instead of the page title once the status card has collapsed.
   Widget get collapsedAppBarTitle {
     final userGame = mstData.user ?? agent.user.userGame;
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          '[${agent.user.serverName}] ${userGame?.displayName ?? "not login"}',
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: const TextStyle(fontSize: 15),
-        ),
-        if (userGame != null)
-          TimerUpdate(
-            builder: (context, _) => Text(
-              '${userGame.calCurAp()}/${userGame.actMax} '
-              '${Duration(seconds: (userGame.actRecoverAt - DateTime.now().timestamp)).toString().split('.').first}',
-              style: const TextStyle(fontSize: 11),
-            ),
-          ),
-      ],
+    return Text(
+      '[${agent.user.serverName}] ${userGame?.displayName ?? "not login"}',
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
     );
   }
 
@@ -2162,23 +2162,6 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
 
     final List<Widget> tools = [
       buildCompactButton(
-        onPressed: () async {
-          if (agent.user.lastRequestOptions?.success == false) {
-            final confirm = await SimpleConfirmDialog(
-              title: Text(S.current.warning),
-              content: Text("Last request not sent, still login?", style: TextStyle(color: Colors.red)),
-            ).showDialog(context);
-            if (confirm != true) return;
-          }
-          if (mounted) {
-            await SimpleConfirmDialog(title: const Text('Login'), onTapOk: _startLogin).showDialog(context);
-          }
-        },
-        text: 'login',
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Theme.of(context).colorScheme.onPrimary,
-      ),
-      buildCompactButton(
         enabled: loggedIn && !inBattle,
         onPressed: () async {
           final buyCount = await ApSeedExchangeCountDialog(mstData: mstData).showDialog<int>(context);
@@ -2212,6 +2195,23 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
           },
           text: 'b.setup',
         ),
+      buildCompactButton(
+        onPressed: () async {
+          if (agent.user.lastRequestOptions?.success == false) {
+            final confirm = await SimpleConfirmDialog(
+              title: Text(S.current.warning),
+              content: Text("Last request not sent, still login?", style: TextStyle(color: Colors.red)),
+            ).showDialog(context);
+            if (confirm != true) return;
+          }
+          if (mounted) {
+            await SimpleConfirmDialog(title: const Text('Login'), onTapOk: _startLogin).showDialog(context);
+          }
+        },
+        text: 'login',
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        foregroundColor: Theme.of(context).colorScheme.onPrimary,
+      ),
     ];
 
     final List<Widget> primary = [

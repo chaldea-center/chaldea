@@ -566,6 +566,15 @@ class Servant extends BasicServant {
     return const <int, int>{0: 0, 1: 0, 2: 1, 3: 3, 4: 4}[dispLimitCount] ?? dispLimitCount;
   }
 
+  static int getBaseSvtId(int svtId) {
+    return db.gameData.servantsById[svtId]?.type == SvtType.svtMaterialTd ? svtId - 1 : svtId;
+  }
+
+  static int? getMaterialTdSvtId(int baseSvtId) {
+    final materialSvtId = baseSvtId + 1;
+    return db.gameData.servantsById[materialSvtId]?.type == SvtType.svtMaterialTd ? materialSvtId : null;
+  }
+
   // not limitCount=0-4
   String? ascendIcon(int ascOrCostumeIdOrCharaId, {int? transformVal, bool bordered = true}) {
     if (id == kSuperAokoSvtId) {

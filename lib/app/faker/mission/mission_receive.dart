@@ -459,6 +459,7 @@ class _UserEventMissionReceivePageState extends State<UserEventMissionReceivePag
         FakerActionBar(
           groups: [
             [
+              if (showSelectAll) const SizedBox(width: 48),
               FilledButton(
                 onPressed: selectedMissions.isEmpty ? null : receiveMissions,
                 child: Text('Receive ×${selectedMissions.length}'),

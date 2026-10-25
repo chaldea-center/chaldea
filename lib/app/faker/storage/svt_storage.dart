@@ -200,7 +200,6 @@ class _SvtStoragePageState extends State<SvtStoragePage> with FakerRuntimeStateM
     ];
   }
 
-  // port of the combine-availability check in select_svt.dart
   List<UserSvtCombineType> _combineTypes(UserServantEntity card) {
     final svt = _dbSvt(card);
     if (svt == null || svt.collectionNo <= 0) return const [];
@@ -222,6 +221,7 @@ class _SvtStoragePageState extends State<SvtStoragePage> with FakerRuntimeStateM
       if (collection != null && collection.friendshipRank < kBondLvDefaultMax) UserSvtCombineType.bondLessThan10,
       if (mstData.userSvtCommandCode[card.svtId]?.userCommandCodeIds.any((e) => e == -1) ?? true)
         UserSvtCombineType.ccUnlock,
+      if (mstData.hasTdUpgradeCopy(card.svtId)) UserSvtCombineType.td,
     ];
   }
 

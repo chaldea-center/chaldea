@@ -2,6 +2,8 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
+import 'package:chaldea/app/modules/common/filter_page_base.dart';
+import 'package:chaldea/app/modules/craft_essence/filter.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/mst_tables.dart';
 import 'package:chaldea/models/models.dart';
@@ -33,7 +35,7 @@ class _SvtEquipCombinePageState extends State<SvtEquipCombinePage> with FakerRun
   late final runtime = widget.runtime;
   late final user = agent.user;
   final options = _SvtEquipCombineData();
-  final batchLimitBreakRarity = FilterGroupData<int>(options: {4});
+  final ceFilterData = CraftFilterData()..rarity.options = {4};
   final Map<int, Set<int>> _limitBreakMaterialIds = {};
   int? _limitBreakInventoryHash;
 
@@ -341,12 +343,24 @@ class _SvtEquipCombinePageState extends State<SvtEquipCombinePage> with FakerRun
           ],
         ),
       ),
-      FilterGroup<int>(
-        options: const [2, 3, 4, 5],
-        values: batchLimitBreakRarity,
-        enabled: !runtime.runningTask.value,
-        optionBuilder: (rarity) => Text('$rarity★'),
-        onFilterChanged: (_, _) => setState(() {}),
+      Row(
+        children: [
+          IconButton(
+            icon: const Icon(Icons.filter_alt),
+            tooltip: S.current.filter,
+            onPressed: runtime.runningTask.value ? null : _showFilterDialog,
+          ),
+          Expanded(
+            child: FilterGroup<int>(
+              options: const [2, 3, 4, 5],
+              values: ceFilterData.rarity,
+              enabled: !runtime.runningTask.value,
+              padding: const EdgeInsets.only(right: 12),
+              optionBuilder: (rarity) => Text('$rarity★'),
+              onFilterChanged: (_, _) => setState(() {}),
+            ),
+          ),
+        ],
       ),
       // const Padding(
       //   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -358,12 +372,27 @@ class _SvtEquipCombinePageState extends State<SvtEquipCombinePage> with FakerRun
     return ListView(padding: EdgeInsets.only(bottom: 72), children: children);
   }
 
+  void _showFilterDialog() {
+    FilterPage.show(
+      context: context,
+      builder: (context) => CraftFilterPage(
+        filterData: ceFilterData,
+        onChanged: (_) {
+          ceFilterData.rarity.options.remove(1);
+          ceFilterData.region.reset();
+          if (mounted) setState(() {});
+        },
+      ),
+    );
+  }
+
   List<Widget> _limitBreakRows() {
     _syncLimitBreakSelection();
-    final groups = runtime.combine
-        .getSvtEquipLimitBreakGroups()
-        .where((group) => batchLimitBreakRarity.matchOne(group.target.dbCE?.rarity ?? 0))
-        .toList();
+    final groups = runtime.combine.getSvtEquipLimitBreakGroups().where((group) {
+      final ce = group.target.dbCE;
+      if (ce == null) return false;
+      return CraftFilterPage.filter(ceFilterData, ce, status: mstData.getSvtEquipStatus(group.target));
+    }).toList();
     if (groups.isEmpty) {
       return [
         const Padding(
