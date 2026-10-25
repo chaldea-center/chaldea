@@ -1394,6 +1394,11 @@ class S {
     return Intl.message('Max servants', name: 'bond_max_servants', desc: '', locale: localeName, args: []);
   }
 
+  /// `Bond not maxed only`
+  String get bond_not_full_only {
+    return Intl.message('Bond not maxed only', name: 'bond_not_full_only', desc: '', locale: localeName, args: []);
+  }
+
   /// `Search fixed servant ascensions`
   String get bond_search_fixed_ascensions {
     return Intl.message(

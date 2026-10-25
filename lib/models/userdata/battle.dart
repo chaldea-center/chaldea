@@ -501,6 +501,43 @@ class SvtSaveData {
 
   factory SvtSaveData.fromJson(Map<String, dynamic> json) => _$SvtSaveDataFromJson(json);
 
+  /// Clears servant fields, keeping [supportType] and [equip1].
+  void resetSvtInfo() {
+    svtId = null;
+    limitCount = 4;
+    transformVal = 0;
+    skillIds = List.generate(kActiveSkillNums.length, (index) => null);
+    skillLvs = [10, 10, 10];
+    appendLvs = List.generate(kAppendSkillNums.length, (index) => 0);
+    tdId = 0;
+    tdLv = 5;
+    lv = 1;
+    atkFou = 1000;
+    hpFou = 1000;
+    fixedAtk = null;
+    fixedHp = null;
+    cardStrengthens = List.generate(5, (index) => 0);
+    commandCodeIds = List.generate(5, (index) => null);
+    disabledExtraSkills = {};
+    allowedExtraSkills = {};
+    customPassives = [];
+    customPassiveLvs = [];
+    grandSvt = false;
+    classBoardData = null;
+    equip2 = null;
+    equip3 = null;
+  }
+
+  /// Clears every CE slot, keeping [supportType].
+  void resetCeInfo() {
+    ceId = null;
+    ceLimitBreak = false;
+    ceLv = 0;
+    equip1 = SvtEquipSaveData();
+    equip2 = null;
+    equip3 = null;
+  }
+
   Map<String, dynamic> toJson() {
     if ((svtId == null || svtId == 0) && !supportType.isSupport && equip1.id == null) return {};
     this
@@ -1381,6 +1418,7 @@ class FormationBondOption {
   bool favoriteSvtEquipOnly;
   BondReleaseReference releaseReference;
   int maxBond;
+  bool bondNotFullOnly;
   Set<int> excludedSvts;
   Set<int> excludedCes;
   int maxCandidateTeams;
@@ -1403,6 +1441,7 @@ class FormationBondOption {
     this.favoriteSvtEquipOnly = true,
     this.releaseReference = BondReleaseReference.jp,
     this.maxBond = 15,
+    this.bondNotFullOnly = false,
     Set<int>? excludedSvts,
     Set<int>? excludedCes,
     this.maxCandidateTeams = 100,
@@ -1444,6 +1483,7 @@ class FormationBondOption {
       favoriteSvtEquipOnly: favoriteSvtEquipOnly,
       releaseReference: releaseReference,
       maxBond: maxBond,
+      bondNotFullOnly: bondNotFullOnly,
       excludedSvts: Set.of(excludedSvts),
       excludedCes: Set.of(excludedCes),
       maxCandidateTeams: maxCandidateTeams,

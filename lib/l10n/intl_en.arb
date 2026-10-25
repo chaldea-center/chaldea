@@ -202,6 +202,7 @@
   "bond_equip_change_skill": "Change Bond CE effect",
   "bond_limit": "Bond Limit",
   "bond_max_servants": "Max servants",
+  "bond_not_full_only": "Bond not maxed only",
   "bond_search_fixed_ascensions": "Search fixed servant ascensions",
   "bootstrap_page_title": "Bootstrap Page",
   "branch_quest": "Branch Quest",

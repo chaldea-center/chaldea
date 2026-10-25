@@ -11,14 +11,18 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 class ServantBondCETableTab extends StatefulWidget {
-  const ServantBondCETableTab({super.key});
+  final List<Servant> initialSvts;
+  const ServantBondCETableTab({super.key, this.initialSvts = const []});
 
   @override
   State<ServantBondCETableTab> createState() => _ServantBondCETableTabState();
 }
 
 class _ServantBondCETableTabState extends State<ServantBondCETableTab> with AutomaticKeepAliveClientMixin {
-  final List<_ServantWrap> selectedSvts = [_ServantWrap()]; // An empty _ServantWrap is a selection placeholder.
+  late final List<_ServantWrap> selectedSvts = [
+    for (final svt in widget.initialSvts) (_ServantWrap()..svt = svt),
+    _ServantWrap(), // An empty _ServantWrap is a selection placeholder.
+  ];
   late List<CraftEssence> bondCEs;
   final hovered = ValueNotifier<String?>(null);
 
@@ -67,7 +71,7 @@ class _ServantBondCETableTabState extends State<ServantBondCETableTab> with Auto
       ces.add(ce);
     }
     // Sort by collectionNo.
-    ces.sort((a, b) => a.collectionNo.compareTo(b.collectionNo));
+    ces.sort((a, b) => b.collectionNo.compareTo(a.collectionNo));
     return ces;
   }
 

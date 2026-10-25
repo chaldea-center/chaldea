@@ -8,7 +8,6 @@ import 'package:chaldea/models/userdata/battle.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
-import '../../bond/formation_bond.dart';
 import '../../common/filter_page_base.dart';
 import '../teams/filter.dart';
 import '../utils.dart';
@@ -264,16 +263,6 @@ class _FormationEditorState extends State<FormationEditor>
               }
             : null,
         child: Text(S.current.details),
-      ),
-      TextButton(
-        onPressed: () {
-          final option = db.curUser.formationBondOption.copy()
-            ..teamFormation = team.formation.copy()
-            ..quest = team.quest?.copy()
-            ..svtBonus = List.generate(6, (_) => FormationBondSvtBonus());
-          router.pushPage(FormationBondPage(option: option));
-        },
-        child: Text(S.current.bond),
       ),
       const SizedBox(width: 8),
       if (widget.onSelected != null)

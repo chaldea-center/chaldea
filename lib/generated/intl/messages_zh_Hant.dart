@@ -308,6 +308,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "bond_equip_change_skill": MessageLookupByLibrary.simpleMessage("切换羁绊礼装效果"),
     "bond_limit": MessageLookupByLibrary.simpleMessage("羈絆上限"),
     "bond_max_servants": MessageLookupByLibrary.simpleMessage("最多从者数"),
+    "bond_not_full_only": MessageLookupByLibrary.simpleMessage("仅限羁绊未满"),
     "bond_search_fixed_ascensions": MessageLookupByLibrary.simpleMessage("搜索固定从者灵基"),
     "bootstrap_page_title": MessageLookupByLibrary.simpleMessage("引導頁"),
     "branch_quest": MessageLookupByLibrary.simpleMessage("分支關卡"),

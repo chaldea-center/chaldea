@@ -1332,6 +1332,7 @@ class FormationBondSolver {
       }
       if (option.favoriteSvtOnly && !svt.status.favorite) continue;
       if (option.maxBond > 0 && svt.status.bond >= option.maxBond) continue;
+      if (option.bondNotFullOnly && svt.status.isReachBondLimit) continue;
       final effects = _eventEffects(svt);
       final campaign = _campaignRate(svt.id);
       final limits = _svtLimits(svt);

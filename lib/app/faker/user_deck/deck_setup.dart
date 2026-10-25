@@ -9,7 +9,7 @@ import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/mst_data.dart';
 import 'package:chaldea/models/gamedata/quest.dart';
-import 'package:chaldea/models/models.dart' show GameCardMixin;
+import 'package:chaldea/models/models.dart' show GameCardMixin, Servant;
 import 'package:chaldea/models/userdata/battle.dart';
 import 'package:chaldea/packages/json_viewer/json_viewer.dart';
 import 'package:chaldea/packages/packages.dart';
@@ -17,6 +17,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 import '../../modules/battle/formation/formation_card.dart';
+import '../../modules/bond/bond_bonus.dart';
 import '../../modules/bond/formation_bond.dart';
 import '../_shared/faker_ui.dart';
 import '../_shared/select_svt.dart';
@@ -117,24 +118,7 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
               ? 'Event Deck ${eventParam?.eventId}-${eventParam?.deckNo}'
               : 'Deck ${_userDeckEntity?.deckNo ?? widget.activeDeckId} ${_userDeckEntity?.name ?? ""}',
         ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              final option = db.curUser.formationBondOption.copy()
-                ..teamFormation = BattleTeamFormationX.fromUserDeck(
-                  deckInfo: deckInfo,
-                  mstData: mstData,
-                  questPhase: questPhase,
-                )
-                ..quest = questPhase == null ? null : BattleQuestInfo.quest(questPhase)
-                ..svtBonus = List.generate(6, (_) => FormationBondSvtBonus());
-              router.pushPage(FormationBondPage(option: option));
-            },
-            icon: const Icon(Icons.favorite_outline),
-            tooltip: S.current.bond,
-          ),
-          runtime.buildMenuButton(context),
-        ],
+        actions: [runtime.buildMenuButton(context)],
       ),
       body: FakerTileTheme(
         child: Column(
@@ -254,6 +238,32 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
                       ),
                     ],
                   ),
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    spacing: 8,
+                    children: [
+                      TextButton(
+                        onPressed: () {
+                          final option = db.curUser.formationBondOption.copy()
+                            ..teamFormation = BattleTeamFormationX.fromUserDeck(
+                              deckInfo: deckInfo,
+                              mstData: mstData,
+                              questPhase: questPhase,
+                            )
+                            ..quest = questPhase == null ? null : BattleQuestInfo.quest(questPhase)
+                            ..svtBonus = List.generate(6, (_) => FormationBondSvtBonus());
+                          router.pushPage(FormationBondPage(option: option));
+                        },
+                        child: Text(S.current.team_bond),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          router.pushPage(BondBonusHomePage(svts: deckServants, initialIndex: 1));
+                        },
+                        child: Text('${S.current.bond} Table'),
+                      ),
+                    ],
+                  ),
                   if (questPhase != null) ...[
                     kDefaultDivider,
                     ListTile(
@@ -337,6 +347,11 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
       ),
     );
   }
+
+  /// Owned servants of this deck, empty slots and supports skipped.
+  List<Servant> get deckServants => [
+    for (final deckSvt in deckInfo.svts) ?db.gameData.servantsById[mstData.userSvt[deckSvt.userSvtId]?.svtId],
+  ];
 
   Widget buildSvt(DeckServantData deckSvt) {
     final questPhase = widget.eventDeckParam?.questPhase;

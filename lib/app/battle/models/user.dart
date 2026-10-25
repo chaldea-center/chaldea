@@ -73,6 +73,43 @@ class PlayerSvtData {
     grandSvt = false;
   }
 
+  /// Clears servant fields, keeping [supportType] and [equip1].
+  void resetSvtInfo() {
+    svt = null;
+    transformSvt = null;
+    transformVal = false;
+    limitCount = 4;
+    skillLvs = List.filled(kActiveSkillNums.length, 10);
+    skills = List.filled(kActiveSkillNums.length, null);
+    appendLvs = List.filled(kAppendSkillNums.length, 0);
+    extraPassives = [];
+    disabledExtraSkills = {};
+    allowedExtraSkills = {};
+    customPassives = [];
+    customPassiveLvs = [];
+    tdLv = 5;
+    td = null;
+    lv = 1;
+    bondLv = 5;
+    atkFou = 1000;
+    hpFou = 1000;
+    fixedAtk = null;
+    fixedHp = null;
+    cardStrengthens = [0, 0, 0, 0, 0];
+    commandCodes = [null, null, null, null, null];
+    grandSvt = false;
+    classBoardData = ClassBoardStatisticsData();
+    equip2 = SvtEquipData();
+    equip3 = SvtEquipData();
+  }
+
+  /// Clears every CE slot, keeping [supportType].
+  void resetCeInfo() {
+    equip1 = SvtEquipData();
+    equip2 = SvtEquipData();
+    equip3 = SvtEquipData();
+  }
+
   Future<void> loadTransformSvt({required bool raiseIfNotFound}) async {
     transformSvt = null;
     int transformId = svt?.script?.transformInfo?.saveTransform ?? 0;

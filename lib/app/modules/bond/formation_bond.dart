@@ -109,6 +109,9 @@ class _FormationBondPageState extends State<FormationBondPage> with SingleTicker
     if (_runtime.userBacked && option.teamFormation.svts.every((svt) => svt == null)) {
       option.teamFormation.svts[2] = SvtSaveData(supportType: SupportSvtType.friend);
     }
+    if ((option.quest?.id ?? 0) == 0) {
+      option.quest = BattleQuestInfo(id: 94137202, phase: 1, enemyHash: null, region: option.quest?.region);
+    }
     restore();
   }
 
@@ -149,6 +152,31 @@ class _FormationBondPageState extends State<FormationBondPage> with SingleTicker
   void saveData() {
     option.teamFormation = formation.toFormationData();
     if (questEntity != null) option.quest = BattleQuestInfo.quest(questEntity!);
+  }
+
+  Future<void> clearSvtInfo() async {
+    final confirmed = await SimpleConfirmDialog(title: Text('${S.current.clear} ${S.current.servant}'))
+        .showDialog(context);
+    if (!mounted || confirmed != true) return;
+    updateSharedInput(() {
+      for (var index = 0; index < formation.svts.length; index++) {
+        final slot = formation.svts[index];
+        if (slot.supportType.isSupport) continue;
+        slot.resetSvtInfo();
+        if (index < option.svtBonus.length) option.svtBonus[index] = FormationBondSvtBonus();
+      }
+    });
+  }
+
+  Future<void> clearCeInfo() async {
+    final confirmed = await SimpleConfirmDialog(title: Text('${S.current.clear} ${S.current.craft_essence_short}'))
+        .showDialog(context);
+    if (!mounted || confirmed != true) return;
+    updateSharedInput(() {
+      for (final slot in formation.svts) {
+        slot.resetCeInfo();
+      }
+    });
   }
 
   void validate() {
@@ -413,6 +441,20 @@ class _FormationBondPageState extends State<FormationBondPage> with SingleTicker
                   ? PreferPlayerSvtDataSource.current
                   : PreferPlayerSvtDataSource.none,
               onChanged: () => updateSharedInput(() {}),
+            ),
+            Center(
+              child: Wrap(
+                crossAxisAlignment: .center,
+                children: [
+                  Text('${S.current.clear}  '),
+                  TextButton(style: kTextButtonDenseStyle, onPressed: clearSvtInfo, child: Text(S.current.servant)),
+                  TextButton(
+                    style: kTextButtonDenseStyle,
+                    onPressed: clearCeInfo,
+                    child: Text(S.current.craft_essence_short),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -720,13 +762,6 @@ class _FormationBondPageState extends State<FormationBondPage> with SingleTicker
             value: option.favoriteSvtOnly,
             onChanged: (v) => updateSharedInput(() => option.favoriteSvtOnly = v),
           ),
-          SwitchListTile.adaptive(
-            dense: true,
-            title: Text(S.current.favorite),
-            subtitle: Text('${S.current.craft_essence} (${S.current.card_status_owned})'),
-            value: option.favoriteSvtEquipOnly,
-            onChanged: (v) => updateSharedInput(() => option.favoriteSvtEquipOnly = v),
-          ),
           ListTile(
             dense: true,
             title: Text(S.current.bond),
@@ -739,6 +774,20 @@ class _FormationBondPageState extends State<FormationBondPage> with SingleTicker
               ),
               child: Text(option.maxBond <= 0 ? S.current.general_any : '≤${option.maxBond}'),
             ),
+          ),
+          SwitchListTile.adaptive(
+            dense: true,
+            title: Text(S.current.bond_not_full_only),
+            value: option.bondNotFullOnly,
+            onChanged: (v) => updateSharedInput(() => option.bondNotFullOnly = v),
+          ),
+          const Divider(indent: 16, endIndent: 16),
+          SwitchListTile.adaptive(
+            dense: true,
+            title: Text(S.current.favorite),
+            subtitle: Text('${S.current.craft_essence} (${S.current.card_status_owned})'),
+            value: option.favoriteSvtEquipOnly,
+            onChanged: (v) => updateSharedInput(() => option.favoriteSvtEquipOnly = v),
           ),
         ],
       ),
