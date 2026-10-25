@@ -308,6 +308,29 @@ class _BattleRecorderPanelState extends State<BattleRecorderPanel> {
   }
 }
 
+/// One unit of the column layout: a panel element, one record, or a merged run of same-kind group records.
+class _SplitItem {
+  final double estimatedHeight;
+  final Widget widget;
+  final RecordBreakMode breakMode;
+
+  /// Wave headers and standalone panel elements start a card; other items continue one.
+  final bool startsCard;
+
+  /// Standalone elements (quest/team/options cards, footer) already carry their own surface.
+  final bool wrapInCard;
+
+  const _SplitItem({
+    required this.estimatedHeight,
+    required this.widget,
+    required this.breakMode,
+    required this.startsCard,
+    this.wrapInCard = false,
+  });
+
+  bool get canBeLastInColumn => breakMode != RecordBreakMode.bindNext;
+}
+
 class BattleRecorderPanelBase extends StatelessWidget {
   final BattleData? battleData;
   final List<BattleRecord>? records;
@@ -330,106 +353,165 @@ class BattleRecorderPanelBase extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<(double, Widget)> children = [
-      if (battleData?.niceQuest?.isLaplaceSharable == false)
-        (10, createCard(Text(S.current.laplace_quest_complex_ai_hint, style: Theme.of(context).textTheme.bodySmall))),
-      if (quest != null) (308.0, getQuest(quest!)),
-      if (team != null) (115.0, getTeam(context, team!)),
-      if (options != null) getOptions(context, options!),
-      ...getRecordCards(context),
-    ];
-    if (battleData?.isBattleWin == true) {
-      children.add((
-        21,
-        Center(
-          child: Text(
-            'Created by Chaldea App v${AppInfo.versionString}'
-            '\n${HostsX.appHost}/laplace',
-            style: Theme.of(context).textTheme.bodySmall,
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ));
-    }
+    final items = buildSplitItems(context);
     if (showTwoColumn) {
-      final totalHeight = Maths.sum(children.map((e) => e.$1));
-      int leftCount = 0;
-      double leftHeight = 0.0;
-      double rightHeight = totalHeight - leftHeight;
-      for (int index = 0; index < children.length; index++) {
-        final height = children[index].$1;
-        if (max(leftHeight + height, rightHeight - height) <= max(leftHeight, rightHeight)) {
-          leftCount += 1;
-          leftHeight += height;
-          rightHeight -= height;
-        } else {
-          break;
-        }
-      }
-      return Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          for (final cards in [children.take(leftCount), children.skip(leftCount)])
+      final splitIndex = findSplitIndex(items, hasTrailingFooter: battleData?.isBattleWin == true);
+      if (splitIndex != null) {
+        final leftItems = items.sublist(0, splitIndex);
+        final rightItems = items.sublist(splitIndex);
+        final cutTop = rightItems.isNotEmpty && !rightItems.first.startsCard;
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
             Expanded(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: cards.map((e) => e.$2).toList(),
+                children: renderRuns(leftItems, cutBottom: cutTop),
               ),
             ),
-        ],
-      );
-    } else {
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: children.map((e) => e.$2).toList(),
-      );
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: renderRuns(rightItems, cutTop: cutTop),
+              ),
+            ),
+          ],
+        );
+      }
     }
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: renderRuns(items),
+    );
   }
 
-  List<(double, Widget)> getRecordCards(BuildContext context) {
-    final cards = <(double height, Widget child)>[];
-    final records = this.records ?? battleData?.recorder.records ?? [];
-    if (records.length == 2 && records[0] is BattleProgressWaveRecord && records[1] is BattleProgressTurnRecord) {
-      return [];
-    }
-    List<(double, Widget)> cardChildren = [];
-    for (final record in records) {
-      if (record is BattleProgressWaveRecord) {
-        if (cardChildren.isNotEmpty) {
-          cards.add(createWave(context, cardChildren));
-        }
-        cardChildren = [];
+  List<_SplitItem> buildSplitItems(BuildContext context) {
+    final items = <_SplitItem>[
+      if (battleData?.niceQuest?.isLaplaceSharable == false)
+        _SplitItem(
+          estimatedHeight: 10,
+          widget: createCard(
+            Text(S.current.laplace_quest_complex_ai_hint, style: Theme.of(context).textTheme.bodySmall),
+          ),
+          breakMode: RecordBreakMode.free,
+          startsCard: true,
+        ),
+      if (quest != null)
+        _SplitItem(estimatedHeight: 308.0, widget: getQuest(quest!), breakMode: RecordBreakMode.free, startsCard: true),
+      if (team != null)
+        _SplitItem(
+          estimatedHeight: 115.0,
+          widget: getTeam(context, team!),
+          breakMode: RecordBreakMode.free,
+          startsCard: true,
+        ),
+      if (options != null) getOptions(context, options!),
+    ];
 
-        cardChildren.add((
-          record.estimatedHeight,
+    final records = this.records ?? battleData?.recorder.records ?? [];
+    final justStarted =
+        records.length == 2 && records[0] is BattleProgressWaveRecord && records[1] is BattleProgressTurnRecord;
+    if (!justStarted) {
+      List<(double, Widget)> groupChildren = [];
+      RecordBreakMode? groupKind;
+      void flushGroup() {
+        if (groupChildren.isEmpty) return;
+        items.add(
+          _SplitItem(
+            estimatedHeight: Maths.sum(groupChildren.map((e) => e.$1)),
+            widget: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: groupChildren.map((e) => e.$2).toList(),
+            ),
+            breakMode: groupKind!,
+            startsCard: false,
+            wrapInCard: true,
+          ),
+        );
+        groupChildren = [];
+        groupKind = null;
+      }
+
+      for (final record in records) {
+        final child = buildRecordWidget(context, record);
+        if (child == null) continue;
+        final mode = record.breakMode;
+        if (mode == RecordBreakMode.groupSkill || mode == RecordBreakMode.groupAttack) {
+          if (groupKind != null && groupKind != mode) flushGroup();
+          groupKind ??= mode;
+          groupChildren.add(child);
+          continue;
+        }
+        flushGroup();
+        items.add(
+          _SplitItem(
+            estimatedHeight: child.$1,
+            widget: child.$2,
+            breakMode: mode,
+            startsCard: record is BattleProgressWaveRecord,
+            wrapInCard: true,
+          ),
+        );
+      }
+      flushGroup();
+    }
+
+    if (battleData?.isBattleWin == true) {
+      items.add(
+        _SplitItem(
+          estimatedHeight: 21,
+          widget: Center(
+            child: Text(
+              'Created by Chaldea App v${AppInfo.versionString}'
+              '\n${HostsX.appHost}/laplace',
+              style: Theme.of(context).textTheme.bodySmall,
+              textAlign: TextAlign.center,
+            ),
+          ),
+          breakMode: RecordBreakMode.free,
+          startsCard: true,
+        ),
+      );
+    }
+    return items;
+  }
+
+  /// Null when the record is not displayed.
+  (double, Widget)? buildRecordWidget(BuildContext context, BattleRecord record) {
+    switch (record) {
+      case BattleProgressWaveRecord r:
+        return (
+          r.estimatedHeight,
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8),
             child: Center(
-              child: Text('${S.current.quest_wave} ${record.wave}', style: Theme.of(context).textTheme.titleMedium),
+              child: Text('${S.current.quest_wave} ${r.wave}', style: Theme.of(context).textTheme.titleMedium),
             ),
           ),
-        ));
-      } else if (record is BattleSkipWaveRecord) {
-        cardChildren.add((
-          record.estimatedHeight,
+        );
+      case BattleProgressTurnRecord r:
+        return (
+          r.estimatedHeight,
+          Center(child: Text('${S.current.battle_turn} ${r.turn}', style: Theme.of(context).textTheme.titleSmall)),
+        );
+      case BattleSkipWaveRecord r:
+        return (
+          r.estimatedHeight,
           Text(
-            'Skip Wave ${record.wave}',
+            'Skip Wave ${r.wave}',
             style: TextStyle(color: Theme.of(context).colorScheme.error, fontWeight: FontWeight.bold),
             textScaler: const TextScaler.linear(1.2),
           ),
-        ));
-      } else if (record is BattleProgressTurnRecord) {
-        cardChildren.add((
-          record.estimatedHeight,
-          Center(child: Text('${S.current.battle_turn} ${record.turn}', style: Theme.of(context).textTheme.titleSmall)),
-        ));
-      } else if (record is BattleSkillRecord) {
-        cardChildren.add((record.estimatedHeight, buildSkillLog(context, record)));
-      } else if (record is BattleOrderChangeRecord) {
-        cardChildren.add((
-          record.estimatedHeight,
+        );
+      case BattleSkillRecord r:
+        return (r.estimatedHeight, buildSkillLog(context, r));
+      case BattleOrderChangeRecord r:
+        return (
+          r.estimatedHeight,
           prefixIndicator(
             context,
             Text.rich(
@@ -440,35 +522,17 @@ class BattleRecorderPanelBase extends StatelessWidget {
                     style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                   const TextSpan(text: ': '),
-                  ...drawSvt(context, record.onField),
+                  ...drawSvt(context, r.onField),
                   const TextSpan(text: '⇄ '),
-                  ...drawSvt(context, record.backup),
+                  ...drawSvt(context, r.backup),
                 ],
               ),
             ),
           ),
-        ));
-      } else if (record is BattleAttackRecord) {
-        cardChildren.add((record.estimatedHeight, _AttackDetailWidget(record: record, battleData: battleData)));
-      } else if (record is BattleInstantDeathRecord) {
-        cardChildren.add((record.estimatedHeight, _InstantDeathDetailWidget(record: record, battleData: battleData)));
-      } else if (record is BattleMessageRecord) {
-        Widget child = Text.rich(
-          TextSpan(
-            children: [
-              TextSpan(text: record.message, style: record.style),
-              if (record.target != null) ...[const TextSpan(text: ': '), ...drawSvt(context, record.target!)],
-            ],
-          ),
-          textAlign: record.textAlign,
         );
-        if (record.alignment != null) {
-          child = Align(alignment: record.alignment!, child: child);
-        }
-        cardChildren.add((record.estimatedHeight, child));
-      } else if (record is BattleAttacksInitiationRecord) {
-        cardChildren.add((
-          record.estimatedHeight,
+      case BattleAttacksInitiationRecord r:
+        return (
+          r.estimatedHeight,
           prefixIndicator(
             context,
             Text.rich(
@@ -479,38 +543,100 @@ class BattleRecorderPanelBase extends StatelessWidget {
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   const TextSpan(text: ': '),
-                  if (record.attacks.isEmpty) TextSpan(text: S.current.skip_current_turn),
-                  for (final attack in record.attacks) ...drawSvt(context, attack.actor, attack.cardData),
+                  if (r.attacks.isEmpty) TextSpan(text: S.current.skip_current_turn),
+                  for (final attack in r.attacks) ...drawSvt(context, attack.actor, attack.cardData),
                 ],
               ),
             ),
             color: Colors.red,
-            top: record.attacks.isEmpty ? 8 : null,
+            top: r.attacks.isEmpty ? 8 : null,
           ),
-        ));
-      } else if (record is BattleSkillActivationRecord) {
-        // noop
-      } else {
-        assert(false, record);
-      }
+        );
+      case BattleAttackRecord r:
+        return (r.estimatedHeight, _AttackDetailWidget(record: r, battleData: battleData));
+      case BattleInstantDeathRecord r:
+        return (r.estimatedHeight, _InstantDeathDetailWidget(record: r, battleData: battleData));
+      case BattleMessageRecord r:
+        Widget child = Text.rich(
+          TextSpan(
+            children: [
+              TextSpan(text: r.message, style: r.style),
+              if (r.target != null) ...[const TextSpan(text: ': '), ...drawSvt(context, r.target!)],
+            ],
+          ),
+          textAlign: r.textAlign,
+        );
+        if (r.alignment != null) {
+          child = Align(alignment: r.alignment!, child: child);
+        }
+        return (r.estimatedHeight, child);
+      case BattleSkillActivationRecord _:
+      case BattleLossHpRecord _:
+      case BattleReduceHpRecord _:
+        return null;
     }
-    if (cardChildren.isNotEmpty) {
-      cards.add(createWave(context, cardChildren));
-    }
-    return cards;
   }
 
-  (double, Widget) createWave(BuildContext context, List<(double, Widget)> children) {
-    return (
-      Maths.sum(children.map((e) => e.$1)) + 12,
-      createCard(
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: children.map((e) => e.$2).toList(),
-        ),
-      ),
-    );
+  /// Null when no valid split exists; ties prefer a wave-card boundary.
+  int? findSplitIndex(List<_SplitItem> items, {required bool hasTrailingFooter}) {
+    final n = items.length;
+    if (n < 2) return null;
+    final prefixHeights = List<double>.filled(n + 1, 0.0);
+    for (int i = 0; i < n; i++) {
+      prefixHeights[i + 1] = prefixHeights[i] + items[i].estimatedHeight;
+    }
+    final totalHeight = prefixHeights[n];
+    const eps = 1e-6;
+    int? bestIndex;
+    double bestDelta = 0;
+    bool bestCutsCard = false;
+    for (int i = 1; i < n; i++) {
+      if (!items[i - 1].canBeLastInColumn) continue;
+      // don't leave the right column with only the footer
+      if (hasTrailingFooter && i >= n - 1) continue;
+      final delta = (2 * prefixHeights[i] - totalHeight).abs();
+      final cutsCard = !items[i].startsCard;
+      if (bestIndex == null ||
+          delta < bestDelta - eps ||
+          (delta <= bestDelta + eps && cutsCard != bestCutsCard && !cutsCard)) {
+        bestIndex = i;
+        bestDelta = delta;
+        bestCutsCard = cutsCard;
+      }
+    }
+    return bestIndex;
+  }
+
+  /// [cutTop]/[cutBottom] square off the edges where the column break cuts through a card.
+  List<Widget> renderRuns(List<_SplitItem> items, {bool cutTop = false, bool cutBottom = false}) {
+    final widgets = <Widget>[];
+    int i = 0;
+    while (i < items.length) {
+      final start = i;
+      while (i + 1 < items.length && !items[i + 1].startsCard) {
+        i++;
+      }
+      final run = items.sublist(start, i + 1);
+      final isFirst = start == 0;
+      final isLast = i == items.length - 1;
+      if (run.first.wrapInCard) {
+        widgets.add(
+          createCard(
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: run.map((e) => e.widget).toList(),
+            ),
+            cutTop: cutTop && isFirst,
+            cutBottom: cutBottom && isLast,
+          ),
+        );
+      } else {
+        widgets.addAll(run.map((e) => e.widget));
+      }
+      i++;
+    }
+    return widgets;
   }
 
   Widget prefixIndicator(BuildContext context, Widget child, {Color? color, double? top}) {
@@ -756,7 +882,7 @@ class BattleRecorderPanelBase extends StatelessWidget {
     );
   }
 
-  (double, Widget) getOptions(BuildContext context, BattleOptions options) {
+  _SplitItem getOptions(BuildContext context, BattleOptions options) {
     List<Widget> children = [];
     double height = 0;
     if (options.pointBuffs.isNotEmpty) {
@@ -788,14 +914,37 @@ class BattleRecorderPanelBase extends StatelessWidget {
       );
       height += 26;
     }
-    if (children.isEmpty) return (height, const SizedBox.shrink());
-    return (height, createCard(Column(mainAxisSize: MainAxisSize.min, children: children)));
+    if (children.isEmpty) {
+      return _SplitItem(
+        estimatedHeight: height,
+        widget: const SizedBox.shrink(),
+        breakMode: RecordBreakMode.free,
+        startsCard: true,
+      );
+    }
+    return _SplitItem(
+      estimatedHeight: height,
+      widget: createCard(Column(mainAxisSize: MainAxisSize.min, children: children)),
+      breakMode: RecordBreakMode.free,
+      startsCard: true,
+    );
   }
 
-  Widget createCard(Widget child) {
+  Widget createCard(Widget child, {bool cutTop = false, bool cutBottom = false}) {
+    const radius = Radius.circular(8.0);
     return Card(
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8.0))),
-      child: Padding(padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6), child: child),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: cutTop ? Radius.zero : radius,
+          topRight: cutTop ? Radius.zero : radius,
+          bottomLeft: cutBottom ? Radius.zero : radius,
+          bottomRight: cutBottom ? Radius.zero : radius,
+        ),
+      ),
+      child: Padding(
+        padding: EdgeInsets.only(left: 16, right: 16, top: cutTop ? 0 : 6, bottom: cutBottom ? 0 : 6),
+        child: child,
+      ),
     );
   }
 

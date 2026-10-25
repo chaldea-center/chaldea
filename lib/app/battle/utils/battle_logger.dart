@@ -532,9 +532,23 @@ class _BattleCardTempData {
 
 const _kOneRowRecordHeight = 32.0; // with svt icon
 
+/// How the battle recorder's two-column layout may cut around a record.
+enum RecordBreakMode {
+  /// Its own split unit, breakable before and after; panel elements only.
+  free,
+
+  /// Breakable before only; never the last element of a column.
+  bindNext,
+
+  /// Merged with adjacent skill-group records (skills, order changes, skip-wave notices, messages).
+  groupSkill,
+
+  /// Merged with adjacent attack-group records (announcement, attacks, instant-death); one phase never splits.
+  groupAttack,
+}
+
 /// Only record user visible actions
-/// make sealed when dart 2.19 enabled
-abstract class BattleRecord {
+sealed class BattleRecord {
   BattleRecord();
 
   BattleRecord copy();
@@ -544,6 +558,8 @@ abstract class BattleRecord {
   }
 
   double get estimatedHeight;
+
+  RecordBreakMode get breakMode;
 }
 
 class BattleMessageRecord extends BattleRecord {
@@ -568,6 +584,9 @@ class BattleMessageRecord extends BattleRecord {
 
   @override
   double get estimatedHeight => _kOneRowRecordHeight;
+
+  @override
+  RecordBreakMode get breakMode => RecordBreakMode.groupSkill;
 }
 
 class BattleSkipWaveRecord extends BattleRecord {
@@ -587,6 +606,9 @@ class BattleSkipWaveRecord extends BattleRecord {
 
   @override
   double get estimatedHeight => 21.0;
+
+  @override
+  RecordBreakMode get breakMode => RecordBreakMode.groupSkill;
 }
 
 class BattleProgressWaveRecord extends BattleRecord {
@@ -606,6 +628,9 @@ class BattleProgressWaveRecord extends BattleRecord {
 
   @override
   double get estimatedHeight => 36;
+
+  @override
+  RecordBreakMode get breakMode => RecordBreakMode.bindNext;
 }
 
 class BattleProgressTurnRecord extends BattleRecord {
@@ -619,12 +644,15 @@ class BattleProgressTurnRecord extends BattleRecord {
   }
 
   @override
-  BattleProgressWaveRecord copy() {
-    return BattleProgressWaveRecord(turn);
+  BattleProgressTurnRecord copy() {
+    return BattleProgressTurnRecord(turn);
   }
 
   @override
   double get estimatedHeight => 21;
+
+  @override
+  RecordBreakMode get breakMode => RecordBreakMode.bindNext;
 }
 
 class BattleSkillActivationRecord extends BattleRecord {
@@ -670,6 +698,9 @@ class BattleSkillActivationRecord extends BattleRecord {
 
   @override
   double get estimatedHeight => 0;
+
+  @override
+  RecordBreakMode get breakMode => RecordBreakMode.groupSkill;
 }
 
 class BattleSkillParams {
@@ -727,6 +758,9 @@ class BattleSkillRecord extends BattleRecord {
 
   @override
   double get estimatedHeight => _kOneRowRecordHeight;
+
+  @override
+  RecordBreakMode get breakMode => RecordBreakMode.groupSkill;
 }
 
 class BattleOrderChangeRecord extends BattleRecord {
@@ -748,6 +782,9 @@ class BattleOrderChangeRecord extends BattleRecord {
 
   @override
   double get estimatedHeight => _kOneRowRecordHeight;
+
+  @override
+  RecordBreakMode get breakMode => RecordBreakMode.groupSkill;
 }
 
 class BattleAttacksInitiationRecord extends BattleRecord {
@@ -804,6 +841,9 @@ class BattleAttacksInitiationRecord extends BattleRecord {
 
   @override
   double get estimatedHeight => _kOneRowRecordHeight;
+
+  @override
+  RecordBreakMode get breakMode => RecordBreakMode.groupAttack;
 }
 
 class BattleAttackRecord extends BattleRecord {
@@ -851,6 +891,9 @@ class BattleAttackRecord extends BattleRecord {
     final rows = max((maxFieldIndex + 1 / 3).ceil(), 1);
     return rows * 140;
   }
+
+  @override
+  RecordBreakMode get breakMode => RecordBreakMode.groupAttack;
 }
 
 class AttackResultDetail {
@@ -905,6 +948,9 @@ class BattleLossHpRecord extends BattleRecord {
 
   @override
   double get estimatedHeight => _kOneRowRecordHeight;
+
+  @override
+  RecordBreakMode get breakMode => RecordBreakMode.groupSkill;
 }
 
 class BattleReduceHpRecord extends BattleRecord {
@@ -913,6 +959,9 @@ class BattleReduceHpRecord extends BattleRecord {
 
   @override
   double get estimatedHeight => _kOneRowRecordHeight;
+
+  @override
+  RecordBreakMode get breakMode => RecordBreakMode.groupSkill;
 }
 
 class BattleInstantDeathRecord extends BattleRecord {
@@ -949,6 +998,9 @@ class BattleInstantDeathRecord extends BattleRecord {
     final rows = max((maxFieldIndex + 1 / 3).ceil(), 1);
     return rows * 103;
   }
+
+  @override
+  RecordBreakMode get breakMode => RecordBreakMode.groupAttack;
 }
 
 class InstantDeathResultDetail {
