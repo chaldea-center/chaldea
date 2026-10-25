@@ -118,7 +118,7 @@ class _EventDiggingTabState extends State<EventDiggingTab> {
                       option: ImageWithTextOption(
                         fontSize: 10,
                         shadowColor: notEnough ? Colors.white : null,
-                        textStyle: TextStyle(color: notEnough ? Theme.of(context).colorScheme.error : null),
+                        textStyle: notEnough ? TextStyle(color: Theme.of(context).colorScheme.error) : null,
                       ),
                     );
                   }),

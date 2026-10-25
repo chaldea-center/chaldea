@@ -521,8 +521,11 @@ extension TargetPlatformX on TargetPlatform {
 }
 
 extension ColorX on Color {
-  Color get inverted {
-    return Color.from(alpha: a, red: a - r, green: a - g, blue: a - b);
+  /// WCAG 2.0 contrast ratio against [other], ranging from 1 to 21.
+  double contrastRatio(Color other) {
+    final la = computeLuminance();
+    final lb = other.computeLuminance();
+    return (max(la, lb) + 0.05) / (min(la, lb) + 0.05);
   }
 
   String toCSSHex({bool omitAlpha = true}) {

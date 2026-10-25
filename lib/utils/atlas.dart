@@ -244,7 +244,7 @@ class AssetURL {
   String narrowFigureDefault(int itemId) => "$publicDir/NarrowFigure/$itemId/$itemId@0.png";
   String skillIcon(int itemId) => "$publicDir/SkillIcons/skill_${pad(itemId)}.png";
   String buffIcon(int itemId) => "$publicDir/BuffIcons/bufficon_$itemId.png";
-  String items(int itemId) => "$publicDir/Items/$itemId.png";
+  String items(int iconId) => "$publicDir/Items/$iconId.png";
   String coins(int itemId) => "$publicDir/Coins/$itemId.png";
   String face(int itemId, int i) => "$publicDir/Faces/f_$itemId$i.png";
   String faceId(int iconId) => "$publicDir/Faces/f_$iconId.png";

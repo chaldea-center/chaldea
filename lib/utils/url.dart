@@ -17,7 +17,8 @@ class ChaldeaUrl {
 
   static String doc(String path, {bool? isZh, String dir = 'guide/', Map<String, String>? queryParams}) {
     isZh ??= Language.isZH;
-    String url = kProjectDocRoot + (isZh ? '/zh/' : '/') + dir + (path.startsWith('/') ? path.substring(1) : path);
+    const docRoot = kProjectDocRoot;
+    String url = docRoot + (isZh ? '/zh/' : '/') + dir + (path.startsWith('/') ? path.substring(1) : path);
     if (queryParams != null && queryParams.isNotEmpty) {
       final uri = Uri.parse(url);
       url = uri.replace(queryParameters: {...uri.queryParametersAll, ...queryParams}).toString();

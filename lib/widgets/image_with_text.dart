@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:material_ui/material_ui.dart';
 
+import '../utils/extension.dart';
+
 class ImageWithTextOption {
   double? width;
   double? height;
@@ -100,12 +102,13 @@ class ImageWithText extends StatelessWidget {
                 max(0.0, padding.bottom),
               ),
               child: paintOutline(
+                context: context,
                 text: text,
                 builder: textBuilder,
                 textAlign: option?.textAlign ?? TextAlign.end,
                 textStyle: _style,
                 shadowSize: (fontSize == null ? 4.0 : fontSize * 0.25).clamp(2, 4),
-                shadowColor: option?.shadowColor ?? Theme.of(context).cardColor,
+                shadowColor: option?.shadowColor,
               ),
             ),
             boxFit: BoxFit.scaleDown,
@@ -164,6 +167,7 @@ class ImageWithText extends StatelessWidget {
   }
 
   static Widget paintOutline({
+    BuildContext? context,
     String? text,
     Widget Function(TextStyle style)? builder,
     TextAlign? textAlign,
@@ -173,20 +177,27 @@ class ImageWithText extends StatelessWidget {
   }) {
     assert(text != null || builder != null);
     assert(text == null || builder == null);
-    TextStyle _style = textStyle ?? const TextStyle();
+    final isDark = context != null && Theme.of(context).brightness == Brightness.dark;
+    final textColor = textStyle?.color ?? (isDark ? Colors.white : Colors.black);
+    final outlineColor = shadowColor ?? _pickOutline(textColor);
+    TextStyle _style = (textStyle ?? const TextStyle()).copyWith(color: textColor);
 
     List<Widget> children;
     if (builder != null) {
       children = [
-        builder(toGlowStyle(_style, shadowSize, shadowColor)),
-        builder(toShadowStyle(textStyle, shadowSize, shadowColor)),
+        builder(toGlowStyle(_style, shadowSize, outlineColor)),
+        builder(toShadowStyle(_style, shadowSize, outlineColor)),
       ];
     } else {
       children = [
-        Text(text!, textAlign: textAlign, style: toGlowStyle(textStyle, shadowSize, shadowColor)),
-        Text(text, textAlign: textAlign, style: toShadowStyle(textStyle, shadowSize, shadowColor)),
+        Text(text!, textAlign: textAlign, style: toGlowStyle(_style, shadowSize, outlineColor)),
+        Text(text, textAlign: textAlign, style: toShadowStyle(_style, shadowSize, outlineColor)),
       ];
     }
     return Stack(children: children);
+  }
+
+  static Color _pickOutline(Color textColor) {
+    return textColor.contrastRatio(Colors.black) >= textColor.contrastRatio(Colors.white) ? Colors.black : Colors.white;
   }
 }
