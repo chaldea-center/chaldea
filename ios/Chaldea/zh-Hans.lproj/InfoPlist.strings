@@ -1,8 +1,5 @@
-/* Privacy and permission descriptions for ad features */
+// System permission purpose strings.
 
-/* App Tracking Transparency description */
-"NSUserTrackingUsageDescription" = "我们需要获取您的广告标识符，用于向您展示个性化广告。";
-
-/* Photo library access */
-"NSPhotoLibraryAddUsageDescription" = "导出图片到相册";
-"NSPhotoLibraryUsageDescription" = "Chaldea 需要访问相册以导入数据和导出备份";
+"NSPhotoLibraryUsageDescription" = "读取你选择的图片，用于识别并导入数据。";
+"NSPhotoLibraryAddUsageDescription" = "将你导出的图片保存到相册，方便查看和分享。";
+"NSUserTrackingUsageDescription" = "经你允许，我们会使用设备广告标识符向你展示个性化广告。";

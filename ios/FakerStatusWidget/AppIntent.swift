@@ -28,9 +28,9 @@ enum BackgroundStyle: String, AppEnum {
 }
 
 struct ConfigurationAppIntent: WidgetConfigurationIntent {
-  static var title: LocalizedStringResource { "Widget Configuration" }
+  static var title: LocalizedStringResource { "Widget Settings" }
   static var description: IntentDescription {
-    "Configure the widget's appearance and accounts"
+    "Customize the widget's appearance and displayed accounts."
   }
 
   @Parameter(title: "Background Style", default: .image)

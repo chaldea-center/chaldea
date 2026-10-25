@@ -1,8 +1,5 @@
-/* Privacy and permission descriptions for ad features */
+// System permission purpose strings.
 
-/* App Tracking Transparency description */
-"NSUserTrackingUsageDescription" = "맞춤 광고를 표시하기 위해 광고 식별자에 접근합니다.";
-
-/* Photo library access */
-"NSPhotoLibraryAddUsageDescription" = "사진에 이미지 내보내기";
-"NSPhotoLibraryUsageDescription" = "Chaldea는 데이터 가져오기 및 백업 내보내기를 위해 사진 라이브러리 접근이 필요합니다";
+"NSPhotoLibraryUsageDescription" = "선택한 이미지를 읽어 데이터를 인식하고 가져옵니다.";
+"NSPhotoLibraryAddUsageDescription" = "내보낸 이미지를 사진 보관함에 저장하여 확인하고 공유할 수 있도록 합니다.";
+"NSUserTrackingUsageDescription" = "허용하시면 기기의 광고 식별자를 사용하여 맞춤형 광고를 표시합니다.";

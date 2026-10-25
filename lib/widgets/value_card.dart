@@ -12,15 +12,15 @@ import 'package:material_ui/material_ui.dart';
 class ValueCard<T> extends StatelessWidget {
   final String label;
 
-  /// Text value; ignored when [options] renders a dropdown.
+  /// Text value, also used as the placeholder for a disabled dropdown.
   final String? value;
   final VoidCallback? onTap;
 
   /// Share of the row this card takes; 2 gives it twice the width of a 1.
   final int flex;
 
-  /// Selectable values. Together with [onSelected] the value area becomes a
-  /// dropdown, and [optionValue] marks the current one.
+  /// Selectable values. A missing [onSelected] disables the dropdown, and
+  /// [optionValue] marks the current one.
   final List<T>? options;
   final T? optionValue;
   final ValueChanged<T>? onSelected;
@@ -47,13 +47,14 @@ class ValueCard<T> extends StatelessWidget {
     final onSelected = this.onSelected;
 
     final Widget valueWidget;
-    if (options != null && onSelected != null) {
+    if (options != null) {
       valueWidget = DropdownButtonHideUnderline(
         child: DropdownButton<T>(
           isDense: true,
           isExpanded: true,
           value: optionValue,
           style: valueStyle,
+          disabledHint: value == null ? null : Text(value!, maxLines: 1, overflow: TextOverflow.ellipsis),
           items: [
             for (final option in options)
               DropdownMenuItem<T>(
@@ -61,9 +62,11 @@ class ValueCard<T> extends StatelessWidget {
                 child: Text(optionLabel?.call(option) ?? '$option', maxLines: 1, overflow: TextOverflow.ellipsis),
               ),
           ],
-          onChanged: (selected) {
-            if (selected != null) onSelected(selected);
-          },
+          onChanged: onSelected == null || options.isEmpty
+              ? null
+              : (selected) {
+                  if (selected != null) onSelected(selected);
+                },
         ),
       );
     } else {

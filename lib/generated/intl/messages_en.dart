@@ -1056,8 +1056,42 @@ class MessageLookup extends MessageLookupByLibrary {
       "We respond to privacy questions and complaints within 15 working days.",
     ),
     "privacy_data_switches": MessageLookupByLibrary.simpleMessage("Data & Privacy"),
+    "privacy_open_settings_failed": MessageLookupByLibrary.simpleMessage(
+      "Could not open settings. Please find Chaldea manually.",
+    ),
+    "privacy_permission_ad_identifiers": MessageLookupByLibrary.simpleMessage("Advertising Identifiers & Tracking"),
+    "privacy_permission_ad_identifiers_desc": MessageLookupByLibrary.simpleMessage(
+      "Advertising capability; iOS tracking requires system authorization.",
+    ),
+    "privacy_permission_files": MessageLookupByLibrary.simpleMessage("Files & Storage"),
+    "privacy_permission_files_desc": MessageLookupByLibrary.simpleMessage(
+      "Import, export and image saving on older Android versions.",
+    ),
+    "privacy_permission_network": MessageLookupByLibrary.simpleMessage("Internet & Network State"),
+    "privacy_permission_network_desc": MessageLookupByLibrary.simpleMessage("Access data, images and online services."),
+    "privacy_permission_notifications": MessageLookupByLibrary.simpleMessage("Notifications & Reminders"),
+    "privacy_permission_notifications_desc": MessageLookupByLibrary.simpleMessage(
+      "Reminders are unavailable; related declarations remain.",
+    ),
+    "privacy_permission_other": MessageLookupByLibrary.simpleMessage("Other Declarations"),
+    "privacy_permission_other_desc": MessageLookupByLibrary.simpleMessage(
+      "A declaration does not imply authorization or use.",
+    ),
+    "privacy_permission_phone": MessageLookupByLibrary.simpleMessage("Phone State"),
+    "privacy_permission_phone_desc": MessageLookupByLibrary.simpleMessage(
+      "Ad-related declaration; not required for basic features.",
+    ),
+    "privacy_permissions": MessageLookupByLibrary.simpleMessage("Permission Usage"),
+    "privacy_permissions_and_services": MessageLookupByLibrary.simpleMessage("Permissions & Third-Party Services"),
+    "privacy_permissions_intro": MessageLookupByLibrary.simpleMessage(
+      "Refer to system settings for authorization status.",
+    ),
+    "privacy_permissions_unverified": MessageLookupByLibrary.simpleMessage(
+      "No complete permission audit data is available for this version.",
+    ),
     "privacy_policy": MessageLookupByLibrary.simpleMessage("Privacy Policy"),
     "privacy_policy_version": MessageLookupByLibrary.simpleMessage("Agreed version"),
+    "privacy_sdk_list": MessageLookupByLibrary.simpleMessage("Third-Party SDKs"),
     "privacy_your_rights": MessageLookupByLibrary.simpleMessage("Your Rights"),
     "probability": MessageLookupByLibrary.simpleMessage("probability"),
     "probability_expectation": MessageLookupByLibrary.simpleMessage("Expectation"),

@@ -18,6 +18,7 @@
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
+		6B2327C8DA685EC8444BCD4B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C1F23A30640C454BFD638867 /* InfoPlist.strings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -86,6 +87,12 @@
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9B6453481EDEA7AE9ACFC8E8 /* Pods-Chaldea.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Chaldea.release.xcconfig"; path = "Target Support Files/Pods-Chaldea/Pods-Chaldea.release.xcconfig"; sourceTree = "<group>"; };
 		F80F63FEA2311F8C65EE0BA2 /* Pods_Chaldea.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Chaldea.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C696FF5398F91FA7E6A1A277 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "en"; path = "en.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		B6A157EC3E2FF9443096FD0B /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		333703E0E6D0F47E6DD274B9 /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		C0A1D56EF06EC794EB2AFA79 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "ja"; path = "ja.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		D09D4B9CC616BB4F01A054BA /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "ko"; path = "ko.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		B2D4F5C0ADEEF2E2A27A605F /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "es"; path = "es.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -180,6 +187,7 @@
 			children = (
 				93D09B0625C013C70037A20F /* Chaldea.entitlements */,
 				93CB6326259F163D00EFEE0F /* Info.plist */,
+				C1F23A30640C454BFD638867 /* InfoPlist.strings */,
 				97C146FA1CF9000F007C117D /* Main.storyboard */,
 				97C146FD1CF9000F007C117D /* Assets.xcassets */,
 				97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */,
@@ -290,6 +298,7 @@
 				ja,
 				ko,
 				"zh-Hant",
+				es,
 			);
 			mainGroup = 97C146E51CF9000F007C117D;
 			packageReferences = (
@@ -322,6 +331,7 @@
 				3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
+				6B2327C8DA685EC8444BCD4B /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -469,6 +479,19 @@
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
 		};
+		C1F23A30640C454BFD638867 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C696FF5398F91FA7E6A1A277 /* en */,
+				B6A157EC3E2FF9443096FD0B /* zh-Hans */,
+				333703E0E6D0F47E6DD274B9 /* zh-Hant */,
+				C0A1D56EF06EC794EB2AFA79 /* ja */,
+				D09D4B9CC616BB4F01A054BA /* ko */,
+				B2D4F5C0ADEEF2E2A27A605F /* es */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
@@ -582,7 +605,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FakerStatusWidget/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = FakerStatusWidget;
+				INFOPLIST_KEY_CFBundleDisplayName = "Faker Status";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -624,7 +647,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FakerStatusWidget/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = FakerStatusWidget;
+				INFOPLIST_KEY_CFBundleDisplayName = "Faker Status";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -663,7 +686,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = FakerStatusWidget/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = FakerStatusWidget;
+				INFOPLIST_KEY_CFBundleDisplayName = "Faker Status";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.1;
 				LD_RUNPATH_SEARCH_PATHS = (

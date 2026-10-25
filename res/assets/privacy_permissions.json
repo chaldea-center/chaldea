@@ -1,0 +1,487 @@
+{
+  "schema_version": 1,
+  "scope": "package_declarations",
+  "runtime_authorization_verified": false,
+  "targets": [
+    {
+      "platform": "android",
+      "flavor": "github",
+      "status": "inspected",
+      "declarations": [
+        {
+          "kind": "permission",
+          "name": "cc.narumi.chaldea.CountlyPush.BROADCAST_PERMISSION",
+          "protectionLevel": "0x2"
+        },
+        {
+          "kind": "permission",
+          "name": "cc.narumi.chaldea.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION",
+          "protectionLevel": "0x2"
+        },
+        {
+          "kind": "permission",
+          "name": "cc.narumi.chaldea.openadsdk.permission.TT_PANGOLIN",
+          "protectionLevel": "0x2"
+        },
+        {
+          "kind": "uses-permission",
+          "name": "android.permission.ACCESS_NETWORK_STATE"
+        },
+        {
+          "kind": "uses-permission",
+          "name": "android.permission.ACCESS_NOTIFICATION_POLICY"
+        },
+        {
+          "kind": "uses-permission",
+          "name": "android.permission.ACCESS_WIFI_STATE"
+        },
+        {
+          "kind": "uses-permission",
+          "name": "android.permission.CHANGE_WIFI_STATE"
+        },
+        {
+          "kind": "uses-permission",
+          "name": "android.permission.FOREGROUND_SERVICE"
+        },
+        {
+          "kind": "uses-permission",
+          "name": "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
+        },
+        {
+          "kind": "uses-permission",
+          "name": "android.permission.INTERNET"
+        },
+        {
+          "kind": "uses-permission",
+          "name": "android.permission.POST_NOTIFICATIONS"
+        },
+        {
+          "kind": "uses-permission",
+          "maxSdkVersion": "32",
+          "name": "android.permission.READ_EXTERNAL_STORAGE"
+        },
+        {
+          "kind": "uses-permission",
+          "name": "android.permission.READ_PHONE_STATE"
+        },
+        {
+          "kind": "uses-permission",
+          "name": "android.permission.RECEIVE_BOOT_COMPLETED"
+        },
+        {
+          "kind": "uses-permission",
+          "name": "android.permission.REQUEST_INSTALL_PACKAGES"
+        },
+        {
+          "kind": "uses-permission",
+          "name": "android.permission.SCHEDULE_EXACT_ALARM"
+        },
+        {
+          "kind": "uses-permission",
+          "name": "android.permission.SYSTEM_ALERT_WINDOW"
+        },
+        {
+          "kind": "uses-permission",
+          "name": "android.permission.USE_EXACT_ALARM"
+        },
+        {
+          "kind": "uses-permission",
+          "name": "android.permission.USE_FULL_SCREEN_INTENT"
+        },
+        {
+          "kind": "uses-permission",
+          "name": "android.permission.VIBRATE"
+        },
+        {
+          "kind": "uses-permission",
+          "name": "android.permission.WAKE_LOCK"
+        },
+        {
+          "kind": "uses-permission",
+          "maxSdkVersion": "28",
+          "name": "android.permission.WRITE_EXTERNAL_STORAGE"
+        },
+        {
+          "kind": "uses-permission",
+          "name": "cc.narumi.chaldea.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+        },
+        {
+          "kind": "uses-permission",
+          "name": "cc.narumi.chaldea.openadsdk.permission.TT_PANGOLIN"
+        },
+        {
+          "kind": "uses-permission",
+          "name": "com.asus.msa.SupplementaryDID.ACCESS"
+        },
+        {
+          "kind": "uses-permission",
+          "name": "com.google.android.gms.permission.AD_ID"
+        }
+      ],
+      "application_id": "cc.narumi.chaldea",
+      "version_name": "2.6.2",
+      "build_number": "992",
+      "sdk": {
+        "minSdkVersion": "24",
+        "targetSdkVersion": "36"
+      }
+    },
+    {
+      "platform": "android",
+      "flavor": "play",
+      "status": "inspected",
+      "declarations": [
+        {
+          "kind": "permission",
+          "module": "base",
+          "name": "cc.narumi.chaldea.CountlyPush.BROADCAST_PERMISSION",
+          "protectionLevel": "0x00000002"
+        },
+        {
+          "kind": "permission",
+          "module": "base",
+          "name": "cc.narumi.chaldea.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION",
+          "protectionLevel": "0x00000002"
+        },
+        {
+          "kind": "uses-permission",
+          "module": "base",
+          "name": "android.permission.ACCESS_NETWORK_STATE"
+        },
+        {
+          "kind": "uses-permission",
+          "module": "base",
+          "name": "android.permission.ACCESS_NOTIFICATION_POLICY"
+        },
+        {
+          "kind": "uses-permission",
+          "module": "base",
+          "name": "android.permission.ACCESS_WIFI_STATE"
+        },
+        {
+          "kind": "uses-permission",
+          "module": "base",
+          "name": "android.permission.FOREGROUND_SERVICE"
+        },
+        {
+          "kind": "uses-permission",
+          "module": "base",
+          "name": "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
+        },
+        {
+          "kind": "uses-permission",
+          "module": "base",
+          "name": "android.permission.INTERNET"
+        },
+        {
+          "kind": "uses-permission",
+          "module": "base",
+          "name": "android.permission.POST_NOTIFICATIONS"
+        },
+        {
+          "kind": "uses-permission",
+          "maxSdkVersion": "32",
+          "module": "base",
+          "name": "android.permission.READ_EXTERNAL_STORAGE"
+        },
+        {
+          "kind": "uses-permission",
+          "module": "base",
+          "name": "android.permission.READ_PHONE_STATE"
+        },
+        {
+          "kind": "uses-permission",
+          "module": "base",
+          "name": "android.permission.RECEIVE_BOOT_COMPLETED"
+        },
+        {
+          "kind": "uses-permission",
+          "module": "base",
+          "name": "android.permission.SCHEDULE_EXACT_ALARM"
+        },
+        {
+          "kind": "uses-permission",
+          "module": "base",
+          "name": "android.permission.USE_EXACT_ALARM"
+        },
+        {
+          "kind": "uses-permission",
+          "module": "base",
+          "name": "android.permission.USE_FULL_SCREEN_INTENT"
+        },
+        {
+          "kind": "uses-permission",
+          "module": "base",
+          "name": "android.permission.VIBRATE"
+        },
+        {
+          "kind": "uses-permission",
+          "module": "base",
+          "name": "android.permission.WAKE_LOCK"
+        },
+        {
+          "kind": "uses-permission",
+          "maxSdkVersion": "28",
+          "module": "base",
+          "name": "android.permission.WRITE_EXTERNAL_STORAGE"
+        },
+        {
+          "kind": "uses-permission",
+          "module": "base",
+          "name": "cc.narumi.chaldea.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+        },
+        {
+          "kind": "uses-permission",
+          "module": "base",
+          "name": "com.google.android.gms.permission.AD_ID"
+        }
+      ],
+      "application_id": "cc.narumi.chaldea",
+      "version_name": "2.6.2",
+      "build_number": "992",
+      "sdk": {
+        "minSdkVersion": "24",
+        "targetSdkVersion": "36"
+      }
+    },
+    {
+      "platform": "android",
+      "flavor": "fdroid",
+      "status": "inspected",
+      "declarations": [
+        {
+          "kind": "permission",
+          "name": "cc.narumi.chaldea.fdroid.CountlyPush.BROADCAST_PERMISSION",
+          "protectionLevel": "0x2"
+        },
+        {
+          "kind": "permission",
+          "name": "cc.narumi.chaldea.fdroid.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION",
+          "protectionLevel": "0x2"
+        },
+        {
+          "kind": "uses-permission",
+          "name": "android.permission.ACCESS_NETWORK_STATE"
+        },
+        {
+          "kind": "uses-permission",
+          "name": "android.permission.ACCESS_NOTIFICATION_POLICY"
+        },
+        {
+          "kind": "uses-permission",
+          "name": "android.permission.ACCESS_WIFI_STATE"
+        },
+        {
+          "kind": "uses-permission",
+          "name": "android.permission.FOREGROUND_SERVICE"
+        },
+        {
+          "kind": "uses-permission",
+          "name": "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
+        },
+        {
+          "kind": "uses-permission",
+          "name": "android.permission.INTERNET"
+        },
+        {
+          "kind": "uses-permission",
+          "name": "android.permission.POST_NOTIFICATIONS"
+        },
+        {
+          "kind": "uses-permission",
+          "maxSdkVersion": "32",
+          "name": "android.permission.READ_EXTERNAL_STORAGE"
+        },
+        {
+          "kind": "uses-permission",
+          "name": "android.permission.READ_PHONE_STATE"
+        },
+        {
+          "kind": "uses-permission",
+          "name": "android.permission.RECEIVE_BOOT_COMPLETED"
+        },
+        {
+          "kind": "uses-permission",
+          "name": "android.permission.REQUEST_INSTALL_PACKAGES"
+        },
+        {
+          "kind": "uses-permission",
+          "name": "android.permission.SCHEDULE_EXACT_ALARM"
+        },
+        {
+          "kind": "uses-permission",
+          "name": "android.permission.USE_EXACT_ALARM"
+        },
+        {
+          "kind": "uses-permission",
+          "name": "android.permission.USE_FULL_SCREEN_INTENT"
+        },
+        {
+          "kind": "uses-permission",
+          "name": "android.permission.VIBRATE"
+        },
+        {
+          "kind": "uses-permission",
+          "name": "android.permission.WAKE_LOCK"
+        },
+        {
+          "kind": "uses-permission",
+          "maxSdkVersion": "28",
+          "name": "android.permission.WRITE_EXTERNAL_STORAGE"
+        },
+        {
+          "kind": "uses-permission",
+          "name": "cc.narumi.chaldea.fdroid.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+        },
+        {
+          "kind": "uses-permission",
+          "name": "com.google.android.gms.permission.AD_ID"
+        }
+      ],
+      "application_id": "cc.narumi.chaldea.fdroid",
+      "version_name": "2.6.2",
+      "build_number": "992",
+      "sdk": {
+        "minSdkVersion": "24",
+        "targetSdkVersion": "36"
+      }
+    },
+    {
+      "platform": "ios",
+      "flavor": null,
+      "status": "partial",
+      "declarations": [
+        {
+          "kind": "background-mode",
+          "name": "fetch"
+        },
+        {
+          "kind": "background-mode",
+          "name": "remote-notification"
+        },
+        {
+          "kind": "entitlement",
+          "name": "application-identifier",
+          "value": "4Z25Q4L3F2.cc.narumi.chaldea"
+        },
+        {
+          "kind": "entitlement",
+          "name": "com.apple.developer.associated-domains",
+          "value": [
+            "applinks:link.chaldea.center"
+          ]
+        },
+        {
+          "kind": "entitlement",
+          "name": "com.apple.developer.team-identifier",
+          "value": "4Z25Q4L3F2"
+        },
+        {
+          "kind": "entitlement",
+          "name": "com.apple.security.application-groups",
+          "value": [
+            "group.cc.narumi.chaldea.shared"
+          ]
+        },
+        {
+          "kind": "entitlement",
+          "name": "get-task-allow",
+          "value": true
+        },
+        {
+          "kind": "usage-description",
+          "name": "NSPhotoLibraryAddUsageDescription",
+          "value": "We save the images you export to your photo library so you can view and share them."
+        },
+        {
+          "kind": "usage-description",
+          "name": "NSPhotoLibraryUsageDescription",
+          "value": "We read the images you select to extract and import data."
+        },
+        {
+          "kind": "usage-description",
+          "name": "NSUserTrackingUsageDescription",
+          "value": "With your permission, we use your device’s advertising identifier to show personalized ads."
+        }
+      ],
+      "application_id": "cc.narumi.chaldea",
+      "version_name": "2.6.2",
+      "build_number": "992",
+      "checks": {
+        "info_plist": "inspected",
+        "signed_entitlements": "inspected",
+        "distribution_signature": "unverified"
+      },
+      "limitations": [
+        "distribution_signature_not_verified",
+        "development_debugging_entitlement"
+      ]
+    },
+    {
+      "platform": "macos",
+      "flavor": null,
+      "status": "partial",
+      "declarations": [
+        {
+          "kind": "entitlement",
+          "name": "com.apple.security.app-sandbox",
+          "value": true
+        },
+        {
+          "kind": "entitlement",
+          "name": "com.apple.security.files.user-selected.read-write",
+          "value": true
+        },
+        {
+          "kind": "entitlement",
+          "name": "com.apple.security.get-task-allow",
+          "value": true
+        },
+        {
+          "kind": "entitlement",
+          "name": "com.apple.security.network.client",
+          "value": true
+        }
+      ],
+      "application_id": "cc.narumi.chaldea",
+      "version_name": "2.6.2",
+      "build_number": "992",
+      "checks": {
+        "info_plist": "inspected",
+        "signed_entitlements": "inspected",
+        "distribution_signature": "unverified"
+      },
+      "limitations": [
+        "distribution_signature_not_verified",
+        "development_debugging_entitlement"
+      ]
+    },
+    {
+      "platform": "windows",
+      "flavor": null,
+      "status": "unverified",
+      "declarations": [],
+      "limitations": [
+        "no_artifact"
+      ]
+    },
+    {
+      "platform": "linux",
+      "flavor": null,
+      "status": "unverified",
+      "declarations": [],
+      "limitations": [
+        "no_artifact"
+      ]
+    },
+    {
+      "platform": "web",
+      "flavor": null,
+      "status": "unverified",
+      "declarations": [],
+      "limitations": [
+        "browser_permissions_not_inspected"
+      ]
+    }
+  ]
+}

@@ -207,7 +207,7 @@ struct FakerStatusWidgetEntryView: View {
             Divider()
           }
           if entry.displayAccounts.isEmpty {
-            Text("No Account Selected").font(.caption)
+            Text("No accounts to display.").font(.caption)
           }
         }
 
@@ -222,7 +222,7 @@ struct FakerStatusWidgetEntryView: View {
       }.padding(.horizontal, -4).padding(.bottom, -8)
 
     default:
-      Text("Unsupported widget family")
+      Text("This widget size is not supported.")
     }
   }
 

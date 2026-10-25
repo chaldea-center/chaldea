@@ -26,7 +26,7 @@ struct FakerStatusWidgetControl: ControlWidget {
             }
         }
         .displayName("Timer")
-        .description("A an example control that runs a timer.")
+        .description("Timer control.")
     }
 }
 

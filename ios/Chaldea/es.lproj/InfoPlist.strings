@@ -1,0 +1,5 @@
+// System permission purpose strings.
+
+"NSPhotoLibraryUsageDescription" = "Leemos las imágenes que seleccionas para extraer e importar datos.";
+"NSPhotoLibraryAddUsageDescription" = "Guardamos las imágenes que exportas en tu fototeca para que puedas verlas y compartirlas.";
+"NSUserTrackingUsageDescription" = "Con tu permiso, utilizamos el identificador publicitario de tu dispositivo para mostrarte anuncios personalizados.";

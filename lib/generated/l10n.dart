@@ -5327,6 +5327,169 @@ class S {
     return Intl.message('Data & Privacy', name: 'privacy_data_switches', desc: '', locale: localeName, args: []);
   }
 
+  /// `Could not open settings. Please find Chaldea manually.`
+  String get privacy_open_settings_failed {
+    return Intl.message(
+      'Could not open settings. Please find Chaldea manually.',
+      name: 'privacy_open_settings_failed',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Advertising Identifiers & Tracking`
+  String get privacy_permission_ad_identifiers {
+    return Intl.message(
+      'Advertising Identifiers & Tracking',
+      name: 'privacy_permission_ad_identifiers',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Advertising capability; iOS tracking requires system authorization.`
+  String get privacy_permission_ad_identifiers_desc {
+    return Intl.message(
+      'Advertising capability; iOS tracking requires system authorization.',
+      name: 'privacy_permission_ad_identifiers_desc',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Files & Storage`
+  String get privacy_permission_files {
+    return Intl.message('Files & Storage', name: 'privacy_permission_files', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Import, export and image saving on older Android versions.`
+  String get privacy_permission_files_desc {
+    return Intl.message(
+      'Import, export and image saving on older Android versions.',
+      name: 'privacy_permission_files_desc',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Internet & Network State`
+  String get privacy_permission_network {
+    return Intl.message(
+      'Internet & Network State',
+      name: 'privacy_permission_network',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Access data, images and online services.`
+  String get privacy_permission_network_desc {
+    return Intl.message(
+      'Access data, images and online services.',
+      name: 'privacy_permission_network_desc',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Notifications & Reminders`
+  String get privacy_permission_notifications {
+    return Intl.message(
+      'Notifications & Reminders',
+      name: 'privacy_permission_notifications',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Reminders are unavailable; related declarations remain.`
+  String get privacy_permission_notifications_desc {
+    return Intl.message(
+      'Reminders are unavailable; related declarations remain.',
+      name: 'privacy_permission_notifications_desc',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Other Declarations`
+  String get privacy_permission_other {
+    return Intl.message('Other Declarations', name: 'privacy_permission_other', desc: '', locale: localeName, args: []);
+  }
+
+  /// `A declaration does not imply authorization or use.`
+  String get privacy_permission_other_desc {
+    return Intl.message(
+      'A declaration does not imply authorization or use.',
+      name: 'privacy_permission_other_desc',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Phone State`
+  String get privacy_permission_phone {
+    return Intl.message('Phone State', name: 'privacy_permission_phone', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Ad-related declaration; not required for basic features.`
+  String get privacy_permission_phone_desc {
+    return Intl.message(
+      'Ad-related declaration; not required for basic features.',
+      name: 'privacy_permission_phone_desc',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Permission Usage`
+  String get privacy_permissions {
+    return Intl.message('Permission Usage', name: 'privacy_permissions', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Permissions & Third-Party Services`
+  String get privacy_permissions_and_services {
+    return Intl.message(
+      'Permissions & Third-Party Services',
+      name: 'privacy_permissions_and_services',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Refer to system settings for authorization status.`
+  String get privacy_permissions_intro {
+    return Intl.message(
+      'Refer to system settings for authorization status.',
+      name: 'privacy_permissions_intro',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `No complete permission audit data is available for this version.`
+  String get privacy_permissions_unverified {
+    return Intl.message(
+      'No complete permission audit data is available for this version.',
+      name: 'privacy_permissions_unverified',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Privacy Policy`
   String get privacy_policy {
     return Intl.message('Privacy Policy', name: 'privacy_policy', desc: '', locale: localeName, args: []);
@@ -5335,6 +5498,11 @@ class S {
   /// `Agreed version`
   String get privacy_policy_version {
     return Intl.message('Agreed version', name: 'privacy_policy_version', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Third-Party SDKs`
+  String get privacy_sdk_list {
+    return Intl.message('Third-Party SDKs', name: 'privacy_sdk_list', desc: '', locale: localeName, args: []);
   }
 
   /// `Your Rights`

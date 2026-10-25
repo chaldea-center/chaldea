@@ -23,8 +23,8 @@
 	<string>6.0</string>
 	<key>CFBundleLocalizations</key>
 	<array>
-		<string>zh</string>
-		<string>zh_TW</string>
+		<string>zh-Hans</string>
+		<string>zh-Hant</string>
 		<string>en</string>
 		<string>ja</string>
 		<string>ko</string>
@@ -81,12 +81,12 @@
 		<key>NSAllowsArbitraryLoadsInWebContent</key>
 		<true/>
 	</dict>
-	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>Export images to photos</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Chaldea needs to import data and export backup</string>
+	<string>We read the images you select to extract and import data.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>We save the images you export to your photo library so you can view and share them.</string>
 	<key>NSUserTrackingUsageDescription</key>
-	<string>We need your advertising identifier to show you personalized ads.</string>
+	<string>With your permission, we use your device’s advertising identifier to show personalized ads.</string>
 	<key>SKAdNetworkItems</key>
 	<array>
 		<dict>

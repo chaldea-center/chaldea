@@ -10,7 +10,7 @@ import WidgetKit
 
 struct RefreshIntent: AppIntent {
   static var title: LocalizedStringResource = "Refresh Widget"
-  static var description = IntentDescription("Refresh the widget data")
+  static var description = IntentDescription("Reload saved account data.")
 
   func perform() async throws -> some IntentResult {
     // In real implementation, trigger data refresh from shared container
@@ -21,7 +21,7 @@ struct RefreshIntent: AppIntent {
 
 struct OpenConfigurationIntent: AppIntent {
   static var title: LocalizedStringResource = "Open Configuration"
-  static var description = IntentDescription("Open widget configuration")
+  static var description = IntentDescription("Open widget settings.")
 
   func perform() async throws -> some IntentResult {
     // In real implementation, open app's widget configuration page

@@ -528,6 +528,56 @@ Map<String, dynamic> _$PrivacySettingToJson(PrivacySetting instance) => <String,
   'analyticsEnabled': instance.analyticsEnabled,
 };
 
+PrivacyPermissionDeclaration _$PrivacyPermissionDeclarationFromJson(Map json) =>
+    $checkedCreate('PrivacyPermissionDeclaration', json, ($checkedConvert) {
+      final val = PrivacyPermissionDeclaration(
+        kind: $checkedConvert('kind', (v) => v as String),
+        name: $checkedConvert('name', (v) => v as String),
+        attributes: $checkedConvert(
+          'attributes',
+          (v) => Map<String, dynamic>.from(v as Map),
+          readValue: PrivacyPermissionDeclaration._readAttributes,
+        ),
+      );
+      return val;
+    });
+
+PrivacyPermissionTarget _$PrivacyPermissionTargetFromJson(Map json) => $checkedCreate(
+  'PrivacyPermissionTarget',
+  json,
+  ($checkedConvert) {
+    final val = PrivacyPermissionTarget(
+      platform: $checkedConvert('platform', (v) => v as String),
+      flavor: $checkedConvert('flavor', (v) => v as String?),
+      status: $checkedConvert('status', (v) => v as String),
+      applicationId: $checkedConvert('application_id', (v) => v as String?),
+      versionName: $checkedConvert('version_name', (v) => v as String?),
+      buildNumber: $checkedConvert('build_number', (v) => v as String?),
+      declarations: $checkedConvert(
+        'declarations',
+        (v) => (v as List<dynamic>)
+            .map((e) => PrivacyPermissionDeclaration.fromJson(Map<String, dynamic>.from(e as Map)))
+            .toList(),
+      ),
+    );
+    return val;
+  },
+  fieldKeyMap: const {'applicationId': 'application_id', 'versionName': 'version_name', 'buildNumber': 'build_number'},
+);
+
+PrivacyPermissionCatalog _$PrivacyPermissionCatalogFromJson(Map json) =>
+    $checkedCreate('PrivacyPermissionCatalog', json, ($checkedConvert) {
+      final val = PrivacyPermissionCatalog(
+        targets: $checkedConvert(
+          'targets',
+          (v) => (v as List<dynamic>)
+              .map((e) => PrivacyPermissionTarget.fromJson(Map<String, dynamic>.from(e as Map)))
+              .toList(),
+        ),
+      );
+      return val;
+    });
+
 AdSetting _$AdSettingFromJson(Map json) => $checkedCreate('AdSetting', json, ($checkedConvert) {
   final val = AdSetting(
     enabled: $checkedConvert('enabled', (v) => $enumDecodeNullable(_$AdFeatureStateEnumMap, v) ?? .defaults),

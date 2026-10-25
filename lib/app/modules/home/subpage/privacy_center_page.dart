@@ -7,12 +7,14 @@ import 'package:chaldea/packages/ads/ads.dart';
 import 'package:chaldea/packages/analysis/analysis.dart';
 import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/modern/modern.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 import '../../auth/delete_account_page.dart';
 import '../../common/web_page.dart';
 import 'display_settings/ad_setting.dart';
 import 'feedback_page.dart';
+import 'privacy_permissions_page.dart';
 
 const kPrivacyContactEmail = kSupportTeamEmailAddress;
 
@@ -37,9 +39,30 @@ class _PrivacyCenterPageState extends State<PrivacyCenterPage> {
             children: [
               ListTile(
                 title: Text(S.current.privacy_policy),
-                subtitle: Text('${S.current.privacy_policy_version}: v$kPrivacyPolicyVersion'),
+                subtitle: Text(
+                  [
+                    if (!privacy.accepted || privacy.acceptedVersion != kPrivacyPolicyVersion)
+                      '${S.current.current_version}: v$kPrivacyPolicyVersion',
+                    if (privacy.accepted && privacy.acceptedVersion > 0)
+                      '${S.current.privacy_policy_version}: v${privacy.acceptedVersion}',
+                  ].join('\n'),
+                ),
                 trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
                 onTap: () => openInAppWebView(context, ChaldeaUrl.doc('/privacy'), title: S.current.privacy_policy),
+              ),
+            ],
+          ),
+          TileGroup(
+            header: S.current.privacy_permissions_and_services,
+            children: [
+              ActionRow(
+                title: S.current.privacy_permissions,
+                onTap: () => router.push(child: const PrivacyPermissionsPage()),
+              ),
+              ActionRow(
+                title: S.current.privacy_sdk_list,
+                onTap: () =>
+                    openInAppWebView(context, ChaldeaUrl.doc('/third-party-sdks'), title: S.current.privacy_sdk_list),
               ),
             ],
           ),
@@ -53,6 +76,7 @@ class _PrivacyCenterPageState extends State<PrivacyCenterPage> {
                   subtitle: Text(S.current.personalized_ads_desc),
                   onChanged: (v) {
                     setState(() => db.settings.display.ad.personalizedAds = v);
+                    db.notifySettings();
                     AppAds.onPersonalizedAdsChanged(v);
                   },
                 ),
@@ -65,7 +89,10 @@ class _PrivacyCenterPageState extends State<PrivacyCenterPage> {
                 value: privacy.crashReportEnabled,
                 title: Text(S.current.crash_report),
                 subtitle: Text(S.current.crash_report_desc),
-                onChanged: (v) => setState(() => privacy.crashReportEnabled = v),
+                onChanged: (v) {
+                  setState(() => privacy.crashReportEnabled = v);
+                  db.notifySettings();
+                },
               ),
               SwitchListTile.adaptive(
                 value: privacy.analyticsEnabled,
@@ -81,7 +108,10 @@ class _PrivacyCenterPageState extends State<PrivacyCenterPage> {
               if (kPrivacyConsentEnabled)
                 !privacy.accepted
                     ? ListTile(
-                        title: Text(S.current.consent_agree),
+                        title: Text(
+                          S.current.consent_agree,
+                          style: TextStyle(color: Theme.of(context).colorScheme.primary),
+                        ),
                         subtitle: Text(S.current.privacy_agree_desc),
                         onTap: _agreeNow,
                       )
@@ -124,6 +154,7 @@ class _PrivacyCenterPageState extends State<PrivacyCenterPage> {
 
   void _onAnalyticsChanged(bool enabled) {
     setState(() => privacy.analyticsEnabled = enabled);
+    db.notifySettings();
     if (!enabled) {
       AppAnalysis.instance.halt();
     } else if (privacy.consentSatisfied) {
@@ -134,7 +165,7 @@ class _PrivacyCenterPageState extends State<PrivacyCenterPage> {
   void _agreeNow() {
     applyPrivacyConsent(true);
     AppAds.init();
-    setState(() {});
+    if (mounted) setState(() {});
   }
 
   Future<void> _withdrawConsent() async {
@@ -150,14 +181,12 @@ class _PrivacyCenterPageState extends State<PrivacyCenterPage> {
       ),
     );
     if (ok != true || !mounted) return;
-    privacy.accepted = false;
-    privacy.acceptedVersion = 0;
-    AppAnalysis.instance.halt();
+    applyPrivacyConsent(false);
     setState(() {});
   }
 }
 
-Future<void> applyPrivacyConsent(bool agreed) async {
+void applyPrivacyConsent(bool agreed) {
   final privacy = db.settings.display.privacy;
   privacy.consentAsked = true;
   if (agreed) {
@@ -169,6 +198,7 @@ Future<void> applyPrivacyConsent(bool agreed) async {
     privacy.acceptedVersion = 0;
     AppAnalysis.instance.halt();
   }
+  db.notifySettings();
 }
 
 /// Debug-only: resets consent and ad prefs; restart to see the first-launch flow.
@@ -202,7 +232,7 @@ Future<void> resetPrivacyAndAdsForDebug(BuildContext context) async {
     ..lastAppOpen = 0;
   AppAnalysis.instance.halt();
   AppAds.resetInitState();
-  await db.saveSettings();
+  db.notifySettings();
   EasyLoading.showInfo('Privacy & ads reset. Restart the app to see the first-launch dialog.');
 }
 

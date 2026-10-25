@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
+
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:intl/intl.dart';
 import 'package:material_ui/material_ui.dart';
@@ -581,7 +583,7 @@ const int kPrivacyPolicyVersion = 1;
 /// Master switch for the consent gate. Temporarily off: no dialog is shown and
 /// no consent state is written, so the app starts straight into data loading.
 /// Flip to true when the policy text is ready for release.
-const bool kPrivacyConsentEnabled = false;
+const bool kPrivacyConsentEnabled = false || kDebugMode;
 
 @JsonSerializable()
 class PrivacySetting {
@@ -607,6 +609,150 @@ class PrivacySetting {
   factory PrivacySetting.fromJson(Map<String, dynamic> data) => _$PrivacySettingFromJson(data);
 
   Map<String, dynamic> toJson() => _$PrivacySettingToJson(this);
+}
+
+enum PrivacyPermissionGroup { network, files, photos, phone, notifications, install, advertising, other }
+
+@JsonSerializable(createToJson: false)
+class PrivacyPermissionDeclaration {
+  final String kind;
+  final String name;
+  @JsonKey(readValue: _readAttributes)
+  final Map<String, dynamic> attributes;
+
+  PrivacyPermissionDeclaration({required this.kind, required this.name, required Map<String, dynamic> attributes})
+    : attributes = Map.unmodifiable(attributes);
+
+  factory PrivacyPermissionDeclaration.fromJson(Map<String, dynamic> json) =>
+      _$PrivacyPermissionDeclarationFromJson(json);
+
+  // Preserve platform-specific and future declaration fields from the flat artifact schema.
+  static Object _readAttributes(Map json, String key) => Map<String, dynamic>.from(json)
+    ..remove('kind')
+    ..remove('name');
+
+  PrivacyPermissionGroup get group {
+    // Definitions and unfamiliar names remain visible without inventing a purpose.
+    if (kind == 'permission') return PrivacyPermissionGroup.other;
+    if (kind == 'background-mode') {
+      return name == 'remote-notification' ? PrivacyPermissionGroup.notifications : PrivacyPermissionGroup.other;
+    }
+    if (kind == 'usage-description') {
+      return switch (name) {
+        'NSPhotoLibraryAddUsageDescription' => PrivacyPermissionGroup.photos,
+        'NSUserTrackingUsageDescription' => PrivacyPermissionGroup.advertising,
+        _ => PrivacyPermissionGroup.other,
+      };
+    }
+    if (kind == 'entitlement') {
+      if (name == 'com.apple.security.network.client') return PrivacyPermissionGroup.network;
+      if (name.startsWith('com.apple.security.files.')) return PrivacyPermissionGroup.files;
+      return PrivacyPermissionGroup.other;
+    }
+    if (kind != 'uses-permission' && kind != 'uses-permission-sdk-23') return PrivacyPermissionGroup.other;
+    return switch (name) {
+      'android.permission.INTERNET' ||
+      'android.permission.ACCESS_NETWORK_STATE' ||
+      'android.permission.ACCESS_WIFI_STATE' => PrivacyPermissionGroup.network,
+      'android.permission.READ_EXTERNAL_STORAGE' ||
+      'android.permission.WRITE_EXTERNAL_STORAGE' => PrivacyPermissionGroup.files,
+      'android.permission.READ_PHONE_STATE' => PrivacyPermissionGroup.phone,
+      'android.permission.POST_NOTIFICATIONS' ||
+      'android.permission.RECEIVE_BOOT_COMPLETED' ||
+      'android.permission.SCHEDULE_EXACT_ALARM' ||
+      'android.permission.USE_EXACT_ALARM' ||
+      'android.permission.USE_FULL_SCREEN_INTENT' ||
+      'android.permission.ACCESS_NOTIFICATION_POLICY' => PrivacyPermissionGroup.notifications,
+      'android.permission.REQUEST_INSTALL_PACKAGES' => PrivacyPermissionGroup.install,
+      'com.google.android.gms.permission.AD_ID' ||
+      'com.asus.msa.SupplementaryDID.ACCESS' => PrivacyPermissionGroup.advertising,
+      _ => PrivacyPermissionGroup.other,
+    };
+  }
+
+  String get details => [
+    kind,
+    for (final entry in attributes.entries)
+      '${entry.key}: ${entry.value is String ? entry.value : jsonEncode(entry.value)}',
+  ].join('\n');
+}
+
+@JsonSerializable(createToJson: false)
+class PrivacyPermissionTarget {
+  final String platform;
+  final String? flavor;
+  final String status;
+  @JsonKey(name: 'application_id')
+  final String? applicationId;
+  @JsonKey(name: 'version_name')
+  final String? versionName;
+  @JsonKey(name: 'build_number')
+  final String? buildNumber;
+  final List<PrivacyPermissionDeclaration> declarations;
+
+  PrivacyPermissionTarget({
+    required this.platform,
+    this.flavor,
+    required this.status,
+    this.applicationId,
+    this.versionName,
+    this.buildNumber,
+    required List<PrivacyPermissionDeclaration> declarations,
+  }) : declarations = List.unmodifiable(declarations);
+
+  factory PrivacyPermissionTarget.fromJson(Map<String, dynamic> json) => _$PrivacyPermissionTargetFromJson(json);
+
+  bool get isPartial => status == 'partial';
+
+  Map<PrivacyPermissionGroup, List<PrivacyPermissionDeclaration>> get groups {
+    final result = <PrivacyPermissionGroup, List<PrivacyPermissionDeclaration>>{};
+    for (final declaration in declarations) {
+      (result[declaration.group] ??= []).add(declaration);
+    }
+    return result;
+  }
+}
+
+@JsonSerializable(createToJson: false)
+class PrivacyPermissionCatalog {
+  static const assetPath = 'res/assets/privacy_permissions.json';
+
+  final List<PrivacyPermissionTarget> targets;
+
+  PrivacyPermissionCatalog({required List<PrivacyPermissionTarget> targets}) : targets = List.unmodifiable(targets);
+
+  factory PrivacyPermissionCatalog.fromJson(Map<String, dynamic> json) => _$PrivacyPermissionCatalogFromJson(json);
+
+  factory PrivacyPermissionCatalog.decode(String source) {
+    final json = jsonDecode(source) as Map<String, dynamic>;
+    if (json['schema_version'] != 1 ||
+        json['scope'] != 'package_declarations' ||
+        json['runtime_authorization_verified'] != false) {
+      throw const FormatException('Unsupported permission catalog');
+    }
+    return PrivacyPermissionCatalog.fromJson(json);
+  }
+
+  PrivacyPermissionTarget? select({
+    required String platform,
+    required String? flavor,
+    required String applicationId,
+    required String versionName,
+    required String buildNumber,
+  }) {
+    // A missing Android flavor must not silently become the GitHub or Play inventory.
+    if (platform == 'android' && (flavor == null || flavor.isEmpty)) return null;
+    final matches = targets.where((target) => target.platform == platform && target.flavor == flavor).toList();
+    if (matches.length != 1) return null;
+    final target = matches.single;
+    if ((target.status != 'inspected' && target.status != 'partial') ||
+        target.applicationId != applicationId ||
+        target.versionName != versionName ||
+        target.buildNumber != buildNumber) {
+      return null;
+    }
+    return target;
+  }
 }
 
 @JsonSerializable()
