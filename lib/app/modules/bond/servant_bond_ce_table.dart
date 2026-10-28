@@ -1,3 +1,7 @@
+import 'dart:math' as math;
+
+import 'package:data_table_2/data_table_2.dart';
+
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/battle/utils/battle_utils.dart';
 import 'package:chaldea/app/modules/servant/servant_list.dart';
@@ -13,14 +17,15 @@ class ServantBondCETableTab extends StatefulWidget {
   State<ServantBondCETableTab> createState() => _ServantBondCETableTabState();
 }
 
-class _ServantBondCETableTabState extends State<ServantBondCETableTab> {
-  final List<_ServantWrap> selectedSvts = [_ServantWrap()]; // 空 _ServantWrap 表示待选择
+class _ServantBondCETableTabState extends State<ServantBondCETableTab> with AutomaticKeepAliveClientMixin {
+  final List<_ServantWrap> selectedSvts = [_ServantWrap()]; // An empty _ServantWrap is a selection placeholder.
   late List<CraftEssence> bondCEs;
   final hovered = ValueNotifier<String?>(null);
-  late ScrollController _headerScrollController;
-  late ScrollController _bodyScrollController;
 
-  // 缓存匹配结果，避免重复计算
+  @override
+  bool get wantKeepAlive => true;
+
+  // Cache match results to avoid recalculation.
   final Map<String, Map<int, bool>> _matchCache = {};
 
   String _getCacheKey(int svtId, int ceId) => '$svtId-$ceId';
@@ -29,27 +34,10 @@ class _ServantBondCETableTabState extends State<ServantBondCETableTab> {
   void initState() {
     super.initState();
     bondCEs = _getBondCraftEssences();
-    _headerScrollController = ScrollController();
-    _bodyScrollController = ScrollController();
-
-    // 同步水平滚动
-    _headerScrollController.addListener(() {
-      if (_bodyScrollController.hasClients && _bodyScrollController.offset != _headerScrollController.offset) {
-        _bodyScrollController.jumpTo(_headerScrollController.offset);
-      }
-    });
-
-    _bodyScrollController.addListener(() {
-      if (_headerScrollController.hasClients && _headerScrollController.offset != _bodyScrollController.offset) {
-        _headerScrollController.jumpTo(_bodyScrollController.offset);
-      }
-    });
   }
 
   @override
   void dispose() {
-    _headerScrollController.dispose();
-    _bodyScrollController.dispose();
     hovered.dispose();
     super.dispose();
   }
@@ -78,7 +66,7 @@ class _ServantBondCETableTabState extends State<ServantBondCETableTab> {
 
       ces.add(ce);
     }
-    // 按 collectionNo 排序
+    // Sort by collectionNo.
     ces.sort((a, b) => a.collectionNo.compareTo(b.collectionNo));
     return ces;
   }
@@ -96,7 +84,7 @@ class _ServantBondCETableTabState extends State<ServantBondCETableTab> {
       return _matchCache[cacheKey]!;
     }
 
-    // 检查从者是否符合礼装的羁绊加成条件
+    // Check whether the servant meets the Craft Essence's bond bonus conditions.
     final skills = ce.getActivatedSkills(true)[1] ?? <NiceSkill>[];
     if (skills.isEmpty) {
       _matchCache[cacheKey] = {};
@@ -112,7 +100,7 @@ class _ServantBondCETableTabState extends State<ServantBondCETableTab> {
         for (final func in skill.functions) {
           if (func.funcType != FuncType.servantFriendshipUp) continue;
 
-          // 获取 trait 限制
+          // Collect trait restrictions.
           final List<List<int>> traitsList = [];
           for (final tvals in func.functvals) {
             traitsList.add([tvals]);
@@ -121,12 +109,12 @@ class _ServantBondCETableTabState extends State<ServantBondCETableTab> {
             traitsList.add(tvals);
           }
 
-          // 如果没有 trait 限制，对所有从者有效
+          // If there are no trait restrictions, this applies to all servants.
           if (traitsList.isEmpty) {
             _matchCache[cacheKey]![limit] = true;
           }
 
-          // 检查从者是否包含所有 trait（只要有一个 traits 组满足条件即可）
+          // The servant must match every trait in at least one group.
           for (final traits in traitsList) {
             if (traits.isEmpty) {
               continue;
@@ -147,76 +135,96 @@ class _ServantBondCETableTabState extends State<ServantBondCETableTab> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     if (bondCEs.isEmpty) {
       return Center(child: Text(S.current.empty_hint));
     }
 
-    return Column(
-      children: [
-        // 固定的表头
-        Align(
-          alignment: Alignment.topLeft,
-          child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            controller: _headerScrollController,
-            child: Padding(padding: const EdgeInsets.fromLTRB(4.0, 8.0, 4.0, 0), child: _buildHeader()),
-          ),
-        ),
-        // 可滚动的表体
-        Expanded(
-          child: Align(
-            alignment: Alignment.topLeft,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                controller: _bodyScrollController,
-                child: Padding(padding: const EdgeInsets.fromLTRB(4.0, 0, 4.0, 8.0), child: _buildBody()),
-              ),
+    final textHeights = <String, double>{};
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(4, 8, 4, 0),
+      child: LayoutBuilder(
+        builder: (context, constraints) => Align(
+          alignment: AlignmentDirectional.topStart,
+          child: SizedBox(
+            width: math.min(constraints.maxWidth, 60.0 * (selectedSvts.length + 1)),
+            height: constraints.maxHeight,
+            child: DataTable2(
+              fixedTopRows: 1,
+              fixedLeftColumns: 1,
+              headingRowHeight: _headingHeight(),
+              horizontalMargin: 0,
+              columnSpacing: 0,
+              bottomMargin: 8,
+              minWidth: 60.0 * (selectedSvts.length + 1) + 1,
+              border: TableBorder.all(color: Theme.of(context).dividerColor),
+              columns: [
+                DataColumn2(fixedWidth: 60, label: _buildHeaderCell()),
+                for (var index = 0; index < selectedSvts.length; index++)
+                  DataColumn2(fixedWidth: 60, label: _buildServantHeaderCell(index)),
+              ],
+              rows: [
+                for (final ce in bondCEs)
+                  DataRow2(
+                    specificRowHeight: _rowHeight(ce, textHeights),
+                    cells: [
+                      DataCell(_buildCECell(ce)),
+                      for (final svtWrap in selectedSvts) DataCell(_buildMatchCell(svtWrap, ce)),
+                    ],
+                  ),
+              ],
             ),
           ),
         ),
-      ],
-    );
-  }
-
-  Widget _buildHeader() {
-    const double ceColWidth = 60;
-    const double svtColWidth = 60;
-
-    return ValueListenableBuilder(
-      valueListenable: hovered,
-      builder: (context, _, _) => Table(
-        border: TableBorder.all(color: Theme.of(context).dividerColor),
-        defaultColumnWidth: const FixedColumnWidth(svtColWidth),
-        columnWidths: {0: const FixedColumnWidth(ceColWidth)},
-        children: [_buildHeaderRow()],
       ),
     );
   }
 
-  Widget _buildBody() {
-    const double ceColWidth = 60;
-    const double svtColWidth = 60;
-
-    return Table(
-      border: TableBorder(
-        left: BorderSide(color: Theme.of(context).dividerColor),
-        right: BorderSide(color: Theme.of(context).dividerColor),
-        bottom: BorderSide(color: Theme.of(context).dividerColor),
-        horizontalInside: BorderSide(color: Theme.of(context).dividerColor),
-        verticalInside: BorderSide(color: Theme.of(context).dividerColor),
-      ),
-      defaultColumnWidth: const FixedColumnWidth(svtColWidth),
-      columnWidths: {0: const FixedColumnWidth(ceColWidth)},
-      children: List.generate(bondCEs.length, (index) => _buildCERow(index)),
-    );
+  double _textHeight(String text, TextStyle style, double width) {
+    final painter = TextPainter(
+      text: TextSpan(text: text, style: style),
+      textDirection: Directionality.of(context),
+      textScaler: MediaQuery.textScalerOf(context),
+    )..layout(maxWidth: width);
+    final height = painter.height;
+    painter.dispose();
+    return height;
   }
 
-  TableRow _buildHeaderRow() {
-    return TableRow(
-      children: [_buildHeaderCell(), ...List.generate(selectedSvts.length, (index) => _buildServantHeaderCell(index))],
-    );
+  double _headingHeight() {
+    if (selectedSvts.every((svt) => svt.svt == null)) return 68;
+    final style = Theme.of(context).textTheme.labelLarge!
+        .merge(TextButtonTheme.of(context).style?.textStyle?.resolve({}));
+    return math.max(68, _textHeight(S.current.clear, style, 36) + 16);
+  }
+
+  double _rowHeight(CraftEssence ce, Map<String, double> textHeights) {
+    var height = 60.0;
+    final baseStyle =
+        DataTableTheme.of(context).dataTextStyle ??
+        Theme.of(context).dataTableTheme.dataTextStyle ??
+        Theme.of(context).textTheme.bodyMedium!;
+    for (final svtWrap in selectedSvts) {
+      final matches = _svtMatchesCE(svtWrap, ce);
+      if (matches.isEmpty) continue;
+      final allMatch = matches.values.every((match) => match);
+      final allDismatch = matches.values.every((match) => !match);
+      final text = _matchText(matches);
+      height = math.max(
+        height,
+        textHeights.putIfAbsent(text, () {
+          final style = baseStyle.copyWith(fontSize: allMatch || allDismatch ? 32 : 20);
+          return _textHeight(text, style, 60);
+        }),
+      );
+    }
+    return height;
+  }
+
+  String _matchText(Map<int, bool> matches) {
+    if (matches.values.every((match) => match)) return '\u2713'; // ✓
+    if (matches.values.every((match) => !match)) return '\u00D7'; // ✗
+    return '${matches.values.where((match) => match).length}/${matches.length}';
   }
 
   Widget _buildHeaderCell() {
@@ -232,7 +240,7 @@ class _ServantBondCETableTabState extends State<ServantBondCETableTab> {
                 _matchCache.clear();
               });
             },
-            child: Text(S.current.clear, style: TextStyle(color: Theme.of(context).colorScheme.error)),
+            child: Text(S.current.clear, softWrap: true, style: TextStyle(color: Theme.of(context).colorScheme.error)),
           ),
         ),
       );
@@ -252,11 +260,11 @@ class _ServantBondCETableTabState extends State<ServantBondCETableTab> {
           onChanged: () {
             if (mounted) {
               setState(() {
-                // 如果是最后一个位置且选择了从者，添加新列
+                // Add a new column when a servant is selected in the last slot.
                 if (index == selectedSvts.length - 1 && svtWrap.svt != null) {
                   selectedSvts.add(_ServantWrap());
                 }
-                // 如果当前列被清空且不是最后一个位置，移除该列
+                // Remove the column when a non-final slot is cleared.
                 if (index != selectedSvts.length - 1 && svtWrap.svt == null) {
                   selectedSvts.remove(svtWrap);
                 }
@@ -266,20 +274,6 @@ class _ServantBondCETableTabState extends State<ServantBondCETableTab> {
           hovered: hovered,
         ),
       ),
-    );
-  }
-
-  TableRow _buildCERow(int index) {
-    final ce = bondCEs[index];
-
-    return TableRow(
-      children: [
-        _buildCECell(ce),
-        ...List.generate(selectedSvts.length, (svtIndex) {
-          final svtWrap = selectedSvts[svtIndex];
-          return _buildMatchCell(svtWrap, ce);
-        }),
-      ],
     );
   }
 
@@ -343,11 +337,7 @@ class _ServantBondCETableTabState extends State<ServantBondCETableTab> {
         child: Tooltip(
           message: msg,
           child: Text(
-            isAllMatch
-                ? '\u2713'
-                : isAllDismatch
-                ? '\u00D7'
-                : '${matches.values.where((match) => match).length}/${matches.length}', // ✓ or ✗ or 部分匹配
+            _matchText(matches),
             style: TextStyle(
               color: isAllMatch
                   ? Colors.green
