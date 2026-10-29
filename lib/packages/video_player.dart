@@ -95,26 +95,35 @@ class _MyVideoPlayerState extends State<MyVideoPlayer> {
   bool _loading = false;
   dynamic error;
 
+  /// Invalidates in-flight loads when the url changes or the widget is removed.
+  int _loadToken = 0;
+
   @override
   void initState() {
     super.initState();
-    _initController(widget.url);
     widget.controller?.addListener(update);
+    _prepare(widget.url);
   }
 
   @override
   void dispose() {
-    super.dispose();
+    _loadToken += 1;
     widget.controller?.removeListener(update);
     _fallbackController?.dispose();
     _fallbackController = null;
+    super.dispose();
   }
 
   @override
   void didUpdateWidget(covariant MyVideoPlayer oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.url != widget.url && widget.url != null) {
-      _initController(widget.url);
+      _loadToken += 1;
+      _fallbackController?.dispose();
+      _fallbackController = null;
+      _loading = false;
+      error = null;
+      _prepare(widget.url);
     }
     if (oldWidget.controller != widget.controller) {
       oldWidget.controller
@@ -125,40 +134,66 @@ class _MyVideoPlayerState extends State<MyVideoPlayer> {
     }
   }
 
-  Future<void> _initController(String? url) async {
+  void _prepare(String? url) {
     if (url == null) return;
     if (PlatformU.isLinux) {
       error = 'Linux not supported yet';
       return;
     }
+    if (widget.autoPlay) {
+      _startLoad();
+    }
+  }
+
+  Future<void> _startLoad() async {
+    final url = widget.url;
+    if (url == null || _loading) return;
+    if (error != null) {
+      AtlasIconLoader.i.evict(url);
+      error = null;
+    }
+    await _initController(url);
+  }
+
+  Future<void> _initController(String url) async {
+    if (PlatformU.isLinux) {
+      error = 'Linux not supported yet';
+      if (mounted) setState(() {});
+      return;
+    }
+    final token = ++_loadToken;
     _fallbackController?.dispose();
     _fallbackController = null;
     _loading = true;
     error = null;
     if (mounted) setState(() {});
     final fp = kIsWeb ? null : await AtlasIconLoader.i.get(url);
-    if (!mounted) return;
-    if (fp != null) {
-      _fallbackController = VideoPlayerController.file(
-        File(fp),
-        videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
-      );
-    } else {
-      _fallbackController = VideoPlayerController.networkUrl(
-        Uri.parse(url),
-        videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
-      );
-    }
+    if (!mounted || token != _loadToken) return;
+    final controller = fp != null
+        ? VideoPlayerController.file(File(fp), videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true))
+        : VideoPlayerController.networkUrl(Uri.parse(url), videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true));
+    _fallbackController = controller;
     try {
-      await _fallbackController!.initialize();
-      _fallbackController!.addListener(update);
-      if (widget.autoPlay) _fallbackController!.play();
+      await controller.initialize();
+      if (!mounted || token != _loadToken) {
+        await controller.dispose();
+        if (identical(_fallbackController, controller)) _fallbackController = null;
+        return;
+      }
+      controller.addListener(update);
+      controller.play();
     } catch (e, s) {
-      logger.e('init video player failed, $url', e, s);
-      error = e;
+      await controller.dispose();
+      if (identical(_fallbackController, controller)) _fallbackController = null;
+      if (token == _loadToken) {
+        logger.e('init video player failed, $url', e, s);
+        error = e;
+      }
     } finally {
-      _loading = false;
-      if (mounted) setState(() {});
+      if (token == _loadToken) {
+        _loading = false;
+        if (mounted) setState(() {});
+      }
     }
   }
 
@@ -175,8 +210,24 @@ class _MyVideoPlayerState extends State<MyVideoPlayer> {
           aspectRatio: widget.initAspectRatio,
           child: const Center(child: CircularProgressIndicator.adaptive()),
         );
+      } else if (error != null) {
+        return GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: _startLoad,
+          child: widget.onFailed(context, widget.url, error),
+        );
       } else {
-        return widget.onFailed(context, widget.url, error);
+        return AspectRatio(
+          aspectRatio: widget.initAspectRatio,
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: _startLoad,
+            child: Container(
+              color: Colors.black26,
+              child: const Center(child: Icon(Icons.play_arrow_rounded, color: Colors.white, size: 100.0)),
+            ),
+          ),
+        );
       }
     }
 
