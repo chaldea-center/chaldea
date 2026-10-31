@@ -438,7 +438,7 @@ class _SvtEquipCombinePageState extends State<SvtEquipCombinePage> with FakerRun
           _limitBreakCard(group.target, target: true),
           const Padding(
             padding: EdgeInsets.only(top: 24, left: 2, right: 2),
-            child: Icon(Icons.chevron_right, size: 16),
+            child: Icon(Icons.chevron_left, size: 16),
           ),
           Expanded(
             child: SingleChildScrollView(

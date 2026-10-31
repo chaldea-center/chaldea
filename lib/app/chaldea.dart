@@ -68,7 +68,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WindowListener
   Widget build(BuildContext context) {
     final lightTheme = AppTheme.light();
     final darkTheme = AppTheme.dark();
-    Widget child = Screenshot(
+    return Screenshot(
       controller: db.runtimeData.screenshotController,
       child: MaterialApp.router(
         title: kAppName,
@@ -87,31 +87,28 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WindowListener
         builder: (context, widget) {
           ErrorWidget.builder = _ErrorWidget.errorWidgetBuilder;
           isEasyLoadingAttached = true;
-          widget = FlutterEasyLoading(key: _easyLoadingKey, child: widget);
+          Widget child = FlutterEasyLoading(key: _easyLoadingKey, child: widget);
           // ignore: deprecated_member_use
-          return MaterialUiCompatibilityBridge(child: widget);
+          child = MaterialUiCompatibilityBridge(child: child);
+          if (PlatformU.isAndroid) {
+            final theme = Theme.of(context);
+            final isDark = theme.brightness == Brightness.dark;
+            final overlayStyle = isDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark;
+            // Pages without an AppBar, including split-view placeholders, need a theme-aware fallback.
+            child = AnnotatedRegion<SystemUiOverlayStyle>(
+              value: overlayStyle.copyWith(
+                statusBarColor: Colors.transparent,
+                systemNavigationBarColor: theme.scaffoldBackgroundColor,
+                // Both presets use light navigation icons, so override them separately.
+                systemNavigationBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
+              ),
+              child: child,
+            );
+          }
+          return child;
         },
       ),
     );
-    if (PlatformU.isAndroid) {
-      child = AnnotatedRegion<SystemUiOverlayStyle>(
-        value: db.settings.appearance.isResolvedDarkMode
-            ? SystemUiOverlayStyle.dark.copyWith(
-                // statusBarColor: Colors.transparent,
-                systemNavigationBarColor: darkTheme.scaffoldBackgroundColor,
-                // statusBarIconBrightness: Brightness.light,
-                systemNavigationBarIconBrightness: Brightness.light,
-              )
-            : SystemUiOverlayStyle.light.copyWith(
-                // statusBarColor: Colors.transparent,
-                systemNavigationBarColor: lightTheme.scaffoldBackgroundColor,
-                // statusBarIconBrightness: Brightness.dark,
-                systemNavigationBarIconBrightness: Brightness.dark,
-              ),
-        child: child,
-      );
-    }
-    return child;
   }
 
   void onAppUpdate() {

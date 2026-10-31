@@ -295,6 +295,7 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
   }
 
   Widget get bondTab {
+    const int flex1 = 2, flex2 = 3, flex3 = 3;
     return Column(
       children: [
         ListTile(
@@ -303,21 +304,21 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
           title: Row(
             children: [
               Expanded(
-                flex: 2,
+                flex: flex1,
                 child: Align(
                   alignment: Alignment.center,
                   child: TextButton(child: const Text('Rank'), onPressed: () => onSort(_SvtSortType.bondRank)),
                 ),
               ),
               Expanded(
-                flex: 2,
+                flex: flex2,
                 child: Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(child: const Text("Total"), onPressed: () => onSort(_SvtSortType.bondTotal)),
                 ),
               ),
               Expanded(
-                flex: 2,
+                flex: flex3,
                 child: Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(child: const Text('Next'), onPressed: () => onSort(_SvtSortType.bondNext)),
@@ -336,12 +337,16 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
                 title: Row(
                   children: [
                     Expanded(
-                      flex: 2,
+                      flex: flex1,
                       child: Align(
                         alignment: Alignment.center,
-                        child: AutoSizeText(
-                          'Lv.${collection.friendshipRank}/'
-                          '${collection.maxFriendshipRank}',
+                        child: AutoSizeText.rich(
+                          TextSpan(
+                            children: [
+                              const TextSpan(text: 'Lv.', style: TextStyle(fontSize: 12)),
+                              TextSpan(text: '${collection.friendshipRank}/${collection.maxFriendshipRank}'),
+                            ],
+                          ),
                           maxLines: 1,
                           maxFontSize: 14,
                           minFontSize: 6,
@@ -350,14 +355,14 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
                       ),
                     ),
                     Expanded(
-                      flex: 2,
+                      flex: flex2,
                       child: Align(
                         alignment: Alignment.centerRight,
                         child: Container(
                           color: Theme.of(context).highlightColor,
-                          padding: const EdgeInsets.symmetric(horizontal: 4),
+                          padding: const EdgeInsets.symmetric(horizontal: 6),
                           child: AutoSizeText(
-                            collection.friendship.format(),
+                            collection.friendship.formatSep(),
                             maxLines: 1,
                             maxFontSize: 14,
                             minFontSize: 6,
@@ -367,11 +372,11 @@ class _SvtBondDetailPageState extends State<SvtBondDetailPage> with SingleTicker
                       ),
                     ),
                     Expanded(
-                      flex: 2,
+                      flex: flex3,
                       child: Align(
                         alignment: Alignment.centerRight,
                         child: AutoSizeText(
-                          _getBondNext(svt, collection).format(),
+                          _getBondNext(svt, collection).formatSep(),
                           maxLines: 1,
                           maxFontSize: 14,
                           minFontSize: 6,

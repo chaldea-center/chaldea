@@ -499,6 +499,7 @@ class _AppNewsCarouselState extends State<AppNewsCarousel> {
   }
 
   List<Widget> getPages(double? height, double aspectRatio) {
+    if (kScreenshotMode) return [];
     if (widget.pages != null) return widget.pages!.toList();
     List<Widget> sliders = [];
     if (carouselSetting.needUpdate) {

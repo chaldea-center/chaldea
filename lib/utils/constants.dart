@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
+
 import 'package:material_ui/material_ui.dart';
 
 const String kAppName = 'Chaldea';
@@ -10,8 +12,8 @@ const String kSupportTeamEmailAddress = 'support@chaldea.center';
 const String kAppStoreLink = 'itms-apps://itunes.apple.com/app/id1548713491';
 const String kAppStoreHttpLink = 'https://itunes.apple.com/app/id1548713491';
 const String kGooglePlayLink = 'https://play.google.com/store/apps/details?id=cc.narumi.chaldea';
-const String kICPFilingNumberWeb = '京ICP备17059472号-3';
-const String kICPFilingNumberApp = '京ICP备17059472号-4A';
+const String kICPFilingNumberWeb = '浙ICP备2026091702号-1';
+const String kICPFilingNumberApp = '浙ICP备2026091702号-3A';
 const int kCopyrightYear = 2025;
 
 const String kProjectHomepage = 'https://github.com/chaldea-center/chaldea';
@@ -59,3 +61,5 @@ final kEmojiRegExp = RegExp(
 );
 
 const int kMashSvtId = 800100;
+
+const bool kScreenshotMode = kDebugMode && false;
