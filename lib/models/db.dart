@@ -142,6 +142,7 @@ class _Database {
     await loadSettings(null, loadedUserData?.users.firstOrNull?.battleSim);
     if (loadedUserData != null) {
       userData = loadedUserData;
+      _migrateLegacyEventItemCalc();
       // Persist collection numbers before removing their legacy persistence source.
       await saveSettings();
       await saveUserData();
@@ -157,6 +158,16 @@ class _Database {
 
     if (kIsWeb) usePathUrlStrategy();
     _startSavingLoop();
+  }
+
+  void _migrateLegacyEventItemCalc() {
+    final legacy = settings.gameplay.legacyEventItemCalc;
+    if (legacy == null || legacy.isEmpty) return;
+    final user = userData.users.first;
+    for (final entry in legacy.entries) {
+      user.eventItemCalc.putIfAbsent(entry.key, () => entry.value);
+    }
+    settings.gameplay.legacyEventItemCalc = null;
   }
 
   /// return the [UserData] instance, don't assign to [userData]

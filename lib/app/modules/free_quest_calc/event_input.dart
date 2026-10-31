@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
@@ -55,7 +57,7 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
   }
 
   Future<void> getData() async {
-    params = db.settings.gameplay.eventItemCalc.putIfAbsent(widget.warId, () => EventItemCalcParams());
+    params = db.curUser.eventItemCalc.putIfAbsent(widget.warId, () => EventItemCalcParams());
     if (widget.objectiveCounts != null) {
       // [objectiveCounts] should contain all items from shop even value is 0
       // except the final event item to qp shop, event points should not be in it
@@ -114,6 +116,10 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
     params.bonusPlans.sort2((e) => -e.questId);
     params.itemCounts.removeWhere((key, value) => !eventItemIds.contains(key));
     if (mounted) setState(() {});
+  }
+
+  int _getItemDemand(int itemId) {
+    return max(0, (params.itemCounts[itemId] ?? 0) - (db.curUser.items[itemId] ?? 0));
   }
 
   @override
@@ -193,7 +199,7 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
   Widget _buildItemDemand(int itemId) {
     final isPoint = db.gameData.items[itemId]?.type == ItemType.eventPoint;
     final int demands = params.itemCounts[itemId] ?? 0,
-        finalDemands = params.getItemDemand(itemId),
+        finalDemands = _getItemDemand(itemId),
         ownCount = db.curUser.items[itemId] ?? 0;
     final formula = Row(
       mainAxisAlignment: MainAxisAlignment.end,
@@ -356,7 +362,7 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
     });
     EasyLoading.show();
 
-    final itemIds = params.itemCounts.keys.where((key) => params.getItemDemand(key) > 0).toList();
+    final itemIds = params.itemCounts.keys.where((key) => _getItemDemand(key) > 0).toList();
     final plans = params.bonusPlans
         .where((plan) => plan.enabled && plan.drops.items.keys.any((itemId) => itemIds.contains(itemId)))
         .toList();
@@ -382,7 +388,7 @@ class _EventItemInputTabState extends State<EventItemInputTab> {
         colNames: List.generate(plans.length, (index) => index),
         rowNames: itemIds,
         matA: matA,
-        bVec: itemIds.map((e) => params.getItemDemand(e)).toList(),
+        bVec: itemIds.map((e) => _getItemDemand(e)).toList(),
         cVec: plans.map((e) => e.ap).toList(),
       );
       print([lpParams.rowNames, lpParams.bVec]);

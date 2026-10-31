@@ -162,6 +162,8 @@ class User {
   /// (normal/ascension/skill/special/coin). Stale by design until the user becomes current again.
   Map<int, int> itemsLeft;
 
+  Map<int, EventItemCalcParams> eventItemCalc;
+
   Map<int, CraftStatus> craftEssences;
   Map<int, CmdCodeStatus> cmdCodes;
   Map<int, int> mysticCodes;
@@ -191,6 +193,7 @@ class User {
     int curSvtPlanNo = 0,
     Map<int, int>? items,
     Map<int, int>? itemsLeft,
+    Map<int, EventItemCalcParams>? eventItemCalc,
     Map<int, CraftStatus>? craftEssences,
     Map<int, CmdCodeStatus>? cmdCodes,
     Map<int, int>? mysticCodes,
@@ -210,6 +213,7 @@ class User {
        _curSvtPlanNo = curSvtPlanNo.clamp(0, kSvtPlanMaxNum - 1),
        items = items ?? {},
        itemsLeft = itemsLeft ?? {},
+       eventItemCalc = eventItemCalc ?? {},
        craftEssences = craftEssences ?? {},
        cmdCodes = cmdCodes ?? {},
        mysticCodes = mysticCodes ?? {},
@@ -307,6 +311,7 @@ class User {
       plan.sort();
     }
     items = sortDict(items);
+    eventItemCalc = sortDict(eventItemCalc);
     craftEssences = sortDict(craftEssences);
     mysticCodes = sortDict(mysticCodes);
     cmdCodes = sortDict(cmdCodes);
@@ -448,6 +453,60 @@ class UserPlan {
     mainStories = sortDict(mainStories);
     tickets = sortDict(tickets);
     classBoards = sortDict(classBoards);
+  }
+}
+
+// key: warId
+@JsonSerializable()
+class EventItemCalcParams {
+  Map<int, int> itemCounts;
+  List<QuestBonusPlan> bonusPlans;
+
+  EventItemCalcParams({Map<int, int>? itemCounts, List<QuestBonusPlan>? bonusPlans})
+    : itemCounts = itemCounts ?? {},
+      bonusPlans = bonusPlans ?? [];
+
+  factory EventItemCalcParams.fromJson(Map<String, dynamic> json) => _$EventItemCalcParamsFromJson(json);
+
+  Map<String, dynamic> toJson() => _$EventItemCalcParamsToJson(this);
+}
+
+@JsonSerializable()
+class QuestBonusPlan {
+  bool enabled = true;
+  int questId;
+  int index;
+  String name;
+  Map<int, int> bonus = {};
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  int ap = 999999;
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  QuestDropData drops = QuestDropData();
+
+  QuestBonusPlan({this.enabled = true, this.questId = 0, this.index = 0, this.name = "", Map<int, int>? bonus})
+    : bonus = bonus ?? {};
+
+  int getBonus(int itemId) => bonus[itemId] ?? 0;
+
+  factory QuestBonusPlan.fromJson(Map<String, dynamic> json) => _$QuestBonusPlanFromJson(json);
+
+  Map<String, dynamic> toJson() => _$QuestBonusPlanToJson(this);
+
+  String getName({bool withName = true, bool withLv = false}) {
+    String s = Quest.getName(questId);
+    final quest = db.gameData.quests[questId];
+    if (withLv && quest != null) s = 'Lv.${quest.recommendLv} $s';
+    if (index == 0) return s;
+    s += ' @$index';
+    if (withName && name.isNotEmpty) s += ' ($name)';
+    return s;
+  }
+
+  QuestBonusPlan copy(int index) {
+    return QuestBonusPlan(enabled: enabled, questId: questId, index: index, bonus: Map.of(bonus))
+      ..ap = ap
+      ..drops = drops;
   }
 }
 

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:flutter/foundation.dart';
 
@@ -21,6 +20,7 @@ import 'autologin.dart';
 import 'battle.dart';
 import 'filter_data.dart';
 import 'remote_config.dart';
+import 'userdata.dart';
 import 'version.dart';
 
 export 'battle.dart';
@@ -176,7 +176,7 @@ class LocalSettings {
     final proxy = json['network']?['proxy'];
     if (proxy is Map) json['proxy'] = proxy;
     mirror('locale', ['preferredRegions', 'preferredQuestRegion']);
-    mirror('gameplay', ['preferApRate', 'preferredFavorite', 'priorityTags', 'eventItemCalc', 'masterMissionOptions']);
+    mirror('gameplay', ['preferApRate', 'preferredFavorite', 'priorityTags', 'masterMissionOptions']);
     mirror('display', ['enableMouseDrag', 'globalSelection', 'forceEdgeSwipePopGesture', 'galleries', 'showDebugFab']);
     mirror('filters', [
       'spoilerRegion',
@@ -398,7 +398,10 @@ class GameplaySettings {
   bool preferApRate;
   FavoriteState? preferredFavorite;
   Map<int, String> priorityTags;
-  Map<int, EventItemCalcParams> eventItemCalc;
+
+  @JsonKey(name: 'eventItemCalc', includeToJson: false)
+  Map<int, EventItemCalcParams>? legacyEventItemCalc;
+
   MasterMissionOptions masterMissionOptions;
 
   GameplaySettings({
@@ -407,12 +410,11 @@ class GameplaySettings {
     this.preferApRate = true,
     this.preferredFavorite,
     Map<int, String>? priorityTags,
-    Map<int, EventItemCalcParams>? eventItemCalc,
+    this.legacyEventItemCalc,
     MasterMissionOptions? masterMissionOptions,
   }) : pinnedSvtIds = pinnedSvtIds ?? {503900, 504500, 604200, 2800100, 901400},
        pinnedSvtEquipIds = pinnedSvtEquipIds ?? {9400180, 9400280, 9400340, 9400480, 9403990},
        priorityTags = priorityTags ?? {},
-       eventItemCalc = eventItemCalc ?? {},
        masterMissionOptions = masterMissionOptions ?? MasterMissionOptions();
 
   factory GameplaySettings.fromJson(Map<String, dynamic> json) => _$GameplaySettingsFromJson(json);
@@ -987,64 +989,6 @@ class TipsSetting {
   factory TipsSetting.fromJson(Map<String, dynamic> json) => _$TipsSettingFromJson(json);
 
   Map<String, dynamic> toJson() => _$TipsSettingToJson(this);
-}
-
-// key: warId
-@JsonSerializable()
-class EventItemCalcParams {
-  Map<int, int> itemCounts;
-  List<QuestBonusPlan> bonusPlans;
-
-  EventItemCalcParams({Map<int, int>? itemCounts, List<QuestBonusPlan>? bonusPlans})
-    : itemCounts = itemCounts ?? {},
-      bonusPlans = bonusPlans ?? [];
-
-  int getItemDemand(int itemId) {
-    return max(0, (itemCounts[itemId] ?? 0) - (db.curUser.items[itemId] ?? 0));
-  }
-
-  factory EventItemCalcParams.fromJson(Map<String, dynamic> json) => _$EventItemCalcParamsFromJson(json);
-
-  Map<String, dynamic> toJson() => _$EventItemCalcParamsToJson(this);
-}
-
-@JsonSerializable()
-class QuestBonusPlan {
-  bool enabled = true;
-  int questId;
-  int index;
-  String name;
-  Map<int, int> bonus = {};
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  int ap = 999999;
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  QuestDropData drops = QuestDropData();
-
-  QuestBonusPlan({this.enabled = true, this.questId = 0, this.index = 0, this.name = "", Map<int, int>? bonus})
-    : bonus = bonus ?? {};
-
-  int getBonus(int itemId) => bonus[itemId] ?? 0;
-
-  factory QuestBonusPlan.fromJson(Map<String, dynamic> json) => _$QuestBonusPlanFromJson(json);
-
-  Map<String, dynamic> toJson() => _$QuestBonusPlanToJson(this);
-
-  String getName({bool withName = true, bool withLv = false}) {
-    String s = Quest.getName(questId);
-    final quest = db.gameData.quests[questId];
-    if (withLv && quest != null) s = 'Lv.${quest.recommendLv} $s';
-    if (index == 0) return s;
-    s += ' @$index';
-    if (withName && name.isNotEmpty) s += ' ($name)';
-    return s;
-  }
-
-  QuestBonusPlan copy(int index) {
-    return QuestBonusPlan(enabled: enabled, questId: questId, index: index, bonus: Map.of(bonus))
-      ..ap = ap
-      ..drops = drops;
-  }
 }
 
 @JsonSerializable()

@@ -318,7 +318,7 @@ GameplaySettings _$GameplaySettingsFromJson(Map json) => $checkedCreate('Gamepla
       'priorityTags',
       (v) => (v as Map?)?.map((k, e) => MapEntry(int.parse(k as String), e as String)),
     ),
-    eventItemCalc: $checkedConvert(
+    legacyEventItemCalc: $checkedConvert(
       'eventItemCalc',
       (v) => (v as Map?)?.map(
         (k, e) => MapEntry(int.parse(k as String), EventItemCalcParams.fromJson(Map<String, dynamic>.from(e as Map))),
@@ -330,7 +330,7 @@ GameplaySettings _$GameplaySettingsFromJson(Map json) => $checkedCreate('Gamepla
     ),
   );
   return val;
-});
+}, fieldKeyMap: const {'legacyEventItemCalc': 'eventItemCalc'});
 
 Map<String, dynamic> _$GameplaySettingsToJson(GameplaySettings instance) => <String, dynamic>{
   'pinnedSvtIds': instance.pinnedSvtIds.toList(),
@@ -338,7 +338,6 @@ Map<String, dynamic> _$GameplaySettingsToJson(GameplaySettings instance) => <Str
   'preferApRate': instance.preferApRate,
   'preferredFavorite': _$FavoriteStateEnumMap[instance.preferredFavorite],
   'priorityTags': instance.priorityTags.map((k, e) => MapEntry(k.toString(), e)),
-  'eventItemCalc': instance.eventItemCalc.map((k, e) => MapEntry(k.toString(), e.toJson())),
   'masterMissionOptions': instance.masterMissionOptions.toJson(),
 };
 
@@ -725,49 +724,6 @@ Map<String, dynamic> _$TipsSettingToJson(TipsSetting instance) => <String, dynam
   'starter': instance.starter,
   'servantList': instance.servantList,
   'servantDetail': instance.servantDetail,
-};
-
-EventItemCalcParams _$EventItemCalcParamsFromJson(Map json) =>
-    $checkedCreate('EventItemCalcParams', json, ($checkedConvert) {
-      final val = EventItemCalcParams(
-        itemCounts: $checkedConvert(
-          'itemCounts',
-          (v) => (v as Map?)?.map((k, e) => MapEntry(int.parse(k as String), (e as num).toInt())),
-        ),
-        bonusPlans: $checkedConvert(
-          'bonusPlans',
-          (v) =>
-              (v as List<dynamic>?)?.map((e) => QuestBonusPlan.fromJson(Map<String, dynamic>.from(e as Map))).toList(),
-        ),
-      );
-      return val;
-    });
-
-Map<String, dynamic> _$EventItemCalcParamsToJson(EventItemCalcParams instance) => <String, dynamic>{
-  'itemCounts': instance.itemCounts.map((k, e) => MapEntry(k.toString(), e)),
-  'bonusPlans': instance.bonusPlans.map((e) => e.toJson()).toList(),
-};
-
-QuestBonusPlan _$QuestBonusPlanFromJson(Map json) => $checkedCreate('QuestBonusPlan', json, ($checkedConvert) {
-  final val = QuestBonusPlan(
-    enabled: $checkedConvert('enabled', (v) => v as bool? ?? true),
-    questId: $checkedConvert('questId', (v) => (v as num?)?.toInt() ?? 0),
-    index: $checkedConvert('index', (v) => (v as num?)?.toInt() ?? 0),
-    name: $checkedConvert('name', (v) => v as String? ?? ""),
-    bonus: $checkedConvert(
-      'bonus',
-      (v) => (v as Map?)?.map((k, e) => MapEntry(int.parse(k as String), (e as num).toInt())),
-    ),
-  );
-  return val;
-});
-
-Map<String, dynamic> _$QuestBonusPlanToJson(QuestBonusPlan instance) => <String, dynamic>{
-  'enabled': instance.enabled,
-  'questId': instance.questId,
-  'index': instance.index,
-  'name': instance.name,
-  'bonus': instance.bonus.map((k, e) => MapEntry(k.toString(), e)),
 };
 
 MasterMissionOptions _$MasterMissionOptionsFromJson(Map json) =>
