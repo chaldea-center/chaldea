@@ -45,6 +45,7 @@ void main() async {
     catcherOptions = CatcherUtil.getOptions(
       logPath: db.paths.crashLog,
       feedbackHandler: ServerFeedbackHandler(
+        requireConsent: true,
         screenshotController: db.runtimeData.screenshotController,
         screenshotPath: joinPaths(db.paths.tempDir, 'crash.jpg'),
         attachments: [db.paths.appLog, db.paths.crashLog, db.paths.userDataPath],

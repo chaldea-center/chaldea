@@ -9,18 +9,28 @@
         android:protectionLevel="signature" />
     <uses-permission android:name="${applicationId}.openadsdk.permission.TT_PANGOLIN" />
 
-    <!-- GroMore optional permissions -->
+    <!-- GroMore optional permissions (kept: network state used by ad SDK) -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <!-- Google Play not allow REQUEST_INSTALL_PACKAGES permission -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <!-- Others -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
     <!-- Gallery saves use MediaStore without storage permission on Android 10+. -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="28" tools:ignore="ScopedStorage" />
+
+    <!--
+      Permission minimization for Huawei AppGallery privacy review (2026-10-29):
+      The following permissions are contributed by the ad SDK (GroMore/Pangle) and are
+      not used by any in-app user-facing feature, so strip them from the merged manifest.
+        - READ_PHONE_STATE       : ad SDK device id / anti-fraud only
+        - WRITE_EXTERNAL_STORAGE : legacy (<= Android 9) only; ad caching on 10+ uses app storage
+        - SYSTEM_ALERT_WINDOW    : ad floating window; app shows no overlays
+      READ_EXTERNAL_STORAGE is intentionally kept (app gallery save / file import on <= Android 12).
+    -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" tools:node="remove" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" tools:node="remove" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" tools:node="remove" />
     <uses-permission android:name="com.google.android.gms.permission.AD_ID" /> <!-- Android 13+ must declare AD_ID permission, otherwise return zeros -->
     <!-- <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" /> --> <!-- Android 11 will ignore requestLegacyExternalStorage, Google Play also reject it -->
     <!-- flutter_local_notifications -->

@@ -25,12 +25,24 @@ class _PrivacyPermissionsPageState extends State<PrivacyPermissionsPage> {
   late final Future<PrivacyPermissionCatalog> _catalog = _loadCatalog();
   PrivacyPermissionTarget? _previewTarget;
 
-  Future<PrivacyPermissionCatalog> _loadCatalog() async =>
-      PrivacyPermissionCatalog.decode(await rootBundle.loadString(PrivacyPermissionCatalog.assetPath));
+  String get _currentPlatform => PlatformU.isWeb ? 'web' : PlatformU.operatingSystem;
+
+  bool _matchesCurrentDevice(PrivacyPermissionTarget target) =>
+      target.platform == _currentPlatform && target.flavor == appFlavor;
+
+  Future<PrivacyPermissionCatalog> _loadCatalog() async {
+    final catalog = PrivacyPermissionCatalog.decode(await rootBundle.loadString(PrivacyPermissionCatalog.assetPath));
+    if (kDebugMode) {
+      // Debug packages preview release declarations without requiring a matching package identity.
+      final matches = catalog.targets.where(_matchesCurrentDevice).toList();
+      if (matches.length == 1) _previewTarget = matches.single;
+    }
+    return catalog;
+  }
 
   PrivacyPermissionTarget? _currentTarget(PrivacyPermissionCatalog catalog) {
     return catalog.select(
-      platform: PlatformU.isWeb ? 'web' : PlatformU.operatingSystem,
+      platform: _currentPlatform,
       flavor: PlatformU.isAndroid ? appFlavor : null,
       applicationId: AppInfo.packageName,
       versionName: AppInfo.versionString,
@@ -70,12 +82,16 @@ class _PrivacyPermissionsPageState extends State<PrivacyPermissionsPage> {
   };
 
   Widget _buildDebugGroup(PrivacyPermissionCatalog catalog, PrivacyPermissionTarget? target) {
+    final previewPlatform = _previewTarget?.platform ?? _currentPlatform;
     final platforms = catalog.targets.map((target) => target.platform).toSet();
     final flavors = <String?, PrivacyPermissionTarget>{};
-    for (final target in catalog.targets.where((target) => target.platform == _previewTarget?.platform)) {
+    for (final target in catalog.targets.where((target) => target.platform == previewPlatform)) {
       flavors.putIfAbsent(target.flavor, () => target);
     }
     final hasFlavors = flavors.keys.any((flavor) => flavor?.isNotEmpty == true);
+    // Both dropdowns carry an explicit "Current device" item so the selection is
+    // never null and the card shows a real option instead of a placeholder hint.
+    final selectedFlavor = _previewTarget == null ? null : flavors[_previewTarget!.flavor];
     return TileGroup(
       header: 'Debug preview',
       children: [
@@ -85,22 +101,28 @@ class _PrivacyPermissionsPageState extends State<PrivacyPermissionsPage> {
               label: 'platform',
               optionValue: (platform: _previewTarget?.platform),
               options: [(platform: null), for (final platform in platforms) (platform: platform)],
-              optionLabel: (option) => option.platform ?? 'Current device',
+              optionLabel: (option) => option.platform == null
+                  ? 'Current device'
+                  : '${option.platform}${option.platform == _currentPlatform ? ' *' : ''}',
               onSelected: (option) => setState(() {
-                // A record keeps Current device selectable without a nullable menu value.
                 final platform = option.platform;
-                _previewTarget = platform == null
-                    ? null
-                    : catalog.targets.firstWhere((target) => target.platform == platform);
+                if (platform == null) {
+                  _previewTarget = null;
+                  return;
+                }
+                final targets = catalog.targets.where((target) => target.platform == platform).toList();
+                _previewTarget = targets.firstWhereOrNull(_matchesCurrentDevice) ?? targets.first;
               }),
             ),
-            ValueCard<PrivacyPermissionTarget>(
+            ValueCard<({PrivacyPermissionTarget? target})>(
               label: 'flavor',
-              value: '—',
-              optionValue: hasFlavors ? _previewTarget : null,
-              options: hasFlavors ? flavors.values.toList() : const [],
-              optionLabel: (target) => target.flavor ?? 'Default',
-              onSelected: hasFlavors ? (target) => setState(() => _previewTarget = target) : null,
+              value: hasFlavors ? null : '—',
+              optionValue: (target: hasFlavors ? selectedFlavor : null),
+              options: hasFlavors ? [(target: null), for (final target in flavors.values) (target: target)] : const [],
+              optionLabel: (option) => option.target == null
+                  ? 'Current device'
+                  : '${option.target!.flavor ?? 'Default'}${_matchesCurrentDevice(option.target!) ? ' *' : ''}',
+              onSelected: hasFlavors ? (option) => setState(() => _previewTarget = option.target) : null,
             ),
           ],
         ),
@@ -151,7 +173,7 @@ class _PrivacyPermissionsPageState extends State<PrivacyPermissionsPage> {
                     ),
                 TileGroup(
                   children: [
-                    if (PlatformU.isMobile && preview == null)
+                    if (PlatformU.isMobile && (preview == null || _matchesCurrentDevice(preview)))
                       ActionRow(
                         leading: const Icon(Icons.settings_outlined),
                         title: S.current.open_settings,

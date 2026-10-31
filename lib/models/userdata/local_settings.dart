@@ -583,7 +583,7 @@ const int kPrivacyPolicyVersion = 1;
 /// Master switch for the consent gate. Temporarily off: no dialog is shown and
 /// no consent state is written, so the app starts straight into data loading.
 /// Flip to true when the policy text is ready for release.
-const bool kPrivacyConsentEnabled = false || kDebugMode;
+const bool kPrivacyConsentEnabled = kDebugMode || true;
 
 @JsonSerializable()
 class PrivacySetting {
