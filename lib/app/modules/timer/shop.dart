@@ -67,7 +67,10 @@ class TimerShopItem with TimerItem {
           margin: const EdgeInsets.fromLTRB(8, 0, 8, 8),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            children: [for (final shop in shops) ShopDescriptor(shop: shop, showTime: false, region: region)],
+            children: [
+              for (final shop in shops)
+                ShopDescriptor(shop: shop, showTime: false, region: region, showItemCounts: false),
+            ],
           ),
         );
       },

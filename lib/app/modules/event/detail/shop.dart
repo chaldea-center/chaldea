@@ -235,6 +235,7 @@ class ShopDescriptor extends StatelessWidget {
   final int? buyCount;
   final ValueChanged<int?>? onChanged;
   final Region? region;
+  final bool showItemCounts;
 
   const ShopDescriptor({
     super.key,
@@ -243,6 +244,7 @@ class ShopDescriptor extends StatelessWidget {
     this.buyCount,
     this.onChanged,
     this.region,
+    this.showItemCounts = true,
   });
 
   @override
@@ -280,10 +282,12 @@ class ShopDescriptor extends StatelessWidget {
     Widget? trailing;
     final planCount = buyCount ?? shop.limitNum;
     final limitCount = shop.limitNum == 0 ? '∞' : shop.limitNum.format();
+    final itemCounts = showItemCounts ? _itemCounts(context) : null;
     trailing = Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
+        if (itemCounts != null) Padding(padding: const EdgeInsetsDirectional.only(end: 8), child: itemCounts),
         OutlinedButton(
           onPressed: () {
             if (onChanged == null) return;
@@ -363,6 +367,22 @@ class ShopDescriptor extends StatelessWidget {
       onTap: () {
         shop.routeTo(region: region);
       },
+    );
+  }
+
+  Widget? _itemCounts(BuildContext context) {
+    final ids = shop.getItemAndCardIds().toSet();
+    if (ids.length != 1) return null;
+    final itemId = ids.single;
+    if (!db.gameData.items.containsKey(itemId)) return null;
+    final own = db.curUser.items[itemId];
+    final left = db.itemCenter.itemLeft[itemId];
+    if (own == null && left == null) return null;
+    return Text(
+      '${S.current.item_own} ${(own ?? 0).format()}\n'
+      '${S.current.item_left} ${(left ?? 0).format()}',
+      style: Theme.of(context).textTheme.bodySmall,
+      textAlign: TextAlign.end,
     );
   }
 }
