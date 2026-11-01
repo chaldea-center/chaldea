@@ -140,6 +140,11 @@ class RootAppRouterDelegate extends RouterDelegate<RouteConfiguration>
         child: child,
       );
     }
+    if (PlatformU.isAndroid) {
+      // Keep system back in Flutter even when the outer Navigator or an inactive
+      // child cannot pop. The active child router handles navigation and backgrounding.
+      child = PopScope(canPop: false, child: child);
+    }
     return Navigator(
       key: navigatorKey,
       pages: [MaterialPage(child: child)],

@@ -64,6 +64,12 @@ class MainActivity: FlutterActivity() {
         }
     }
 
+    override fun popSystemNavigator(): Boolean {
+        moveTaskToBack(true)
+        // Consume the exit request even if backgrounding fails; false allows Flutter to finish this Activity.
+        return true
+    }
+
     // Distinguish the manifest permission from the user grant; both gate direct installs.
     private fun installCapability(): Map<String, Any> {
         val declared = try {
