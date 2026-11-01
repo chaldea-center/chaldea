@@ -62,10 +62,6 @@
         },
         {
           "kind": "uses-permission",
-          "name": "android.permission.READ_PHONE_STATE"
-        },
-        {
-          "kind": "uses-permission",
           "name": "android.permission.RECEIVE_BOOT_COMPLETED"
         },
         {
@@ -75,10 +71,6 @@
         {
           "kind": "uses-permission",
           "name": "android.permission.SCHEDULE_EXACT_ALARM"
-        },
-        {
-          "kind": "uses-permission",
-          "name": "android.permission.SYSTEM_ALERT_WINDOW"
         },
         {
           "kind": "uses-permission",
@@ -187,11 +179,6 @@
         {
           "kind": "uses-permission",
           "module": "base",
-          "name": "android.permission.READ_PHONE_STATE"
-        },
-        {
-          "kind": "uses-permission",
-          "module": "base",
           "name": "android.permission.RECEIVE_BOOT_COMPLETED"
         },
         {
@@ -291,10 +278,6 @@
           "kind": "uses-permission",
           "maxSdkVersion": "32",
           "name": "android.permission.READ_EXTERNAL_STORAGE"
-        },
-        {
-          "kind": "uses-permission",
-          "name": "android.permission.READ_PHONE_STATE"
         },
         {
           "kind": "uses-permission",

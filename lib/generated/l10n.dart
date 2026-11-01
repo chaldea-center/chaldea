@@ -642,6 +642,17 @@ class S {
     return Intl.message('Device ID', name: 'auth_device_id', desc: '', locale: localeName, args: []);
   }
 
+  /// `The current device ID is randomly generated and may not match the server record. It updates after granting privacy consent and restarting the app.`
+  String get auth_device_id_random_hint {
+    return Intl.message(
+      'The current device ID is randomly generated and may not match the server record. It updates after granting privacy consent and restarting the app.',
+      name: 'auth_device_id_random_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Email`
   String get auth_email_field {
     return Intl.message('Email', name: 'auth_email_field', desc: '', locale: localeName, args: []);

@@ -90,6 +90,7 @@
   "auth_delete_account_title": "Delete Account",
   "auth_delete_account_warning": "This action cannot be undone. All data will be permanently deleted.",
   "auth_device_id": "Device ID",
+  "auth_device_id_random_hint": "The current device ID is randomly generated and may not match the server record. It updates after granting privacy consent and restarting the app.",
   "auth_email_field": "Email",
   "auth_email_not_bound_hint": "Email not bound",
   "auth_email_not_received_hint": "Didn't get the code? Check your spam folder or add us to your allowlist, then resend.",

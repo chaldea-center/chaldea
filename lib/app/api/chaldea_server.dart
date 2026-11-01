@@ -228,7 +228,7 @@ class ChaldeaServerApi {
     return cacheManager.postModel(
       '$apiV1/auth/recover-by-device',
       fromJson: (_) => true,
-      data: {'username': username, 'device_id': deviceId, 'new_email': newEmail},
+      data: {'username': username, 'device_id': AppInfo.normalizeDeviceId(deviceId), 'new_email': newEmail},
       expireAfter: Duration.zero,
     );
   }

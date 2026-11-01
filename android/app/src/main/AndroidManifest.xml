@@ -24,12 +24,14 @@
       The following permissions are contributed by the ad SDK (GroMore/Pangle) and are
       not used by any in-app user-facing feature, so strip them from the merged manifest.
         - READ_PHONE_STATE       : ad SDK device id / anti-fraud only
-        - WRITE_EXTERNAL_STORAGE : legacy (<= Android 9) only; ad caching on 10+ uses app storage
         - SYSTEM_ALERT_WINDOW    : ad floating window; app shows no overlays
+      WRITE_EXTERNAL_STORAGE is kept for Android 9 and below: saving images to the
+      gallery requests Permission.storage there, and the ad SDK caches to shared
+      storage on legacy devices.
       READ_EXTERNAL_STORAGE is intentionally kept (app gallery save / file import on <= Android 12).
     -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" tools:node="remove" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" tools:node="remove" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" tools:node="remove" />
     <uses-permission android:name="com.google.android.gms.permission.AD_ID" /> <!-- Android 13+ must declare AD_ID permission, otherwise return zeros -->
     <!-- <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" /> --> <!-- Android 11 will ignore requestLegacyExternalStorage, Google Play also reject it -->
@@ -153,20 +155,15 @@
             android:name="flutterEmbedding"
             android:value="2" />
 
-         <!-- flutter_local_notifications -->
+         <!-- alarm: keep scheduled alarms; drop boot restore to avoid auto-start. -->
+        <receiver
+            android:name="com.gdelataillade.alarm.alarm.BootReceiver"
+            tools:node="remove" />
+
+        <!-- flutter_local_notifications: delivery only; boot restore omitted to avoid auto-start. -->
         <receiver
             android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver"
             android:exported="false" />
-        <receiver
-            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
-                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
-                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
-            </intent-filter>
-        </receiver>
 
         <!-- <receiver android:exported="false" android:name="com.dexterous.flutterlocalnotifications.ActionBroadcastReceiver" /> -->
 

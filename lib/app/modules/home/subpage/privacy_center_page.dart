@@ -162,8 +162,8 @@ class _PrivacyCenterPageState extends State<PrivacyCenterPage> {
     }
   }
 
-  void _agreeNow() {
-    applyPrivacyConsent(true);
+  Future<void> _agreeNow() async {
+    await applyPrivacyConsent(true);
     AppAds.init();
     if (mounted) setState(() {});
   }
@@ -181,22 +181,24 @@ class _PrivacyCenterPageState extends State<PrivacyCenterPage> {
       ),
     );
     if (ok != true || !mounted) return;
-    applyPrivacyConsent(false);
+    await applyPrivacyConsent(false);
     setState(() {});
   }
 }
 
-void applyPrivacyConsent(bool agreed) {
+Future<void> applyPrivacyConsent(bool agreed) async {
   final privacy = db.settings.display.privacy;
   privacy.consentAsked = true;
   if (agreed) {
     privacy.accepted = true;
     privacy.acceptedVersion = kPrivacyPolicyVersion;
     if (privacy.analyticsEnabled) AppAnalysis.instance.initiate();
+    await AppInfo.onConsentGranted(db.paths.appPath);
   } else if (privacy.accepted) {
     privacy.accepted = false;
     privacy.acceptedVersion = 0;
     AppAnalysis.instance.halt();
+    AppInfo.onConsentWithdrawn();
   }
   db.notifySettings();
 }
@@ -232,6 +234,7 @@ Future<void> resetPrivacyAndAdsForDebug(BuildContext context) async {
     ..lastAppOpen = 0;
   AppAnalysis.instance.halt();
   AppAds.resetInitState();
+  AppInfo.onConsentWithdrawn();
   db.notifySettings();
   EasyLoading.showInfo('Privacy & ads reset. Restart the app to see the first-launch dialog.');
 }

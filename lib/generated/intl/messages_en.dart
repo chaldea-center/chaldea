@@ -214,6 +214,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "This action cannot be undone. All data will be permanently deleted.",
     ),
     "auth_device_id": MessageLookupByLibrary.simpleMessage("Device ID"),
+    "auth_device_id_random_hint": MessageLookupByLibrary.simpleMessage(
+      "The current device ID is randomly generated and may not match the server record. It updates after granting privacy consent and restarting the app.",
+    ),
     "auth_email_field": MessageLookupByLibrary.simpleMessage("Email"),
     "auth_email_not_bound_hint": MessageLookupByLibrary.simpleMessage("Email not bound"),
     "auth_email_not_received_hint": MessageLookupByLibrary.simpleMessage(

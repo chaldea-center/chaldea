@@ -69,7 +69,7 @@ class _AboutPageState extends State<AboutPage> {
               icon: SizedBox(height: 120, child: Image.asset('res/img/launcher_icon/app_icon_logo.png', height: 120)),
               legalese: 'Copyright © $kCopyrightYear cc.narumi.\nAll rights reserved.',
               debugInfo:
-                  'UUID\n${AppInfo.uuid}\n'
+                  'UUID\n${AppInfo.storedUuid}\n'
                   'Size: ${size.width.toInt()}×${size.height.toInt()} [×$devicePixelRatio]',
               onDoubleTap: () {
                 pressTimes += 1;
@@ -89,7 +89,7 @@ class _AboutPageState extends State<AboutPage> {
                   db.runtimeData.enableDebugTools = true;
                   Future.delayed(const Duration(seconds: 1), db.notifyAppUpdate);
                 });
-                await Clipboard.setData(ClipboardData(text: AppInfo.uuid));
+                await Clipboard.setData(ClipboardData(text: AppInfo.storedUuid));
                 EasyLoading.showToast('UUID ${S.current.copied}');
               },
             ),

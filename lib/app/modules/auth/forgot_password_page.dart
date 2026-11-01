@@ -365,6 +365,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           validator: (_) => null,
           onChanged: (_) => setState(() {}),
         ),
+        if (AppInfo.isRandomUuid) ...[
+          const SizedBox(height: 8),
+          InfoBanner(variant: InfoBannerVariant.warning, text: S.current.auth_device_id_random_hint),
+        ],
         const SizedBox(height: 8),
         FormInput(
           hint: S.current.auth_new_email,

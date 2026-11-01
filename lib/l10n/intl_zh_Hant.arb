@@ -83,6 +83,7 @@
   "auth_delete_account_title": null,
   "auth_delete_account_warning": null,
   "auth_device_id": null,
+  "auth_device_id_random_hint": null,
   "auth_email_field": null,
   "auth_email_not_bound_hint": null,
   "auth_email_not_received_hint": "未收到驗證碼？請檢查垃圾郵件匣，或將我們的郵箱加入白名單後重新發送。",

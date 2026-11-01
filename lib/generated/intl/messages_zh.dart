@@ -196,6 +196,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "auth_delete_account_title": MessageLookupByLibrary.simpleMessage("删除账号"),
     "auth_delete_account_warning": MessageLookupByLibrary.simpleMessage("此操作不可撤销，所有数据将被永久删除。"),
     "auth_device_id": MessageLookupByLibrary.simpleMessage("设备ID"),
+    "auth_device_id_random_hint": MessageLookupByLibrary.simpleMessage("当前设备ID为随机值，可能与服务器记录不一致。同意隐私政策并重启应用后将更新。"),
     "auth_email_field": MessageLookupByLibrary.simpleMessage("邮箱"),
     "auth_email_not_bound_hint": MessageLookupByLibrary.simpleMessage("邮箱未绑定"),
     "auth_email_not_received_hint": MessageLookupByLibrary.simpleMessage("未收到验证码？请检查垃圾邮件箱，或将我们的邮箱加入白名单后重新发送。"),

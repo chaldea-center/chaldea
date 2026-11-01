@@ -166,12 +166,13 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WindowListener
     }
     if (!needAsk) {
       rootRouter.appState.consentPending = false;
+      if (privacy.consentSatisfied) await AppInfo.onConsentGranted(db.paths.appPath);
       return;
     }
     final dialogContext = router.navigatorKey.currentContext ?? kAppKey.currentContext ?? context;
     final agreed = await PrivacyConsentDialog.show(dialogContext, isUpdate: agreedBefore);
     if (kDebugMode) debugPrint('[privacy] consent dialog result: $agreed');
-    applyPrivacyConsent(agreed == true);
+    await applyPrivacyConsent(agreed == true);
     rootRouter.appState.consentPending = false;
   }
 

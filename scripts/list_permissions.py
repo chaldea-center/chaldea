@@ -27,9 +27,9 @@ Xcode command-line tools; iOS signing can be skipped with --unsigned-ios.
 
 Reports default to JSON on stdout (--format markdown for text). --output and
 --markdown-output write audit reports; --catalog-output explicitly writes the
-compact App catalog. A catalog covers only the supplied/selected artifacts, so
-include the full target matrix when replacing the bundled App catalog. Outputs
-must not overwrite source artifacts or imported reports.
+compact App catalog. An existing catalog is merged: only targets inspected in
+this run are replaced, so a partial rebuild (e.g. Android only) keeps the other
+platforms intact. Outputs must not overwrite source artifacts or imported reports.
 
 Successful builds retain complete artifacts and reports under .build, then
 remove their isolated build directory; failed build directories remain for
@@ -542,8 +542,12 @@ def catalog_target(artifact: dict) -> dict:
     return result
 
 
-def app_catalog(report: dict) -> dict:
-    """Export observed declarations, with no inferred purpose or authorization state."""
+def app_catalog(report: dict, existing: Path | None = None) -> dict:
+    """Export observed declarations, with no inferred purpose or authorization state.
+
+    Targets absent from this run are carried over from an existing catalog so a
+    partial rebuild does not silently drop other platforms.
+    """
     targets = {}
     for platform in PLATFORMS:
         for flavor in FLAVORS if platform == "android" else (None,):
@@ -559,6 +563,19 @@ def app_catalog(report: dict) -> dict:
             raise AuditError(f"Conflicting catalog artifacts for {key}; select one release per target")
         targets[key] = target
         seen.add(key)
+    supplied = {key for key, target in targets.items() if target["status"] != "unverified"}
+    if existing is not None and existing.is_file():
+        try:
+            previous = json.loads(existing.read_text())
+        except (OSError, ValueError):
+            previous = None
+        if (isinstance(previous, dict) and previous.get("schema_version") == 1
+                and isinstance(previous.get("targets"), list)):
+            kept = {(row.get("platform"), row.get("flavor")): row
+                    for row in previous["targets"] if isinstance(row, dict)}
+            for key, target in targets.items():
+                if key not in supplied and key in kept:
+                    targets[key] = kept[key]
     return {"schema_version": 1, "scope": "package_declarations", "runtime_authorization_verified": False,
             "targets": list(targets.values())}
 
@@ -887,7 +904,7 @@ def main() -> int:
             catalog_error = True
         else:
             try:
-                catalog = app_catalog(report)
+                catalog = app_catalog(report, options.catalog_output)
                 catalog_error = False
             except AuditError as error:
                 report["catalog_error"] = str(error)

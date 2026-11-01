@@ -82,6 +82,7 @@
   "auth_delete_account_title": null,
   "auth_delete_account_warning": null,
   "auth_device_id": null,
+  "auth_device_id_random_hint": null,
   "auth_email_field": null,
   "auth_email_not_bound_hint": null,
   "auth_email_not_received_hint": "코드를 받지 못하셨나요? 스팸 폴더를 확인하거나 당사의 이메일을 허용 목록에 추가한 후 재전송하세요.",

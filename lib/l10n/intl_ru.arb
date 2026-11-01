@@ -82,6 +82,7 @@
   "auth_delete_account_title": null,
   "auth_delete_account_warning": null,
   "auth_device_id": null,
+  "auth_device_id_random_hint": null,
   "auth_email_field": null,
   "auth_email_not_bound_hint": null,
   "auth_email_not_received_hint": "Не получили код? Проверьте папку спама или добавьте нас в белый список, затем отправьте повторно.",

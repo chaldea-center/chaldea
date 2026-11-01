@@ -21,6 +21,7 @@ class AppInfo {
 
   static PackageInfo? _packageInfo;
   static String? _uuid;
+  static String? _storedUuid;
   static bool _debugOn = false;
   static MacAppType _macAppType = MacAppType.unknown;
 
@@ -39,7 +40,6 @@ class AppInfo {
       if (PlatformU.isAndroid) {
         final androidInfo = _androidInfo = await DeviceInfoPlugin().androidInfo;
         deviceParams.addAll(Map.from(androidInfo.data)..remove('systemFeatures'));
-        deviceParams['androidId'] = await const AndroidId().getId();
         deviceParams['userAgent'] = await MethodChannelChaldea.getUserAgent();
       } else if (PlatformU.isIOS) {
         final iosInfo = _iosInfo = await DeviceInfoPlugin().iosInfo;
@@ -102,18 +102,40 @@ class AppInfo {
     );
   }
 
+  /// Prefixed on disk so random ids are never mistaken for device-derived ones; the prefix is stripped before exposure.
+  static const _kRandomPrefix = 'R-';
+  static final _kDeviceUuid = RegExp(r'^[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}$');
+  static final _kRandomUuid = RegExp(r'^R-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$');
+
+  static FilePlus _uuidFile(String appPath) => FilePlus(pathlib.join(appPath, '.uuid'));
+
+  static String _deriveDeviceUuid(String originId) => const Uuid().v5(Namespace.url.value, originId).toUpperCase();
+
+  static String normalizeDeviceId(String id) =>
+      id.startsWith(_kRandomPrefix) ? id.substring(_kRandomPrefix.length) : id;
+
   static Future<void> _loadUniqueId(String appPath) async {
-    final deviceInfoPlugin = DeviceInfoPlugin();
+    if (PlatformU.isAndroid) {
+      final uuidFile = _uuidFile(appPath);
+      String? stored;
+      if (uuidFile.existsSync()) {
+        final text = (await uuidFile.readAsString()).trim();
+        if (_kDeviceUuid.hasMatch(text) || _kRandomUuid.hasMatch(text)) stored = text;
+      }
+      if (stored == null) {
+        stored = '$_kRandomPrefix${const Uuid().v4()}';
+        await uuidFile.writeAsString(stored);
+      }
+      _applyStoredUuid(stored);
+      await _finishUniqueId(appPath);
+      return;
+    }
+
     String? originId;
     if (PlatformU.isWeb) {
-      // // use generated uuid
-      // originId = null;
-      // _uuid = '00000000-0000-0000-0000-000000000000';
-      // return;
-    } else if (PlatformU.isAndroid) {
-      originId = await const AndroidId().getId();
+      // Web has no device identifier, so it falls through to the uuid file.
     } else if (PlatformU.isIOS) {
-      originId = (await deviceInfoPlugin.iosInfo).identifierForVendor;
+      originId = (await DeviceInfoPlugin().iosInfo).identifierForVendor;
     } else if (PlatformU.isWindows) {
       // reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion" /v "ProductId"
       // Output:
@@ -153,7 +175,7 @@ class AppInfo {
       throw UnimplementedError(PlatformU.operatingSystem);
     }
     if (originId?.isNotEmpty != true) {
-      var uuidFile = FilePlus(pathlib.join(appPath, '.uuid'));
+      final uuidFile = _uuidFile(appPath);
       if (uuidFile.existsSync()) {
         originId = await uuidFile.readAsString();
       }
@@ -162,7 +184,16 @@ class AppInfo {
         await uuidFile.writeAsString(originId);
       }
     }
-    _uuid = const Uuid().v5(Namespace.url.value, originId!).toUpperCase();
+    _uuid = _deriveDeviceUuid(originId!);
+    await _finishUniqueId(appPath);
+  }
+
+  static void _applyStoredUuid(String stored) {
+    _storedUuid = stored;
+    _uuid = normalizeDeviceId(stored);
+  }
+
+  static Future<void> _finishUniqueId(String appPath) async {
     final debugFp = FilePlus(joinPaths(appPath, '.debug'));
     try {
       _debugOn = debugFp.existsSync() && calcMd5(_uuid!) == await debugFp.readAsString();
@@ -170,6 +201,22 @@ class AppInfo {
       _debugOn = false;
     }
     logger.t('Unique ID: $_uuid');
+  }
+
+  /// No-op outside Android; only SSAID requires consent.
+  static Future<void> onConsentGranted(String appPath) async {
+    if (!PlatformU.isAndroid) return;
+    final originId = await const AndroidId().getId();
+    if (originId?.isNotEmpty != true) return;
+    deviceParams['androidId'] = originId;
+    final derived = _deriveDeviceUuid(originId!);
+    if (_storedUuid == derived) return;
+    _applyStoredUuid(derived);
+    await _uuidFile(appPath).writeAsString(derived);
+  }
+
+  static void onConsentWithdrawn() {
+    deviceParams.remove('androidId');
   }
 
   static void initiateForTest() {
@@ -248,6 +295,11 @@ class AppInfo {
   }
 
   static String get uuid => _uuid ?? '----';
+
+  /// On-disk id including the `R-` prefix, so random and device-derived ids can be told apart.
+  static String get storedUuid => _storedUuid ?? uuid;
+
+  static bool get isRandomUuid => _storedUuid?.startsWith(_kRandomPrefix) ?? false;
 
   static bool get isDebugDevice {
     if (kDebugMode) return true;
