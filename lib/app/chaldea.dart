@@ -42,7 +42,7 @@ class Chaldea extends StatefulWidget {
   _ChaldeaState createState() => _ChaldeaState();
 }
 
-class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WindowListener {
+class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WindowListener, WidgetsBindingObserver {
   final routeInformationParser = AppRouteInformationParser();
   final backButtonDispatcher = RootBackButtonDispatcher();
 
@@ -130,28 +130,27 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WindowListener
       Intl.defaultLocale = Language.current.code;
     }
 
-    SystemChannels.lifecycle.setMessageHandler((msg) async {
-      // debugPrint('SystemChannels> $msg');
-      if (msg == AppLifecycleState.resumed.toString()) {
-        // Actions when app is resumed
-        network.check();
-      } else if (msg == AppLifecycleState.inactive.toString() || msg == AppLifecycleState.hidden.toString()) {
-        db.saveAll();
-        if (NetworkManagerBase.hasCalled) {
-          try {
-            await HomeWidgetX.saveFakerStatus();
-            await HomeWidgetX.updateFakerStatus();
-          } catch (e, s) {
-            print(e);
-            print(s);
-          }
-        }
-        // debugPrint('save userdata before being inactive');
-      }
-      return null;
-    });
-
+    // Keep the framework's lifecycle handler so a background launch can resume frame scheduling.
+    WidgetsBinding.instance.addObserver(this);
     windowManager.addListener(this);
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    if (state == AppLifecycleState.resumed) {
+      network.check();
+    } else if (state == AppLifecycleState.inactive || state == AppLifecycleState.hidden) {
+      db.saveAll();
+      if (NetworkManagerBase.hasCalled) {
+        try {
+          await HomeWidgetX.saveFakerStatus();
+          await HomeWidgetX.updateFakerStatus();
+        } catch (e, s) {
+          print(e);
+          print(s);
+        }
+      }
+    }
   }
 
   Future<void> _ensurePrivacyConsent(BuildContext context) async {
@@ -329,6 +328,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WindowListener
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     windowManager.removeListener(this);
     super.dispose();
   }
