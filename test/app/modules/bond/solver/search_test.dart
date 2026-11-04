@@ -212,6 +212,27 @@ void main() {
     expect(updates.map((e) => e.visitedNodes), orderedEquals([...updates.map((e) => e.visitedNodes)]..sort()));
   });
 
+  test('the first feasible seed is published before local improvement', () {
+    final updates = <BondSearchResult>[];
+    final result = BondSearch.solve(
+      BondSearchProblem(
+        baseBond: 100,
+        rateCap: 5000,
+        maxCost: 1,
+        receiverProfileCount: 1,
+        positions: [
+          BondSearchPosition(frontlineRate: 0, items: [_item(1, 0), _item(2, 1, selfRate: 1000)]),
+        ],
+      ),
+      onProgress: updates.add,
+    );
+    expect(updates.first.best!.totalBond, 100);
+    expect(updates.first.firstFeasibleMilliseconds, isNotNull);
+    expect(updates.first.provenOptimal, isFalse);
+    expect(result.best!.totalBond, 200);
+    expect(result.provenOptimal, isTrue);
+  });
+
   test('equal outcomes share a group and keep the higher-cost representative', () {
     final problem = BondSearchProblem(
       baseBond: 100,

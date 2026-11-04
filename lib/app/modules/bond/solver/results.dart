@@ -569,8 +569,10 @@ class BondSolverResultsTab extends StatelessWidget {
         dense: true,
         title: const Text('Search details'),
         subtitle: Text(
-          combinations == null
+          !solved.isCeFirst
               ? '${solved.visitedNodes} nodes visited · total unknown'
+              : combinations == null
+              ? '${solved.visitedNodes} CE combinations evaluated · total unknown'
               : '${solved.visitedNodes}/$combinations CE combinations evaluated',
         ),
       ),
@@ -580,7 +582,7 @@ class BondSolverResultsTab extends StatelessWidget {
           ListTile(
             dense: true,
             title: const Text('Method'),
-            trailing: Text(combinations == null ? 'General search' : 'CE-first search'),
+            trailing: Text(solved.isCeFirst ? 'CE-first search' : 'General search'),
           ),
           ListTile(
             dense: true,

@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:chaldea/app/battle/models/user.dart';
+import 'package:chaldea/app/modules/bond/bond_rules.dart';
 import 'package:chaldea/app/modules/bond/formation_bond_calc.dart';
 import 'package:chaldea/app/modules/bond/solver/solver.dart';
 import 'package:chaldea/models/models.dart';
@@ -29,6 +30,209 @@ FormationBondOption _withFilters(
 
 void main() {
   setUpAll(initiateForTest);
+
+  test('grand quest reports an invalid fixed class and solves a legal dual-grand formation', () async {
+    // Scoring fields from /nice/JP/quest/94149037/1; the offline dataset may
+    // contain only the Quest metadata for this Grand training variant.
+    final quest =
+        db.gameData.getQuestPhase(94149037, 1) ??
+        QuestPhase(
+          id: 94149037,
+          warId: 8403,
+          bond: 4748,
+          openedAt: 1755057600,
+          closedAt: 1893423600,
+          individuality: [2038, 2878],
+          extraDetail: QuestPhaseExtraDetail()..setValue('isUseGrandBoard', 1),
+          restrictions: [
+            QuestPhaseRestriction(
+              restriction: Restriction(
+                id: 94148903,
+                type: RestrictionType.individuality,
+                rangeType: RestrictionRangeType.equal,
+                targetVals: [109, 117, 120, 124, 129, 132],
+              ),
+            ),
+          ],
+        );
+    expect(quest.isUseGrandBoard, isTrue);
+    final servant = db.gameData.servantsById[604000]!;
+    final formation = BattleTeamSetup();
+    formation.svts[0] = PlayerSvtData.svt(servant)..grandSvt = true;
+    formation.svts[2] = PlayerSvtData.svt(db.gameData.servantsById[604200]!)
+      ..supportType = SupportSvtType.friend
+      ..grandSvt = true;
+    final option = FormationBondOption(enableEvent: false, favoriteSvtOnly: false, favoriteSvtEquipOnly: false);
+    final invalid = isA<BondServantRestrictionError>()
+        .having((error) => error.position, 'position', 0)
+        .having((error) => error.servantId, 'servantId', 604000);
+    expect(
+      () => FormationBondSolver.validateFormation(option: option, formation: formation, quest: quest),
+      throwsA(invalid),
+    );
+    var started = false;
+    await expectLater(
+      FormationBondSolver.solveProgressively(
+        option: option,
+        quest: quest,
+        formation: formation,
+        onSearchStarted: () => started = true,
+      ),
+      emitsError(invalid),
+    );
+    expect(started, isFalse);
+
+    final legal = db.gameData.servantsById.values
+        .where(
+          (svt) =>
+              svt.collectionNo > 0 &&
+              svt.isUserSvt &&
+              quest.restrictions
+                  .where((entry) => entry.restriction.type == RestrictionType.individuality)
+                  .every(
+                    (entry) => Restriction.checkSvtIndiv(
+                      entry.restriction.rangeType,
+                      entry.restriction.targetVals,
+                      BondReleaseRules.traits(svt, 4, quest.logicEventId ?? 0, BondReleaseReference.jp),
+                    ),
+                  ),
+        )
+        .take(2)
+        .toList();
+    expect(legal, hasLength(2));
+    formation.svts[0] = PlayerSvtData.svt(legal.first)..grandSvt = true;
+    option.excludedSvts = db.gameData.servantsById.keys.toSet()..removeAll(legal.map((svt) => svt.id));
+    option.excludedCes = db.gameData.craftEssencesById.keys.toSet()..removeAll([9401970, 9403520, 9403990]);
+    FormationBondSolver.validateFormation(option: option, formation: formation, quest: quest);
+    for (final worker in [false, true]) {
+      for (final fast in [false, true]) {
+        final results = await FormationBondSolver.solveProgressively(
+          option: option,
+          quest: quest,
+          formation: formation,
+          useWorkerIsolate: worker,
+          useCeFirst: fast,
+        ).toList();
+        final result = results.last;
+        expect(result.provenOptimal, isTrue);
+        expect(result.best, isNotNull);
+        expect(result.best!.slots[0].equip3, isNotNull);
+        expect(result.best!.slots[2].equip3, isNotNull);
+        for (final team in result.candidates) {
+          final applied = team.applyTo(formation, option);
+          final manual = option.calcResults(quest, applied);
+          expect(team.totalBond, manual.fold<int>(0, (sum, slot) => sum + slot.totalBond));
+          expect(team.totalCost, lessThanOrEqualTo(result.maxCost));
+        }
+      }
+    }
+  }, timeout: const Timeout(Duration(minutes: 2)));
+
+  test('event quest with repeated fixed event CEs has a feasible team', () {
+    final quest = QuestPhase.fromJson({...db.gameData.quests[94150109]!.toJson(), 'phase': 1, 'bond': 1318});
+    final ce = db.gameData.craftEssencesById[9408940]!;
+    final formation = BattleTeamSetup();
+    for (final p in [0, 1, 3]) {
+      formation.svts[p].equip1 = SvtEquipData(ce: ce, limitBreak: true);
+    }
+    formation.svts[3]
+      ..svt = db.gameData.servantsById[2800100]
+      ..supportType = SupportSvtType.friend;
+    final option = FormationBondOption(
+      maxCost: 118,
+      maxServants: 6,
+      favoriteSvtOnly: false,
+      favoriteSvtEquipOnly: false,
+      maxBond: 15,
+      releaseReference: BondReleaseReference.cn,
+    );
+    final result = FormationBondSolver.solve(option: option, quest: quest, formation: formation);
+    expect(result.best, isNotNull, reason: 'Fixed event CEs may occupy both owned positions and support');
+    expect(result.provenOptimal, isTrue);
+    expect(result.isCeFirst, isTrue);
+    expect(result.candidates.length, greaterThan(1));
+    for (final team in result.candidates) {
+      for (final p in [0, 1, 3]) {
+        expect(team.slots[p].equip1!.id, ce.id);
+      }
+      expect(team.slots[3].isSupport, isTrue);
+      expect(team.slots[3].cost, 0);
+      expect(team.totalCost, inInclusiveRange(18, 118));
+      final applied = team.applyTo(formation, option);
+      final manual = option.calcResults(quest, applied);
+      expect(team.totalBond, manual.fold<int>(0, (sum, slot) => sum + slot.totalBond));
+    }
+  });
+
+  test('ordinary fixed CE copies are allowed while bond CE identities stay unique on both paths', () {
+    final servants = db.gameData.servantsById.values
+        .where((svt) => svt.collectionNo > 0 && svt.isUserSvt && svt.cost == 16)
+        .take(2)
+        .toList();
+    for (final ceId in [9408940, 9401970]) {
+      final formation = BattleTeamSetup();
+      for (final p in [0, 1]) {
+        formation.svts[p].equip1 = SvtEquipData(ce: db.gameData.craftEssencesById[ceId]!, limitBreak: true);
+      }
+      final option = FormationBondOption(
+        maxServants: 2,
+        maxCost: 118,
+        enableEvent: false,
+        favoriteSvtOnly: false,
+        excludedSvts: db.gameData.servantsById.keys.toSet()..removeAll(servants.map((svt) => svt.id)),
+      );
+      for (final useCeFirst in [true, false]) {
+        BondSolverResult run() => FormationBondSolver.solve(
+          option: option,
+          quest: QuestPhase(bond: 1000),
+          formation: formation,
+          useCeFirst: useCeFirst,
+        );
+        if (ceId == 9401970) {
+          expect(run, throwsA(isA<BondFormationException>()));
+        } else {
+          final result = run();
+          expect(result.provenOptimal, isTrue);
+          expect(result.best, isNotNull);
+          expect(result.best!.totalCost, 50);
+          expect(result.best!.slots.map((slot) => slot.equip1!.id), [ceId, ceId]);
+        }
+      }
+    }
+  });
+
+  test('ordinary fixed CEs do not shift equip1 and Grand equip3 identity assignments', () {
+    final servants = db.gameData.servantsById.values
+        .where((svt) => svt.collectionNo > 0 && svt.isUserSvt)
+        .take(2)
+        .toList();
+    final normal = db.gameData.craftEssencesById[9408940]!;
+    final bond = db.gameData.craftEssencesById[9401970]!;
+    final quest = QuestPhase(bond: 1000, extraDetail: QuestPhaseExtraDetail()..setValue('isUseGrandBoard', 1));
+    for (final swap in [false, true]) {
+      final formation = BattleTeamSetup();
+      formation.svts[0] = PlayerSvtData.svt(servants[0])
+        ..grandSvt = true
+        ..equip1 = SvtEquipData(ce: swap ? bond : normal, limitBreak: true)
+        ..equip3 = SvtEquipData(ce: swap ? normal : bond, limitBreak: true);
+      formation.svts[1] = PlayerSvtData.svt(servants[1])..equip1 = SvtEquipData(ce: normal, limitBreak: true);
+      final option = FormationBondOption(maxServants: 2, maxCost: 118, enableEvent: false);
+      final expected = option.calcResults(quest, formation).fold<int>(0, (sum, slot) => sum + slot.totalBond);
+      for (final useCeFirst in [true, false]) {
+        final result = FormationBondSolver.solve(
+          option: option,
+          quest: quest,
+          formation: formation,
+          useCeFirst: useCeFirst,
+        );
+        expect(result.provenOptimal, isTrue);
+        expect(result.best!.totalBond, expected);
+        expect(result.best!.slots[0].equip1!.id, swap ? bond.id : normal.id);
+        expect(result.best!.slots[0].equip3!.id, swap ? normal.id : bond.id);
+        expect(result.best!.slots[1].equip1!.id, normal.id);
+      }
+    }
+  });
 
   test('position limits include support and ignore all out-of-range sources', () {
     final servants = db.gameData.servantsById.values
@@ -133,6 +337,97 @@ void main() {
     await Future<void>.delayed(const Duration(milliseconds: 40));
     expect(received, 0);
     expect(started, isFalse);
+  });
+
+  test('candidate previews appear before proof and have complete details', () async {
+    final servant = db.gameData.servantsById.values.firstWhere((svt) => svt.collectionNo > 0 && svt.isUserSvt);
+    final source = BattleTeamSetup()..svts[0] = PlayerSvtData.svt(servant);
+    final option = FormationBondOption(
+      enableEvent: false,
+      favoriteSvtOnly: false,
+      favoriteSvtEquipOnly: false,
+      maxBond: 0,
+      maxCandidateTeams: 25,
+    );
+    final quest = QuestPhase(bond: 1000);
+    for (final worker in [false, true]) {
+      for (final fast in [false, true]) {
+        var firstCount = 0;
+        var previousCount = 0;
+        final result =
+            await FormationBondSolver.solveProgressively(
+                  option: option,
+                  quest: quest,
+                  formation: source,
+                  useWorkerIsolate: worker,
+                  useCeFirst: fast,
+                  candidatePreviewInterval: const Duration(milliseconds: 1),
+                )
+                .map((result) {
+                  if (firstCount == 0 && result.best != null) firstCount = result.candidates.length;
+                  expect(result.candidates.length, greaterThanOrEqualTo(previousCount));
+                  previousCount = result.candidates.length;
+                  return result;
+                })
+                .firstWhere((result) => !result.provenOptimal && result.candidates.length > 11)
+                .timeout(const Duration(seconds: 45));
+        expect(firstCount, 1);
+        expect(result.candidates.length, lessThanOrEqualTo(21));
+        expect(result.candidates.first.totalBond, result.best!.totalBond);
+        for (final team in result.candidates) {
+          final applied = team.applyTo(source, option);
+          final manual = option.calcResults(quest, applied);
+          expect(team.totalBond, manual.fold<int>(0, (sum, slot) => sum + slot.totalBond));
+          for (final slot in team.slots) {
+            expect(team.cachedAscensionRequirement(slot.position), isNotNull);
+          }
+        }
+      }
+    }
+  }, timeout: const Timeout(Duration(minutes: 3)));
+
+  test('first witness and proof publish without waiting for candidate expansion', () async {
+    final servants = db.gameData.servantsById.values
+        .where((svt) => svt.collectionNo > 0 && svt.isUserSvt && svt.cost == 16)
+        .take(3)
+        .toList();
+    expect(servants, hasLength(3));
+    final option = FormationBondOption(
+      maxServants: 1,
+      enableEvent: false,
+      maxCost: 999,
+      favoriteSvtOnly: false,
+      favoriteSvtEquipOnly: false,
+      maxBond: 0,
+      maxCandidateTeams: 5,
+      excludedSvts: db.gameData.servantsById.keys.toSet()..removeAll(servants.map((svt) => svt.id)),
+      excludedCes: db.gameData.craftEssencesById.keys.toSet(),
+    );
+    for (final useWorkerIsolate in [false, true]) {
+      for (final useCeFirst in [true, false]) {
+        final results = await FormationBondSolver.solveProgressively(
+          option: option,
+          quest: QuestPhase(bond: 1000),
+          formation: BattleTeamSetup(),
+          useWorkerIsolate: useWorkerIsolate,
+          useCeFirst: useCeFirst,
+        ).toList();
+        final unproven = results.where((result) => !result.provenOptimal && result.best != null).toList();
+        expect(unproven, isNotEmpty);
+        if (useCeFirst) {
+          expect(unproven.first.isCeFirst, isTrue);
+          expect(unproven.first.possibleCombinations, isNull);
+          expect(results.last.visitedNodes, lessThanOrEqualTo(results.last.possibleCombinations!));
+        }
+        expect(unproven.first.candidates, hasLength(1));
+        for (final result in unproven) {
+          expect(result.best!.cachedAscensionRequirement(0), isNotNull);
+        }
+        expect(results.last.provenOptimal, isTrue);
+        expect(results.firstWhere((result) => result.provenOptimal).candidates, hasLength(1));
+        expect(results.last.candidates.length, greaterThan(1));
+      }
+    }
   });
 
   test('quest individuality restrictions filter free servants and reject invalid fixed servants', () {
@@ -512,6 +807,7 @@ void main() {
     ];
     expect(quests, isNotEmpty);
     final servants = db.gameData.servantsById.values.where((s) => s.collectionNo > 1 && s.isUserSvt).take(6).toList();
+    final identities = <int>{};
     final ces = db.gameData.craftEssencesById.values
         .where(
           (c) =>
@@ -522,6 +818,7 @@ void main() {
                   .expand((v) => v)
                   .any((skill) => skill.functions.any((func) => func.funcType == FuncType.servantFriendshipUp)),
         )
+        .where((ce) => !BondCeIdentity.requiresUniqueOwnedIdentity(ce) || identities.add(BondCeIdentity.of(ce.id)))
         .take(6)
         .toList();
     expect(ces.length, 6);
@@ -733,7 +1030,11 @@ void main() {
           .expand((s) => [s.equip1?.id, s.equip3?.id])
           .whereType<int>()
           .toList();
-      expect(ownedCes.toSet().length, ownedCes.length);
+      final restricted = ownedCes
+          .where((id) => BondCeIdentity.requiresUniqueOwnedIdentity(db.gameData.craftEssencesById[id]!))
+          .map(BondCeIdentity.of)
+          .toList();
+      expect(restricted.toSet().length, restricted.length);
     }
     final signatures = <String>{};
     for (final team in result.ties) {
@@ -746,7 +1047,11 @@ void main() {
           .expand((slot) => [slot.equip1?.id, slot.equip3?.id])
           .whereType<int>()
           .toList();
-      expect(ceIds.toSet().length, ceIds.length);
+      final restricted = ceIds
+          .where((id) => BondCeIdentity.requiresUniqueOwnedIdentity(db.gameData.craftEssencesById[id]!))
+          .map(BondCeIdentity.of)
+          .toList();
+      expect(restricted.toSet().length, restricted.length);
       expect(
         signatures.add(
           team.slots
@@ -765,6 +1070,7 @@ void main() {
   test('CE-first search agrees with the exhaustive general search on small real-data pools', () {
     final servants = db.gameData.servantsById.values.where((s) => s.collectionNo > 0 && s.isUserSvt).take(14).toList();
     final allCes = db.gameData.craftEssencesById.values.toList();
+    final identities = <int>{};
     final bondCes = allCes
         .where(
           (ce) =>
@@ -775,6 +1081,7 @@ void main() {
                   .expand((skills) => skills)
                   .any((skill) => skill.functions.any((func) => func.funcType == FuncType.servantFriendshipUp)),
         )
+        .where((ce) => identities.add(BondCeIdentity.of(ce.id)))
         .take(7)
         .toList();
     final fillers = allCes
@@ -793,7 +1100,11 @@ void main() {
     expect(bondCes.length, 7);
     expect(fillers.length, 4);
     final availableSvts = servants.skip(4).map((s) => s.id).toSet();
-    final availableCes = bondCes.map((ce) => ce.id).toSet();
+    final availableCes = {
+      ...bondCes.map((ce) => ce.id),
+      for (final family in BondCeIdentity.families)
+        if (family.any((id) => bondCes.any((ce) => ce.id == id))) ...family,
+    };
     final excludedSvts = db.gameData.servantsById.keys.toSet().difference(availableSvts);
     final excludedCes = db.gameData.craftEssencesById.keys.toSet().difference(availableCes);
     for (var trial = 0; trial < 12; trial++) {

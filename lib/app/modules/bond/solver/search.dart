@@ -111,6 +111,7 @@ class BondSearchResult {
   final bool provenOptimal;
   final bool allTiesCollected;
   final int visitedNodes;
+  final int? firstFeasibleMilliseconds;
 
   const BondSearchResult({
     required this.best,
@@ -120,6 +121,7 @@ class BondSearchResult {
     required this.provenOptimal,
     required this.allTiesCollected,
     required this.visitedNodes,
+    this.firstFeasibleMilliseconds,
   });
 }
 
@@ -167,6 +169,7 @@ class BondSearch {
   int _visitedNodes = 0;
   int _seedVisited = 0;
   int _workTicks = 0;
+  int? _firstFeasibleMilliseconds;
   void Function(BondSearchResult)? _onProgress;
   final Stopwatch _progressClock = Stopwatch();
   int _lastProgressMs = -250;
@@ -254,6 +257,7 @@ class BondSearch {
         provenOptimal: provenOptimal,
         allTiesCollected: allTiesCollected,
         visitedNodes: search._visitedOffset + search._visitedNodes,
+        firstFeasibleMilliseconds: search._firstFeasibleMilliseconds,
       ),
     );
   }
@@ -270,6 +274,7 @@ class BondSearch {
         provenOptimal: provenOptimal || _scoreProven,
         allTiesCollected: false,
         visitedNodes: _visitedOffset + _visitedNodes,
+        firstFeasibleMilliseconds: _firstFeasibleMilliseconds,
       ),
     );
   }
@@ -281,6 +286,7 @@ class BondSearch {
       return;
     }
     for (final item in _seedOrderedItems[p]) {
+      if (_seedVisited >= 20000) break;
       if (++_workTicks % 128 == 0) yield null;
       if (spent + item.cost > problem.maxCost || !_capacityAvailable(item)) continue;
       _chosen[p] = item;
@@ -295,6 +301,7 @@ class BondSearch {
   }
 
   Iterable<void> _improveSeedSteps() sync* {
+    var attempts = 0;
     for (var pass = 0; pass < 2; pass++) {
       if (++_workTicks % 128 == 0) yield null;
       var improved = false;
@@ -309,6 +316,8 @@ class BondSearch {
         final old = base.items[p];
         _changeCapacity(old, -1);
         for (final item in _orderedItems[p]) {
+          // This is a lower-bound heuristic, not part of the exact proof.
+          if (attempts++ >= 4096) break;
           if (++_workTicks % 128 == 0) yield null;
           final cost = base.totalCost - old.cost + item.cost;
           if (cost > problem.maxCost || !_capacityAvailable(item)) continue;
@@ -324,6 +333,7 @@ class BondSearch {
           _changeCapacity(item, -1);
         }
         _chosen.fillRange(0, _chosen.length, null);
+        if (attempts >= 4096) return;
         if (_best!.totalBond > base.totalBond || _prefer(_best!, base)) improved = true;
       }
       if (!improved) break;
@@ -397,6 +407,8 @@ class BondSearch {
       final list = List<BondSearchItem>.of(problem.positions[p].items);
       _seedOrderedItems.add(
         List<BondSearchItem>.of(list)..sort((a, b) {
+          final occupied = (b.receiverProfile == null ? 0 : 1).compareTo(a.receiverProfile == null ? 0 : 1);
+          if (occupied != 0) return occupied;
           final cost = a.cost.compareTo(b.cost);
           if (cost != 0) return cost;
           final worn = a.wearCount.compareTo(b.wearCount);
@@ -551,7 +563,9 @@ class BondSearch {
       }
       _chosen[p] = item;
       _changeCapacity(item, 1);
-      yield* _visitSteps(p + 1, spent + item.cost);
+      // Until a first witness exists, reject impossible identity prefixes
+      // instead of exploring all their descendants before leaf matching.
+      if (_best != null || _selectedIdsMatch(p + 1)) yield* _visitSteps(p + 1, spent + item.cost);
       _changeCapacity(item, -1);
       _chosen[p] = null;
       if (_interrupted) return;
@@ -671,6 +685,8 @@ class BondSearch {
     );
     _recordCandidate(witness);
     if (_best != null && total < _best!.totalBond) return;
+    final first = _best == null;
+    final improvesScore = first || total > _best!.totalBond;
     if (_best == null || total > _best!.totalBond) {
       _best = witness;
       _ties.clear();
@@ -679,6 +695,10 @@ class BondSearch {
       _tiesTruncated = false;
     } else if (total == _best!.totalBond && _prefer(witness, _best!)) {
       _best = witness;
+    }
+    if (first) _firstFeasibleMilliseconds = _progressClock.elapsedMilliseconds;
+    if (first || (improvesScore && _progressClock.elapsedMilliseconds - _lastProgressMs >= 250)) {
+      _reportProgress();
     }
     if (!_collectTies) return;
     final key = [for (final (p, item) in items.indexed) '${item.receiverProfile ?? -1}:${slotBonds[p]}'].join('|');

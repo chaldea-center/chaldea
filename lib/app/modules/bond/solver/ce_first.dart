@@ -19,8 +19,13 @@ class _CeFirstCe {
   final List<int> rates;
   final List<int> values;
   final Map<int, bool> limits;
+  final bool repeatable;
+  final int identityCapacity;
 
-  const _CeFirstCe(this.cost, this.rates, this.values, this.limits);
+  _CeFirstCe(this.cost, this.rates, this.values, this.limits, this.repeatable)
+    : identityCapacity = limits.keys.map(BondCeIdentity.of).toSet().length;
+
+  bool canAdd(int count) => repeatable || count < identityCapacity;
 }
 
 class _CeFirstSupportChoice {
@@ -29,8 +34,16 @@ class _CeFirstSupportChoice {
   final BondSolvedCe? ce;
   final Map<int, bool> candidates;
   final BondSolvedCe? ce3;
+  final Map<int, bool> ce3Candidates;
 
-  const _CeFirstSupportChoice(this.rates, this.values, this.ce, [this.candidates = const {}, this.ce3]);
+  const _CeFirstSupportChoice(
+    this.rates,
+    this.values,
+    this.ce, [
+    this.candidates = const {},
+    this.ce3,
+    this.ce3Candidates = const {},
+  ]);
 }
 
 class _CeFirstPosition {
@@ -72,6 +85,7 @@ class _CeFirstProblem {
   final List<int> fixedValues;
   final List<_CeFirstPosition> positions;
   final List<_CeFirstCe> ownCes;
+  final Set<int> fixedCeIdentities;
 
   const _CeFirstProblem({
     required this.maxCost,
@@ -81,6 +95,7 @@ class _CeFirstProblem {
     required this.fixedValues,
     required this.positions,
     required this.ownCes,
+    required this.fixedCeIdentities,
   });
 }
 
@@ -91,7 +106,8 @@ class _CeFirstResult {
   final List<int> tieGroupCounts;
   final bool provenOptimal;
   final int evaluatedCombinations;
-  final int possibleCombinations;
+  final int? possibleCombinations;
+  final int? firstFeasibleMilliseconds;
 
   const _CeFirstResult(
     this.best,
@@ -101,6 +117,7 @@ class _CeFirstResult {
     this.provenOptimal,
     this.evaluatedCombinations,
     this.possibleCombinations,
+    this.firstFeasibleMilliseconds,
   );
 }
 
@@ -171,6 +188,9 @@ class _CeFirstSearch {
   final List<BondSolvedTeam> _ties = [];
   final List<BondSolvedTeam> _candidates = [];
   final Set<String> _candidateKeys = {};
+  final Stopwatch _clock = Stopwatch();
+  int? _firstFeasibleMilliseconds;
+  _CeFirstSolution? _bestSolution;
   final List<int> _tieCounts = [];
   final List<String> _tieKeys = [];
   final Map<String, int> _tieIndex = {};
@@ -179,7 +199,7 @@ class _CeFirstSearch {
 
   _CeFirstSearch(this.problem, {this.maxTies = 20, this.maxCandidates = 100});
 
-  _CeFirstResult _snapshot(bool proven, int possible) => _CeFirstResult(
+  _CeFirstResult _snapshot(bool proven, int? possible) => _CeFirstResult(
     _best,
     List<BondSolvedTeam>.unmodifiable(_ties),
     List<BondSolvedTeam>.unmodifiable(_candidates),
@@ -187,6 +207,7 @@ class _CeFirstSearch {
     proven,
     _evaluated,
     possible,
+    _firstFeasibleMilliseconds,
   );
 
   _CeFirstSolution? _evaluatedSolution;
@@ -210,7 +231,32 @@ class _CeFirstSearch {
     if (maxEvaluations != null && maxEvaluations < 0) {
       throw ArgumentError.value(maxEvaluations, 'maxEvaluations');
     }
+    _clock.start();
     final combos = <_CeFirstCombo>[];
+    final seeded = <_CeFirstCombo>{};
+    var seedUpper = kImpossibleScore;
+    void rememberSolution(_CeFirstSolution solution, int? possible) {
+      final team = solution.team;
+      _rememberCandidate(team);
+      if (_best == null || team.totalBond > _best!.totalBond) {
+        _firstFeasibleMilliseconds ??= _clock.elapsedMilliseconds;
+        _best = team;
+        _bestSolution = solution;
+        _ties.clear();
+        _tieCounts.clear();
+        _tieKeys.clear();
+        _tieIndex.clear();
+        _addTie(solution);
+        onProgress?.call(_snapshot(false, possible));
+      } else if (team.totalBond == _best!.totalBond) {
+        if (team.totalCost > _best!.totalCost) {
+          _best = team;
+          _bestSolution = solution;
+        }
+        _addTie(solution);
+      }
+    }
+
     final ce1Slots = [
       for (var p = 0; p < problem.positions.length; p++)
         if (problem.positions[p].freeCe1) p,
@@ -226,14 +272,20 @@ class _CeFirstSearch {
     final supportSelection = List<int>.filled(supportSlots.length, 0);
     final selected1 = <int>[];
     final selected3 = <int>[];
-    final fixedIds = <int>{
-      for (final p in problem.positions)
-        if (!p.support) ...[
-          if (p.fixedCe1 != null) BondCeIdentity.of(p.fixedCe1!.id),
-          if (p.fixedCe3 != null) BondCeIdentity.of(p.fixedCe3!.id),
-        ],
-    };
+    final fixedIds = problem.fixedCeIdentities;
     final counts = List<int>.filled(problem.ownCes.length, 0);
+    final upperServants = <List<_CeFirstServant>>[];
+    for (final position in problem.positions) {
+      final seen = <(int, int, int)>{};
+      final distinct = <_CeFirstServant>[];
+      for (final servant in position.servants) {
+        if (++_workTicks % 64 == 0) yield null;
+        // The upper bound ignores identity and COST. Equal receiver/self
+        // effects therefore have exactly the same score for every CE vector.
+        if (seen.add((servant.profile, servant.selfRate, servant.selfValue))) distinct.add(servant);
+      }
+      upperServants.add(distinct);
+    }
 
     Iterable<void> collect() sync* {
       // Rejected combinations and bond-capped receivers must also yield.
@@ -255,25 +307,38 @@ class _CeFirstSearch {
         _addVector(values, problem.ownCes[i].values);
       }
       var upper = 0;
-      for (final position in problem.positions) {
+      for (final (p, position) in problem.positions.indexed) {
         if (position.support || position.bondLimit) continue;
         var highest = position.fixedServant ? kImpossibleScore : 0;
-        for (final servant in position.servants) {
+        for (final servant in upperServants[p]) {
           if (++_workTicks % 64 == 0) yield null;
           highest = math.max(highest, _score(position, servant, rates, values));
         }
         upper += highest;
       }
-      combos.add(
-        _CeFirstCombo(
-          List<int>.of(selected1),
-          List<int>.of(selected3),
-          List<int>.of(supportSelection),
-          matched,
-          totalCost,
-          upper,
-        ),
+      final combo = _CeFirstCombo(
+        List<int>.of(selected1),
+        List<int>.of(selected3),
+        List<int>.of(supportSelection),
+        matched,
+        totalCost,
+        upper,
       );
+      combos.add(combo);
+      // Establish a real lower bound before building the entire CE space.
+      // A few improving upper-bound records provide bounded high-score seeds;
+      // all remaining combinations still go through the exact proof below.
+      if (seeded.length < 2 &&
+          combo.upper > seedUpper &&
+          (_best == null || combo.upper > _best!.totalBond) &&
+          (maxEvaluations == null || _evaluated < maxEvaluations)) {
+        seedUpper = combo.upper;
+        seeded.add(combo);
+        _evaluated++;
+        yield* _evaluateSteps(combo, ce1Slots, ce3Slots, supportSlots);
+        final solution = _evaluatedSolution;
+        if (solution != null) rememberSolution(solution, null);
+      }
     }
 
     Iterable<void> enumerateCe3(int start) sync* {
@@ -281,7 +346,7 @@ class _CeFirstSearch {
       if (selected3.length == ce3Slots.length) return;
       for (var i = start; i < problem.ownCes.length; i++) {
         if (++_workTicks % 64 == 0) yield null;
-        if (counts[i] >= problem.ownCes[i].limits.length) continue;
+        if (!problem.ownCes[i].canAdd(counts[i])) continue;
         counts[i]++;
         selected3.add(i);
         yield* enumerateCe3(i);
@@ -295,7 +360,7 @@ class _CeFirstSearch {
       if (selected1.length == ce1Slots.length) return;
       for (var i = start; i < problem.ownCes.length; i++) {
         if (++_workTicks % 64 == 0) yield null;
-        if (counts[i] >= problem.ownCes[i].limits.length) continue;
+        if (!problem.ownCes[i].canAdd(counts[i])) continue;
         counts[i]++;
         selected1.add(i);
         yield* enumerateCe1(i);
@@ -322,6 +387,13 @@ class _CeFirstSearch {
       final score = b.upper.compareTo(a.upper);
       return score != 0 ? score : a.ceCost.compareTo(b.ceCost);
     });
+    if (kDebugMode) {
+      debugPrint(
+        '[BondSolver] CE combinations prepared: ${_clock.elapsedMilliseconds}ms count=${combos.length} '
+        'upperVariants=${upperServants.fold<int>(0, (sum, variants) => sum + variants.length)} '
+        'seeds=${seeded.length}',
+      );
+    }
     onProgress?.call(_snapshot(false, combos.length));
     final progressClock = Stopwatch()..start();
     var lastProgressMs = 0;
@@ -337,6 +409,7 @@ class _CeFirstSearch {
     for (; nextCombo < combos.length; nextCombo++) {
       final combo = combos[nextCombo];
       if (_best != null && combo.upper <= _best!.totalBond) break;
+      if (seeded.contains(combo)) continue;
       if (maxEvaluations != null && _evaluated >= maxEvaluations) {
         onComplete(_snapshot(false, combos.length));
         return;
@@ -348,34 +421,26 @@ class _CeFirstSearch {
         reportIfDue();
         continue;
       }
-      _rememberCandidate(solution.team);
-      final team = solution.team;
-      if (_best == null || team.totalBond > _best!.totalBond || _candidates.length < maxCandidates) {
-        yield* _rememberNearbyServantsSteps(solution);
-      }
-      if (_best == null || team.totalBond > _best!.totalBond) {
-        _best = team;
-        _ties.clear();
-        _tieCounts.clear();
-        _tieKeys.clear();
-        _tieIndex.clear();
-        _addTie(solution);
-        onProgress?.call(_snapshot(false, combos.length));
-      } else if (team.totalBond == _best!.totalBond) {
-        if (team.totalCost > _best!.totalCost) _best = team;
-        _addTie(solution);
-      }
+      rememberSolution(solution, combos.length);
       reportIfDue();
     }
     // The maximum score is proved above. Explore a bounded number of equal
     // upper-bound combinations for other effect groups without delaying proof.
-    if (_best != null && maxEvaluations == null) {
+    if (_best != null) {
       scoreProven = true;
       onProgress?.call(_snapshot(true, combos.length));
+      if (_bestSolution != null) {
+        yield* _rememberNearbyServantsSteps(_bestSolution!);
+      }
+      if (maxEvaluations != null) {
+        onComplete(_snapshot(true, combos.length));
+        return;
+      }
       var tieEvaluations = 0;
       for (; nextCombo < combos.length && tieEvaluations < maxTies * 4 && _ties.length < maxTies; nextCombo++) {
         final combo = combos[nextCombo];
         if (combo.upper < _best!.totalBond) break;
+        if (seeded.contains(combo)) continue;
         tieEvaluations++;
         _evaluated++;
         yield* _evaluateSteps(combo, ce1Slots, ce3Slots, supportSlots);
@@ -396,6 +461,7 @@ class _CeFirstSearch {
       for (; nextCombo < combos.length && candidateEvaluations < maxCandidates * 4; nextCombo++) {
         final combo = combos[nextCombo];
         if (_candidates.length == maxCandidates && combo.upper < _candidates.last.totalBond) break;
+        if (seeded.contains(combo)) continue;
         candidateEvaluations++;
         _evaluated++;
         yield* _evaluateSteps(combo, ce1Slots, ce3Slots, supportSlots);
@@ -460,10 +526,11 @@ class _CeFirstSearch {
       final dimension = order[depth];
       for (final id in problem.ownCes[selected[dimension]].limits.keys.toList()..sort()) {
         final identity = BondCeIdentity.of(id);
-        if (!used.add(identity)) continue;
+        final restricted = !problem.ownCes[selected[dimension]].repeatable;
+        if (restricted && !used.add(identity)) continue;
         assignments[dimension] = id;
         if (visit(depth + 1)) return true;
-        used.remove(identity);
+        if (restricted) used.remove(identity);
       }
       return false;
     }
@@ -687,7 +754,9 @@ class _CeFirstSearch {
           equip1Variants: position.fixedCe1 != null
               ? {ce1!.id: ce1.limitBreak}
               : ce1VariantsAt[p] ?? supportChoiceAt[p]?.candidates ?? const {},
-          equip3Variants: position.fixedCe3 != null ? {ce3!.id: ce3.limitBreak} : ce3VariantsAt[p] ?? const {},
+          equip3Variants: position.fixedCe3 != null
+              ? {ce3!.id: ce3.limitBreak}
+              : ce3VariantsAt[p] ?? supportChoiceAt[p]?.ce3Candidates ?? const {},
         ),
       );
     }

@@ -55,29 +55,36 @@ void main() {
     for (final team in [result.best!, ...result.candidates]) {
       final applied = team.applyTo(input, FormationBondOption.fromJson(option.toJson()));
       final manual = option.calcResults(phase, applied);
-      expect(team.slots.map((s) => s.bond).toList(), manual.map((s) => s.totalBond).toList());
+      expect(team.slots.map((s) => s.bond).toList(), manual.take(team.slots.length).map((s) => s.totalBond).toList());
       final cost = applied.totalCost;
       expect(team.totalCost, cost);
     }
   }
 
-  test('FSN family has identical effects, shared exclusions and leaves collection 1972 alone', () {
-    final family = BondCeIdentity.families.single;
+  test('both restricted families are complete, effect-equivalent and share exclusions', () {
     expect(BondCeIdentity.of(9308080), 9308080);
-    final reference = CeBondEffect.extractAll(
-      db.gameData.craftEssencesById[family.first]!,
-      true,
-      quest,
-      support: false,
-    );
-    for (final id in family) {
-      expect(BondCeIdentity.of(id), family.first);
-      expect(BondCeIdentity.excluded(id, {family.last}), isTrue);
-      final effects = CeBondEffect.extractAll(db.gameData.craftEssencesById[id]!, true, quest, support: false);
+    final ranges = [(99, 108), (1973, 1979)];
+    for (final (index, family) in BondCeIdentity.families.indexed) {
+      final (first, last) = ranges[index];
       expect(
-        effects.map((e) => '${e.rate}:${e.value}:${e.targetPartial}:${e.targetOrAll}').toList(),
-        reference.map((e) => '${e.rate}:${e.value}:${e.targetPartial}:${e.targetOrAll}').toList(),
+        family.map((id) => db.gameData.craftEssencesById[id]!.collectionNo),
+        List.generate(last - first + 1, (i) => first + i),
       );
+      final reference = CeBondEffect.extractAll(
+        db.gameData.craftEssencesById[family.first]!,
+        true,
+        quest,
+        support: false,
+      );
+      for (final id in family) {
+        expect(BondCeIdentity.of(id), family.first);
+        expect(BondCeIdentity.excluded(id, {family.last}), isTrue);
+        final effects = CeBondEffect.extractAll(db.gameData.craftEssencesById[id]!, true, quest, support: false);
+        expect(
+          effects.map((e) => '${e.scope}:${e.rate}:${e.value}:${e.targetPartial}:${e.targetOrAll}').toList(),
+          reference.map((e) => '${e.scope}:${e.rate}:${e.value}:${e.targetPartial}:${e.targetOrAll}').toList(),
+        );
+      }
     }
   });
 
@@ -86,7 +93,7 @@ void main() {
     team.svts[0].equip1 = SvtEquipData(ce: db.gameData.craftEssencesById[9308110], limitBreak: true);
     team.svts[1].equip1 = SvtEquipData(ce: db.gameData.craftEssencesById[9308120], limitBreak: true);
     for (final fast in [false, true]) {
-      expect(solve(team, options(), fast: fast).best, isNull);
+      expect(() => solve(team, options(), fast: fast), throwsA(isA<BondFormationException>()));
     }
     team.svts[1].supportType = SupportSvtType.friend;
     final option = options()..excludedCes = {9308100};
@@ -98,25 +105,135 @@ void main() {
     }
   });
 
-  test('free family is one canonical wear and excluding any member excludes all', () {
-    final team = formation();
-    for (var p = 0; p < 3; p++) {
-      team.svts[p].equip1 = SvtEquipData();
-    }
-    final family = BondCeIdentity.families.single.toSet();
-    final option = options()..excludedCes = (db.gameData.craftEssencesById.keys.toSet()..removeAll(family));
-    for (final fast in [false, true]) {
-      final result = solve(team, option, fast: fast);
-      final worn = result.best!.slots.where((s) => family.contains(s.equip1?.id)).toList();
-      expect(worn, hasLength(1));
-      expect(worn.single.equip1!.id, family.first);
-      checkScores(result, team, option, quest);
-      final excluded = FormationBondOption.fromJson(option.toJson())..excludedCes.add(family.last);
-      expect(solve(team, excluded, fast: fast).best!.slots.where((s) => family.contains(s.equip1?.id)), isEmpty);
+  test('each free family has one slot and fixed or excluded members block the whole group', () {
+    for (final members in BondCeIdentity.families) {
+      final team = formation();
+      for (var p = 0; p < 3; p++) {
+        team.svts[p].equip1 = SvtEquipData();
+      }
+      final family = members.toSet();
+      final option = options()..excludedCes = (db.gameData.craftEssencesById.keys.toSet()..removeAll(family));
+      for (final fast in [false, true]) {
+        final result = solve(team, option, fast: fast);
+        final worn = result.best!.slots.where((s) => family.contains(s.equip1?.id)).toList();
+        expect(worn, hasLength(1));
+        expect(worn.single.equip1!.id, members.first);
+        checkScores(result, team, option, quest);
+        final excluded = FormationBondOption.fromJson(option.toJson())..excludedCes.add(members.last);
+        expect(solve(team, excluded, fast: fast).best!.slots.where((s) => family.contains(s.equip1?.id)), isEmpty);
+        final pinned = team.copy();
+        pinned.svts[4].equip1 = SvtEquipData(ce: db.gameData.craftEssencesById[members.last], limitBreak: true);
+        final fixedResult = solve(pinned, option, fast: fast);
+        expect(fixedResult.best!.slots.take(3).where((s) => family.contains(s.equip1?.id)), isEmpty);
+        expect(fixedResult.best!.slots[4].equip1!.id, members.last);
+      }
     }
   });
 
-  test('generic CEs use smallest available IDs and display later IDs first', () {
+  test('restricted fixed inputs fail before search and support may repeat owned identities', () async {
+    for (final ids in [
+      for (final family in BondCeIdentity.families) [family.first, family.last],
+      [9403520, 9403520],
+      [9401970, 9401970],
+    ]) {
+      final team = formation();
+      team.svts[0].equip1 = SvtEquipData(ce: db.gameData.craftEssencesById[ids[0]], limitBreak: true);
+      team.svts[1].equip1 = SvtEquipData(ce: db.gameData.craftEssencesById[ids[1]], limitBreak: true);
+      final option = options();
+      expect(
+        () => FormationBondSolver.validateFixedCes(formation: team, quest: quest, maxServants: 6),
+        throwsA(
+          isA<BondFormationException>().having((e) => e.conflicts.map((s) => s.position).toList(), 'positions', [0, 1]),
+        ),
+      );
+      var started = false;
+      await expectLater(
+        FormationBondSolver.solveProgressively(
+          option: option,
+          quest: quest,
+          formation: team,
+          onSearchStarted: () => started = true,
+        ),
+        emitsError(isA<BondFormationException>()),
+      );
+      expect(started, isFalse);
+      team.svts[1].supportType = SupportSvtType.friend;
+      for (final fast in [false, true]) {
+        checkScores(solve(team, option, fast: fast), team, option, quest);
+      }
+    }
+  });
+
+  test('the two single-ID CEs cannot fill multiple free owned slots', () {
+    for (final id in [9403520, 9401970]) {
+      final team = formation();
+      for (var p = 0; p < 3; p++) {
+        team.svts[p].equip1 = SvtEquipData();
+      }
+      final option = options()..excludedCes = (db.gameData.craftEssencesById.keys.toSet()..remove(id));
+      for (final fast in [false, true]) {
+        final result = solve(team, option, fast: fast);
+        expect(result.best!.slots.where((s) => s.equip1?.id == id), hasLength(1));
+        checkScores(result, team, option, quest);
+      }
+    }
+  });
+
+  test('mixed identity policies match a concrete two-slot enumeration at cost boundaries', () {
+    final phase = QuestPhase(bond: 900);
+    final fsn = CeBondEffect.extractAll(db.gameData.craftEssencesById[9308100]!, true, phase, support: false);
+    final servants = db.gameData.servantsById.values.where((s) => s.collectionNo > 1 && s.isUserSvt).toList();
+    final first = servants.firstWhere((s) => fsn.any((e) => e.targetMatches(s.getIndividuality(0, 4))));
+    final second = servants.firstWhere((s) => !fsn.any((e) => e.targetMatches(s.getIndividuality(0, 4))));
+    final generic = db.gameData.craftEssencesById[9403990]!;
+    final ids = [9400970, 9401060, 9308100, 9308160, 9311320, 9311510, 9403520, 9401970, generic.id];
+    final allowed = {...ids, ...BondCeIdentity.portraits, ...BondCeIdentity.fsn};
+    final input = BattleTeamSetup();
+    input.svts[0] = PlayerSvtData.svt(first);
+    input.svts[1] = PlayerSvtData.svt(second);
+    // This oracle encodes the specification directly, without calling the
+    // solver's identity classifier or class-capacity/matching functions.
+    int? identity(int? id) => switch (id) {
+      9400970 || 9401060 => 1,
+      9308100 || 9308160 => 2,
+      9403520 || 9401970 => id,
+      _ => null,
+    };
+    for (final ceBudget in [10, 18, 24]) {
+      final option = options()
+        ..maxServants = 2
+        ..maxCost = first.cost + second.cost + ceBudget
+        ..excludedCes = (db.gameData.craftEssencesById.keys.toSet()..removeAll(allowed));
+      var optimum = 0;
+      for (final left in <int?>[null, ...ids]) {
+        for (final right in <int?>[null, ...ids]) {
+          if (identity(left) != null && identity(left) == identity(right)) continue;
+          final team = input.copy();
+          team.svts[0].equip1 = SvtEquipData(ce: db.gameData.craftEssencesById[left], limitBreak: true);
+          team.svts[1].equip1 = SvtEquipData(ce: db.gameData.craftEssencesById[right], limitBreak: true);
+          if (team.totalCost > option.maxCost!) continue;
+          final score = option.calcResults(phase, team).fold<int>(0, (sum, slot) => sum + slot.totalBond);
+          if (score > optimum) optimum = score;
+        }
+      }
+      for (final fast in [false, true]) {
+        for (final prune in [false, true]) {
+          final result = FormationBondSolver.solve(
+            option: option,
+            quest: phase,
+            formation: input,
+            useCeFirst: fast,
+            pruneDominatedCes: prune,
+          );
+          expect(result.provenOptimal, isTrue);
+          expect(result.best!.totalBond, optimum, reason: 'CE budget $ceBudget, fast=$fast, prune=$prune');
+          checkScores(result, input, option, phase);
+        }
+      }
+    }
+  });
+
+  test('generic CEs reuse the smallest eligible ID without an identity capacity', () {
     final ces = db.gameData.craftEssencesById.values.where((ce) {
       if (ce.collectionNo <= 0 || ce.isRegionSpecific) return false;
       final effects = CeBondEffect.extractAll(ce, true, quest, support: false);
@@ -135,19 +252,45 @@ void main() {
     final team = formation();
     team.svts[0].equip1 = SvtEquipData();
     team.svts[1].equip1 = SvtEquipData();
+    team.svts[3].equip1 = SvtEquipData(ce: sameCost.first, limitBreak: true);
+    team.svts[4].equip1 = SvtEquipData(ce: sameCost.first, limitBreak: true);
     final option = options()
       ..excludedCes = (db.gameData.craftEssencesById.keys.toSet()..removeAll(sameCost.map((ce) => ce.id)));
     for (final fast in [false, true]) {
       final result = solve(team, option, fast: fast);
       for (final candidate in result.candidates.where((team) => team.totalBond == result.best!.totalBond)) {
-        expect(candidate.slots.take(2).map((s) => s.equip1?.id).toList(), [sameCost[1].id, sameCost[0].id]);
+        expect(candidate.slots.take(2).map((s) => s.equip1?.id).toList(), [sameCost[0].id, sameCost[0].id]);
       }
       final excluded = FormationBondOption.fromJson(option.toJson())..excludedCes.add(sameCost.first.id);
       expect(solve(team, excluded, fast: fast).best!.slots.take(2).map((s) => s.equip1?.id).toList(), [
-        sameCost[2].id,
+        sameCost[1].id,
         sameCost[1].id,
       ]);
       checkScores(result, team, option, quest);
+    }
+  });
+
+  test('Pole 2 percent CEs are reusable representatives with per-ID exclusions', () {
+    final poles =
+        db.gameData.craftEssencesById.values.where((ce) => ce.collectionNo >= 2513 && ce.collectionNo <= 2532).toList()
+          ..sort((a, b) => a.id.compareTo(b.id));
+    expect(poles, hasLength(20));
+    final team = formation();
+    team.svts[0].equip1 = SvtEquipData();
+    team.svts[1].equip1 = SvtEquipData();
+    team.svts[3].equip1 = SvtEquipData(ce: poles.first, limitBreak: true);
+    team.svts[4].equip1 = SvtEquipData(ce: poles.first, limitBreak: true);
+    final option = options()
+      ..excludedCes = (db.gameData.craftEssencesById.keys.toSet()..removeAll([poles.first.id, poles.last.id]));
+    for (final fast in [false, true]) {
+      final result = solve(team, option, fast: fast);
+      expect(result.best!.slots.take(2).map((slot) => slot.equip1!.id), [poles.first.id, poles.first.id]);
+      checkScores(result, team, option, quest);
+      final excluded = option.copy()..excludedCes.add(poles.first.id);
+      final other = solve(team, excluded, fast: fast);
+      expect(other.best!.slots.take(2).map((slot) => slot.equip1!.id), [poles.last.id, poles.last.id]);
+      expect(other.best!.slots[3].equip1!.id, poles.first.id);
+      checkScores(other, team, excluded, quest);
     }
   });
 
@@ -172,26 +315,39 @@ void main() {
           fsnEffects.any((effect) => effect.targetMatches(svt.getIndividuality(0, 4))),
     );
     final team = formation(first: fsn);
+    final targets = db.gameData.servantsById.values
+        .where(
+          (svt) =>
+              svt.isUserSvt &&
+              svt.collectionNo > 0 &&
+              fsnEffects.any((effect) => effect.targetMatches(svt.getIndividuality(0, 4))),
+        )
+        .take(5)
+        .toList();
+    for (var p = 0; p < 5; p++) {
+      team.svts[p].svt = targets[p];
+    }
+    final phase = QuestPhase(bond: 900);
     for (var p = 0; p < 4; p++) {
       team.svts[p].equip1 = SvtEquipData();
     }
     final pinned = team.svts[4].equip1.ce!.id;
     team.svts[5].supportType = SupportSvtType.friend;
     final supportId = team.svts[5].equip1.ce!.id;
-    final pool = {...BondCeIdentity.families.single, 9401060, ...generic.map((ce) => ce.id)};
+    final pool = {...BondCeIdentity.fsn, ...BondCeIdentity.portraits, ...generic.map((ce) => ce.id)};
     final option = options()..excludedCes = (db.gameData.craftEssencesById.keys.toSet()..removeAll(pool));
-    final expected = [9308100, generic[1].id, generic[0].id, 9401060];
+    final expected = [9308100, generic[0].id, generic[0].id, BondCeIdentity.portraits.first];
     for (final fast in [false, true]) {
-      final result = solve(team, option, fast: fast);
+      final result = solve(team, option, fast: fast, phase: phase);
       expect(result.best!.slots.take(4).map((s) => s.equip1?.id).toList(), expected);
       expect(result.best!.slots[4].equip1!.id, pinned);
       expect(result.best!.slots[5].equip1!.id, supportId);
-      checkScores(result, team, option, quest);
+      checkScores(result, team, option, phase);
     }
     final original = db.gameData.craftEssencesById;
     try {
       db.gameData.craftEssencesById = Map.fromEntries(original.entries.toList().reversed);
-      expect(solve(team, option).best!.slots.take(4).map((s) => s.equip1?.id).toList(), expected);
+      expect(solve(team, option, phase: phase).best!.slots.take(4).map((s) => s.equip1?.id).toList(), expected);
     } finally {
       db.gameData.craftEssencesById = original;
     }
@@ -205,10 +361,10 @@ void main() {
       ..equip3 = SvtEquipData(ce: db.gameData.craftEssencesById[9308120], limitBreak: true);
     final phase = QuestPhase(bond: 1000, extraDetail: QuestPhaseExtraDetail()..setValue('isUseGrandBoard', 1));
     for (final fast in [false, true]) {
-      expect(solve(team, options(), phase: phase, fast: fast).best, isNull);
+      expect(() => solve(team, options(), phase: phase, fast: fast), throwsA(isA<BondFormationException>()));
       team.svts[0].equip3 = SvtEquipData();
       final option = options()
-        ..excludedCes = (db.gameData.craftEssencesById.keys.toSet()..removeAll(BondCeIdentity.families.single));
+        ..excludedCes = (db.gameData.craftEssencesById.keys.toSet()..removeAll(BondCeIdentity.fsn));
       final result = solve(team, option, phase: phase, fast: fast);
       expect(result.best!.slots[0].equip3, isNull);
       expect(result.best!.slots[0].equip1!.id, 9308110);
@@ -431,14 +587,21 @@ void main() {
     releases.na = [target.id, ce.id];
     final option = options()
       ..excludedSvts = (db.gameData.servantsById.keys.toSet()..remove(target.id))
-      ..excludedCes = (db.gameData.craftEssencesById.keys.toSet()..remove(ce.id));
+      ..excludedCes = (db.gameData.craftEssencesById.keys.toSet()..removeAll(BondCeIdentity.portraits));
     team.svts[0].svt = null;
     team.svts[0].equip1 = SvtEquipData();
     for (final reference in [BondReleaseReference.jp, BondReleaseReference.cn, BondReleaseReference.na]) {
       option.releaseReference = reference;
       final result = solve(team, option);
       expect(result.best!.slots[0].servantId, target.id);
-      expect(result.best!.slots[0].equip1?.id, reference == BondReleaseReference.cn ? null : ce.id);
+      expect(
+        result.best!.slots[0].equip1?.id,
+        reference == BondReleaseReference.cn
+            ? null
+            : reference == BondReleaseReference.jp
+            ? BondCeIdentity.portraits.first
+            : ce.id,
+      );
     }
     option.releaseReference = BondReleaseReference.tw;
     expect(solve(team, option).best!.slots[0].servantId, isNull);
@@ -503,7 +666,7 @@ void main() {
   });
 
   test('free family representative prefers the owned member with the smallest id', () {
-    final family = BondCeIdentity.families.single;
+    final family = BondCeIdentity.fsn;
     final saved = <int, CraftStatus?>{};
     for (final id in [9308130, 9308150]) {
       final ce = db.gameData.craftEssencesById[id]!;
@@ -622,6 +785,31 @@ void main() {
       expect(support.equip3, isNotNull);
       expect(support.equip3!.id, isNot(support.equip1!.id));
       checkScores(result, team, option, phase);
+    }
+    final generic = db.gameData.craftEssencesById[9403990]!;
+    for (final id in [generic.id, 9403520]) {
+      final restricted = id == 9403520;
+      final filtered = options()..excludedCes = (db.gameData.craftEssencesById.keys.toSet()..remove(id));
+      for (final fast in [false, true]) {
+        final result = solve(team, filtered, phase: phase, fast: fast);
+        final support = result.best!.slots[5];
+        expect([support.equip1, support.equip3].where((ce) => ce?.id == id), hasLength(restricted ? 1 : 2));
+        checkScores(result, team, filtered, phase);
+        if (restricted) {
+          for (final third in [false, true]) {
+            final pinned = team.copy();
+            final ce = SvtEquipData(ce: db.gameData.craftEssencesById[id], limitBreak: true);
+            if (third) {
+              pinned.svts[5].equip3 = ce;
+            } else {
+              pinned.svts[5].equip1 = ce;
+            }
+            final fixed = solve(pinned, filtered, phase: phase, fast: fast).best!.slots[5];
+            expect(third ? fixed.equip1 : fixed.equip3, isNull);
+            expect((third ? fixed.equip3 : fixed.equip1)!.id, id);
+          }
+        }
+      }
     }
     // Without the grand flag the support has no equip3 at all.
     team.svts[5].grandSvt = false;
