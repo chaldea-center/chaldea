@@ -188,10 +188,20 @@ void main() {
     option.maxServants = 3;
     extra.setValue('isUseGrandBoardInitPos', [1, 2, 3]);
     extra.setValue('eventDeckIndex', 3);
+    expect(quest.defaultMaxGrandServants, 2);
     final twoOwned = FormationBondSolver.solve(option: option, quest: quest, formation: formation).best!;
-    expect(twoOwned.slots.where((s) => s.grandSvt), hasLength(2));
+    // Four CEs only need one extra slot for three servants. The limit is a
+    // maximum, so an equally optimal team need not activate both crowns.
+    expect(twoOwned.slots.where((s) => s.grandSvt).length, inInclusiveRange(1, 2));
     expect(twoOwned.slots[2].grandSvt, isFalse);
     expect(twoOwned.slots[2].equip3, isNull);
+    final pinnedCrowns = BattleTeamSetup()
+      ..svts[0] = (PlayerSvtData.svt(first)..grandSvt = true)
+      ..svts[1] = (PlayerSvtData.svt(second)..grandSvt = true)
+      ..svts[2] = PlayerSvtData.svt(normal);
+    final pinnedTwoOwned = FormationBondSolver.solve(option: option, quest: quest, formation: pinnedCrowns);
+    expect(pinnedTwoOwned.provenOptimal, isTrue);
+    expect(pinnedTwoOwned.best!.totalBond, twoOwned.totalBond);
     extra.setValue('isUseGrandBoard', 0);
     final nonGrand = FormationBondSolver.solve(option: option, quest: quest, formation: formation).best!;
     expect(nonGrand.slots.every((s) => !s.grandSvt && s.equip3 == null), isTrue);
