@@ -5,6 +5,42 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:chaldea/app/modules/bond/solver/search.dart';
 
 void main() {
+  test('owned Grand count is enforced in seeds, optimum and candidates', () {
+    for (int cap = 0; cap <= 3; cap++) {
+      final problem = BondSearchProblem(
+        baseBond: 100,
+        rateCap: 5000,
+        maxCost: 0,
+        maxGrandServants: cap,
+        receiverProfileCount: 1,
+        positions: [
+          for (int p = 0; p < 3; p++)
+            BondSearchPosition(
+              frontlineRate: 0,
+              items: [
+                for (final grand in [false, true])
+                  BondSearchItem(
+                    cost: 0,
+                    receiverProfile: 0,
+                    selfRate: 0,
+                    selfValue: grand ? (3 - p) * 10 : 0,
+                    teamRates: const [0],
+                    teamValues: const [0],
+                    isGrandServant: grand,
+                  ),
+              ],
+            ),
+        ],
+      );
+      final result = BondSearch.solve(problem);
+      expect(result.provenOptimal, isTrue);
+      expect(result.best!.totalBond, 300 + [0, 30, 50, 60][cap]);
+      for (final team in [result.best!, ...result.candidates, ...result.ties]) {
+        expect(team.items.where((item) => item.isGrandServant).length, lessThanOrEqualTo(cap));
+      }
+    }
+  });
+
   test('cross-class servant identity conflicts cannot set the incumbent', () {
     final problem = BondSearchProblem(
       baseBond: 100,

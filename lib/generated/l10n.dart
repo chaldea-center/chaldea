@@ -1410,6 +1410,17 @@ class S {
     return Intl.message('Bond not maxed only', name: 'bond_not_full_only', desc: '', locale: localeName, args: []);
   }
 
+  /// `Max Grand Servants (excluding support)`
+  String get bond_max_grand_servants {
+    return Intl.message(
+      'Max Grand Servants (excluding support)',
+      name: 'bond_max_grand_servants',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Search fixed servant ascensions`
   String get bond_search_fixed_ascensions {
     return Intl.message(

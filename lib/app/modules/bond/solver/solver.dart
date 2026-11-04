@@ -46,6 +46,7 @@ class BondSolvedSlot {
   final BondSolvedCe? equip3;
   final bool isSupport;
   final bool fixedServant;
+  final bool grandSvt;
   final int bond;
   final int cost;
   final List<int> servantCandidates;
@@ -65,6 +66,7 @@ class BondSolvedSlot {
     required this.equip3,
     required this.isSupport,
     required this.fixedServant,
+    this.grandSvt = false,
     required this.bond,
     required this.cost,
     required this.servantCandidates,
@@ -90,6 +92,7 @@ class BondSolvedSlot {
     equip3: ce3 == null ? equip3 : ce3.$1,
     isSupport: isSupport,
     fixedServant: fixedServant,
+    grandSvt: grandSvt,
     bond: bond,
     cost: cost ?? this.cost,
     servantCandidates: servantCandidates,
@@ -194,7 +197,9 @@ class BondSolvedTeam {
           ..isBondReachLimit = false;
         final svt = db.gameData.servantsById[slot.servantId];
         if (svt == null) throw StateError('missing servant ${slot.servantId}');
-        applied.svts[slot.position] = PlayerSvtData.svt(svt)..limitCount = slot.limitCount ?? 4;
+        applied.svts[slot.position] = PlayerSvtData.svt(svt)
+          ..limitCount = slot.limitCount ?? 4
+          ..grandSvt = slot.grandSvt;
       }
       final target = applied.svts[slot.position];
       target.limitCount = slot.limitCount ?? target.limitCount;
@@ -316,6 +321,7 @@ class BondSolvedTeam {
         equip3: ce3,
         isSupport: original.isSupport,
         fixedServant: original.fixedServant,
+        grandSvt: original.grandSvt,
         bond: original.bond,
         cost: original.cost,
         servantCandidates: original.servantCandidates,
@@ -463,6 +469,16 @@ class FormationBondSolver {
 
   late final int _eventId = quest.logicEventId ?? 0;
   late final List<int> _questTraits = quest.questIndividuality;
+  late final Set<int> _grandPositions = quest.grandBoardPositions;
+  late final int _maxGrandServants = (option.maxGrandServants ?? quest.defaultMaxGrandServants).clamp(0, 5);
+
+  bool _autoGrandAt(int position) =>
+      _maxGrandServants > 0 &&
+      quest.isUseGrandBoard &&
+      (_grandPositions.isEmpty || _grandPositions.contains(position + 1)) &&
+      quest.getSupportInitDeckIndex() != position + 1;
+
+  bool _isAccountGrand(Servant svt) => svt.status.favorite && svt.status.grandSvt;
   late final List<Restriction> _questIndivRestrictions = [
     for (final entry in quest.restrictions)
       if (entry.restriction.type == RestrictionType.individuality) entry.restriction,
@@ -908,11 +924,12 @@ class FormationBondSolver {
     final maxCost = _maxCost = option.maxCost ?? ConstData.userLevel[ConstData.maxUserLevel]?.maxCost ?? -1;
     if (maxCost < 0) throw StateError('master-level cost table is unavailable');
     final needsFreeServant = decks.any((d) => !d.supportType.isSupport && d.svt == null);
-    final needsFreeCe = decks.any(
-      (d) =>
-          d.equip1.ce == null ||
-          (quest.isUseGrandBoard && d.grandSvt && !d.supportType.isSupport && d.svt != null && d.equip3.ce == null),
-    );
+    final needsFreeCe = decks.indexed.any((entry) {
+      final (p, d) = entry;
+      return d.equip1.ce == null ||
+          (quest.isUseGrandBoard && d.grandSvt && !d.supportType.isSupport && d.svt != null && d.equip3.ce == null) ||
+          (!d.supportType.isSupport && d.svt == null && _autoGrandAt(p));
+    });
     final released = needsFreeServant || needsFreeCe ? _releasedIds() : null;
 
     if (needsFreeServant) yield* _loadFreeServantsSteps(released);
@@ -946,7 +963,7 @@ class FormationBondSolver {
       int? group;
       if (!fixedSvt && !isSupport && deck.equip1.ce == null) {
         final bonus = option.svtBonus[p];
-        final key = '$front|${bonus.addRate}|${bonus.addValue}';
+        final key = '$front|${bonus.addRate}|${bonus.addValue}|${_autoGrandAt(p)}';
         group = freeGroupByProfile.putIfAbsent(key, () => symmetryGroup++);
       }
       positions.add(BondSearchPosition(frontlineRate: front, items: items, symmetryGroup: group));
@@ -959,6 +976,7 @@ class FormationBondSolver {
     _fixedCost = fixedCost;
     _itemCount = positions.fold<int>(0, (sum, position) => sum + position.items.length);
     _preparedProblem = BondSearchProblem(
+      maxGrandServants: _maxGrandServants,
       baseBond: quest.bond,
       rateCap: ConstData.constants.maxFriendShipUpRatio,
       maxCost: maxCost,
@@ -1074,6 +1092,22 @@ class FormationBondSolver {
 
   Iterable<void> _prepareCeFirstSteps() sync* {
     _preparedCeFirst = null;
+    if (formation.svts
+            .take(option.maxServants.clamp(1, 6))
+            .where((deck) => !deck.supportType.isSupport && deck.svt != null && quest.isUseGrandBoard && deck.grandSvt)
+            .length >
+        _maxGrandServants) {
+      return;
+    }
+    // This path assigns CE slots before servants. A free Grand candidate's
+    // extra slot depends on the servant, so use the general exact search.
+    if (formation.svts
+            .take(option.maxServants.clamp(1, 6))
+            .indexed
+            .any((entry) => !entry.$2.supportType.isSupport && entry.$2.svt == null && _autoGrandAt(entry.$1)) &&
+        _svtClasses.any((svt) => svt.grandSvt)) {
+      return;
+    }
     if (_ownedCeClasses.any((ce) => !ce.placementInvariant)) return;
     if (_svtClasses.any(
       (svt) => svt.eventEffect.teamRates.any((v) => v != 0) || svt.eventEffect.teamValues.any((v) => v != 0),
@@ -1495,12 +1529,13 @@ class FormationBondSolver {
       yield null;
       final profile = _profileOf(variant.traits);
       final effect = _contribution(variant.eventEffects, _profiles[profile]);
-      final key = '${variant.cost}|$profile|${variant.campaignRate}|${effect.signature}';
+      final grand = _maxGrandServants > 0 && quest.isUseGrandBoard && _isAccountGrand(variant.svt);
+      final key = '${variant.cost}|$profile|${variant.campaignRate}|${effect.signature}|$grand';
       final existing = byKey[key];
       if (existing == null) {
         byKey[key] = _SvtClass(variant.cost, profile, variant.campaignRate, effect, {
           variant.svt.id: variant.limitCount,
-        });
+        }, grandSvt: grand);
       } else {
         existing.limits.putIfAbsent(variant.svt.id, () => variant.limitCount);
       }
@@ -1549,10 +1584,12 @@ class FormationBondSolver {
   /// A CE can be removed only when enough distinct, individually dominating
   /// CE IDs remain to replace it in every possible owned slot at once.
   Iterable<void> _pruneOwnedCeClassesSteps(List<PlayerSvtData> decks) sync* {
-    final maxOwnedCeSlots = decks.fold<int>(0, (count, deck) {
-      if (deck.supportType.isSupport) return count;
-      return count + 1 + (quest.isUseGrandBoard && deck.grandSvt && deck.svt != null ? 1 : 0);
-    });
+    int maxOwnedCeSlots = 0;
+    for (final (p, deck) in decks.indexed) {
+      if (deck.supportType.isSupport) continue;
+      final extra = deck.svt != null ? quest.isUseGrandBoard && deck.grandSvt : _autoGrandAt(p);
+      maxOwnedCeSlots += 1 + (extra ? 1 : 0);
+    }
     if (pruneDominatedCes && maxOwnedCeSlots > 0) {
       var changed = true;
       while (changed) {
@@ -1658,13 +1695,17 @@ class FormationBondSolver {
     final ce1 = deck.equip1.ce == null
         ? <_CeClass?>[null, ..._ownedCeClasses]
         : <_CeClass?>[_fixedCeClass(deck.equip1)];
-    final ce3 = grand
-        ? (deck.equip3.ce == null ? <_CeClass?>[null, ..._ownedCeClasses] : <_CeClass?>[_fixedCeClass(deck.equip3)])
-        : <_CeClass?>[null];
     final bonus = option.svtBonus[position];
     final items = <BondSearchItem>[];
     var order = 0;
     for (final svt in svts) {
+      final isGrand = fixedSvt ? grand : _autoGrandAt(position) && svt.grandSvt;
+      // A stale equip3 on a free position is not a fixed selection.
+      final ce3 = isGrand
+          ? (fixedSvt && deck.equip3.ce != null
+                ? <_CeClass?>[_fixedCeClass(deck.equip3)]
+                : <_CeClass?>[null, ..._ownedCeClasses])
+          : <_CeClass?>[null];
       for (final c1 in ce1) {
         for (final c3 in ce3) {
           yield null;
@@ -1684,6 +1725,7 @@ class FormationBondSolver {
           items.add(
             BondSearchItem(
               cost: svt.cost + (c1?.cost ?? 0),
+              isGrandServant: isGrand,
               receiverProfile: fixedSvt && bonus.isBondReachLimit ? null : svt.profile,
               selfRate: svt.campaignRate + effect.selfRate + bonus.addRate,
               selfValue: effect.selfValue + bonus.addValue,
@@ -1700,6 +1742,7 @@ class FormationBondSolver {
               payload: _ItemPayload(
                 isSupport: false,
                 fixedServant: fixedSvt,
+                grandSvt: isGrand,
                 servantLimits: svt.limits,
                 ce1LimitBreaks: c1?.limitBreaks ?? const {},
                 ce3LimitBreaks: c3?.limitBreaks ?? const {},
@@ -1809,6 +1852,7 @@ class FormationBondSolver {
           equip3: ce3,
           isSupport: payload.isSupport,
           fixedServant: payload.fixedServant,
+          grandSvt: payload.grandSvt,
           bond: witness.slotBonds[p],
           cost: item.cost,
           servantCandidates: payload.servantLimits.keys.toList()..sort(),
@@ -1818,7 +1862,7 @@ class FormationBondSolver {
           equip1Variants: payload.ce1LimitBreaks,
           equip3Variants: payload.ce3LimitBreaks,
           fixedEquip1: formation.svts[p].equip1.ce != null,
-          fixedEquip3: formation.svts[p].equip3.ce != null,
+          fixedEquip3: (payload.fixedServant || payload.isSupport) && formation.svts[p].equip3.ce != null,
         ),
       );
     }
@@ -2016,8 +2060,9 @@ class _SvtClass {
   final int campaignRate;
   final _Contribution eventEffect;
   final Map<int, int> limits;
+  final bool grandSvt;
   int? searchIndex;
-  _SvtClass(this.cost, this.profile, this.campaignRate, this.eventEffect, this.limits);
+  _SvtClass(this.cost, this.profile, this.campaignRate, this.eventEffect, this.limits, {this.grandSvt = false});
 }
 
 class _CeClass {
@@ -2061,6 +2106,7 @@ class _Contribution {
 class _ItemPayload {
   final bool isSupport;
   final bool fixedServant;
+  final bool grandSvt;
   final Map<int, int> servantLimits;
   final Map<int, bool> ce1LimitBreaks;
   final Map<int, bool> ce3LimitBreaks;
@@ -2069,6 +2115,7 @@ class _ItemPayload {
   const _ItemPayload({
     required this.isSupport,
     required this.fixedServant,
+    this.grandSvt = false,
     required this.servantLimits,
     required this.ce1LimitBreaks,
     required this.ce3LimitBreaks,

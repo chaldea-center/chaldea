@@ -535,6 +535,36 @@ class QuestPhase extends Quest {
 
   bool get isUseGrandBoard => extraDetail?.isUseGrandBoard == 1;
 
+  /// One-based initial positions explicitly opened for Grand effects.
+  /// Nice data may omit the phase script field, but retains activeGrandBoard.
+  Set<int> get grandBoardPositions {
+    if (!isUseGrandBoard) return {};
+    final scripted = extraDetail?.isUseGrandBoardInitPos;
+    if (scripted != null) return scripted.where((p) => p >= 1 && p <= 6).toSet();
+    final limits = restrictions.where((e) => e.restriction.type == RestrictionType.activeGrandBoard);
+    if (limits.isEmpty) return {};
+    Set<int> positions = {1, 2, 3, 4, 5, 6};
+    for (final entry in limits) {
+      final restriction = entry.restriction;
+      if (restriction.rangeType == RestrictionRangeType.equal) {
+        positions = positions.intersection(restriction.targetVals.toSet());
+      } else if (restriction.rangeType == RestrictionRangeType.notEqual) {
+        positions.removeAll(restriction.targetVals);
+      } else {
+        return {};
+      }
+    }
+    return positions;
+  }
+
+  /// Default owned Grand count; the initial support position is excluded.
+  int get defaultMaxGrandServants {
+    if (!isUseGrandBoard) return 0;
+    final positions = grandBoardPositions;
+    if (positions.isEmpty) return 1;
+    return positions.where((p) => p != getSupportInitDeckIndex()).length.clamp(0, 5);
+  }
+
   int getSupportInitDeckIndex() {
     final supportInitDeckIndex = extraDetail?.eventDeckIndex;
     if (supportInitDeckIndex != null) return supportInitDeckIndex;
@@ -1842,6 +1872,7 @@ class QuestPhaseExtraDetail with DataScriptBase {
   int? get masterSkillDelay => getScript('masterSkillDelay');
   String? get masterSkillDelayInfo => getScript('masterSkillDelayInfo');
   int? get isUseGrandBoard => getScript('isUseGrandBoard');
+  List<int>? get isUseGrandBoardInitPos => toList('isUseGrandBoardInitPos');
   int? get isInfinityCost => getScript('isInfinityCost');
   String? get battleFinishMovie => getScript("battleFinishMovie");
   int? get eventDeckIndex => getScript("eventDeckIndex"); // Support Init Deck Index

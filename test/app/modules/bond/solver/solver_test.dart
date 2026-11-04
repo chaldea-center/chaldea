@@ -2,6 +2,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:chaldea/app/battle/models/user.dart';
 import 'package:chaldea/app/modules/bond/formation_bond_calc.dart';
+import 'package:chaldea/app/modules/bond/solver/bond_effect.dart';
 import 'package:chaldea/app/modules/bond/solver/solver.dart';
 import 'package:chaldea/models/models.dart';
 
@@ -29,6 +30,172 @@ FormationBondOption _withFilters(
 
 void main() {
   setUpAll(initiateForTest);
+
+  test('multi-Grand positions use phase script or Nice restrictions', () {
+    final extra = QuestPhaseExtraDetail()..setValue('isUseGrandBoard', 1);
+    final quest = QuestPhase(
+      extraDetail: extra,
+      restrictions: [
+        QuestPhaseRestriction(
+          restriction: Restriction(
+            id: 94151711,
+            type: RestrictionType.activeGrandBoard,
+            rangeType: RestrictionRangeType.equal,
+            targetVals: [1, 2, 3, 4, 5, 6],
+          ),
+        ),
+      ],
+    );
+    expect(quest.grandBoardPositions, {1, 2, 3, 4, 5, 6});
+    expect(quest.defaultMaxGrandServants, 5);
+    extra.setValue('isUseGrandBoardInitPos', [2, 4]);
+    expect(quest.grandBoardPositions, {2, 4});
+    expect(quest.defaultMaxGrandServants, 2);
+    extra.setValue('isUseGrandBoard', 0);
+    expect(quest.grandBoardPositions, isEmpty);
+    expect(quest.defaultMaxGrandServants, 0);
+    extra.setValue('isUseGrandBoard', 1);
+    extra.setValue('isUseGrandBoardInitPos', null);
+    quest.restrictions.clear();
+    expect(quest.grandBoardPositions, isEmpty);
+    expect(quest.defaultMaxGrandServants, 1);
+  });
+
+  test('account Grand search selects multiple crowns and applies their free reward slots', () async {
+    final pool = db.gameData.servantsById.values
+        .where((svt) => svt.collectionNo > 0 && svt.isUserSvt && svt.cost == 16)
+        .toList();
+    final first = pool.first;
+    final second = pool.firstWhere((svt) => svt.classId != first.classId);
+    final normal = pool.firstWhere((svt) => svt.id != first.id && svt.id != second.id);
+    final servants = [first, second, normal];
+    final statuses = {for (final svt in servants) svt.id: (svt.status.favorite, svt.status.grandSvt)};
+    addTearDown(() {
+      for (final svt in servants) {
+        svt.status
+          ..favorite = statuses[svt.id]!.$1
+          ..grandSvt = statuses[svt.id]!.$2;
+      }
+    });
+    for (final svt in servants) {
+      svt.status
+        ..favorite = true
+        ..grandSvt = svt.id != normal.id;
+    }
+    final extra = QuestPhaseExtraDetail()..setValue('isUseGrandBoard', 1);
+    final quest = QuestPhase(
+      bond: 1000,
+      extraDetail: extra,
+      restrictions: [
+        QuestPhaseRestriction(
+          restriction: Restriction(
+            id: 94151711,
+            type: RestrictionType.activeGrandBoard,
+            rangeType: RestrictionRangeType.equal,
+            targetVals: [1, 2, 3, 4, 5, 6],
+          ),
+        ),
+      ],
+    );
+    final ces = db.gameData.craftEssencesById.values
+        .where((ce) {
+          if (ce.collectionNo <= 0 || ce.isRegionSpecific) return false;
+          final effects = CeBondEffect.extractAll(ce, true, quest, support: false);
+          return effects.isNotEmpty &&
+              effects.every((e) => e.scope == BondEffectScope.team && e.isFlat && e.rate >= 0 && e.value >= 0);
+        })
+        .take(4)
+        .toList();
+    expect(ces, hasLength(4));
+    final option = FormationBondOption(
+      maxServants: 2,
+      enableEvent: false,
+      frontlineBonus: false,
+      maxCost: 999,
+      maxBond: 0,
+      favoriteSvtOnly: false,
+      favoriteSvtEquipOnly: false,
+      maxGrandServants: 5,
+      maxCandidateTeams: 5,
+      excludedSvts: db.gameData.servantsById.keys.toSet()..removeAll(servants.map((s) => s.id)),
+      excludedCes: db.gameData.craftEssencesById.keys.toSet()..removeAll(ces.map((ce) => ce.id)),
+    );
+    final formation = BattleTeamSetup();
+    final enabled = FormationBondSolver.solve(option: option, quest: quest, formation: formation);
+    expect(enabled.provenOptimal, isTrue);
+    final best = enabled.best!;
+    expect(best.slots.map((slot) => slot.servantId).toSet(), {first.id, second.id});
+    expect(best.slots.every((slot) => slot.grandSvt && slot.equip3 != null), isTrue);
+    final equipped = best.slots.expand((s) => [s.equip1!.id, s.equip3!.id]).toList();
+    expect(equipped.toSet(), hasLength(4));
+    final applied = best.applyTo(formation, option.copy());
+    expect(applied.svts.take(2).every((svt) => svt.grandSvt), isTrue);
+    expect(best.totalBond, option.calcResults(quest, applied).fold<int>(0, (sum, s) => sum + s.totalBond));
+    final expectedCost = best.slots.fold<int>(0, (sum, slot) {
+      final svt = db.gameData.servantsById[slot.servantId]!;
+      final svtCost = svt.getAscended(slot.limitCount!, (a) => a.overwriteCost) ?? svt.cost;
+      return sum + svtCost + db.gameData.craftEssencesById[slot.equip1!.id]!.cost;
+    });
+    expect(best.totalCost, expectedCost);
+    final unpruned = FormationBondSolver.solve(
+      option: option,
+      quest: quest,
+      formation: formation,
+      pruneDominatedCes: false,
+      useCeFirst: false,
+    );
+    expect(unpruned.best!.totalBond, best.totalBond);
+    final progressive = await FormationBondSolver.solveProgressively(
+      option: option,
+      quest: quest,
+      formation: formation,
+      useWorkerIsolate: false,
+    ).toList();
+    expect(progressive.last.best!.totalBond, best.totalBond);
+    expect(progressive.last.best!.slots.every((s) => s.grandSvt), isTrue);
+
+    option.maxCost = 32;
+    final budget = FormationBondSolver.solve(option: option, quest: quest, formation: formation).best!;
+    expect(budget.totalCost, lessThanOrEqualTo(32));
+    expect(budget.slots.any((s) => s.equip3 != null), isTrue);
+    option.maxCost = 999;
+
+    option.maxGrandServants = 1;
+    final limited = FormationBondSolver.solve(option: option, quest: quest, formation: formation).best!;
+    expect(limited.slots.where((s) => s.grandSvt), hasLength(1));
+    option.maxGrandServants = 0;
+    final disabled = FormationBondSolver.solve(option: option, quest: quest, formation: formation).best!;
+    expect(disabled.totalBond, lessThan(best.totalBond));
+    expect(disabled.slots.every((slot) => !slot.grandSvt && slot.equip3 == null), isTrue);
+    option.maxGrandServants = 5;
+    first.status.favorite = false;
+    final unowned = FormationBondSolver.solve(option: option, quest: quest, formation: formation).best!;
+    expect(unowned.slots.where((s) => s.grandSvt).map((s) => s.servantId), [second.id]);
+    first.status.favorite = true;
+    // Ordinary Grand quests have no explicit multi-position permission.
+    quest.restrictions.clear();
+    option.maxGrandServants = null;
+    final ordinary = FormationBondSolver.solve(option: option, quest: quest, formation: formation).best!;
+    expect(ordinary.slots.where((slot) => slot.grandSvt), hasLength(1));
+
+    extra.setValue('isUseGrandBoardInitPos', [2, 4]);
+    final restricted = FormationBondSolver.solve(option: option, quest: quest, formation: formation).best!;
+    expect(restricted.slots[0].grandSvt, isFalse);
+    expect(restricted.slots[0].equip3, isNull);
+    expect(restricted.slots[1].grandSvt, isTrue);
+    expect(restricted.slots[1].equip3, isNotNull);
+    // New chapter 5000108/2: two owned slots plus the reserved support slot.
+    option.maxServants = 3;
+    extra.setValue('isUseGrandBoardInitPos', [1, 2, 3]);
+    extra.setValue('eventDeckIndex', 3);
+    final twoOwned = FormationBondSolver.solve(option: option, quest: quest, formation: formation).best!;
+    expect(twoOwned.slots.where((s) => s.grandSvt), hasLength(2));
+    expect(twoOwned.slots[2].grandSvt, isFalse);
+    expect(twoOwned.slots[2].equip3, isNull);
+    extra.setValue('isUseGrandBoard', 0);
+    final nonGrand = FormationBondSolver.solve(option: option, quest: quest, formation: formation).best!;
+    expect(nonGrand.slots.every((s) => !s.grandSvt && s.equip3 == null), isTrue);
+  });
 
   test('position limits include support and ignore all out-of-range sources', () {
     final servants = db.gameData.servantsById.values
