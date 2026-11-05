@@ -9,6 +9,7 @@ import 'package:chaldea/models/gamedata/mst_data.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/material.dart';
+import 'package:chaldea/widgets/widget_builders.dart';
 
 import '../../modules/battle/formation/formation_card.dart';
 import '../_shared/faker_ui.dart';
@@ -179,6 +180,19 @@ class UserDeckListPageState extends State<UserDeckListPage> {
 
   Widget buildUserDeck(UserDeckEntity deck) {
     final bool isGrand = deck.id == 0;
+    final deckInfo = deck.deckInfo;
+    final maxSvtCount = isGrand && deckInfo != null ? Maths.max(deckInfo.svts.map((svt) => svt.id), 0) : null;
+    final formationCard = FormationCard(
+      formation: BattleTeamFormationX.fromUserDeck(
+        deckInfo: deckInfo,
+        mstData: mstData,
+        maxSvtCount: maxSvtCount,
+        questPhase: widget.eventDeckParam?.questPhase,
+      ),
+      userSvtCollections: mstData.userSvtCollection.lookup,
+      showBond: true,
+      maxSvtCount: maxSvtCount,
+    );
     List<Widget> buttons = [
       if (widget.enableEdit && widget.runtime != null && deck.id > 0 && !isGrand)
         FilledButton.tonal(
@@ -208,17 +222,34 @@ class UserDeckListPageState extends State<UserDeckListPage> {
                 : TextStyle(fontSize: Theme.of(context).textTheme.bodySmall?.fontSize),
           ),
         ),
-        FormationCard(
-          formation: BattleTeamFormationX.fromUserDeck(
-            deckInfo: deck.deckInfo,
-            mstData: mstData,
-            maxSvtCount: isGrand ? 8 : null,
-            questPhase: widget.eventDeckParam?.questPhase,
-          ),
-          userSvtCollections: mstData.userSvtCollection.lookup,
-          showBond: true,
-          maxSvtCount: isGrand ? 8 : null,
-        ),
+        if (maxSvtCount != null)
+          LayoutBuilder(
+            builder: (context, constraints) {
+              final scale = (constraints.maxWidth / FormationCard.kContentWidth).clamp(0.0, 1.0);
+              return Center(
+                child: ScrollConfiguration(
+                  behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+                  child: ScrollControlWidget(
+                    builder: (context, controller) => Scrollbar(
+                      controller: controller,
+                      thumbVisibility: true,
+                      child: SingleChildScrollView(
+                        controller: controller,
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.only(bottom: 8),
+                        child: SizedBox(
+                          width: (FormationCard.kCardWidth * maxSvtCount + 64) * scale,
+                          child: formationCard,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          )
+        else
+          formationCard,
         if (buttons.isNotEmpty)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 4),
