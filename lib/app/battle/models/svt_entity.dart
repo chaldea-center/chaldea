@@ -2738,6 +2738,11 @@ class BattleServantData {
     final BuffAction gutsActionToCheck = hasNextShift(battleData) ? BuffAction.shiftGuts : BuffAction.guts;
     final allBuffs = getAllBuffs(battleData);
     for (final buff in collectBuffsPerAction(allBuffs, gutsActionToCheck)) {
+      if (buff.count == 0) {
+        // illegal guts
+        continue;
+      }
+
       // no code found on whether ckSelf actually checks anything
       final oppoTraits = fetchOpponentTraits(
         BuffAction.guts,
