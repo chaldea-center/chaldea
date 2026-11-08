@@ -165,7 +165,11 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WindowListener
     }
     if (!needAsk) {
       rootRouter.appState.consentPending = false;
-      if (privacy.consentSatisfied) await AppInfo.onConsentGranted(db.paths.appPath);
+      if (privacy.consentSatisfied) {
+        final wasDebugOn = AppInfo.isDebugOn;
+        await AppInfo.onConsentGranted(db.paths.appPath);
+        if (wasDebugOn != AppInfo.isDebugOn) db.notifyAppUpdate();
+      }
       return;
     }
     final dialogContext = router.navigatorKey.currentContext ?? kAppKey.currentContext ?? context;
