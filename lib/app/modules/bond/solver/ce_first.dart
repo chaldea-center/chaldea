@@ -14,20 +14,6 @@ class _CeFirstServant {
   const _CeFirstServant(this.id, this.limit, this.cost, this.profile, this.selfRate, this.selfValue);
 }
 
-class _CeFirstCe {
-  final int cost;
-  final List<int> rates;
-  final List<int> values;
-  final Map<int, bool> limits;
-  final bool repeatable;
-  final int identityCapacity;
-
-  _CeFirstCe(this.cost, this.rates, this.values, this.limits, this.repeatable)
-    : identityCapacity = limits.keys.map(BondCeIdentity.of).toSet().length;
-
-  bool canAdd(int count) => repeatable || count < identityCapacity;
-}
-
 class _CeFirstSupportChoice {
   final List<int> rates;
   final List<int> values;
@@ -84,8 +70,10 @@ class _CeFirstProblem {
   final List<int> fixedRates;
   final List<int> fixedValues;
   final List<_CeFirstPosition> positions;
-  final List<_CeFirstCe> ownCes;
+  final List<BondCeSource> ownCes;
   final Set<int> fixedCeIdentities;
+  final List<_CeFirstSelection>? preparedOwnSelections;
+  final bool streaming;
 
   const _CeFirstProblem({
     required this.maxCost,
@@ -96,7 +84,21 @@ class _CeFirstProblem {
     required this.positions,
     required this.ownCes,
     required this.fixedCeIdentities,
+    this.preparedOwnSelections,
+    this.streaming = false,
   });
+
+  _CeFirstProblem asStreaming() => _CeFirstProblem(
+    maxCost: maxCost,
+    rateCap: rateCap,
+    fixedCost: fixedCost,
+    fixedRates: fixedRates,
+    fixedValues: fixedValues,
+    positions: positions,
+    ownCes: ownCes,
+    fixedCeIdentities: fixedCeIdentities,
+    streaming: true,
+  );
 }
 
 class _CeFirstResult {
@@ -150,26 +152,23 @@ class _CeFirstCombo {
   const _CeFirstCombo(this.ownCe1, this.ownCe3, this.supportChoices, this.matchedIds, this.ceCost, this.upper);
 }
 
-class _CeFirstScoredServant {
+class _CeFirstServantCostGroup {
+  final int cost;
+  final List<List<_CeFirstServant>> byId;
+
+  const _CeFirstServantCostGroup(this.cost, this.byId);
+}
+
+class _CeFirstScoredServant implements BondAssignmentChoice {
   final _CeFirstServant servant;
+  @override
   final int position;
+  @override
   final int score;
 
   const _CeFirstScoredServant(this.servant, this.position, this.score);
-}
-
-class _CeFirstPath {
-  final _CeFirstPath? previous;
-  final _CeFirstScoredServant choice;
-
-  const _CeFirstPath(this.previous, this.choice);
-}
-
-class _CeFirstState {
-  final int score;
-  final _CeFirstPath? path;
-
-  const _CeFirstState(this.score, this.path);
+  @override
+  int get cost => servant.cost;
 }
 
 class _CeFirstSearchInput {
@@ -179,6 +178,69 @@ class _CeFirstSearchInput {
   final int maxCandidates;
   const _CeFirstSearchInput(this.problem, this.maxEvaluations, this.maxTies, this.maxCandidates);
 }
+
+class _CeFirstSelection {
+  final List<int> ownCe1;
+  final List<int> ownCe3;
+  final List<int> matchedIds;
+  final int cost;
+  const _CeFirstSelection(this.ownCe1, this.ownCe3, this.matchedIds, this.cost);
+}
+
+/// Enumerates owned CE multisets independently of support sources. Null entries
+/// are scheduler checkpoints, including branches rejected by COST or identity.
+Iterable<_CeFirstSelection?> _ownCeSelections(_CeFirstProblem problem) sync* {
+  final slots1 = problem.positions.where((p) => p.freeCe1).length;
+  final slots3 = problem.positions.where((p) => p.freeCe3).length;
+  final selected1 = <int>[];
+  final selected3 = <int>[];
+  final counts = List<int>.filled(problem.ownCes.length, 0);
+  var cost = problem.fixedCost;
+  var ticks = 0;
+
+  Iterable<_CeFirstSelection?> third(int start) sync* {
+    if (++ticks % 64 == 0) yield null;
+    final matched = _matchCeIds(problem, [...selected1, ...selected3]);
+    if (matched != null) {
+      yield _CeFirstSelection(List.of(selected1), List.of(selected3), matched, cost);
+    }
+    // Adding more dimensions cannot repair an already impossible matching.
+    if (matched == null || selected3.length == slots3) return;
+    for (var i = start; i < problem.ownCes.length; i++) {
+      if (++ticks % 64 == 0) yield null;
+      if (!problem.ownCes[i].canAdd(counts[i])) continue;
+      counts[i]++;
+      selected3.add(i);
+      yield* third(i);
+      selected3.removeLast();
+      counts[i]--;
+    }
+  }
+
+  Iterable<_CeFirstSelection?> first(int start) sync* {
+    if (++ticks % 64 == 0) yield null;
+    // All CE costs are nonnegative. Equip3 cannot rescue an over-budget prefix.
+    if (cost > problem.maxCost) return;
+    yield* third(0);
+    if (selected1.length == slots1) return;
+    for (var i = start; i < problem.ownCes.length; i++) {
+      if (++ticks % 64 == 0) yield null;
+      if (!problem.ownCes[i].canAdd(counts[i])) continue;
+      counts[i]++;
+      selected1.add(i);
+      cost += problem.ownCes[i].cost;
+      yield* first(i);
+      cost -= problem.ownCes[i].cost;
+      selected1.removeLast();
+      counts[i]--;
+    }
+  }
+
+  yield* first(0);
+}
+
+List<int>? _matchCeIds(_CeFirstProblem problem, List<int> selected) =>
+    matchBondCeIds(problem.ownCes, problem.fixedCeIdentities, selected);
 
 class _CeFirstSearch {
   final _CeFirstProblem problem;
@@ -196,6 +258,8 @@ class _CeFirstSearch {
   final Map<String, int> _tieIndex = {};
   int _evaluated = 0;
   int _workTicks = 0;
+  BondAssignmentCache<_CeFirstScoredServant>? _assignmentCache;
+  final _servantCostGroups = <int, List<_CeFirstServantCostGroup>>{};
 
   _CeFirstSearch(this.problem, {this.maxTies = 20, this.maxCandidates = 100});
 
@@ -232,6 +296,14 @@ class _CeFirstSearch {
       throw ArgumentError.value(maxEvaluations, 'maxEvaluations');
     }
     _clock.start();
+    // Only streaming candidate collection revisits the proof traversal. Keep
+    // bounded and single-candidate requests free of cache key construction.
+    if (problem.streaming &&
+        maxEvaluations == null &&
+        maxCandidates > 1 &&
+        problem.positions.any((p) => !p.support && p.variableServant)) {
+      _assignmentCache = BondAssignmentCache();
+    }
     final combos = <_CeFirstCombo>[];
     final seeded = <_CeFirstCombo>{};
     var seedUpper = kImpossibleScore;
@@ -270,10 +342,6 @@ class _CeFirstSearch {
         if (problem.positions[p].support) p,
     ];
     final supportSelection = List<int>.filled(supportSlots.length, 0);
-    final selected1 = <int>[];
-    final selected3 = <int>[];
-    final fixedIds = problem.fixedCeIdentities;
-    final counts = List<int>.filled(problem.ownCes.length, 0);
     final upperServants = <List<_CeFirstServant>>[];
     for (final position in problem.positions) {
       final seen = <(int, int, int)>{};
@@ -287,14 +355,49 @@ class _CeFirstSearch {
       upperServants.add(distinct);
     }
 
-    Iterable<void> collect() sync* {
+    // Equal score functions and complete receiver domains have equal maxima
+    // for every CE vector. Identity/COST remain part of the exact servant DP.
+    final upperGroupAtPosition = List<int>.filled(problem.positions.length, -1);
+    final upperGroupByKey = <(int, bool, String), int>{};
+    final upperGroups = <(_CeFirstPosition, List<_CeFirstServant>)>[];
+    for (final (p, position) in problem.positions.indexed) {
+      if (++_workTicks % 64 == 0) yield null;
+      if (position.support || position.bondLimit) continue;
+      final key = (
+        position.first,
+        position.fixedServant,
+        upperServants[p].map((s) => '${s.profile},${s.selfRate},${s.selfValue}').join(';'),
+      );
+      upperGroupAtPosition[p] = upperGroupByKey.putIfAbsent(key, () {
+        upperGroups.add((position, upperServants[p]));
+        return upperGroups.length - 1;
+      });
+    }
+    final upperScores = List<int>.filled(upperGroups.length, 0);
+
+    if (problem.streaming) {
+      yield* _solveStreamingSteps(
+        upperGroups,
+        upperGroupAtPosition,
+        upperScores,
+        ce1Slots,
+        ce3Slots,
+        supportSlots,
+        maxEvaluations: maxEvaluations,
+        remember: rememberSolution,
+        onProgress: onProgress,
+        onComplete: onComplete,
+      );
+      return;
+    }
+
+    Iterable<void> collect(_CeFirstSelection selection) sync* {
       // Rejected combinations and bond-capped receivers must also yield.
       if (++_workTicks % 64 == 0) yield null;
-      final totalCost = problem.fixedCost + selected1.fold<int>(0, (v, i) => v + problem.ownCes[i].cost);
-      if (totalCost > problem.maxCost) return;
+      final selected1 = selection.ownCe1, selected3 = selection.ownCe3;
+      final totalCost = selection.cost;
+      final matched = selection.matchedIds;
       final selected = [...selected1, ...selected3];
-      final matched = _matchCeIds(selected, fixedIds);
-      if (matched == null) return;
       final rates = List<int>.of(problem.fixedRates);
       final values = List<int>.of(problem.fixedValues);
       for (final (s, p) in supportSlots.indexed) {
@@ -306,24 +409,21 @@ class _CeFirstSearch {
         _addVector(rates, problem.ownCes[i].rates);
         _addVector(values, problem.ownCes[i].values);
       }
-      var upper = 0;
-      for (final (p, position) in problem.positions.indexed) {
-        if (position.support || position.bondLimit) continue;
+      for (final (g, group) in upperGroups.indexed) {
+        final (position, servants) = group;
         var highest = position.fixedServant ? kImpossibleScore : 0;
-        for (final servant in upperServants[p]) {
+        for (final servant in servants) {
           if (++_workTicks % 64 == 0) yield null;
           highest = math.max(highest, _score(position, servant, rates, values));
         }
-        upper += highest;
+        upperScores[g] = highest;
       }
-      final combo = _CeFirstCombo(
-        List<int>.of(selected1),
-        List<int>.of(selected3),
-        List<int>.of(supportSelection),
-        matched,
-        totalCost,
-        upper,
-      );
+      var upper = 0;
+      // Preserve the original addition order, including empty/fixed domains.
+      for (final group in upperGroupAtPosition) {
+        if (group >= 0) upper += upperScores[group];
+      }
+      final combo = _CeFirstCombo(selected1, selected3, List<int>.of(supportSelection), matched, totalCost, upper);
       combos.add(combo);
       // Establish a real lower bound before building the entire CE space.
       // A few improving upper-bound records provide bounded high-score seeds;
@@ -341,37 +441,38 @@ class _CeFirstSearch {
       }
     }
 
-    Iterable<void> enumerateCe3(int start) sync* {
-      yield* collect();
-      if (selected3.length == ce3Slots.length) return;
-      for (var i = start; i < problem.ownCes.length; i++) {
-        if (++_workTicks % 64 == 0) yield null;
-        if (!problem.ownCes[i].canAdd(counts[i])) continue;
-        counts[i]++;
-        selected3.add(i);
-        yield* enumerateCe3(i);
-        selected3.removeLast();
-        counts[i]--;
+    // Owned selections do not depend on support sources or their identities.
+    // Fill lazily so the first feasible seed does not wait for a separate pass.
+    final reuseOwnSelections =
+        problem.preparedOwnSelections == null &&
+        supportSlots.any((p) => problem.positions[p].supportChoices.length > 1);
+    List<_CeFirstSelection>? ownedSelectionCache;
+    Iterable<_CeFirstSelection?> reusableOwnSelections() sync* {
+      final cached = ownedSelectionCache;
+      if (cached != null) {
+        yield* cached;
+        return;
       }
-    }
-
-    Iterable<void> enumerateCe1(int start) sync* {
-      yield* enumerateCe3(0);
-      if (selected1.length == ce1Slots.length) return;
-      for (var i = start; i < problem.ownCes.length; i++) {
-        if (++_workTicks % 64 == 0) yield null;
-        if (!problem.ownCes[i].canAdd(counts[i])) continue;
-        counts[i]++;
-        selected1.add(i);
-        yield* enumerateCe1(i);
-        selected1.removeLast();
-        counts[i]--;
+      final pending = <_CeFirstSelection>[];
+      for (final selection in _ownCeSelections(problem)) {
+        if (selection != null) pending.add(selection);
+        yield selection;
       }
+      // Publish only a complete traversal, including an empty result list.
+      ownedSelectionCache = pending;
     }
 
     Iterable<void> enumerateSupport(int index) sync* {
       if (index == supportSlots.length) {
-        yield* enumerateCe1(0);
+        for (final selection
+            in problem.preparedOwnSelections ??
+                (reuseOwnSelections ? reusableOwnSelections() : _ownCeSelections(problem))) {
+          if (selection == null) {
+            yield null;
+          } else {
+            yield* collect(selection);
+          }
+        }
         return;
       }
       final choices = problem.positions[supportSlots[index]].supportChoices;
@@ -515,29 +616,6 @@ class _CeFirstSearch {
     }
   }
 
-  List<int>? _matchCeIds(List<int> selected, Set<int> fixedIds) {
-    if (selected.isEmpty) return const [];
-    final assignments = List<int>.filled(selected.length, -1);
-    final order = List<int>.generate(selected.length, (i) => i)
-      ..sort((a, b) => problem.ownCes[selected[a]].limits.length.compareTo(problem.ownCes[selected[b]].limits.length));
-    final used = Set<int>.of(fixedIds);
-    bool visit(int depth) {
-      if (depth == order.length) return true;
-      final dimension = order[depth];
-      for (final id in problem.ownCes[selected[dimension]].limits.keys.toList()..sort()) {
-        final identity = BondCeIdentity.of(id);
-        final restricted = !problem.ownCes[selected[dimension]].repeatable;
-        if (restricted && !used.add(identity)) continue;
-        assignments[dimension] = id;
-        if (visit(depth + 1)) return true;
-        if (restricted) used.remove(identity);
-      }
-      return false;
-    }
-
-    return visit(0) ? assignments : null;
-  }
-
   static void _addVector(List<int> target, List<int> source) {
     for (var i = 0; i < target.length; i++) {
       target[i] += source[i];
@@ -549,6 +627,33 @@ class _CeFirstSearch {
     final profile = servant.profile;
     final rate = math.min(problem.rateCap, servant.selfRate + rates[profile]);
     return (position.first * (1 + rate / 1000)).floor() + servant.selfValue + values[profile];
+  }
+
+  void _rememberAssignment(String? key, Map<int, _CeFirstScoredServant>? servants) {
+    final cache = _assignmentCache;
+    if (key != null) cache?.remember(key, servants);
+  }
+
+  Iterable<void> _prepareServantCostGroupsSteps(int p) sync* {
+    if (_servantCostGroups.containsKey(p)) return;
+    final byCost = <int, Map<int, List<_CeFirstServant>>>{};
+    for (final servant in problem.positions[p].servants) {
+      if (++_workTicks % 64 == 0) yield null;
+      byCost.putIfAbsent(servant.cost, () => {}).putIfAbsent(servant.id, () => []).add(servant);
+    }
+    final groups = <_CeFirstServantCostGroup>[];
+    for (final entry in byCost.entries) {
+      if (++_workTicks % 64 == 0) yield null;
+      final byId = <List<_CeFirstServant>>[];
+      for (final variants in entry.value.values) {
+        if (++_workTicks % 64 == 0) yield null;
+        byId.add(List.unmodifiable(variants));
+      }
+      groups.add(_CeFirstServantCostGroup(entry.key, List.unmodifiable(byId)));
+    }
+    // Only grouping is invariant. Scores and the best ascension are selected
+    // again for each source vector, retaining first-seen COST/ID/tie order.
+    _servantCostGroups[p] = List.unmodifiable(groups);
   }
 
   Iterable<void> _evaluateSteps(
@@ -597,91 +702,95 @@ class _CeFirstSearch {
     });
     final guaranteedCe1Slots = ce1Slots.where((p) => !problem.positions[p].variableServant).length;
 
-    // A candidate outside the best F distinct IDs of the same cost at a
-    // position can be replaced by one of those F: at most F-1 other free
-    // positions can occupy them. This preserves the optimum exactly.
-    final topPerPosition = <int, List<_CeFirstScoredServant>>{};
-    for (final (bit, p) in freePositions.indexed) {
-      if (++_workTicks % 64 == 0) yield null;
-      final position = problem.positions[p];
-      final byCost = <int, Map<int, _CeFirstScoredServant>>{};
-      for (final servant in position.servants) {
+    // CE identity and source assembly are still evaluated per combination.
+    // Only the exact servant assignment is reusable within this request.
+    final assignmentKey = _assignmentCache?.key(rates, values, remainingCost, combo.ownCe1.length);
+    final cachedAssignment = assignmentKey == null ? null : _assignmentCache![assignmentKey];
+    late final Map<int, _CeFirstScoredServant> selectedServants;
+    if (cachedAssignment != null) {
+      final cachedServants = cachedAssignment.servants;
+      if (cachedServants == null) return;
+      selectedServants = cachedServants;
+    } else {
+      // A candidate outside the best F distinct IDs of the same cost at a
+      // position can be replaced by one of those F: at most F-1 other free
+      // positions can occupy them. This preserves the optimum exactly.
+      final topPerPosition = <int, List<_CeFirstScoredServant>>{};
+      for (final (bit, p) in freePositions.indexed) {
         if (++_workTicks % 64 == 0) yield null;
-        if (servant.cost > remainingCost) continue;
-        final score = _score(position, servant, rates, values);
-        final byId = byCost.putIfAbsent(servant.cost, () => {});
-        final previous = byId[servant.id];
-        if (previous == null || score > previous.score) {
-          byId[servant.id] = _CeFirstScoredServant(servant, bit, score);
+        final position = problem.positions[p];
+        var groups = _servantCostGroups[p];
+        if (groups == null) {
+          yield* _prepareServantCostGroupsSteps(p);
+          groups = _servantCostGroups[p]!;
+        }
+        final selected = <_CeFirstScoredServant>[];
+        for (final group in groups) {
+          if (++_workTicks % 64 == 0) yield null;
+          if (group.cost > remainingCost) continue;
+          final ordered = <_CeFirstScoredServant>[];
+          for (final variants in group.byId) {
+            _CeFirstServant? best;
+            var bestScore = 0;
+            for (final servant in variants) {
+              if (++_workTicks % 64 == 0) yield null;
+              final score = _score(position, servant, rates, values);
+              if (best == null || score > bestScore) {
+                best = servant;
+                bestScore = score;
+              }
+            }
+            ordered.add(_CeFirstScoredServant(best!, bit, bestScore));
+          }
+          ordered.sort((a, b) => b.score.compareTo(a.score));
+          selected.addAll(ordered.take(freePositions.length));
+        }
+        topPerPosition[bit] = selected;
+      }
+      final byId = <int, List<_CeFirstScoredServant>>{};
+      for (final choices in topPerPosition.values) {
+        if (++_workTicks % 64 == 0) yield null;
+        for (final choice in choices) {
+          if (++_workTicks % 64 == 0) yield null;
+          byId.putIfAbsent(choice.servant.id, () => []).add(choice);
         }
       }
-      final selected = <_CeFirstScoredServant>[];
-      for (final choices in byCost.values) {
-        if (++_workTicks % 64 == 0) yield null;
-        final ordered = choices.values.toList()..sort((a, b) => b.score.compareTo(a.score));
-        selected.addAll(ordered.take(freePositions.length));
-      }
-      topPerPosition[bit] = selected;
-    }
-    final byId = <int, List<_CeFirstScoredServant>>{};
-    for (final choices in topPerPosition.values) {
-      if (++_workTicks % 64 == 0) yield null;
-      for (final choice in choices) {
-        if (++_workTicks % 64 == 0) yield null;
-        byId.putIfAbsent(choice.servant.id, () => []).add(choice);
-      }
-    }
 
-    final masks = 1 << freePositions.length;
-    final width = remainingCost + 1;
-    var states = List<_CeFirstState?>.filled(masks * width, null);
-    states[0] = const _CeFirstState(0, null);
-    for (final choices in byId.values) {
-      if (++_workTicks % 64 == 0) yield null;
-      final next = List<_CeFirstState?>.of(states);
+      final masks = 1 << freePositions.length;
+      final width = remainingCost + 1;
+      late List<BondAssignmentState<_CeFirstScoredServant>?> states;
+      yield* bondAssignmentSteps<_CeFirstScoredServant>(
+        positions: freePositions.length,
+        budget: remainingCost,
+        byId: byId,
+        onComplete: (table) => states = table,
+      );
+      BondAssignmentState<_CeFirstScoredServant>? winner;
+      var winnerCost = 0;
       for (var mask = 0; mask < masks; mask++) {
         if (++_workTicks % 64 == 0) yield null;
+        if ((mask & mandatoryMask) != mandatoryMask) continue;
+        if (guaranteedCe1Slots + _bitCount(mask & freeCe1Mask) < combo.ownCe1.length) continue;
         for (var cost = 0; cost < width; cost++) {
           if (cost % 64 == 0) yield null;
-          final current = states[mask * width + cost];
-          if (current == null) continue;
-          for (final choice in choices) {
-            if (++_workTicks % 64 == 0) yield null;
-            final bit = 1 << choice.position;
-            if ((mask & bit) != 0) continue;
-            final newCost = cost + choice.servant.cost;
-            if (newCost >= width) continue;
-            final index = (mask | bit) * width + newCost;
-            final score = current.score + choice.score;
-            if (next[index] == null || score > next[index]!.score) {
-              next[index] = _CeFirstState(score, _CeFirstPath(current.path, choice));
-            }
+          final state = states[mask * width + cost];
+          if (state == null) continue;
+          if (winner == null || state.score > winner.score || (state.score == winner.score && cost < winnerCost)) {
+            winner = state;
+            winnerCost = cost;
           }
         }
       }
-      states = next;
-    }
-    _CeFirstState? winner;
-    var winnerCost = 0;
-    for (var mask = 0; mask < masks; mask++) {
-      if (++_workTicks % 64 == 0) yield null;
-      if ((mask & mandatoryMask) != mandatoryMask) continue;
-      if (guaranteedCe1Slots + _bitCount(mask & freeCe1Mask) < combo.ownCe1.length) continue;
-      for (var cost = 0; cost < width; cost++) {
-        if (cost % 64 == 0) yield null;
-        final state = states[mask * width + cost];
-        if (state == null) continue;
-        if (winner == null || state.score > winner.score || (state.score == winner.score && cost < winnerCost)) {
-          winner = state;
-          winnerCost = cost;
-        }
+      if (winner == null) {
+        _rememberAssignment(assignmentKey, null);
+        return;
       }
-    }
-    if (winner == null) return;
-    final selectedServants = <int, _CeFirstScoredServant>{};
-    for (var path = winner.path; path != null; path = path.previous) {
-      if (++_workTicks % 64 == 0) yield null;
-      selectedServants[freePositions[path.choice.position]] = path.choice;
+      selectedServants = <int, _CeFirstScoredServant>{};
+      for (var path = winner.path; path != null; path = path.previous) {
+        if (++_workTicks % 64 == 0) yield null;
+        selectedServants[freePositions[path.choice.position]] = path.choice;
+      }
+      _rememberAssignment(assignmentKey, selectedServants);
     }
     final ce1At = <int, BondSolvedCe>{};
     final ce1VariantsAt = <int, Map<int, bool>>{};
@@ -761,8 +870,8 @@ class _CeFirstSearch {
       );
     }
     final total = slots.fold<int>(0, (v, slot) => v + slot.bond);
-    assert(total == fixedScore + winner.score);
-    assert(totalCost == combo.ceCost + winnerCost);
+    assert(total == fixedScore + selectedServants.values.fold<int>(0, (v, c) => v + c.score));
+    assert(totalCost == combo.ceCost + selectedServants.values.fold<int>(0, (v, c) => v + c.servant.cost));
     final groupKey = [
       for (final (p, position) in problem.positions.indexed)
         '${!position.variableServant ? position.servants.single.profile : selectedServants[p]?.servant.profile ?? -1}:${slots[p].bond}',

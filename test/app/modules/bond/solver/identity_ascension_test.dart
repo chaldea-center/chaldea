@@ -42,6 +42,22 @@ void main() {
     return result;
   }
 
+  Servant supportRecipient(CraftEssence ce, QuestPhase phase) {
+    final effects = CeBondEffect.extractAll(ce, true, phase, support: true);
+    return db.gameData.servantsById.values.firstWhere(
+      (svt) =>
+          svt.collectionNo > 0 &&
+          svt.isUserSvt &&
+          effects.any(
+            (effect) =>
+                effect.scope == BondEffectScope.team &&
+                effect.wearerMatches(const []) &&
+                (effect.rate > 0 || effect.value > 0) &&
+                effect.targetMatches(BondReleaseRules.traits(svt, 4, 0, BondReleaseReference.jp)),
+          ),
+    );
+  }
+
   BondSolverResult solve(BattleTeamSetup team, FormationBondOption option, {bool fast = true, QuestPhase? phase}) =>
       FormationBondSolver.solve(
         option: option,
@@ -768,6 +784,183 @@ void main() {
     expect(result.candidateCeIds, isNull);
   });
 
+  test('inactive equip3 cannot reappear beside equip1 in solved previews', () {
+    for (final id in [9407480, 9400970, 9401970]) {
+      final ce = db.gameData.craftEssencesById[id]!;
+      final input = formation(first: supportRecipient(ce, quest));
+      input.svts[0]
+        ..limitCount = 4
+        ..grandSvt = true
+        ..equip1 = SvtEquipData(ce: ce, limitBreak: true)
+        ..equip3 = SvtEquipData(ce: ce, limitBreak: true);
+      input.svts[1]
+        ..supportType = SupportSvtType.friend
+        ..grandSvt = true
+        ..equip1 = SvtEquipData()
+        ..equip3 = SvtEquipData(ce: ce, limitBreak: true);
+      final allowed = id == 9400970 ? BondCeIdentity.portraits : [id];
+      final option = options()
+        ..maxServants = 2
+        ..excludedCes = (db.gameData.craftEssencesById.keys.toSet()..removeAll(allowed));
+      // Grand flags and saved reward CEs may remain after switching quests.
+      // This quest does not activate those slots, so the preview must omit them.
+      for (final (fast, streaming) in [(false, false), (true, false), (true, true)]) {
+        final result = FormationBondSolver.solve(
+          option: option,
+          quest: quest,
+          formation: input,
+          useCeFirst: fast,
+          useStreamingCeFirst: streaming,
+        );
+        final applied = result.best!.applyTo(input, option.copy());
+        for (final p in [1, 0]) {
+          final slot = result.best!.slots[p];
+          expect(BondCeIdentity.of(slot.equip1!.id), BondCeIdentity.of(ce.id));
+          expect(slot.equip3, isNull);
+          final preview = applied.svts[p].toStoredData()!;
+          expect(preview.equip1.id, slot.equip1!.id);
+          expect(preview.equip3, isNull);
+          expect(input.svts[p].equip3.ce!.id, ce.id);
+        }
+        checkScores(result, input, option, quest);
+      }
+    }
+  });
+
+  test('a pinned support equip1 still loads free Grand equip3 candidates', () {
+    final phase = QuestPhase(bond: 1000, extraDetail: QuestPhaseExtraDetail()..setValue('isUseGrandBoard', 1));
+    final ce = db.gameData.craftEssencesById[9403990]!;
+    final input = formation();
+    input.svts[1]
+      ..supportType = SupportSvtType.friend
+      ..equip1 = SvtEquipData(ce: ce, limitBreak: true)
+      ..equip3 = SvtEquipData()
+      ..grandSvt = true;
+    final option = options()
+      ..maxServants = 2
+      ..excludedCes = (db.gameData.craftEssencesById.keys.toSet()..remove(ce.id));
+    for (final (fast, streaming) in [(false, false), (true, false), (true, true)]) {
+      final result = FormationBondSolver.solve(
+        option: option,
+        quest: phase,
+        formation: input,
+        useCeFirst: fast,
+        useStreamingCeFirst: streaming,
+      );
+      expect(result.isCeFirst, fast);
+      final support = result.best!.slots[1];
+      expect(support.equip1!.id, ce.id);
+      expect(support.equip3?.id, ce.id);
+      checkScores(result, input, option, phase);
+    }
+  });
+
+  test('grand support identity policies cover both slots and all search routes', () {
+    final phase = QuestPhase(bond: 1000, extraDetail: QuestPhaseExtraDetail()..setValue('isUseGrandBoard', 1));
+    final traitCe = db.gameData.craftEssencesById.values.firstWhere(
+      (ce) =>
+          ce.collectionNo > 0 &&
+          !BondCeIdentity.families.any((family) => family.contains(ce.id)) &&
+          CeBondEffect.extractAll(ce, true, phase, support: true).any(
+            (effect) =>
+                effect.scope == BondEffectScope.team &&
+                effect.wearerMatches(const []) &&
+                effect.hasTargetCondition &&
+                effect.rate > 0,
+          ),
+    );
+    final cases = [
+      (ids: [traitCe.id], repeatable: false),
+      (ids: BondCeIdentity.portraits, repeatable: false),
+      (ids: BondCeIdentity.fsn, repeatable: false),
+      (ids: [9403520], repeatable: false),
+      (ids: [9401970], repeatable: false),
+      (ids: [9403990], repeatable: true),
+      (ids: [9406010], repeatable: true),
+    ];
+    for (final fixture in cases) {
+      final ce = db.gameData.craftEssencesById[fixture.ids.first]!;
+      expect(BondCeIdentity.requiresUniqueOwnedIdentity(ce), !fixture.repeatable);
+      if (fixture.repeatable) {
+        final effect = CeBondEffect.extractAll(ce, true, phase, support: true).single;
+        expect(effect.isFlat, isTrue);
+        expect(effect.rate, ce.id == 9406010 ? 25 : 50);
+      }
+      final input = formation(first: supportRecipient(ce, phase));
+      input.svts[0].limitCount = 4;
+      input.svts[1]
+        ..supportType = SupportSvtType.friend
+        ..equip1 = SvtEquipData()
+        ..equip3 = SvtEquipData()
+        ..grandSvt = true;
+      final option = options()
+        ..maxServants = 2
+        ..excludedCes = (db.gameData.craftEssencesById.keys.toSet()..removeAll(fixture.ids));
+      for (final (fast, streaming) in [(false, false), (true, false), (true, true)]) {
+        for (final prune in [false, true]) {
+          BondSolverResult run(BattleTeamSetup team) => FormationBondSolver.solve(
+            option: option,
+            quest: phase,
+            formation: team,
+            useCeFirst: fast,
+            useStreamingCeFirst: streaming,
+            pruneDominatedCes: prune,
+          );
+          // A pin on either support slot must reserve its identity only within
+          // that support, independently of the same CE on an owned servant.
+          for (final pin in [0, 1, 3]) {
+            final team = input.copy();
+            if (pin != 0) {
+              team.svts[0].equip1 = SvtEquipData(ce: ce, limitBreak: true);
+              if (pin == 1) {
+                team.svts[1].equip1 = SvtEquipData(ce: ce, limitBreak: true);
+              } else {
+                team.svts[1].equip3 = SvtEquipData(ce: ce, limitBreak: true);
+              }
+            }
+            final result = run(team);
+            expect(result.isCeFirst, fast);
+            if (streaming) expect(result.possibleCombinations, isNull);
+            final support = result.best!.slots[1];
+            final equipped = [support.equip1, support.equip3].nonNulls.toList();
+            expect(equipped, hasLength(fixture.repeatable ? 2 : 1), reason: 'CE ${ce.id}, pin $pin');
+            expect(equipped.every((e) => fixture.ids.contains(e.id)), isTrue);
+            if (pin != 0) {
+              expect((pin == 1 ? support.equip1 : support.equip3)!.id, ce.id);
+              expect(result.best!.slots[0].equip1!.id, ce.id);
+            }
+            if (!fixture.repeatable) {
+              for (final candidate in [result.best!, ...result.ties, ...result.candidates]) {
+                final ids = [
+                  candidate.slots[1].equip1,
+                  candidate.slots[1].equip3,
+                ].nonNulls.map((e) => BondCeIdentity.of(e.id)).toList();
+                expect(ids.toSet(), hasLength(ids.length), reason: 'duplicate support identity for CE ${ce.id}');
+              }
+            }
+            checkScores(result, team, option, phase);
+          }
+          final duplicate = input.copy();
+          duplicate.svts[1]
+            ..equip1 = SvtEquipData(ce: ce)
+            ..equip3 = SvtEquipData(ce: db.gameData.craftEssencesById[fixture.ids.last], limitBreak: true);
+          if (fixture.repeatable) {
+            checkScores(run(duplicate), duplicate, option, phase);
+          } else {
+            expect(
+              () => run(duplicate),
+              throwsA(
+                isA<BondFormationException>()
+                    .having((e) => e.conflicts.map((c) => c.position).toList(), 'positions', [1, 1])
+                    .having((e) => e.conflicts.map((c) => c.equip).toList(), 'equips', [1, 3]),
+              ),
+            );
+          }
+        }
+      }
+    }
+  });
+
   test('a grand support also searches its free equip3 slot', () {
     final team = formation();
     team.svts[5]
@@ -784,32 +977,14 @@ void main() {
       expect(support.equip1, isNotNull);
       expect(support.equip3, isNotNull);
       expect(support.equip3!.id, isNot(support.equip1!.id));
-      checkScores(result, team, option, phase);
-    }
-    final generic = db.gameData.craftEssencesById[9403990]!;
-    for (final id in [generic.id, 9403520]) {
-      final restricted = id == 9403520;
-      final filtered = options()..excludedCes = (db.gameData.craftEssencesById.keys.toSet()..remove(id));
-      for (final fast in [false, true]) {
-        final result = solve(team, filtered, phase: phase, fast: fast);
-        final support = result.best!.slots[5];
-        expect([support.equip1, support.equip3].where((ce) => ce?.id == id), hasLength(restricted ? 1 : 2));
-        checkScores(result, team, filtered, phase);
-        if (restricted) {
-          for (final third in [false, true]) {
-            final pinned = team.copy();
-            final ce = SvtEquipData(ce: db.gameData.craftEssencesById[id], limitBreak: true);
-            if (third) {
-              pinned.svts[5].equip3 = ce;
-            } else {
-              pinned.svts[5].equip1 = ce;
-            }
-            final fixed = solve(pinned, filtered, phase: phase, fast: fast).best!.slots[5];
-            expect(third ? fixed.equip1 : fixed.equip3, isNull);
-            expect((third ? fixed.equip3 : fixed.equip1)!.id, id);
-          }
-        }
+      for (final candidate in [result.best!, ...result.ties, ...result.candidates]) {
+        final ids = [candidate.slots[5].equip1, candidate.slots[5].equip3].nonNulls
+            .where((e) => BondCeIdentity.requiresUniqueOwnedIdentity(db.gameData.craftEssencesById[e.id]!))
+            .map((e) => BondCeIdentity.of(e.id))
+            .toList();
+        expect(ids.toSet(), hasLength(ids.length));
       }
+      checkScores(result, team, option, phase);
     }
     // Without the grand flag the support has no equip3 at all.
     team.svts[5].grandSvt = false;

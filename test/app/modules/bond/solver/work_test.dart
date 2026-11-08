@@ -7,6 +7,48 @@ import 'package:chaldea/app/modules/bond/solver/search.dart';
 import 'package:chaldea/app/modules/bond/solver/work.dart';
 
 void main() {
+  test('preparation probe distinguishes empty, complete and truncated streams', () {
+    for (final source in [
+      <int?>[],
+      <int?>[1, null, 2],
+    ]) {
+      final probe = BondPreparationProbe<int>(maxItems: 2, maxSteps: 3);
+      for (final _ in probe.collect(source)) {}
+      expect(probe.complete, isTrue);
+      expect(probe.items, source.whereType<int>().toList());
+    }
+    final storage = BondPreparationProbe<int>(maxItems: 1, maxSteps: 10);
+    for (final _ in storage.collect([1, 2, 3])) {}
+    expect(storage.complete, isFalse);
+    expect(storage.items, isEmpty);
+    expect(storage.steps, 2);
+    final work = BondPreparationProbe<int>(maxItems: 10, maxSteps: 2);
+    for (final _ in work.collect([null, null, null, 1])) {}
+    expect(work.complete, isFalse);
+    expect(work.items, isEmpty);
+    expect(work.steps, 3);
+  });
+
+  test('cancelling a preparation probe cannot publish completeness', () async {
+    var cancelled = false;
+    var touched = 0;
+    Iterable<int?> source() sync* {
+      for (var i = 0; i < 1000; i++) {
+        touched++;
+        yield i;
+      }
+    }
+
+    final probe = BondPreparationProbe<int>(maxItems: 1000, maxSteps: 2000);
+    final scheduler = BondWorkScheduler(isCancelled: () => cancelled, slice: Duration.zero);
+    Timer.run(() => cancelled = true);
+    await expectLater(scheduler.run(probe.collect(source())), throwsA(isA<BondWorkCancelled>()));
+    expect(probe.complete, isFalse);
+    expect(touched, lessThan(1000));
+    final stopped = touched;
+    await Future<void>.delayed(const Duration(milliseconds: 20));
+    expect(touched, stopped);
+  });
   test('resumable stable sort matches sorting for uneven and empty lists', () {
     final random = Random(710);
     for (final size in [0, 1, 2, 3, 17, 129, 1001]) {

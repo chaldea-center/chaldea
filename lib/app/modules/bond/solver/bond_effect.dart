@@ -66,10 +66,17 @@ class CeBondEffect {
   bool get matchesNoTraitPlaceholder => isFlat;
 
   /// Extracts the same bond effects used by the solver for one CE variant.
-  static List<CeBondEffect> extractAll(CraftEssence ce, bool limitBreak, QuestPhase quest, {required bool support}) {
+  /// [logicEventId] may reuse the resolved value for an immutable search request.
+  static List<CeBondEffect> extractAll(
+    CraftEssence ce,
+    bool limitBreak,
+    QuestPhase quest, {
+    required bool support,
+    int? logicEventId,
+  }) {
     final effects = <CeBondEffect>[];
     final eventTraits = quest.questIndividuality;
-    final eventId = quest.logicEventId ?? 0;
+    final eventId = logicEventId ?? quest.logicEventId ?? 0;
     final skills = ce.getActivatedSkills(limitBreak).values.expand((entries) => entries);
     for (final skill in skills) {
       for (final func in skill.functions) {

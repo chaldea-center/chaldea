@@ -5,6 +5,153 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:chaldea/app/modules/bond/solver/search.dart';
 
 void main() {
+  test('CE capacity checks preserve multiplicity and restore sibling capacity', () {
+    for (final indices in <List<int>>[
+      [],
+      [0],
+      [0, 0],
+      [0, 1],
+      [0, 0, 0],
+      [0, 1, 0, 1],
+    ]) {
+      for (var capacity = 0; capacity <= 4; capacity++) {
+        final problem = BondSearchProblem(
+          baseBond: 100,
+          rateCap: 5000,
+          maxCost: 0,
+          receiverProfileCount: 1,
+          ownedCeClassCapacities: [capacity, capacity],
+          positions: [
+            for (var p = 0; p < 2; p++)
+              BondSearchPosition(
+                frontlineRate: 0,
+                items: [
+                  BondSearchItem(
+                    cost: 0,
+                    receiverProfile: 0,
+                    selfRate: 0,
+                    selfValue: 100,
+                    teamRates: const [0],
+                    teamValues: const [0],
+                    servantIds: {p + 1},
+                    ownedCeIds: [
+                      for (var d = 0; d < indices.length; d++) {10 + 4 * p + d},
+                    ],
+                    ownedCeClassIndices: indices,
+                  ),
+                  _item(p + 1, 0),
+                ],
+              ),
+          ],
+        );
+        for (var repeat = 0; repeat < 2; repeat++) {
+          final result = BondSearch.solve(problem, maxCandidates: 4);
+          expect(result.provenOptimal, isTrue);
+          expect(result.best?.totalBond, _bruteForce(problem), reason: '$indices, capacity $capacity');
+          for (final witness in [...result.ties, ...result.candidates]) {
+            for (var ci = 0; ci < 2; ci++) {
+              final used = witness.items.fold<int>(
+                0,
+                (sum, item) => sum + item.ownedCeClassIndices.where((index) => index == ci).length,
+              );
+              expect(used, lessThanOrEqualTo(capacity));
+            }
+          }
+        }
+      }
+    }
+  });
+
+  test('equal-cost bounds retain alternatives with different identities and source effects', () {
+    BondSearchItem choice(int id, {int cost = 1, int self = 0, int team = 0}) => BondSearchItem(
+      cost: cost,
+      receiverProfile: 0,
+      selfRate: self,
+      selfValue: -150,
+      teamRates: [team],
+      teamValues: const [0],
+      servantIds: {id},
+    );
+    for (final budget in [0, 1, 2, 3, 4]) {
+      final problem = BondSearchProblem(
+        baseBond: 100,
+        rateCap: 5000,
+        maxCost: budget,
+        receiverProfileCount: 1,
+        positions: [
+          BondSearchPosition(
+            frontlineRate: 0,
+            items: [choice(1, self: 2000), choice(2, team: 1500), choice(3, cost: 0), choice(4, cost: 5, self: 5000)],
+          ),
+          BondSearchPosition(frontlineRate: 0, items: [choice(1, self: 3000), choice(3)]),
+        ],
+      );
+      final result = BondSearch.solve(problem);
+      expect(result.provenOptimal, isTrue);
+      expect(result.best?.totalBond, _bruteForce(problem), reason: 'budget $budget');
+      if (budget >= 2) {
+        expect(result.best!.servantIds, [2, 1]);
+        expect(result.best!.totalBond, 500);
+      }
+    }
+  });
+
+  test('prefix identity pruning checks Hall subsets and allows empty positions', () {
+    BondSearchItem choice(Set<int> ids, int cls) => BondSearchItem(
+      cost: 0,
+      receiverProfile: 0,
+      selfRate: 1000,
+      selfValue: 0,
+      teamRates: const [0],
+      teamValues: const [0],
+      servantIds: ids,
+      servantClassIndex: cls,
+    );
+    const empty = BondSearchItem(
+      cost: 0,
+      receiverProfile: null,
+      selfRate: 0,
+      selfValue: 0,
+      teamRates: [0],
+      teamValues: [0],
+    );
+    final problem = BondSearchProblem(
+      baseBond: 100,
+      rateCap: 5000,
+      maxCost: 0,
+      receiverProfileCount: 1,
+      servantClassCapacities: const [4, 4, 4, 4, 4],
+      positions: [
+        for (var p = 0; p < 3; p++)
+          BondSearchPosition(
+            frontlineRate: 0,
+            items: [
+              choice({1, 2}, p),
+              empty,
+            ],
+          ),
+        BondSearchPosition(
+          frontlineRate: 0,
+          items: [
+            choice({3, 4, 5}, 3),
+            empty,
+          ],
+        ),
+        BondSearchPosition(
+          frontlineRate: 0,
+          items: [
+            choice({6, 7, 8, 9, 10}, 4),
+            empty,
+          ],
+        ),
+      ],
+    );
+    final result = BondSearch.solve(problem);
+    expect(result.provenOptimal, isTrue);
+    expect(result.best?.totalBond, 800);
+    expect(result.best?.totalBond, _bruteForce(problem));
+  });
+
   test('cross-class servant identity conflicts cannot set the incumbent', () {
     final problem = BondSearchProblem(
       baseBond: 100,
@@ -119,14 +266,14 @@ void main() {
 
   test('random small problems match concrete exhaustive enumeration', () {
     final random = math.Random(44721);
-    for (var trial = 0; trial < 250; trial++) {
+    for (var trial = 0; trial < 1000; trial++) {
       final positions = <BondSearchPosition>[];
       final n = 2 + random.nextInt(3);
       for (var p = 0; p < n; p++) {
         final items = <BondSearchItem>[];
         for (var j = 0; j < 2 + random.nextInt(2); j++) {
           final isSupport = random.nextInt(6) == 0;
-          final hasCe = random.nextBool();
+          final ceDimensions = random.nextInt(4);
           final servantIds = isSupport ? <int>{} : <int>{1 + random.nextInt(4), 1 + random.nextInt(4)};
           items.add(
             BondSearchItem(
@@ -138,12 +285,10 @@ void main() {
               teamValues: [random.nextInt(21) - 5, random.nextInt(21) - 5],
               servantIds: servantIds,
               servantClassIndex: isSupport ? null : random.nextInt(2),
-              ownedCeIds: hasCe
-                  ? [
-                      <int>{10 + random.nextInt(3), 10 + random.nextInt(3)},
-                    ]
-                  : const [],
-              ownedCeClassIndices: hasCe ? [random.nextInt(2)] : const [],
+              ownedCeIds: [
+                for (var d = 0; d < ceDimensions; d++) <int>{10 + random.nextInt(5), 10 + random.nextInt(5)},
+              ],
+              ownedCeClassIndices: [for (var d = 0; d < ceDimensions; d++) random.nextInt(2)],
             ),
           );
         }
@@ -157,6 +302,7 @@ void main() {
         positions: positions,
         servantClassCapacities: [1 + random.nextInt(3), 1 + random.nextInt(3)],
         ownedCeClassCapacities: [1 + random.nextInt(3), 1 + random.nextInt(3)],
+        ownedCeIdentities: trial.isEven ? const {10: 10, 11: 10} : const {},
       );
       final expected = _bruteForce(problem);
       final actual = BondSearch.solve(problem);
@@ -168,7 +314,7 @@ void main() {
           actual.best!.servantIds.whereType<int>().toSet().length,
           actual.best!.servantIds.whereType<int>().length,
         );
-        final ces = actual.best!.ownedCeIds.expand((e) => e).toList();
+        final ces = actual.best!.ownedCeIds.expand((e) => e).map((id) => problem.ownedCeIdentities[id] ?? id).toList();
         expect(ces.toSet().length, ces.length);
       }
     }
@@ -292,7 +438,10 @@ int? _bruteForce(BondSearchProblem problem) {
         for (final item in chosen)
           if (item.servantIds.isNotEmpty) item.servantIds,
       ];
-      final ceSets = [for (final item in chosen) ...item.ownedCeIds];
+      final ceSets = [
+        for (final item in chosen)
+          for (final ids in item.ownedCeIds) {for (final id in ids) problem.ownedCeIdentities[id] ?? id},
+      ];
       if (!_canAssign(svtSets) || !_canAssign(ceSets)) return;
       for (final (i, capacity) in problem.servantClassCapacities.indexed) {
         if (chosen.where((item) => item.servantClassIndex == i).length > capacity) return;
