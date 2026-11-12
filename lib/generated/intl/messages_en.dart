@@ -340,6 +340,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "bond_eff": MessageLookupByLibrary.simpleMessage("Bond Eff"),
     "bond_equip_change_skill": MessageLookupByLibrary.simpleMessage("Change Bond CE effect"),
     "bond_limit": MessageLookupByLibrary.simpleMessage("Bond Limit"),
+    "bond_max_grand_servants": MessageLookupByLibrary.simpleMessage("Max Grand Servants (excluding support)"),
     "bond_max_servants": MessageLookupByLibrary.simpleMessage("Max servants"),
     "bond_not_full_only": MessageLookupByLibrary.simpleMessage("Bond not maxed only"),
     "bond_search_fixed_ascensions": MessageLookupByLibrary.simpleMessage("Search fixed servant ascensions"),

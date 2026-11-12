@@ -204,6 +204,7 @@
   "bond_limit": "Bond Limit",
   "bond_max_servants": "Max servants",
   "bond_not_full_only": "Bond not maxed only",
+  "bond_max_grand_servants": "Max Grand Servants (excluding support)",
   "bond_search_fixed_ascensions": "Search fixed servant ascensions",
   "bootstrap_page_title": "Bootstrap Page",
   "branch_quest": "Branch Quest",

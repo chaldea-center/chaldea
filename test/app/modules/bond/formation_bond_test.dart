@@ -22,10 +22,15 @@ void main() {
 
     first.formationBondOption
       ..maxCost = 120
+      ..maxGrandServants = 2
       ..maxCandidateTeams = 60
       ..excludedSvts.add(100100);
     final restored = User.fromJson(first.toJson());
     expect(restored.formationBondOption.maxCost, 120);
+    expect(restored.formationBondOption.maxGrandServants, 2);
+    expect(first.formationBondOption.copy().maxGrandServants, 2);
+    expect(second.formationBondOption.maxGrandServants, isNull);
+    expect(FormationBondOption.fromJson({}).maxGrandServants, isNull);
     expect(restored.formationBondOption.maxCandidateTeams, 60);
     expect(restored.formationBondOption.excludedSvts, {100100});
     expect(second.formationBondOption.maxCost, isNull);

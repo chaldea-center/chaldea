@@ -427,6 +427,7 @@ class _FormationBondPageState extends State<FormationBondPage> with SingleTicker
               onChanged: (v) => updateSharedInput(() {
                 questEntity = v;
                 option.quest = v == null ? null : BattleQuestInfo.quest(v);
+                option.maxGrandServants = null;
               }),
             ),
             ListTile(
@@ -790,6 +791,17 @@ class _FormationBondPageState extends State<FormationBondPage> with SingleTicker
             title: Text(S.current.bond_search_fixed_ascensions),
             value: option.searchFixedAscensions,
             onChanged: (v) => updateSharedInput(() => option.searchFixedAscensions = v),
+          ),
+          ListTile(
+            dense: true,
+            title: Text(S.current.bond_max_grand_servants),
+            trailing: DropdownButton<int>(
+              value: (option.maxGrandServants ?? questEntity?.defaultMaxGrandServants ?? 0).clamp(0, 5),
+              items: [for (int n = 0; n <= 5; n++) DropdownMenuItem(value: n, child: Text('$n'))],
+              onChanged: (n) {
+                if (n != null) updateSharedInput(() => option.maxGrandServants = n);
+              },
+            ),
           ),
           SwitchListTile.adaptive(
             dense: true,
