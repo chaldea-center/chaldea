@@ -32,6 +32,32 @@ class BondWorkCancelled implements Exception {
   const BondWorkCancelled();
 }
 
+/// Collects a resumable preparation stream without treating truncation as proof.
+/// Null entries count as work checkpoints but do not occupy storage.
+class BondPreparationProbe<T extends Object> {
+  BondPreparationProbe({required this.maxItems, required this.maxSteps}) {
+    if (maxItems < 0 || maxSteps < 0) throw ArgumentError('negative probe limit');
+  }
+
+  final int maxItems;
+  final int maxSteps;
+  final List<T> items = [];
+  int steps = 0;
+  bool complete = false;
+
+  Iterable<void> collect(Iterable<T?> source) sync* {
+    for (final item in source) {
+      yield null;
+      if (++steps > maxSteps || (item != null && items.length >= maxItems)) {
+        items.clear();
+        return;
+      }
+      if (item != null) items.add(item);
+    }
+    complete = true;
+  }
+}
+
 /// Stable bottom-up merging also makes large sorts resumable.
 Iterable<void> bondSortSteps<T>(List<T> list, int Function(T, T) compare) sync* {
   if (list.length < 2) return;

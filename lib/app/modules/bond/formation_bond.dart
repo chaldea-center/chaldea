@@ -18,6 +18,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 import '../battle/formation/team.dart';
+import '../quest/breakdown/restriction.dart';
 import 'bond_rules.dart';
 import 'formation_bond_calc.dart';
 import 'solver/results.dart';
@@ -58,10 +59,10 @@ class _FormationBondRuntime {
     if (second == lastDebugSecond && !solved.provenOptimal) return;
     lastDebugSecond = second;
     debugPrint(
-      '[BondSolver] ${solved.possibleCombinations == null ? "general" : "CE-first"} '
+      '[BondSolver] ${solved.isCeFirst ? "CE-first" : "general"} '
       'elapsed=${solved.elapsedMilliseconds}ms steps=${solved.visitedNodes}'
       '${solved.possibleCombinations == null ? "" : "/${solved.possibleCombinations}"} '
-      'best=${solved.best?.totalBond} proven=${solved.provenOptimal}',
+      'best=${solved.best?.totalBond} candidates=${solved.candidates.length} proven=${solved.provenOptimal}',
     );
   }
 }
@@ -245,6 +246,41 @@ class _FormationBondPageState extends State<FormationBondPage> with SingleTicker
     });
     await WidgetsBinding.instance.endOfFrame;
     if (!mounted) return;
+    try {
+      FormationBondSolver.validateFormation(option: option, formation: formation, quest: selectedQuest);
+    } on BondFormationException catch (error) {
+      await SimpleConfirmDialog(
+        title: Text('${S.current.team} · ${S.current.invalid_input}'),
+        content: Text(
+          '${S.current.craft_essence}: ${error.conflicts.length} > 1\n\n${error.conflicts.map((slot) {
+            final ce = db.gameData.craftEssencesById[slot.ceId]!;
+            return '#${slot.position + 1} / equip${slot.equip}: ${ce.lName.l}';
+          }).join('\n')}',
+        ),
+        showCancel: false,
+      ).showDialog(context);
+      return;
+    } on BondServantRestrictionError catch (error) {
+      final svt = db.gameData.servantsById[error.servantId]!;
+      await SimpleConfirmDialog(
+        title: Text('${S.current.team} · ${S.current.invalid_input}'),
+        scrollable: true,
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('#${error.position + 1}: ${svt.lName.l}'),
+            Text(selectedQuest.lNameWithChapter),
+            const SizedBox(height: 8),
+            for (final entry in selectedQuest.restrictions)
+              if (entry.restriction.type == RestrictionType.individuality)
+                QuestRestrictionDescriptor(restriction: entry, showReleaseHint: false),
+          ],
+        ),
+        showCancel: false,
+      ).showDialog(context);
+      return;
+    }
     final revision = ++_runtime.searchRevision;
     await _runtime.search?.cancel();
     if (!mounted || revision != _runtime.searchRevision) return;

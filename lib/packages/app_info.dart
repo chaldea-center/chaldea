@@ -213,6 +213,8 @@ class AppInfo {
     if (_storedUuid == derived) return;
     _applyStoredUuid(derived);
     await _uuidFile(appPath).writeAsString(derived);
+    // The startup marker may have been checked against a temporary random ID.
+    await _finishUniqueId(appPath);
   }
 
   static void onConsentWithdrawn() {

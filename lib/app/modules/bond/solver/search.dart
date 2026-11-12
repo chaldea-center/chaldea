@@ -115,6 +115,7 @@ class BondSearchResult {
   final bool provenOptimal;
   final bool allTiesCollected;
   final int visitedNodes;
+  final int? firstFeasibleMilliseconds;
 
   const BondSearchResult({
     required this.best,
@@ -124,6 +125,7 @@ class BondSearchResult {
     required this.provenOptimal,
     required this.allTiesCollected,
     required this.visitedNodes,
+    this.firstFeasibleMilliseconds,
   });
 }
 
@@ -162,6 +164,8 @@ class BondSearch {
   late final List<int> _tieGroupCounts;
   final Map<String, int> _tieIndexByKey = {};
   BondSearchWitness? _best;
+  final Map<BondSearchItem, List<_IdentityDomain>> _riskyIdentityItems = {};
+  bool _checkIdentityPrefixes = true;
   bool _interrupted = false;
   bool _tiesTruncated = false;
   bool _collectTies = false;
@@ -172,6 +176,7 @@ class BondSearch {
   int _visitedNodes = 0;
   int _seedVisited = 0;
   int _workTicks = 0;
+  int? _firstFeasibleMilliseconds;
   void Function(BondSearchResult)? _onProgress;
   final Stopwatch _progressClock = Stopwatch();
   int _lastProgressMs = -250;
@@ -259,6 +264,7 @@ class BondSearch {
         provenOptimal: provenOptimal,
         allTiesCollected: allTiesCollected,
         visitedNodes: search._visitedOffset + search._visitedNodes,
+        firstFeasibleMilliseconds: search._firstFeasibleMilliseconds,
       ),
     );
   }
@@ -275,6 +281,7 @@ class BondSearch {
         provenOptimal: provenOptimal || _scoreProven,
         allTiesCollected: false,
         visitedNodes: _visitedOffset + _visitedNodes,
+        firstFeasibleMilliseconds: _firstFeasibleMilliseconds,
       ),
     );
   }
@@ -286,6 +293,7 @@ class BondSearch {
       return;
     }
     for (final item in _seedOrderedItems[p]) {
+      if (_seedVisited >= 20000) break;
       if (++_workTicks % 128 == 0) yield null;
       if (spent + item.cost > problem.maxCost || !_capacityAvailable(item)) continue;
       _chosen[p] = item;
@@ -300,6 +308,7 @@ class BondSearch {
   }
 
   Iterable<void> _improveSeedSteps() sync* {
+    var attempts = 0;
     for (var pass = 0; pass < 2; pass++) {
       if (++_workTicks % 128 == 0) yield null;
       var improved = false;
@@ -314,6 +323,8 @@ class BondSearch {
         final old = base.items[p];
         _changeCapacity(old, -1);
         for (final item in _orderedItems[p]) {
+          // This is a lower-bound heuristic, not part of the exact proof.
+          if (attempts++ >= 4096) break;
           if (++_workTicks % 128 == 0) yield null;
           final cost = base.totalCost - old.cost + item.cost;
           if (cost > problem.maxCost || !_capacityAvailable(item)) continue;
@@ -329,6 +340,7 @@ class BondSearch {
           _changeCapacity(item, -1);
         }
         _chosen.fillRange(0, _chosen.length, null);
+        if (attempts >= 4096) return;
         if (_best!.totalBond > base.totalBond || _prefer(_best!, base)) improved = true;
       }
       if (!improved) break;
@@ -392,6 +404,7 @@ class BondSearch {
         }
       }
     }
+    yield* _prepareIdentityPruningSteps();
     yield* _buildCapacitySourceBoundsSteps(n, profiles);
 
     final optimistic = List.generate(n, (_) => <BondSearchItem, int>{});
@@ -402,6 +415,8 @@ class BondSearch {
       final list = List<BondSearchItem>.of(problem.positions[p].items);
       _seedOrderedItems.add(
         List<BondSearchItem>.of(list)..sort((a, b) {
+          final occupied = (b.receiverProfile == null ? 0 : 1).compareTo(a.receiverProfile == null ? 0 : 1);
+          if (occupied != 0) return occupied;
           final cost = a.cost.compareTo(b.cost);
           if (cost != 0) return cost;
           final worn = a.wearCount.compareTo(b.wearCount);
@@ -447,18 +462,151 @@ class BondSearch {
     }
     for (var p = n - 1; p >= 0; p--) {
       if (++_workTicks % 128 == 0) yield null;
+      // Identity and capacity are already relaxed here, so equal-cost items
+      // share the same tail. Keep only their maximum bound, including negatives.
+      // The actual search lists must retain every item and its source effects.
+      final bestByCost = <int, int>{};
+      for (final item in _orderedItems[p]) {
+        if (++_workTicks % 128 == 0) yield null;
+        if (item.cost > budget) continue;
+        final score = optimistic[p][item]!;
+        final previous = bestByCost[item.cost];
+        if (previous == null || score > previous) bestByCost[item.cost] = score;
+      }
+      final choices = bestByCost.entries.toList();
       for (var b = 0; b <= budget; b++) {
         if (++_workTicks % 128 == 0) yield null;
         var best = impossible;
-        for (final item in _orderedItems[p]) {
+        for (final choice in choices) {
           if (++_workTicks % 128 == 0) yield null;
-          if (item.cost > b) continue;
-          final tail = _dp[p + 1][b - item.cost];
+          if (choice.key > b) continue;
+          final tail = _dp[p + 1][b - choice.key];
           if (tail == impossible) continue;
-          best = math.max(best, optimistic[p][item]! + tail);
+          best = math.max(best, choice.value + tail);
         }
         _dp[p][b] = best;
       }
+    }
+  }
+
+  bool _identityPrefixFeasible(int count, BondSearchItem addedItem) {
+    final added = _riskyIdentityItems[addedItem];
+    if (added == null) return true;
+    var intersectsDifferentDomain = false;
+    for (final domain in added) {
+      var copies = 0;
+      for (var p = 0; p < count; p++) {
+        final previous = _riskyIdentityItems[_chosen[p]];
+        if (previous == null) continue;
+        for (final other in previous) {
+          if (domain.isCe != other.isCe) continue;
+          if (identical(domain, other)) {
+            copies++;
+          } else if (!intersectsDifferentDomain) {
+            for (final id in domain.ids) {
+              if (other.ids.contains(id)) {
+                intersectsDifferentDomain = true;
+                break;
+              }
+            }
+          }
+        }
+      }
+      if (copies > domain.ids.length) return false;
+    }
+    // Repeated equal domains need only a cardinality check. Different domains
+    // that actually intersect may have a Hall-deficient subset, so use the
+    // existing augmenting matcher and discard its temporary assignment.
+    return !intersectsDifferentDomain || _selectedIdsMatch(count);
+  }
+
+  Iterable<void> _prepareIdentityPruningSteps() sync* {
+    var servantDimensions = 0, ceDimensions = 0;
+    for (final position in problem.positions) {
+      var hasServant = false, maxCes = 0;
+      for (final item in position.items) {
+        if (++_workTicks % 128 == 0) yield null;
+        hasServant |= item.servantIds.isNotEmpty;
+        maxCes = math.max(maxCes, item.ownedCeIds.length);
+      }
+      if (hasServant) servantDimensions++;
+      ceDimensions += maxCes;
+    }
+    final servants = <String, _IdentityDomain>{};
+    final ces = <String, _IdentityDomain>{};
+    final domainsByItem = <BondSearchItem, List<_IdentityDomain>>{};
+    final servantsByClass = <int, _IdentityDomain>{};
+    final cesByClass = <int, _IdentityDomain>{};
+    _IdentityDomain intern(
+      Map<String, _IdentityDomain> pool,
+      Set<int> ids,
+      int? capacityClass,
+      List<int> capacities,
+      int dimensions,
+    ) {
+      final byClass = identical(pool, ces) ? cesByClass : servantsByClass;
+      final cached = capacityClass == null ? null : byClass[capacityClass];
+      // Reuse only after comparing the complete set. Generic callers may use
+      // one class index with different domains; an index alone is not a key.
+      if (cached != null && cached.ids.length == ids.length && cached.ids.containsAll(ids)) {
+        cached.registerGuard(capacityClass);
+        return cached;
+      }
+      final key = (ids.toList()..sort()).join(',');
+      final domain = pool.putIfAbsent(
+        key,
+        () => _IdentityDomain(Set.of(ids), capacities, dimensions, identical(pool, ces)),
+      );
+      domain.registerGuard(capacityClass);
+      if (capacityClass != null) byClass[capacityClass] = domain;
+      return domain;
+    }
+
+    for (final position in problem.positions) {
+      for (final item in position.items) {
+        if (++_workTicks % 128 == 0) yield null;
+        if (domainsByItem.containsKey(item)) continue;
+        final domains = domainsByItem[item] = <_IdentityDomain>[];
+        if (item.servantIds.isNotEmpty) {
+          domains.add(
+            intern(
+              servants,
+              item.servantIds,
+              item.servantClassIndex,
+              problem.servantClassCapacities,
+              servantDimensions,
+            ),
+          );
+        }
+        for (final (d, ids) in item.ownedCeIds.indexed) {
+          if (++_workTicks % 128 == 0) yield null;
+          // Fixed and repeatable CEs can make these lists differ. Without a
+          // one-to-one demand witness, do not claim protection by class capacity.
+          final ci = item.ownedCeIds.length == item.ownedCeClassIndices.length ? item.ownedCeClassIndices[d] : null;
+          final canonical = {for (final id in ids) problem.ownedCeIdentities[id] ?? id};
+          domains.add(intern(ces, canonical, ci, problem.ownedCeClassCapacities, ceDimensions));
+        }
+      }
+    }
+    for (final pool in [servants, ces]) {
+      final owner = <int, _IdentityDomain>{};
+      for (final domain in pool.values) {
+        // Any Hall subset containing this domain already has enough IDs.
+        if (domain.unconditionallySafe) continue;
+        for (final id in domain.ids) {
+          if (++_workTicks % 128 == 0) yield null;
+          final previous = owner.putIfAbsent(id, () => domain);
+          if (!identical(previous, domain)) {
+            previous.overlaps = true;
+            domain.overlaps = true;
+          }
+        }
+      }
+    }
+    for (final entry in domainsByItem.entries) {
+      if (++_workTicks % 128 == 0) yield null;
+      final risky = entry.value.where((domain) => domain.risky).toList();
+      if (risky.isNotEmpty) _riskyIdentityItems[entry.key] = risky;
     }
   }
 
@@ -556,7 +704,16 @@ class BondSearch {
       }
       _chosen[p] = item;
       _changeCapacity(item, 1);
-      yield* _visitSteps(p + 1, spent + item.cost);
+      // Safe domains are already protected by capacity or have enough IDs
+      // for every possible dimension. A risky addition may need reassignment;
+      // check the whole prefix without committing its temporary matching.
+      final count = p + 1;
+      final idsMatch =
+          !_checkIdentityPrefixes ||
+          (_best == null
+              ? _selectedIdsMatch(count)
+              : count == problem.positions.length || _identityPrefixFeasible(count, item));
+      if (idsMatch) yield* _visitSteps(count, spent + item.cost);
       _changeCapacity(item, -1);
       _chosen[p] = null;
       if (_interrupted) return;
@@ -567,6 +724,19 @@ class BondSearch {
     if (item.isGrandServant && _grandServantsUsed >= problem.maxGrandServants) return false;
     final si = item.servantClassIndex;
     if (si != null && _servantClassUsed[si] >= problem.servantClassCapacities[si]) return false;
+    // Formation items have at most equip1/equip3. Check their full demand
+    // without allocating a map, including two units when both share a class.
+    // Keep general multiplicity counting for larger abstract inputs.
+    final indices = item.ownedCeClassIndices;
+    if (indices.isEmpty) return true;
+    final first = indices.first;
+    if (indices.length == 1) return _ownedCeClassUsed[first] < problem.ownedCeClassCapacities[first];
+    if (indices.length == 2) {
+      final second = indices[1];
+      if (first == second) return _ownedCeClassUsed[first] + 2 <= problem.ownedCeClassCapacities[first];
+      return _ownedCeClassUsed[first] < problem.ownedCeClassCapacities[first] &&
+          _ownedCeClassUsed[second] < problem.ownedCeClassCapacities[second];
+    }
     final needed = <int, int>{};
     for (final ci in item.ownedCeClassIndices) {
       needed[ci] = (needed[ci] ?? 0) + 1;
@@ -678,6 +848,8 @@ class BondSearch {
     );
     _recordCandidate(witness);
     if (_best != null && total < _best!.totalBond) return;
+    final first = _best == null;
+    final improvesScore = first || total > _best!.totalBond;
     if (_best == null || total > _best!.totalBond) {
       _best = witness;
       _ties.clear();
@@ -686,6 +858,13 @@ class BondSearch {
       _tiesTruncated = false;
     } else if (total == _best!.totalBond && _prefer(witness, _best!)) {
       _best = witness;
+    }
+    if (first) {
+      _firstFeasibleMilliseconds = _progressClock.elapsedMilliseconds;
+      _checkIdentityPrefixes = _riskyIdentityItems.isNotEmpty;
+    }
+    if (first || (improvesScore && _progressClock.elapsedMilliseconds - _lastProgressMs >= 250)) {
+      _reportProgress();
     }
     if (!_collectTies) return;
     final key = [for (final (p, item) in items.indexed) '${item.receiverProfile ?? -1}:${slotBonds[p]}'].join('|');
@@ -778,4 +957,28 @@ class _IdentityDimension {
   final Set<int> ids;
 
   const _IdentityDimension(this.position, this.index, this.ids);
+}
+
+/// A canonical identity domain and the class demand paid by every occurrence.
+/// Disjoint domains protected by class capacities cannot violate Hall's rule.
+class _IdentityDomain {
+  _IdentityDomain(this.ids, this.capacities, this.maxDimensions, this.isCe);
+  final bool isCe;
+  final Set<int> ids;
+  final List<int> capacities;
+  final int maxDimensions;
+  int? _guardClass;
+  bool _observed = false;
+  bool overlaps = false;
+  bool get unconditionallySafe => ids.length >= maxDimensions;
+  bool get risky => !unconditionallySafe && (overlaps || _guardClass == null || capacities[_guardClass!] > ids.length);
+
+  void registerGuard(int? capacityClass) {
+    if (!_observed) {
+      _guardClass = capacityClass;
+      _observed = true;
+    } else if (_guardClass != capacityClass) {
+      _guardClass = null;
+    }
+  }
 }

@@ -188,6 +188,7 @@ class _PrivacyCenterPageState extends State<PrivacyCenterPage> {
 
 Future<void> applyPrivacyConsent(bool agreed) async {
   final privacy = db.settings.display.privacy;
+  final wasDebugOn = AppInfo.isDebugOn;
   privacy.consentAsked = true;
   if (agreed) {
     privacy.accepted = true;
@@ -201,6 +202,7 @@ Future<void> applyPrivacyConsent(bool agreed) async {
     AppInfo.onConsentWithdrawn();
   }
   db.notifySettings();
+  if (wasDebugOn != AppInfo.isDebugOn) db.notifyAppUpdate();
 }
 
 /// Debug-only: resets consent and ad prefs; restart to see the first-launch flow.

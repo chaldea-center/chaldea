@@ -160,8 +160,8 @@ class BondSolverResultsTab extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: 12),
                   itemCount: teams.length + (result == null ? 0 : 1),
                   itemBuilder: (context, index) {
-                    if (index == teams.length) return _diagnostics(result!);
-                    return _candidateCard(context, result!, teams, index);
+                    if (index == 0) return _diagnostics(result!);
+                    return _candidateCard(context, result!, teams, index - 1);
                   },
                 ),
         ),
@@ -564,14 +564,17 @@ class BondSolverResultsTab extends StatelessWidget {
 
   Widget _diagnostics(BondSolverResult solved) {
     final combinations = solved.possibleCombinations;
+    final visitedNodeCountText = solved.visitedNodes.formatSep();
     return SimpleAccordion(
       headerBuilder: (context, expanded) => ListTile(
         dense: true,
         title: const Text('Search details'),
         subtitle: Text(
-          combinations == null
-              ? '${solved.visitedNodes} nodes visited · total unknown'
-              : '${solved.visitedNodes}/$combinations CE combinations evaluated',
+          !solved.isCeFirst
+              ? '$visitedNodeCountText nodes visited · total unknown'
+              : combinations == null
+              ? '$visitedNodeCountText CE combinations evaluated · total unknown'
+              : '$visitedNodeCountText/$combinations CE combinations evaluated',
         ),
       ),
       contentBuilder: (context) => Column(
@@ -580,7 +583,7 @@ class BondSolverResultsTab extends StatelessWidget {
           ListTile(
             dense: true,
             title: const Text('Method'),
-            trailing: Text(combinations == null ? 'General search' : 'CE-first search'),
+            trailing: Text(solved.isCeFirst ? 'CE-first search' : 'General search'),
           ),
           ListTile(
             dense: true,
