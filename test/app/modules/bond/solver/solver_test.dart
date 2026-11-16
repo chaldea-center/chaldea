@@ -536,12 +536,9 @@ void main() {
   });
 
   test('main-isolate progressive search matches sync result and prepares ascension details', () async {
-    final servants = db.gameData.servantsById.values
-        .where((svt) => svt.collectionNo > 0 && svt.isUserSvt)
-        .take(2)
-        .toList();
+    final servants = [db.gameData.servantsById[100100]!, db.gameData.servantsById[100200]!];
     final quest = QuestPhase(bond: 1000);
-    final source = BattleTeamSetup()..svts[0] = PlayerSvtData.svt(servants.first);
+    final source = BattleTeamSetup()..svts[0] = (PlayerSvtData.svt(servants.first)..limitCount = 1);
     final option = FormationBondOption(
       maxServants: 2,
       enableEvent: false,
@@ -567,7 +564,10 @@ void main() {
       expect(started, isTrue);
       expect(results.last.best!.totalBond, expected.best!.totalBond);
       expect(results.last.provenOptimal, isTrue);
-      final team = results.last.best!;
+      final team = results.last.best!.previewTeam;
+      expect(team.slots.map((slot) => slot.limitCount), [1, 4]);
+      expect(team.slots.map((slot) => slot.bond), results.last.best!.slots.map((slot) => slot.bond));
+      expect(team.totalCost, results.last.best!.totalCost);
       for (final slot in team.slots.where((slot) => slot.servantId != null)) {
         final cached = team.cachedAscensionRequirement(slot.position)!;
         final direct = FormationBondSolver.ascensionRequirement(
@@ -647,10 +647,11 @@ void main() {
         expect(result.candidates.length, lessThanOrEqualTo(21));
         expect(result.candidates.first.totalBond, result.best!.totalBond);
         for (final team in result.candidates) {
-          final manual = option.calcResults(quest, team.applyTo(source, option));
+          final previewTeam = team.previewTeam;
+          final manual = option.calcResults(quest, previewTeam.applyTo(source, option));
           expect(team.totalBond, manual.fold<int>(0, (sum, slot) => sum + slot.totalBond));
-          for (final slot in team.slots) {
-            expect(team.cachedAscensionRequirement(slot.position), isNotNull);
+          for (final slot in previewTeam.slots) {
+            expect(previewTeam.cachedAscensionRequirement(slot.position), isNotNull);
           }
         }
       });
@@ -692,7 +693,7 @@ void main() {
         }
         expect(unproven.first.candidates, hasLength(1));
         for (final result in unproven) {
-          expect(result.best!.cachedAscensionRequirement(0), isNotNull);
+          expect(result.best!.previewTeam.cachedAscensionRequirement(0), isNotNull);
         }
         expect(results.last.provenOptimal, isTrue);
         expect(results.firstWhere((result) => result.provenOptimal).candidates, hasLength(1));

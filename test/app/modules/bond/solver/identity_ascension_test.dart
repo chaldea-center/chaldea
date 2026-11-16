@@ -532,6 +532,130 @@ void main() {
     expect(requirement.allowed, isNot(contains(forbidden)));
   });
 
+  test('preview falls back to the smallest available costume when ordinary forms are invalid', () async {
+    final svt = db.gameData.servantsById[100100]!;
+    final original = svt.ascensionAdd.individuality2;
+    const costumeTrait = 900001;
+    svt.ascensionAdd.individuality2 = AscensionAddEntry<List<int>>.fromJson({
+      'costume': {
+        '102': [costumeTrait],
+        '105': [costumeTrait],
+      },
+    });
+    addTearDown(() => svt.ascensionAdd.individuality2 = original);
+    final source = formation(first: svt)..svts[0].limitCount = 0;
+    final phase = QuestPhase(
+      bond: 1000,
+      restrictions: [
+        QuestPhaseRestriction(
+          restriction: Restriction(
+            id: 1,
+            type: RestrictionType.individuality,
+            rangeType: RestrictionRangeType.equal,
+            targetVals: [costumeTrait],
+          ),
+        ),
+      ],
+    );
+    final option = options()
+      ..maxServants = 1
+      ..searchFixedAscensions = true;
+    final result = await FormationBondSolver.solveProgressively(
+      option: option,
+      quest: phase,
+      formation: source,
+      useWorkerIsolate: false,
+    ).last;
+    final preview = result.best!.previewTeam;
+    expect(preview.slots.single.limitCount, 102);
+    expect(preview.cachedAscensionRequirement(0)!.allowed, [102, 105]);
+  });
+
+  test('preview prefers a fixed costume entered by its short ID', () async {
+    final svt = db.gameData.servantsById[100100]!;
+    final originalProfile = svt.profile;
+    const shortId = 11;
+    const battleCharaId = 900101;
+    svt.profile = NiceLore(
+      costume: {battleCharaId: NiceCostume(id: shortId, battleCharaId: battleCharaId)},
+    );
+    addTearDown(() => svt.profile = originalProfile);
+
+    final source = formation(first: svt)..svts[0].limitCount = shortId;
+    final option = options()
+      ..maxServants = 1
+      ..searchFixedAscensions = true;
+    final result = await FormationBondSolver.solveProgressively(
+      option: option,
+      quest: quest,
+      formation: source,
+      useWorkerIsolate: false,
+    ).last;
+
+    expect(result.best!.slots.single.limitCount, isNot(shortId));
+    expect(result.best!.previewTeam.slots.single.limitCount, shortId);
+  });
+
+  test('preview checks later ascension choices against earlier replacements', () async {
+    final wearer = db.gameData.servantsById[100100]!;
+    final recipient = db.gameData.servantsById[100200]!;
+    const wearerTrait = 900002, recipientTrait = 900003;
+    for (final (svt, trait) in [(wearer, wearerTrait), (recipient, recipientTrait)]) {
+      final original = svt.ascensionAdd.individuality2;
+      svt.ascensionAdd.individuality2 = AscensionAddEntry<List<int>>.fromJson({
+        'ascension': {
+          '4': [trait],
+        },
+      });
+      addTearDown(() => svt.ascensionAdd.individuality2 = original);
+    }
+    // A penalty applies only when both members use their preferred forms.
+    final ce = CraftEssence(
+      id: 9999910,
+      name: 'Preview test CE',
+      skills: [
+        NiceSkill(
+          id: 9999910,
+          actIndividuality: [wearerTrait],
+          functions: [
+            NiceFunction(
+              funcId: 9999910,
+              funcType: FuncType.servantFriendshipUp,
+              funcTargetType: FuncTargetType.ptFull,
+              functvals: [recipientTrait],
+              svals: [
+                DataVals({'AddCount': -50}),
+              ],
+            ),
+          ],
+        ),
+      ],
+    );
+    db.gameData.craftEssencesById[ce.id] = ce;
+    addTearDown(() => db.gameData.craftEssencesById.remove(ce.id));
+    final source = formation(first: wearer);
+    source.svts[0].equip1 = SvtEquipData(ce: ce);
+    source.svts[1].svt = recipient;
+    final option = options()
+      ..maxServants = 2
+      ..searchFixedAscensions = true;
+    final result = await FormationBondSolver.solveProgressively(
+      option: option,
+      quest: quest,
+      formation: source,
+      useCeFirst: false,
+      useWorkerIsolate: false,
+    ).last;
+    final team = result.best!;
+    expect(team.slots.map((slot) => slot.limitCount), [0, 0]);
+    final preview = team.previewTeam;
+    expect(preview.slots.map((slot) => slot.limitCount), [4, 3]);
+    expect(preview.cachedAscensionRequirement(1)!.allowed, isNot(contains(4)));
+    final applied = preview.applyTo(source, option.copy());
+    expect(option.calcResults(quest, applied).take(2).map((slot) => slot.totalBond), [1000, 1000]);
+    expect(applied.totalCost, team.totalCost);
+  });
+
   test('release reference defaults to JP, round-trips, and invalid dates reset to JP', () {
     expect(FormationBondOption().releaseReference, BondReleaseReference.jp);
     for (final reference in BondReleaseReference.values) {

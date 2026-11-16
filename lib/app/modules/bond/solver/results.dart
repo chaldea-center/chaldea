@@ -305,7 +305,7 @@ class BondSolverResultsTab extends StatelessWidget {
   }
 
   Widget _candidateCard(BuildContext context, BondSolverResult result, List<BondSolvedTeam> teams, int teamIndex) {
-    final team = teams[teamIndex];
+    final team = teams[teamIndex].previewTeam;
     final quest = this.quest;
     if (quest == null) return const SizedBox.shrink();
     final score = team.totalBond * option.teapotTimes;

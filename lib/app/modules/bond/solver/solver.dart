@@ -109,7 +109,11 @@ class BondSolvedSlot {
 }
 
 class BondSolvedTeam {
+  static final _previews = Expando<BondSolvedTeam>();
   static final _ascensionDetails = Expando<Map<int, BondAscensionRequirement>>();
+
+  /// The concrete team shown by progressive results, with preferred equivalent forms.
+  BondSolvedTeam get previewTeam => _previews[this] ?? this;
   BondAscensionRequirement? cachedAscensionRequirement(int position) => _ascensionDetails[this]?[position];
   final int totalBond;
   final int totalCost;
@@ -591,26 +595,62 @@ class FormationBondSolver {
     final allowed = <int>[];
     for (final limit in all) {
       yield null;
-      if (!_matchesQuestRestrictions(_traits(svt, limit))) continue;
-      final changed = BondSolvedTeam(team.totalBond, team.totalCost, [
-        for (final slot in team.slots) slot.position == target.position ? slot.copyWith(limitCount: limit) : slot,
-      ]);
-      final score = _scoreConcrete(changed);
-      if (score.$2 == team.totalCost && listEquals(score.$1, team.slots.map((slot) => slot.bond).toList())) {
+      if (_equivalentAscension(team, target, svt, limit) != null) {
         allowed.add(limit);
       }
     }
     onComplete(BondAscensionRequirement(all, allowed));
   }
 
+  BondSolvedTeam? _equivalentAscension(BondSolvedTeam team, BondSolvedSlot target, Servant svt, int limit) {
+    if (!_matchesQuestRestrictions(_traits(svt, limit))) return null;
+    final changed = BondSolvedTeam(team.totalBond, team.totalCost, [
+      for (final slot in team.slots) slot.position == target.position ? slot.copyWith(limitCount: limit) : slot,
+    ]);
+    final (bonds, cost) = _scoreConcrete(changed);
+    return cost == team.totalCost && listEquals(bonds, team.slots.map((slot) => slot.bond).toList()) ? changed : null;
+  }
+
+  List<int> _preferredAscensions(BondSolvedSlot target, Servant svt) {
+    final limits = _svtLimits(svt);
+    final input = target.fixedServant ? formation.svts[target.position].limitCount : null;
+    // Saved formations can use a short costume ID instead of the battle character ID.
+    final costume = input == null ? null : svt.getCostume(input);
+    final preferInput = input != null && (limits.contains(input) || limits.contains(costume?.battleCharaId));
+    return [
+      if (preferInput) input,
+      for (final limit in limits.reversed)
+        if (limit < 10 && limit != input) limit,
+      for (final limit in limits)
+        if (limit >= 10 && limit != input) limit,
+    ];
+  }
+
   Iterable<void> _prepareResultDetailsSteps(BondSolverResult result) sync* {
     final teams = <BondSolvedTeam>{if (result.best != null) result.best!, ...result.ties, ...result.candidates};
     for (final team in teams) {
-      final cached = BondSolvedTeam._ascensionDetails[team] ??= {};
+      if (BondSolvedTeam._ascensionDetails[team.previewTeam] != null) continue;
+      BondSolvedTeam preview = team;
+      // Each replacement must preserve the score with all earlier choices in place.
       for (final target in team.slots) {
-        if (cached.containsKey(target.position)) continue;
-        yield* _ascensionRequirementSteps(team, target, onComplete: (value) => cached[target.position] = value);
+        if (target.isSupport || (target.fixedServant && !option.searchFixedAscensions)) continue;
+        final svt = db.gameData.servantsById[target.servantId];
+        if (svt == null) continue;
+        for (final limit in _preferredAscensions(target, svt)) {
+          if (limit == target.limitCount) break;
+          yield null;
+          final changed = _equivalentAscension(preview, target, svt, limit);
+          if (changed == null) continue;
+          preview = changed;
+          break;
+        }
       }
+      final cached = <int, BondAscensionRequirement>{};
+      for (final target in preview.slots) {
+        yield* _ascensionRequirementSteps(preview, target, onComplete: (value) => cached[target.position] = value);
+      }
+      BondSolvedTeam._ascensionDetails[preview] = cached;
+      if (!identical(preview, team)) BondSolvedTeam._previews[team] = preview;
     }
   }
 
