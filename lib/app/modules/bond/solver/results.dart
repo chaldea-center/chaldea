@@ -33,35 +33,19 @@ class BondExcludedCards extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sorted = ids.toList()..sort();
-    return AddRemoveList<int>(
-      title: Text(title),
-      // subtitle: sorted.isEmpty ? 'No cards excluded' : '${sorted.length} excluded · long press a card to remove',
-      items: sorted,
-      onAdd: onAdd,
-      onRemove: onRemove,
-      itemBuilder: _card,
-    );
+    return AddRemoveList<int>(title: Text(title), items: sorted, onAdd: onAdd, onRemove: onRemove, itemBuilder: _card);
   }
 
-  Widget _card(BuildContext context, int id, AddRemoveHandle handle) {
+  Widget _card(BuildContext context, int id) {
     final card = servant ? db.gameData.servantsById[id] : db.gameData.craftEssencesById[id];
-    final name = card?.lName.l ?? '#$id';
-    return Semantics(
-      label: '$name, ${S.current.long_press_to_remove}',
-      child: InkWell(
-        onTap: card?.routeTo,
-        onLongPress: handle.longPress,
-        child:
-            card?.iconBuilder(context: context, width: 42) ??
-            GameCardMixin.cardIconBuilder(
-              context: context,
-              icon: servant ? Atlas.common.unknownEnemyIcon : Atlas.common.emptyCeIcon,
-              width: 42,
-              aspectRatio: 132 / 144,
-              text: '#$id',
-            ),
-      ),
-    );
+    return card?.iconBuilder(context: context, width: 42) ??
+        GameCardMixin.cardIconBuilder(
+          context: context,
+          icon: servant ? Atlas.common.unknownEnemyIcon : Atlas.common.emptyCeIcon,
+          width: 42,
+          aspectRatio: 132 / 144,
+          text: '#$id',
+        );
   }
 }
 

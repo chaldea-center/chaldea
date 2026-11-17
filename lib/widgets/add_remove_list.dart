@@ -1,29 +1,22 @@
 import 'package:material_ui/material_ui.dart';
 
+import '../generated/l10n.dart';
+import 'custom_dialogs.dart';
 import 'tile_items.dart';
 
 /// Which gesture removes an item in [AddRemoveList].
 enum AddRemoveGesture { tap, longPress }
 
-/// Gesture callbacks for one item, already resolved against
-/// [AddRemoveList.removeGesture] so a caller never branches on it. [remove]
-/// always deletes the item; [tap] and [longPress] are null when no handler
-/// applies to that gesture.
-class AddRemoveHandle {
-  final VoidCallback remove;
-  final VoidCallback? tap;
-  final VoidCallback? longPress;
-
-  const AddRemoveHandle({required this.remove, this.tap, this.longPress});
-}
-
 /// Builds the visual for one item of an [AddRemoveList].
-typedef AddRemoveItemBuilder<T> = Widget Function(BuildContext context, T item, AddRemoveHandle handle);
+typedef AddRemoveItemBuilder<T> = Widget Function(BuildContext context, T item);
 
 /// A list section with caller-defined items and add/remove affordances.
 ///
 /// Renders inside a [TileGroup] by default; set [inline] to emit only the header
 /// row and item wrap so it can live in a parent that already provides a surface.
+///
+/// The builder only returns the item's visual: gestures are owned by this
+/// widget so a child's own tap handler cannot swallow the removal tap.
 class AddRemoveList<T> extends StatelessWidget {
   final Widget title;
   final String? subtitle;
@@ -38,9 +31,16 @@ class AddRemoveList<T> extends StatelessWidget {
   /// Skip the surrounding [TileGroup] and emit bare content.
   final bool inline;
 
-  /// Gesture that removes an item. Long press keeps the destructive action
-  /// deliberate; tap suits pickers whose items are plain chips.
+  /// Gesture that removes an item. Tap is the default; long press remains
+  /// available for lists where accidental taps are costly.
   final AddRemoveGesture removeGesture;
+
+  /// Block child pointer gestures so taps always reach the removal layer.
+  /// Disable when an item contains its own interactive widgets.
+  final bool absorbChildGestures;
+
+  /// Ask for confirmation before [onRemove], for every removal gesture.
+  final bool confirmRemove;
 
   /// Handler for the gesture not used for removal, e.g. jumping to the item's
   /// detail page or editing a per-item value.
@@ -62,22 +62,38 @@ class AddRemoveList<T> extends StatelessWidget {
     required this.itemBuilder,
     this.emptyState,
     this.inline = false,
-    this.removeGesture = AddRemoveGesture.longPress,
+    this.removeGesture = AddRemoveGesture.tap,
+    this.absorbChildGestures = true,
+    this.confirmRemove = true,
     this.onSecondary,
     this.spacing = 8,
     this.runSpacing = 8,
     this.contentPadding,
   });
 
-  AddRemoveHandle _handle(T item) {
-    void remove() => onRemove(item);
-    final secondary = onSecondary == null ? null : () => onSecondary!(item);
-    final bool removeOnTap = removeGesture == AddRemoveGesture.tap;
-    return AddRemoveHandle(
-      remove: remove,
-      tap: removeOnTap ? remove : secondary,
-      longPress: removeOnTap ? secondary : remove,
+  Widget _buildItem(BuildContext context, T item) {
+    final removeOnTap = removeGesture == AddRemoveGesture.tap;
+    final VoidCallback? secondary = onSecondary == null ? null : () => onSecondary!(item);
+    void remove() => _remove(context, item);
+    final child = itemBuilder(context, item);
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: removeOnTap ? remove : secondary,
+      onLongPress: removeOnTap ? secondary : remove,
+      child: absorbChildGestures ? IgnorePointer(child: child) : child,
     );
+  }
+
+  Future<void> _remove(BuildContext context, T item) async {
+    if (!confirmRemove) {
+      onRemove(item);
+      return;
+    }
+    final confirmed = await SimpleConfirmDialog(
+      title: Text(S.current.remove),
+      content: IgnorePointer(child: itemBuilder(context, item)),
+    ).showDialog(context);
+    if (confirmed == true && context.mounted) onRemove(item);
   }
 
   @override
@@ -101,7 +117,7 @@ class AddRemoveList<T> extends StatelessWidget {
           child: Wrap(
             spacing: spacing,
             runSpacing: runSpacing,
-            children: [for (final item in items) itemBuilder(context, item, _handle(item))],
+            children: [for (final item in items) _buildItem(context, item)],
           ),
         )
       else if (emptyState != null)

@@ -1014,14 +1014,10 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
               battleOption.recoverIds.remove(recoverId);
             });
           },
-          itemBuilder: (context, recoverId, handle) => GestureDetector(
-            onTap: handle.tap,
-            onLongPress: handle.longPress,
-            child: CachedImage(
-              imageUrl: apRecovers.firstWhereOrNull((e) => e.id == recoverId)?.icon,
-              width: 32,
-              height: 32 * 144 / 132,
-            ),
+          itemBuilder: (context, recoverId) => CachedImage(
+            imageUrl: apRecovers.firstWhereOrNull((e) => e.id == recoverId)?.icon,
+            width: 32,
+            height: 32 * 144 / 132,
           ),
         ),
         SwitchListTile.adaptive(
@@ -1115,16 +1111,11 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
               },
             ).showDialog(context);
           },
-          itemBuilder: (context, itemId, handle) => GestureDetector(
-            onTap: handle.tap,
-            onLongPress: handle.longPress,
-            child: GameCardMixin.anyCardItemBuilder(
-              context: context,
-              id: itemId,
-              width: 42,
-              text: battleOption.targetDrops[itemId]!.toString(),
-              onTap: handle.tap,
-            ),
+          itemBuilder: (context, itemId) => GameCardMixin.anyCardItemBuilder(
+            context: context,
+            id: itemId,
+            width: 42,
+            text: battleOption.targetDrops[itemId]!.toString(),
           ),
         ),
         const Divider(indent: 16, endIndent: 16, height: 1),
@@ -1184,16 +1175,11 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
               },
             ).showDialog(context);
           },
-          itemBuilder: (context, itemId, handle) => GestureDetector(
-            onTap: handle.tap,
-            onLongPress: handle.longPress,
-            child: GameCardMixin.anyCardItemBuilder(
-              context: context,
-              id: itemId,
-              width: 42,
-              text: battleOption.winTargetItemNum[itemId]?.toString(),
-              onTap: handle.tap,
-            ),
+          itemBuilder: (context, itemId) => GameCardMixin.anyCardItemBuilder(
+            context: context,
+            id: itemId,
+            width: 42,
+            text: battleOption.winTargetItemNum[itemId]?.toString(),
           ),
         ),
       ],
@@ -1405,14 +1391,10 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
           });
         },
         onSecondary: (svtId) => db.gameData.servantsById[svtId]?.routeTo(),
-        itemBuilder: (context, svtId, handle) => GestureDetector(
-          onTap: handle.tap,
-          onLongPress: handle.longPress,
-          child: GameCardMixin.cardIconBuilder(
-            context: context,
-            icon: db.gameData.servantsById[svtId]?.borderedIcon ?? Atlas.common.emptySvtIcon,
-            width: 36,
-          ),
+        itemBuilder: (context, svtId) => GameCardMixin.cardIconBuilder(
+          context: context,
+          icon: db.gameData.servantsById[svtId]?.borderedIcon ?? Atlas.common.emptySvtIcon,
+          width: 36,
         ),
       ),
 
@@ -1448,14 +1430,10 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
           });
         },
         onSecondary: (ceId) => db.gameData.craftEssencesById[ceId]?.routeTo(),
-        itemBuilder: (context, ceId, handle) => GestureDetector(
-          onTap: handle.tap,
-          onLongPress: handle.longPress,
-          child: GameCardMixin.cardIconBuilder(
-            context: context,
-            icon: db.gameData.craftEssencesById[ceId]?.borderedIcon ?? Atlas.common.emptyCeIcon,
-            width: 36,
-          ),
+        itemBuilder: (context, ceId) => GameCardMixin.cardIconBuilder(
+          context: context,
+          icon: db.gameData.craftEssencesById[ceId]?.borderedIcon ?? Atlas.common.emptyCeIcon,
+          width: 36,
         ),
       ),
     ]);
@@ -1492,14 +1470,10 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
             });
           },
           onSecondary: (ceId) => db.gameData.craftEssencesById[ceId]?.routeTo(),
-          itemBuilder: (context, ceId, handle) => GestureDetector(
-            onTap: handle.tap,
-            onLongPress: handle.longPress,
-            child: GameCardMixin.cardIconBuilder(
-              context: context,
-              icon: db.gameData.craftEssencesById[ceId]?.borderedIcon ?? Atlas.common.emptyCeIcon,
-              width: 36,
-            ),
+          itemBuilder: (context, ceId) => GameCardMixin.cardIconBuilder(
+            context: context,
+            icon: db.gameData.craftEssencesById[ceId]?.borderedIcon ?? Atlas.common.emptyCeIcon,
+            width: 36,
           ),
         ),
       );
@@ -1988,14 +1962,10 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
               agent.network.setLocalNotification(removedAps: [ap]);
             });
           },
-          itemBuilder: (context, ap, handle) => GestureDetector(
-            onTap: handle.tap,
-            onLongPress: handle.longPress,
-            child: Chip(
-              label: Text(ap == 0 ? (agent.user.userGame?.actMax.toString() ?? 'Full') : ap.toString()),
-              visualDensity: VisualDensity.compact,
-              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-            ),
+          itemBuilder: (context, ap) => Chip(
+            label: Text(ap == 0 ? (agent.user.userGame?.actMax.toString() ?? 'Full') : ap.toString()),
+            visualDensity: VisualDensity.compact,
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
           ),
         ),
         Center(
@@ -2096,12 +2066,8 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
               if (mounted) setState(() {});
             });
           },
-          itemBuilder: (context, targetId, handle) => GestureDetector(
-            onLongPress: handle.longPress,
-            // No secondary action here, so let the card fall back to opening
-            // the item's detail page on tap.
-            child: GameCardMixin.anyCardItemBuilder(context: context, id: targetId, width: 36),
-          ),
+          itemBuilder: (context, targetId) =>
+              GameCardMixin.anyCardItemBuilder(context: context, id: targetId, width: 36),
         ),
       ],
     );

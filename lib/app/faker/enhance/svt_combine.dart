@@ -700,18 +700,15 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
             items: npMaterials,
             onAdd: npLv >= 5 ? null : _selectNpMaterials,
             onRemove: (e) => setState(() => _selection.materialUserSvtIds.remove(e.id)),
-            itemBuilder: (context, item, handle) => InkWell(
-              onLongPress: handle.longPress,
-              child:
-                  item.dbSvt?.iconBuilder(
-                    context: context,
-                    overrideIcon: item.icon,
-                    text: '${item.isLocked() ? "🔐" : ""}Lv${item.lv}\nNP${item.treasureDeviceLv1}',
-                    width: 42,
-                    option: ImageWithTextOption(fontSize: 10),
-                  ) ??
-                  Text('#${item.svtId}'),
-            ),
+            itemBuilder: (context, item) =>
+                item.dbSvt?.iconBuilder(
+                  context: context,
+                  overrideIcon: item.icon,
+                  text: '${item.isLocked() ? "🔐" : ""}Lv${item.lv}\nNP${item.treasureDeviceLv1}',
+                  width: 42,
+                  option: ImageWithTextOption(fontSize: 10),
+                ) ??
+                Text('#${item.svtId}'),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
