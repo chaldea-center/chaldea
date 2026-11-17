@@ -26,6 +26,12 @@
 -keep,allowobfuscation,allowshrinking class com.google.gson.reflect.TypeToken
 -keep,allowobfuscation,allowshrinking class * extends com.google.gson.reflect.TypeToken
 
+## Glance widget callbacks
+# Glance instantiates this callback through reflection.
+-keepclassmembers class cc.narumi.chaldea.RefreshAction {
+  public <init>();
+}
+
 ## GroMore SDK
 -keep class com.bytedance.sdk.openadsdk.** { *; }
 -keep class com.pangle.** { *; }
