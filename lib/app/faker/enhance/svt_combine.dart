@@ -347,13 +347,15 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
         ),
         ListTile(
           title: Text('圣杯转临'),
-          subtitle: Wrap(
-            spacing: 2,
-            children: [
-              _item(Items.grailId, 1),
-              if (baseUserSvt.lv >= 100 && svt.coin != null) _item(svt.coin!.item.id, 30),
-            ],
-          ),
+          subtitle: baseUserSvt.lv < 120
+              ? Wrap(
+                  spacing: 2,
+                  children: [
+                    _item(Items.grailId, 1),
+                    if (baseUserSvt.lv >= 100 && svt.coin != null) _item(svt.coin!.item.id, 30),
+                  ],
+                )
+              : null,
           trailing: FilledButton(
             onPressed: checkSvtLvExceed(baseUserSvt.id)
                 ? () {
@@ -1205,7 +1207,7 @@ class __SkillCombineMultiLevelStateDialog extends State<_SkillCombineMultiLevelD
 int _npCombineQp(int rarity, int curLv, int targetLv) =>
     (5000 << ((rarity <= 0 ? 2 : rarity) - 1) << (curLv - 1)) * ((1 << (targetLv - curLv)) - 1);
 
-/// A "clean" NP material: lv 1, no foukun, active skills at lv 1, no append skill investment.
+/// A "clean" NP material: lv 1, no Fou investment, and no skill investment.
 /// Append skill lv 1 = shared per-svtId unlock only; lv > 1 = per-instance investment.
 bool _isCleanNpMaterial(UserServantEntity userSvt, MasterDataManager mstData) {
   final svt = userSvt.dbEntity;
@@ -1214,6 +1216,7 @@ bool _isCleanNpMaterial(UserServantEntity userSvt, MasterDataManager mstData) {
       userSvt.lv == 1 &&
       userSvt.adjustHp == 0 &&
       userSvt.adjustAtk == 0 &&
-      userSvt.skillLvs.every((lv) => lv == 1) &&
+      // Dedicated NP materials have no active skills, so their slots can be 0.
+      userSvt.skillLvs.every((lv) => lv == 1 || (lv == 0 && svt.type == SvtType.svtMaterialTd)) &&
       mstData.getSvtAppendSkillLvs(userSvt).every((lv) => lv <= 1);
 }

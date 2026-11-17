@@ -185,6 +185,7 @@ class _ExRoomShopPageState extends State<ExRoomShopPage> with FakerRuntimeStateM
   }
 
   Future<void> buyShop(ShopDailyInfo info) async {
+    if (runtime.runningTask.value) return;
     int maxBuyCount = info.limitNum - info.buyNum;
     String? error = _checkBuyEnabled(info);
     for (final (index, useItemId) in info.shopDaily.useItemIds.indexed) {

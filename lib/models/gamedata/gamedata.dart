@@ -243,16 +243,17 @@ class GameData with _GameDataExtra {
 
     // remove spoiler
     if (this.version.timestamp > 0 && spoilerRegion != null && spoilerRegion != Region.jp) {
-      void _remove(Map<int, GameCardMixin> dict, MappingList<int> releases) {
+      void _remove<T extends GameCardMixin>(Map<int, T> dict, MappingList<int> releases, {bool Function(T)? keep}) {
         final released = releases.ofRegion(spoilerRegion);
         if (released == null || released.isEmpty) return;
-        dict.removeWhere((key, v) => !released.contains(v.id));
+        dict.removeWhere((key, v) => !released.contains(v.id) && keep?.call(v) != true);
       }
 
       _remove(this.servants, this.mappingData.entityRelease);
       _remove(this.craftEssences, this.mappingData.entityRelease);
       _remove(this.commandCodes, this.mappingData.ccRelease);
-      _remove(this.entities, this.mappingData.entityRelease);
+      // Owned NP materials may be needed on a server other than the spoiler region.
+      _remove(this.entities, this.mappingData.entityRelease, keep: (entity) => entity.type == SvtType.svtMaterialTd);
     }
     this.items.remove(9305420); // 完璧なお正月 is CE
     // other generated maps

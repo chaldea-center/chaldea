@@ -152,9 +152,9 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
 
   /// Quest id and phase are metadata the player only verifies, so they sit as
   /// chips one line tall instead of taking a card row of their own.
-  Widget _questValueChip(String label, {VoidCallback? onPressed}) {
+  Widget _questValueChip(Widget label, {VoidCallback? onPressed}) {
     return ActionChip(
-      label: Text(label),
+      label: label,
       onPressed: onPressed,
       visualDensity: VisualDensity.compact,
       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
@@ -280,7 +280,10 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
             ),
           ),
           const Divider(height: 1),
-          buttonBar,
+          ValueListenableBuilder<bool>(
+            valueListenable: runtime.runningTask,
+            builder: (context, running, _) => _buildButtonBar(running),
+          ),
         ],
       ),
     );
@@ -651,10 +654,11 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
       }
       children.add(
         SimpleAccordion(
+          canTapOnHeader: false,
           headerBuilder: (context, _) {
-            final resultName = lastResult != null && lastResult.battleId == battleEntity.id ? resultType?.name : null;
             return ListTile(
               dense: true,
+              onTap: () => router.push(url: Routes.questI(battleEntity.questId, battleEntity.questPhase)),
               title: Text(
                 _describeQuest(
                   battleEntity.questId,
@@ -662,50 +666,37 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
                   battleEntity.battleInfo?.enemyDeck.map((e) => e.svts.length).join('-'),
                 ),
               ),
-              subtitle: Text([?resultName, if (dropItems.isNotEmpty) '${dropItems.length} drops'].join(' · ')),
-              trailing: IconButton(
-                tooltip: 'Open quest',
-                visualDensity: VisualDensity.compact,
-                onPressed: () => router.push(url: Routes.questI(battleEntity.questId, battleEntity.questPhase)),
-                icon: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-              ),
+              subtitle: dropItems.isEmpty
+                  ? null
+                  : Wrap(
+                      children: [
+                        for (final itemId in dropItems.keys.toList()..sort((a, b) => Item.compare2(a, b)))
+                          db.gameData.craftEssencesById.containsKey(itemId)
+                              ? db.gameData.craftEssencesById[itemId]!.iconBuilder(
+                                  context: context,
+                                  height: 32,
+                                  text: '+${dropItems[itemId]!.format()}',
+                                )
+                              : Item.iconBuilder(
+                                  context: context,
+                                  item: null,
+                                  itemId: itemId,
+                                  height: 32,
+                                  text: [
+                                    '+${dropItems[itemId]!.format()}',
+                                    mstData.getItemOrSvtNum(itemId, eventIds: [battleEntity.eventId]).format(),
+                                  ].join('\n'),
+                                ),
+                      ],
+                    ),
             );
           },
           contentBuilder: (context) {
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: FormationCard(
-                    formation: BattleTeamFormationX.fromBattleEntity(battleEntity: battleEntity, mstData: mstData),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-                  child: Wrap(
-                    children: [
-                      for (final itemId in dropItems.keys.toList()..sort((a, b) => Item.compare2(a, b)))
-                        db.gameData.craftEssencesById.containsKey(itemId)
-                            ? db.gameData.craftEssencesById[itemId]!.iconBuilder(
-                                context: context,
-                                height: 36,
-                                text: '+${dropItems[itemId]!.format()}',
-                              )
-                            : Item.iconBuilder(
-                                context: context,
-                                item: null,
-                                itemId: itemId,
-                                height: 36,
-                                text: [
-                                  '+${dropItems[itemId]!.format()}',
-                                  mstData.getItemOrSvtNum(itemId, eventIds: [battleEntity.eventId]).format(),
-                                ].join('\n'),
-                              ),
-                    ],
-                  ),
-                ),
-              ],
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: FormationCard(
+                formation: BattleTeamFormationX.fromBattleEntity(battleEntity: battleEntity, mstData: mstData),
+              ),
             );
           },
         ),
@@ -747,11 +738,16 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
           for (final itemId in questDropIds.followedBy(battleOption.targetDrops.keys)) {
             runtime.agentData.totalDropStat.items.putIfAbsent(itemId, () => 0);
           }
-          final _questPhase = AtlasApi.questPhaseCache(battleOption.questId, battleOption.questPhase);
-          if (_questPhase != null) {
-            for (final drop in _questPhase.drops) {
+          final questPhase =
+              AtlasApi.questPhaseCache(battleOption.questId, battleOption.questPhase, null, runtime.region) ??
+              AtlasApi.questPhaseCache(battleOption.questId, battleOption.questPhase);
+          if (questPhase != null) {
+            for (final drop in questPhase.drops) {
               final ce = db.gameData.craftEssencesById[drop.objectId];
               if (ce != null && ce.rarity == 5) {
+                runtime.agentData.totalDropStat.items.putIfAbsent(drop.objectId, () => 0);
+              }
+              if (drop.type == .item && db.gameData.items.containsKey(drop.objectId)) {
                 runtime.agentData.totalDropStat.items.putIfAbsent(drop.objectId, () => 0);
               }
             }
@@ -1207,6 +1203,8 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
   Widget get battleSetupOptionSection {
     final List<Widget> children = [];
     final quest = db.gameData.quests[battleOption.questId];
+    final previousQuest = db.gameData.quests[battleOption.questId - 1];
+    final nextQuest = db.gameData.quests[battleOption.questId + 1];
     final questPhase =
         AtlasApi.questPhaseCache(battleOption.questId, battleOption.questPhase, null, runtime.region) ??
         AtlasApi.questPhaseCache(battleOption.questId, battleOption.questPhase);
@@ -1255,36 +1253,63 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
         onTap: () => router.push(url: Routes.questI(battleOption.questId, battleOption.questPhase)),
       ),
       Padding(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-        child: Center(
-          child: Wrap(
-            spacing: 8,
-            runSpacing: 4,
-            alignment: .center,
-            children: [
-              _questValueChip(
-                'ID ${battleOption.questId}',
+        padding: const EdgeInsets.fromLTRB(8, 0, 8, 8),
+        child: Row(
+          spacing: 4,
+          mainAxisAlignment: .center,
+          children: [
+            IconButton(
+              tooltip: 'Quest ID −1',
+              icon: const Icon(Icons.chevron_left),
+              iconSize: 18,
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints.tightFor(width: 28, height: 28),
+              style: IconButton.styleFrom(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
+              onPressed:
+                  runtime.runningTask.value ||
+                      previousQuest == null ||
+                      previousQuest.flags.contains(QuestFlag.superBoss)
+                  ? null
+                  : () => runtime.lockTask(() => runtime.battle.selectQuest(previousQuest.id, quest: previousQuest)),
+            ),
+            Flexible(
+              flex: 6,
+              child: _questValueChip(
+                Text('ID ${battleOption.questId}', maxLines: 1, overflow: .ellipsis),
                 onPressed: () {
                   runtime.lockTask(() {
                     InputCancelOkDialog.number(
                       title: 'Quest ID',
                       initValue: battleOption.questId,
-                      onSubmit: (questId) async {
-                        if (await runtime.battle.selectQuest(questId)) {
-                          _onChangeQuest();
-                        }
-                        if (mounted) setState(() {});
-                      },
+                      onSubmit: (questId) => runtime.lockTask(() => runtime.battle.selectQuest(questId)),
                     ).showDialog(context);
                   });
                 },
               ),
-              _questValueChip(
-                'phase ${battleOption.questPhase}/${quest != null && quest.phases.isNotEmpty ? Maths.max(quest.phases) : "-"}',
+            ),
+            Flexible(
+              flex: 5,
+              child: _questValueChip(
+                Text(
+                  'P${battleOption.questPhase}/${quest != null && quest.phases.isNotEmpty ? Maths.max(quest.phases) : "-"}',
+                  maxLines: 1,
+                  overflow: .ellipsis,
+                ),
                 onPressed: quest == null || quest.phases.isEmpty ? null : _pickQuestPhase,
               ),
-            ],
-          ),
+            ),
+            IconButton(
+              tooltip: 'Quest ID +1',
+              icon: const Icon(Icons.chevron_right),
+              iconSize: 18,
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints.tightFor(width: 28, height: 28),
+              style: IconButton.styleFrom(tapTargetSize: MaterialTapTargetSize.shrinkWrap),
+              onPressed: runtime.runningTask.value || nextQuest == null || nextQuest.flags.contains(QuestFlag.superBoss)
+                  ? null
+                  : () => runtime.lockTask(() => runtime.battle.selectQuest(nextQuest.id, quest: nextQuest)),
+            ),
+          ],
         ),
       ),
     ]);
@@ -2157,12 +2182,12 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
     );
   }
 
-  Widget get buttonBar {
+  Widget _buildButtonBar(bool running) {
     final bool loggedIn = mstData.isLoggedIn, inBattle = runtime.agentData.curBattle != null;
 
     final List<Widget> tools = [
       buildCompactButton(
-        enabled: loggedIn && !inBattle,
+        enabled: !running && loggedIn && !inBattle,
         onPressed: () async {
           final buyCount = await ApSeedExchangeCountDialog(mstData: mstData).showDialog<int>(context);
           if (buyCount != null) {
@@ -2189,13 +2214,14 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
         )
       else
         buildCompactButton(
-          enabled: loggedIn,
+          enabled: loggedIn && !running,
           onPressed: () async {
             runtime.runTask(() => runtime.battle.battleSetupWithOptions(battleOption));
           },
           text: 'b.setup',
         ),
       buildCompactButton(
+        enabled: !running,
         onPressed: () async {
           if (agent.user.lastRequestOptions?.success == false) {
             final confirm = await SimpleConfirmDialog(
@@ -2371,17 +2397,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
       },
     );
 
-    // The tool row only holds pre-battle actions, so it folds away while a task
-    // runs and leaves the control row next to the thumb.
-    return ValueListenableBuilder<bool>(
-      valueListenable: runtime.runningTask,
-      builder: (context, running, _) => AnimatedSize(
-        duration: const Duration(milliseconds: 200),
-        curve: Curves.easeOutCubic,
-        alignment: Alignment.bottomCenter,
-        child: FakerActionBar(groups: [if (!running) tools, primary], message: message),
-      ),
-    );
+    return FakerActionBar(groups: [tools, primary], message: message);
   }
 
   Future<void> _recoverAp() async {

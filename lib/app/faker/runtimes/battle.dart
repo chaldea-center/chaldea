@@ -22,16 +22,22 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
   AutoBattleOptions get battleOption => agent.user.curBattleOption;
 
   Future<bool> selectQuest(int questId, {Quest? quest}) async {
+    final battleOption = this.battleOption;
     quest ??= db.gameData.quests[questId];
     if (questId > 0 && quest == null) {
+      final previousSelection = (battleOption.questId, battleOption.questPhase);
       quest = await showEasyLoading(() => AtlasApi.quest(questId, region: agent.user.region));
+      if (runtime.runningTask.value ||
+          !identical(battleOption, this.battleOption) ||
+          previousSelection != (battleOption.questId, battleOption.questPhase)) {
+        return false;
+      }
     }
     if (quest == null || quest.flags.contains(QuestFlag.superBoss)) {
       EasyLoading.showError('Invalid Quest');
       return false;
     }
 
-    final battleOption = this.battleOption;
     battleOption.questId = questId;
     final userQuest = mstData.userQuest[questId];
     if (mstData.isLoggedIn) {
@@ -995,17 +1001,16 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
     }
   }
 
-  /// Warns when the fixed support CE grants less team bond bonus than Chaldea Tea Time.
+  /// Compares the highest estimated bonus from one configured support CE with Chaldea Tea Time.
   ///
-  /// Only [AutoBattleOptions.supportEquipIds] is checked, in both grand and normal battles.
-  /// When it holds exactly one bond-bonus CE it can be evaluated; with several candidates the
-  /// friend's actual CE is unknown. `grandSupportEquipIds` is never validated.
+  /// Candidates are the single CE in [AutoBattleOptions.supportEquipIds] plus, on grand battles,
+  /// the single CE in [AutoBattleOptions.grandSupportEquipIds]. Grand support may satisfy both
+  /// filters at once. This check compares CEs individually because the filters do not fix their
+  /// equip slots. If a list has several candidates, skip the estimate.
   Future<void> _checkSupportEquipBondBonus(AutoBattleOptions option, QuestPhase questPhase) async {
     if (option.supportEquipIds.length != 1) return;
-    final ce = db.gameData.craftEssencesById[option.supportEquipIds.first];
-    if (ce == null) return;
-    final effects = CeBondEffect.extractAll(ce, option.supportEquipMaxLimitBreak, questPhase, support: true);
-    if (effects.isEmpty) return; // not a bond-bonus CE
+    final grandCeIds = questPhase.isUseGrandBoard ? option.grandSupportEquipIds : const <int>{};
+    if (grandCeIds.length > 1) return;
 
     // Only own servants receive the team effect; the support slot (isFollowerSvt) does not.
     final deck = questPhase.isUseUserEventDeck()
@@ -1022,19 +1027,33 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
     }
     if (teamTraits.isEmpty) return;
 
-    // The support servant is a virtual wearer without traits.
-    final teamEffects = effects
-        .where((effect) => effect.scope == BondEffectScope.team && effect.wearerMatches(const []))
-        .toList();
-    var teamBonus = 0;
-    for (final effect in teamEffects) {
-      teamBonus += effect.rate * teamTraits.where(effect.targetMatches).length;
+    CraftEssence? bestCe;
+    int bestBonus = 0;
+    for (final ceId in {option.supportEquipIds.first, ...grandCeIds}) {
+      final ce = db.gameData.craftEssencesById[ceId];
+      if (ce == null) continue;
+      final effects = CeBondEffect.extractAll(ce, option.supportEquipMaxLimitBreak, questPhase, support: true);
+      if (effects.isEmpty) continue; // not a bond-bonus CE
+      // The support servant is a virtual wearer without traits.
+      final teamEffects = effects.where(
+        (effect) => effect.scope == BondEffectScope.team && effect.wearerMatches(const []),
+      );
+      int teamBonus = 0;
+      for (final effect in teamEffects) {
+        teamBonus += effect.rate * teamTraits.where(effect.targetMatches).length;
+      }
+      if (bestCe == null || teamBonus > bestBonus) {
+        bestCe = ce;
+        bestBonus = teamBonus;
+      }
     }
+    if (bestCe == null) return;
+    final bestCeName = bestCe.lName.l;
 
     // CE 9403520 "Chaldea Tea Time" grants +15% bond to every servant (rate unit: 150).
     const int teaTimeRate = 150;
     final benchmark = teaTimeRate * teamTraits.length;
-    if (teamBonus >= benchmark) return;
+    if (bestBonus >= benchmark) return;
     if (!runtime.mounted) return;
 
     String pct(int rate) => '${(rate / 10).toStringAsFixed(1)}%';
@@ -1042,17 +1061,18 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
       SimpleConfirmDialog(
         title: const Text('Support CE Bond Bonus'),
         content: Text(
-          'Support CE: ${ce.lName.l}\n'
-          'Team bond bonus: ${pct(teamBonus)} vs ${pct(teaTimeRate)} × ${teamTraits.length} '
+          'Best single support CE: $bestCeName\n'
+          'Estimated team bonus from that CE: ${pct(bestBonus)} vs ${pct(teaTimeRate)} × ${teamTraits.length} '
           '= ${pct(benchmark)} (Chaldea Tea Time, 9403520)\n'
-          'You can switch to a higher-bonus support CE, or keep looping without changing it.',
+          '${grandCeIds.isEmpty ? '' : 'Grand support CEs can contribute together when equipped in active slots.\n'}'
+          'A higher-bonus support CE may be available.',
         ),
         confirmText: 'Continue',
         cancelText: 'Cancel',
       ),
     );
     if (confirm != true) {
-      throw SilentException('Change the support CE (${ce.lName.l}) then restart the loop');
+      throw SilentException('Change the support CE ($bestCeName) then restart the loop');
     }
   }
 }

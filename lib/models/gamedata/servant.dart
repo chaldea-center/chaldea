@@ -567,12 +567,12 @@ class Servant extends BasicServant {
   }
 
   static int getBaseSvtId(int svtId) {
-    return db.gameData.servantsById[svtId]?.type == SvtType.svtMaterialTd ? svtId - 1 : svtId;
+    return db.gameData.entities[svtId]?.type == SvtType.svtMaterialTd ? svtId - 1 : svtId;
   }
 
   static int? getMaterialTdSvtId(int baseSvtId) {
     final materialSvtId = baseSvtId + 1;
-    return db.gameData.servantsById[materialSvtId]?.type == SvtType.svtMaterialTd ? materialSvtId : null;
+    return db.gameData.entities[materialSvtId]?.type == SvtType.svtMaterialTd ? materialSvtId : null;
   }
 
   // not limitCount=0-4

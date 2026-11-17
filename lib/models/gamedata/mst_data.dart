@@ -223,8 +223,8 @@ class MasterDataManager extends MasterDataManagerBase {
   /// Group-wide: true even for a copy already at NP5. A `svtMaterialTd` id is
   /// resolved to its base servant first.
   bool hasTdUpgradeCopy(int svtId) {
-    if (db.gameData.servantsById[svtId] == null) return false;
     final baseSvtId = Servant.getBaseSvtId(svtId);
+    if (db.gameData.servantsById[baseSvtId] == null) return false;
     final materialTdSvtId = Servant.getMaterialTdSvtId(baseSvtId);
     var copies = 0;
     var anyBelowMax = false;
