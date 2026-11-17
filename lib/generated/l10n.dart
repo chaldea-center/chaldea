@@ -1395,6 +1395,17 @@ class S {
     );
   }
 
+  /// `Unreleased costumes excluded from search`
+  String get bond_excluded_unreleased_costumes {
+    return Intl.message(
+      'Unreleased costumes excluded from search',
+      name: 'bond_excluded_unreleased_costumes',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Bond Limit`
   String get bond_limit {
     return Intl.message('Bond Limit', name: 'bond_limit', desc: '', locale: localeName, args: []);

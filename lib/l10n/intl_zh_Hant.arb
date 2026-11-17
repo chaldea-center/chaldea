@@ -188,6 +188,7 @@
   "bond_craft": "羈絆禮裝",
   "bond_eff": "羈絆效率",
   "bond_equip_change_skill": null,
+  "bond_excluded_unreleased_costumes": "未計入的未實裝靈衣",
   "bond_limit": "羈絆上限",
   "bootstrap_page_title": "引導頁",
   "branch_quest": "分支關卡",

@@ -328,6 +328,7 @@ class MappingData {
   final MappingList<int> entityRelease;
   final MappingList<int> ccRelease;
   final MappingList<int> mcRelease;
+  final MappingList<int> costumeRelease; // battleCharaId
   final MappingList<int> warRelease;
   final Map<int, MappingBase<int>> questRelease; // only svt related quests
   final Map<int, MappingList<int>> svtTraitRelease;
@@ -372,6 +373,7 @@ class MappingData {
     MappingList<int>? entityRelease,
     MappingList<int>? ccRelease,
     MappingList<int>? mcRelease,
+    MappingList<int>? costumeRelease,
     MappingList<int>? warRelease,
     this.questRelease = const {},
     this.svtTraitRelease = const {},
@@ -380,6 +382,7 @@ class MappingData {
   }) : entityRelease = entityRelease ?? MappingList(),
        ccRelease = ccRelease ?? MappingList(),
        mcRelease = mcRelease ?? MappingList(),
+       costumeRelease = costumeRelease ?? MappingList(),
        warRelease = warRelease ?? MappingList(),
        enums = enums ?? EnumMapping() {
     _updateRegion(itemNames, Region.jp);

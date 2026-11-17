@@ -307,6 +307,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "bond_craft": MessageLookupByLibrary.simpleMessage("羁绊礼装"),
     "bond_eff": MessageLookupByLibrary.simpleMessage("羁绊效率"),
     "bond_equip_change_skill": MessageLookupByLibrary.simpleMessage("切换羁绊礼装效果"),
+    "bond_excluded_unreleased_costumes": MessageLookupByLibrary.simpleMessage("未计入的未实装灵衣"),
     "bond_limit": MessageLookupByLibrary.simpleMessage("羁绊上限"),
     "bond_max_servants": MessageLookupByLibrary.simpleMessage("最多从者数"),
     "bond_not_full_only": MessageLookupByLibrary.simpleMessage("仅限羁绊未满"),

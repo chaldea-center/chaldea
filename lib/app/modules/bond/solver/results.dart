@@ -425,10 +425,12 @@ class BondSolverResultsTab extends StatelessWidget {
     final bonuses = team.traitCeBonusesFor(target, quest, option);
     final requirement = _ascensionRequirement(team, target);
     final targetSvt = db.gameData.servantsById[target.servantId] ?? db.gameData.entities[target.servantId];
+    String limitName(int limit) => targetSvt is Servant ? targetSvt.getLimitName(limit) : '$limit';
     await router.showDialog<void>(
       context: context,
       builder: (context) => SimpleConfirmDialog(
         showCancel: false,
+        scrollable: true,
         title: Text.rich(
           TextSpan(
             children: [
@@ -452,11 +454,14 @@ class BondSolverResultsTab extends StatelessWidget {
                   dense: true,
                   contentPadding: EdgeInsets.zero,
                   title: Text(S.current.ascension),
-                  subtitle: Text(
-                    requirement.allowed
-                        .map((limit) => targetSvt is Servant ? targetSvt.getLimitName(limit) : '$limit')
-                        .join(' / '),
-                  ),
+                  subtitle: Text(requirement.allowed.map(limitName).join(' / ')),
+                ),
+              if (requirement.unreleasedCostumes.isNotEmpty)
+                ListTile(
+                  dense: true,
+                  contentPadding: EdgeInsets.zero,
+                  title: Text(S.current.bond_excluded_unreleased_costumes),
+                  subtitle: Text(requirement.unreleasedCostumes.map(limitName).join(' / ')),
                 ),
               if (bonuses.isEmpty) const Text('—'),
               ...bonuses.map((bonus) {

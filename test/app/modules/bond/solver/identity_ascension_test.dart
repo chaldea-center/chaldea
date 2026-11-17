@@ -571,6 +571,90 @@ void main() {
     expect(preview.cachedAscensionRequirement(0)!.allowed, [102, 105]);
   });
 
+  test('regional release filters searched forms and preserves manually fixed selections', () async {
+    final svt = db.gameData.servantsById[100100]!;
+    final releases = db.gameData.mappingData.costumeRelease;
+    final entityReleases = db.gameData.mappingData.entityRelease;
+    final originalRelease = releases.cn;
+    final originalEntityRelease = entityReleases.cn;
+    final originalProfile = svt.profile;
+    const released = 900101, unreleased = 900102, otherUnreleased = 900103;
+    svt.profile = NiceLore(
+      costume: {
+        released: NiceCostume(id: 11, battleCharaId: released),
+        unreleased: NiceCostume(id: 12, battleCharaId: unreleased),
+        otherUnreleased: NiceCostume(id: 13, battleCharaId: otherUnreleased),
+      },
+    );
+    releases.cn = [released];
+    entityReleases.cn = [100200];
+    addTearDown(() {
+      releases.cn = originalRelease;
+      entityReleases.cn = originalEntityRelease;
+      svt.profile = originalProfile;
+    });
+    final source = formation(first: svt)..svts[0].limitCount = 12;
+    final option = options()
+      ..maxServants = 1
+      ..releaseReference = BondReleaseReference.cn;
+    for (final input in [12, unreleased]) {
+      source.svts[0].limitCount = input;
+      FormationBondSolver.validateFormation(option: option, quest: quest, formation: source);
+      final team = solve(source, option).best!;
+      final slot = team.slots.single;
+      expect(slot.servantId, svt.id);
+      expect(slot.limitCount, input);
+      final requirement = FormationBondSolver.ascensionRequirement(
+        team: team,
+        target: slot,
+        option: option,
+        quest: quest,
+        formation: source,
+      );
+      expect(requirement.allowed, contains(input));
+      expect(requirement.unreleasedCostumes, [otherUnreleased]);
+    }
+
+    option.searchFixedAscensions = true;
+    for (final (input, expected) in [(12, 4), (11, 11)]) {
+      source.svts[0].limitCount = input;
+      final result = await FormationBondSolver.solveProgressively(
+        option: option,
+        quest: quest,
+        formation: source,
+        useWorkerIsolate: false,
+      ).last;
+      final preview = result.best!.previewTeam;
+      expect(preview.slots.single.limitCount, expected);
+      final requirement = preview.cachedAscensionRequirement(0)!;
+      expect(requirement.allowed, containsAll([0, 1, 2, 3, 4, released]));
+      expect(requirement.unreleasedCostumes, [unreleased, otherUnreleased]);
+      expect(requirement.restricted, isFalse);
+    }
+
+    option.searchFixedAscensions = false;
+    source.svts[0].limitCount = 12;
+    option.releaseReference = BondReleaseReference.questClosedAt;
+    final dated = solve(source, option, phase: QuestPhase(bond: 1000, closedAt: 1700000000));
+    expect(dated.best!.slots.single.limitCount, 12);
+
+    option.releaseReference = BondReleaseReference.cn;
+    for (final fallback in [null, <int>[]]) {
+      releases.cn = fallback;
+      final team = solve(source, option).best!;
+      expect(team.slots.single.limitCount, 12);
+      final requirement = FormationBondSolver.ascensionRequirement(
+        team: team,
+        target: team.slots.single,
+        option: option,
+        quest: quest,
+        formation: source,
+      );
+      expect(requirement.all, containsAll([released, unreleased]));
+      expect(requirement.unreleasedCostumes, isEmpty);
+    }
+  });
+
   test('preview prefers a fixed costume entered by its short ID', () async {
     final svt = db.gameData.servantsById[100100]!;
     final originalProfile = svt.profile;

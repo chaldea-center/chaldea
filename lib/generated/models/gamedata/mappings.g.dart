@@ -186,6 +186,9 @@ MappingData _$MappingDataFromJson(Map json) => MappingData(
   mcRelease: json['mc_release'] == null
       ? null
       : MappingList<int>.fromJson(Map<String, dynamic>.from(json['mc_release'] as Map)),
+  costumeRelease: json['costume_release'] == null
+      ? null
+      : MappingList<int>.fromJson(Map<String, dynamic>.from(json['costume_release'] as Map)),
   warRelease: json['war_release'] == null
       ? null
       : MappingList<int>.fromJson(Map<String, dynamic>.from(json['war_release'] as Map)),
@@ -250,6 +253,7 @@ Map<String, dynamic> _$MappingDataToJson(MappingData instance) => <String, dynam
   'entity_release': instance.entityRelease.toJson(),
   'cc_release': instance.ccRelease.toJson(),
   'mc_release': instance.mcRelease.toJson(),
+  'costume_release': instance.costumeRelease.toJson(),
   'war_release': instance.warRelease.toJson(),
   'quest_release': instance.questRelease.map((k, e) => MapEntry(k.toString(), e.toJson())),
   'svt_trait_release': instance.svtTraitRelease.map((k, e) => MapEntry(k.toString(), e.toJson())),
