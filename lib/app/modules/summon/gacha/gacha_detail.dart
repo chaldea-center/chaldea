@@ -9,6 +9,7 @@ import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
+import 'package:chaldea/widgets/modern/accent_container.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 import '../summon_simulator_page.dart';
@@ -120,18 +121,19 @@ class _GachaDetailPageState extends State<GachaDetailPage> {
         title: AutoSizeText(gacha.lName.setMaxLines(1), maxLines: 1, minFontSize: 14),
         actions: [
           PopupMenuButton(
-            itemBuilder: (context) => [
-              PopupMenuItem(child: Text(S.current.refresh), value: () => parseHtml(refresh: true)),
+            itemBuilder: (_) => [
+              PopupMenuItem(child: Text(S.current.refresh), onTap: () => parseHtml(refresh: true)),
               PopupMenuItem(
                 child: Text('${S.current.copy} Mooncell wikitext'),
-                value: () {
+                onTap: () {
                   SimpleConfirmDialog(
                     title: Text(S.current.confirm),
                     content: Text(
                       '[For Mooncell wiki Editor]\n'
                       '检查后再写入到“某某卡池/模拟器/data{X}”中:\n'
                       '- 是否显示(1显示 0不显示)\n'
-                      '- 各行总概率是否正确',
+                      '- 各行总概率是否正确'
+                      '${result.cardWarnings.isEmpty ? '' : '\n- 有 ${result.cardWarnings.length} 张卡解析失败，ids 列已写入原始名称，需手工修正'}',
                     ),
                     onTapOk: () {
                       copyToClipboard(result.toOutput(), toast: true);
@@ -268,6 +270,7 @@ class _GachaDetailPageState extends State<GachaDetailPage> {
           if (allowParse) ...[
             const SizedBox(height: 32),
             DividerWithTitle(title: S.current.probability),
+            if (result.cardWarnings.isNotEmpty) _buildWarningCard(),
             SwitchListTile(
               dense: true,
               value: showIcon,
@@ -291,6 +294,40 @@ class _GachaDetailPageState extends State<GachaDetailPage> {
 
   Widget cell(String s) {
     return Padding(padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2), child: Text(s));
+  }
+
+  Widget _buildWarningCard() {
+    final extra = AppTheme.ofExtra(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      child: AccentContainer(
+        accentColor: extra.stateWarning,
+        borderColor: extra.stateWarning.withValues(alpha: 0.4),
+        backgroundColor: extra.stateWarningBg,
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(Icons.warning_rounded, size: 20, color: extra.stateWarning),
+                const SizedBox(width: 8),
+                Text(
+                  S.current.warning,
+                  style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+                ),
+              ],
+            ),
+            for (final line in result.warningLines)
+              Padding(
+                padding: const EdgeInsets.only(top: 6, left: 28),
+                child: Text(line, style: Theme.of(context).textTheme.bodySmall),
+              ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget buildTable() {
@@ -362,7 +399,7 @@ class _GachaDetailPageState extends State<GachaDetailPage> {
             text: group.formatProb(group.getTotalProb()),
             children: [
               TextSpan(
-                text: ' (${group.indivProb}×${group.cards.length}=${group.getTotalProb().toStringAsFixed(2)}%)',
+                text: ' (${group.indivProb}×${group.expectedCount}=${group.getTotalProb().toStringAsFixed(2)}%)',
                 style: Theme.of(context).textTheme.bodySmall,
               ),
             ],
@@ -371,20 +408,34 @@ class _GachaDetailPageState extends State<GachaDetailPage> {
       ),
     );
 
+    final warnings = result.warningsOf(group).toList();
+    final errorStyle = TextStyle(color: Theme.of(context).colorScheme.error);
     Widget svtCell;
     if (!showIcon && !group.pickup) {
-      svtCell = cell(group.ids.join(", "));
+      final idsText = group.ids.join(", ");
+      svtCell = Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+        child: Text.rich(
+          TextSpan(
+            text: idsText,
+            children: [
+              for (final (index, warning) in warnings.indexed)
+                TextSpan(text: '${idsText.isEmpty && index == 0 ? '' : ', '}${warning.name}', style: errorStyle),
+            ],
+          ),
+        ),
+      );
     } else {
       svtCell = Padding(
         padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
         child: Text.rich(
           TextSpan(
-            // text: '(${group.cards.length}) ',
             children: [
               for (final card in group.cards)
                 CenterWidgetSpan(
                   child: GameCardMixin.anyCardItemBuilder(context: context, width: 28, id: card.id),
                 ),
+              for (final warning in warnings) TextSpan(text: ' ${warning.name}', style: errorStyle),
             ],
           ),
         ),

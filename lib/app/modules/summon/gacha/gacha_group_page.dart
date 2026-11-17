@@ -70,11 +70,15 @@ class _GachaGroupPageState extends State<GachaGroupPage> {
         SimpleAccordion(
           expanded: gachas.length <= 3,
           headerBuilder: (context, _) {
-            final invalidCount = gachas.where((e) => e.isInvalid).length, validCount = gachas.length - invalidCount;
+            final invalidCount = gachas.where((e) => e.isInvalid).length;
+            final warningCount = gachas.where((e) => !e.isInvalid && e.cardWarnings.isNotEmpty).length;
+            final validCount = gachas.length - invalidCount - warningCount;
             return ListTile(
               dense: true,
               title: Text('${gachas.length} ${S.current.summon}: $guessGachaName'),
-              subtitle: Text('$invalidCount ${S.current.failed}  $validCount ${S.current.success}'),
+              subtitle: Text(
+                '$invalidCount ${S.current.failed}  $warningCount ${S.current.warning}  $validCount ${S.current.success}',
+              ),
             );
           },
           contentBuilder: (context) {
@@ -88,7 +92,9 @@ class _GachaGroupPageState extends State<GachaGroupPage> {
                     horizontalTitleGap: 8,
                     leading: gacha.isInvalid
                         ? const Icon(Icons.error, color: Colors.red, size: 18)
-                        : const Icon(Icons.check_circle, color: Colors.green, size: 18),
+                        : (gacha.cardWarnings.isNotEmpty
+                              ? Icon(Icons.warning_amber, color: AppTheme.ofExtra(context).stateWarning, size: 18)
+                              : const Icon(Icons.check_circle, color: Colors.green, size: 18)),
                     title: Text('${index + 1} - ${gacha.gacha.name.setMaxLines(1)}'),
                     onTap: () {
                       gacha.gacha.routeTo(region: Region.jp);
@@ -595,6 +601,7 @@ class _GachaGroupPageState extends State<GachaGroupPage> {
     }
     String? warning;
     Color? warningColor = Theme.of(context).colorScheme.error;
+    final warningLines = gacha.warningLines;
     if (gacha.isInvalid) {
       warning = '该卡池解析失败';
     } else {
@@ -603,6 +610,10 @@ class _GachaGroupPageState extends State<GachaGroupPage> {
       }
       warning =
           '检查概率: ${gacha.guessTotalProb().toStringAsPrecision(5)}% (${gacha.getTotalProb().toStringAsPrecision(5)}%)';
+      if (warningLines.isNotEmpty) {
+        warningColor = AppTheme.ofExtra(context).stateWarningBg;
+        warning = '$warning\n${warningLines.join('\n')}';
+      }
     }
 
     return _buildWikitext(table, page, warning: warning, warningColor: warningColor);
@@ -612,8 +623,11 @@ class _GachaGroupPageState extends State<GachaGroupPage> {
     try {
       gachas = await showEasyLoading(() => JpGachaParser().parseMultiple(widget.gachas, refresh: refresh));
       final errorCount = gachas.where((e) => e.isInvalid).length;
+      final warningCount = gachas.where((e) => !e.isInvalid && e.cardWarnings.isNotEmpty).length;
       if (errorCount > 0) {
-        EasyLoading.showSuccess('$errorCount个卡池解析失败');
+        EasyLoading.showSuccess('$errorCount个卡池解析失败${warningCount > 0 ? '，$warningCount个卡池有未匹配卡' : ''}');
+      } else if (warningCount > 0) {
+        EasyLoading.showSuccess('Done，$warningCount个卡池有未匹配卡');
       } else {
         EasyLoading.showSuccess('Done');
       }

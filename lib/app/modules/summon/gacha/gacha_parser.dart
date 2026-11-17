@@ -12,14 +12,62 @@ import '../../mc/converter.dart';
 
 const int _kJpNoticePages = 4;
 
+enum GachaCardWarningReason { notFound, multipleFound }
+
+/// A card listed in the raw gacha HTML that could not be resolved to a game card.
+class GachaCardWarning {
+  final bool isSvt;
+  final bool pickup;
+  final int rarity;
+  final String indivProb;
+  final String name;
+  final String className;
+  final GachaCardWarningReason reason;
+
+  const GachaCardWarning({
+    required this.isSvt,
+    required this.pickup,
+    required this.rarity,
+    required this.indivProb,
+    required this.name,
+    required this.className,
+    required this.reason,
+  });
+
+  String get display => '$name($className ${JpGachaParser.kStar}$rarity)';
+}
+
 class GachaProbData {
   final NiceGacha gacha;
   String htmlText = "";
   List<GachaProbRow> groups = [];
+  final List<GachaCardWarning> cardWarnings;
 
-  GachaProbData(this.gacha, this.htmlText, this.groups);
+  GachaProbData(this.gacha, this.htmlText, this.groups, {this.cardWarnings = const []});
 
   bool get isInvalid => htmlText.isEmpty || groups.isEmpty;
+
+  /// Group by reason and card type so a batch of similar failures occupies one line.
+  List<String> get warningLines {
+    final grouped = <String, List<GachaCardWarning>>{};
+    for (final warning in cardWarnings) {
+      final type = warning.isSvt ? '从者' : '概念礼装';
+      final label = warning.reason == GachaCardWarningReason.notFound ? '未匹配$type' : '匹配不唯一$type';
+      grouped.putIfAbsent(label, () => []).add(warning);
+    }
+    return [for (final entry in grouped.entries) '${entry.key}: ${entry.value.map((e) => e.display).join(', ')}'];
+  }
+
+  Iterable<GachaCardWarning> warningsOf(GachaProbRow group) sync* {
+    for (final warning in cardWarnings) {
+      if (warning.isSvt == group.isSvt &&
+          warning.pickup == group.pickup &&
+          warning.rarity == group.rarity &&
+          warning.indivProb == group.indivProb) {
+        yield warning;
+      }
+    }
+  }
 
   List<String> tableHeaders = ["type", "star", "weight", "display", "ids"];
 
@@ -29,7 +77,7 @@ class GachaProbData {
   String toOutput() {
     List<List<String>> outputs = [tableHeaders.toList()];
     for (final group in groups) {
-      outputs.add(group.toRow());
+      outputs.add(group.toRow(warningsOf(group).toList()));
     }
 
     final output = outputs.map((e) => e.join('\t')).join('\n');
@@ -42,13 +90,15 @@ class GachaProbData {
       banner: AssetURL.i.summonBanner(gacha.imageId),
       probs: [
         for (final group in groups)
-          ProbGroup(
-            isSvt: group.isSvt,
-            rarity: group.rarity,
-            weight: group.guessTotalProb(),
-            display: group.pickup,
-            ids: group.ids,
-          ),
+          // Groups with no resolved ids would violate ProbGroup's non-empty contract.
+          if (group.ids.isNotEmpty)
+            ProbGroup(
+              isSvt: group.isSvt,
+              rarity: group.rarity,
+              weight: group.guessTotalProb(),
+              display: group.pickup,
+              ids: group.ids,
+            ),
       ],
     );
   }
@@ -87,6 +137,10 @@ class GachaProbRow {
   final List<GameCardMixin> cards;
   final bool isLuckyBag;
 
+  /// Declared row count in the HTML table. It differs from [cards] when some
+  /// rows fail to resolve, and must drive probability math to stay accurate.
+  int expectedCount = 0;
+
   GachaProbRow({
     required this.isSvt,
     required this.pickup,
@@ -102,19 +156,25 @@ class GachaProbRow {
 
   double getTotalProb() {
     assert(indivProb.endsWith('%'), indivProb);
-    return double.parse(indivProb.substring(0, indivProb.length - 1)) * cards.length;
+    return double.parse(indivProb.substring(0, indivProb.length - 1)) * expectedCount;
   }
 
   double guessTotalProb() {
     double v = (getTotalProb() * 10).round() / 10;
-    if (isSvt && rarity == 4 && cards.length > 40 && v == 0.8) {
+    if (isSvt && rarity == 4 && expectedCount > 40 && v == 0.8) {
       v = 0.9;
     }
     return double.parse(v.toString());
   }
 
-  List<String> toRow() {
-    return [isSvt ? 'svt' : 'ce', rarity.toString(), formatProb(getTotalProb()), pickup ? '1' : '0', ids.join(', ')];
+  List<String> toRow(List<GachaCardWarning> warnings) {
+    return [
+      isSvt ? 'svt' : 'ce',
+      rarity.toString(),
+      formatProb(getTotalProb()),
+      pickup ? '1' : '0',
+      [for (final id in ids) id.toString(), for (final warning in warnings) '${warning.name}<!--未匹配-->'].join(', '),
+    ];
   }
 
   String formatProb(double v) {
@@ -160,7 +220,7 @@ class JpGachaParser {
   }
 
   Future<GachaProbData> parseProb(NiceGacha gacha, {bool refresh = false}) async {
-    final data = GachaProbData(gacha, '', []);
+    final data = GachaProbData(gacha, '', [], cardWarnings: []);
     final url = gacha.getHtmlUrl(Region.jp);
     if (url == null) return data;
     final text = await CachedApi.cacheManager.getText(url, expireAfter: refresh ? Duration.zero : null);
@@ -210,7 +270,6 @@ class JpGachaParser {
         final int rarity = row[1].count(kStar);
         final String name = row[2];
         final String probStr = row[3];
-        final svt = _findCard(name, rarity, classIds);
         final key = 'svt-$pickup-$rarity-$probStr';
         final group = groupMap[key] ??= GachaProbRow(
           isSvt: true,
@@ -220,14 +279,30 @@ class JpGachaParser {
           cards: [],
           isLuckyBag: gacha.isLuckyBag,
         );
-        group.cards.add(svt);
+        group.expectedCount += 1;
+        final (svt, reason) = _findCard(name, rarity, classIds);
+        if (svt != null) {
+          group.cards.add(svt);
+        } else {
+          data.cardWarnings.add(
+            GachaCardWarning(
+              isSvt: true,
+              pickup: pickup,
+              rarity: rarity,
+              indivProb: probStr,
+              name: name,
+              className: row[0],
+              reason: reason!,
+            ),
+          );
+        }
       }
     }
     for (final (pickup, table) in ceTables) {
       for (final row in table) {
         final int rarity = row[0].count(kStar);
-        final ce = _findCard(row[1], rarity, [1001]);
-        final probStr = row[2];
+        final String name = row[1];
+        final String probStr = row[2];
         final key = 'ce-$pickup-$rarity-$probStr';
         final group = groupMap[key] ??= GachaProbRow(
           isSvt: false,
@@ -237,14 +312,32 @@ class JpGachaParser {
           cards: [],
           isLuckyBag: gacha.isLuckyBag,
         );
-        group.cards.add(ce);
+        group.expectedCount += 1;
+        final (ce, reason) = _findCard(name, rarity, [1001]);
+        if (ce != null) {
+          group.cards.add(ce);
+        } else {
+          data.cardWarnings.add(
+            GachaCardWarning(
+              isSvt: false,
+              pickup: pickup,
+              rarity: rarity,
+              indivProb: probStr,
+              name: name,
+              className: '概念礼装',
+              reason: reason!,
+            ),
+          );
+        }
       }
     }
 
     final groups = groupMap.values.toList();
-    groups.sortByList((e) => [e.isSvt ? 0 : 1, e.pickup ? 0 : 1, -e.rarity, e.cards.length]);
+    groups.sortByList((e) => [e.isSvt ? 0 : 1, e.pickup ? 0 : 1, -e.rarity, e.expectedCount]);
 
-    return GachaProbData(gacha, text, groups);
+    data.htmlText = text;
+    data.groups = groups;
+    return data;
   }
 
   List<List<String>> _getProbTable(htmldom.Document document, int tableIndex, int colCount) {
@@ -260,7 +353,7 @@ class JpGachaParser {
     return tableData;
   }
 
-  BasicServant _findCard(String name, int rarity, List<int> classIds) {
+  (BasicServant?, GachaCardWarningReason?) _findCard(String name, int rarity, List<int> classIds) {
     Map<int, BasicServant> targets = {};
     for (final card in db.gameData.entities.values) {
       if (card.collectionNo <= 0 || card.rarity != rarity || !classIds.contains(card.classId)) continue;
@@ -279,11 +372,13 @@ class JpGachaParser {
 
     final className = Transl.svtClassId(classIds.first).l;
     if (targets.length == 1) {
-      return targets.values.single;
+      return (targets.values.single, null);
     } else if (targets.isEmpty) {
-      throw FormatException('NotFound: $name-R$rarity-$className');
+      logger.w('Gacha card not found: $name-R$rarity-$className');
+      return (null, GachaCardWarningReason.notFound);
     } else {
-      throw FormatException("Multiple Found: $name-R$rarity-$className: ${targets.keys.toList()}");
+      logger.w('Gacha card ambiguous: $name-R$rarity-$className: ${targets.keys.toList()}');
+      return (null, GachaCardWarningReason.multipleFound);
     }
   }
 
