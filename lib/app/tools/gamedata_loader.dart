@@ -398,6 +398,7 @@ class GameDataLoader {
       'campaigns': 'id',
       'classBoards': 'id',
       'grandGraphs': 'id',
+      'openingMovies': 'id',
       'enemyMasters': 'id',
       'exchangeTickets': 'id',
       'fixedDrops': 'id',

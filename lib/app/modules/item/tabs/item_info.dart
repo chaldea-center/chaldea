@@ -86,8 +86,10 @@ class _ItemInfoTabState extends State<ItemInfoTab> {
         child = ListTile(title: Text('NotFound: $itemId'));
       }
     } else {
-      final eventIds = <int>{if (item.eventId != 0) item.eventId};
-      if (item.isId94 &&
+      final eventPointRef = db.gameData.others.eventPointItems[item.id];
+      final eventIds = <int>{if (eventPointRef != null) eventPointRef.eventId, if (item.eventId != 0) item.eventId};
+      if (eventPointRef == null &&
+          item.isId94 &&
           const [ItemCategory.eventAscension, ItemCategory.event, ItemCategory.other].contains(item.category)) {
         for (final event in db.gameData.events.values) {
           if (eventIds.contains(event.id)) continue;

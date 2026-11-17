@@ -11,6 +11,7 @@ import 'package:chaldea/app/modules/master_mission/solver/scheme.dart';
 import 'package:chaldea/app/modules/war/war_detail_page.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/video_player.dart';
 import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/animation_on_scroll.dart';
 import 'package:chaldea/widgets/carousel_util.dart';
@@ -392,6 +393,32 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
     children.add(CustomTable(selectable: true, children: rows));
     if (event.type == EventType.questCampaign) {
       children.add(SFooter(S.current.ap_campaign_time_mismatch_hint));
+    }
+
+    final movies = db.gameData.openingMovies.values.where((e) => e.eventId == event.id).toList()
+      ..sort2((e) => e.priority);
+    final moviesByUrl = <String, NiceOpeningMovie>{};
+    for (final movie in movies) {
+      final url = movie.movie.trim();
+      if (url.isNotEmpty) moviesByUrl.putIfAbsent(url, () => movie);
+    }
+    if (moviesByUrl.isNotEmpty) {
+      children.add(
+        TileGroup(
+          header: S.current.stage_opening_movie,
+          children: [
+            for (final (url, movie) in moviesByUrl.items)
+              ListTile(
+                leading: const Icon(Icons.movie_outlined),
+                title: Text(movie.name.isEmpty ? 'Movie ${movie.id}' : movie.name),
+                trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+                onTap: () {
+                  router.pushPage(VideoPlayPage(url: url, title: movie.name.isEmpty ? null : movie.name));
+                },
+              ),
+          ],
+        ),
+      );
     }
 
     List<Widget> warTiles = [];

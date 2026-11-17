@@ -83,6 +83,7 @@ Future<GameData> gameDataFromJsonSliced(
   final wars = await _sliceMap(json['wars'], NiceWar.fromJson, y);
   final classBoards = await _sliceMap(json['classBoards'], ClassBoard.fromJson, y);
   final grandGraphs = await _sliceMap(json['grandGraphs'], GrandGraph.fromJson, y);
+  final openingMovies = await _sliceMap(json['openingMovies'], NiceOpeningMovie.fromJson, y);
   final questPhases = await _sliceMap(json['questPhases'], QuestPhase.fromJson, y);
   final exchangeTickets = await _sliceMap(json['exchangeTickets'], ExchangeTicket.fromJson, y);
   final enemyMasters = await _sliceMap(json['enemyMasters'], EnemyMaster.fromJson, y);
@@ -135,6 +136,7 @@ Future<GameData> gameDataFromJsonSliced(
     wars: wars,
     classBoards: classBoards,
     grandGraphs: grandGraphs,
+    openingMovies: openingMovies,
     questPhases: questPhases,
     exchangeTickets: exchangeTickets,
     enemyMasters: enemyMasters,

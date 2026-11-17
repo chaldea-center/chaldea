@@ -3,6 +3,7 @@
 import 'dart:convert';
 
 import 'package:archive/archive.dart';
+import 'package:flutter/foundation.dart';
 
 import 'package:chaldea/utils/basic.dart';
 import 'package:chaldea/utils/constants.dart';
@@ -22,6 +23,7 @@ import 'gacha.dart';
 import 'game_card.dart';
 import 'item.dart';
 import 'mappings.dart';
+import 'misc.dart';
 import 'mystic_code.dart';
 import 'quest.dart';
 import 'raw.dart';
@@ -75,6 +77,7 @@ class GameData with _GameDataExtra {
   Map<int, NiceWar> wars;
   Map<int, ClassBoard> classBoards;
   Map<int, GrandGraph> grandGraphs;
+  Map<int, NiceOpeningMovie> openingMovies;
   Map<int, Item> items;
   Map<int, QuestPhase> questPhases;
   Map<int, ExchangeTicket> exchangeTickets;
@@ -128,6 +131,7 @@ class GameData with _GameDataExtra {
     Map<int, NiceWar>? wars,
     Map<int, ClassBoard>? classBoards,
     Map<int, GrandGraph>? grandGraphs,
+    Map<int, NiceOpeningMovie>? openingMovies,
     Map<int, QuestPhase>? questPhases,
     Map<int, ExchangeTicket>? exchangeTickets,
     Map<int, EnemyMaster>? enemyMasters,
@@ -166,6 +170,7 @@ class GameData with _GameDataExtra {
        wars = wars ?? {},
        classBoards = classBoards ?? {},
        grandGraphs = grandGraphs ?? {},
+       openingMovies = openingMovies ?? {},
        items = items ?? {},
        questPhases = questPhases ?? {},
        exchangeTickets = exchangeTickets ?? {},
@@ -652,6 +657,22 @@ class _ProcessedData {
   Map<int, Map<int, EventPointGroup>> eventPointGroups = {}; // eventId, groupId
   Map<int, EventPointBuff> eventPointBuffs = {};
   Map<int, EventPointGroup> eventPointBuffGroups = {};
+
+  /// EVENT_POINT item -> owning event and point group.
+  final Map<int, ({int eventId, int groupId})> eventPointItems = {};
+
+  /// EVENT_POINT items the master data alone cannot resolve.
+  /// Values come from mission conditions or from the event title in `item.detail`.
+  static const Map<int, ({int eventId, int groupId})> _manualEventPointItems = {
+    94000904: (eventId: 80003, groupId: 0), // 本能寺ポイント: 2015 data incomplete
+    94001504: (eventId: 80008, groupId: 0), // アルトリウム: 2015 data incomplete
+    94032207: (eventId: 80225, groupId: 0), // 奉納ポイント: gained on login, not from quests
+    94044307: (eventId: 80271, groupId: 0), // 奉納ポイント: reprint of the above
+    94075007: (eventId: 80393, groupId: 0), // 虚数探査ポイント: permanently open main interlude
+    94095604: (eventId: 80472, groupId: 0), // 除霊ポイント: mstEventMissionCondition
+    94157307: (eventId: 80611, groupId: 0), // 奉納ポイント: item.detail names the event
+  };
+
   Map<QuestGroupType, Map<int, List<int>>> questGroups = {}; // <type,<groupId, questIds>>
   Map<int, List<int>> eventQuestGroups = {}; // QuestGroupType.eventQuest: <eventId=groupId, questIds>
   Map<int, List<int>> eventTowerQuestGroups = {}; // QuestGroupType.eventTower: <towerId, questIds>
@@ -747,7 +768,61 @@ class _ProcessedData {
     for (final group in gachaGroups.values) {
       group.sort2((e) => e.openedAt);
     }
+    _initEventPointItems();
     _initFuncBuff();
+  }
+
+  /// Maps EVENT_POINT items to their event and group when the data identifies both.
+  ///
+  /// Order: explicit item fields, then an exact `startedAt` match, then the
+  /// manual table. Campaign quests often start at the same second as the real
+  /// event, so only events that own point rewards or point groups are eligible.
+  /// Permanently open events are skipped: several main interludes can start
+  /// together, which makes the timestamp useless for them.
+  void _initEventPointItems() {
+    final eventsByStart = <int, List<Event>>{};
+    for (final event in gameData.events.values) {
+      if (event.pointRewards.isEmpty && event.pointGroups.isEmpty) continue;
+      if (event.endedAt - event.startedAt > 365 * kSecsPerDay) continue;
+      eventsByStart.putIfAbsent(event.startedAt, () => []).add(event);
+    }
+
+    ({int eventId, int groupId})? resolveItem(Item item) {
+      if (item.eventId != 0) {
+        final event = gameData.events[item.eventId];
+        if (event == null) return null;
+        final groups = event.pointGroups.map((e) => e.groupId).toSet();
+        if (item.eventGroupId != 0) {
+          // `eventGroupId` may be shared by a reprint pair, so trust `eventId` first.
+          if (groups.isNotEmpty && !groups.contains(item.eventGroupId)) return null;
+          return (eventId: item.eventId, groupId: item.eventGroupId);
+        }
+        if (groups.length == 1) return (eventId: item.eventId, groupId: groups.first);
+        if (groups.isEmpty) return (eventId: item.eventId, groupId: 0);
+        return null; // several groups and no hint
+      }
+      final matches = eventsByStart[item.startedAt];
+      if (matches == null || matches.length != 1) return null;
+      // A long-lived item window says nothing about which event opened it.
+      if (item.endedAt - item.startedAt > 365 * kSecsPerDay) return null;
+      final event = matches.single;
+      if (event.pointGroups.length > 1) return null;
+      return (eventId: event.id, groupId: event.pointGroups.isEmpty ? 0 : event.pointGroups.first.groupId);
+    }
+
+    final unmatched = <int>[];
+    for (final item in gameData.items.values) {
+      if (item.type != ItemType.eventPoint) continue;
+      final ref = resolveItem(item) ?? _manualEventPointItems[item.id];
+      if (ref == null) {
+        unmatched.add(item.id);
+        continue;
+      }
+      eventPointItems[item.id] = ref;
+    }
+    if (kDebugMode && unmatched.isNotEmpty) {
+      debugPrint('[_ProcessedData] unmatched event point items: $unmatched');
+    }
   }
 
   List<int> getQuestsOfGroup(QuestGroupType type, int groupId) {

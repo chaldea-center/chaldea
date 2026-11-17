@@ -59,6 +59,9 @@ GameData _$GameDataFromJson(Map json) => GameData(
   grandGraphs: (json['grandGraphs'] as Map?)?.map(
     (k, e) => MapEntry(int.parse(k as String), GrandGraph.fromJson(Map<String, dynamic>.from(e as Map))),
   ),
+  openingMovies: (json['openingMovies'] as Map?)?.map(
+    (k, e) => MapEntry(int.parse(k as String), NiceOpeningMovie.fromJson(Map<String, dynamic>.from(e as Map))),
+  ),
   questPhases: (json['questPhases'] as Map?)?.map(
     (k, e) => MapEntry(int.parse(k as String), QuestPhase.fromJson(Map<String, dynamic>.from(e as Map))),
   ),

@@ -312,6 +312,11 @@ class MasterDataManager extends MasterDataManagerBase {
     final item = db.gameData.items[itemId];
     if (item != null) {
       if (item.type == ItemType.eventPoint) {
+        final ref = db.gameData.others.eventPointItems[itemId];
+        if (ref != null) {
+          final point = userEventPoint[UserEventPointEntity.createPK(ref.eventId, ref.groupId)];
+          return point?.value ?? defaultValue;
+        }
         for (final eventId in [item.eventId, ...eventIds]) {
           if (eventId == 0) continue;
           for (final candidateEventId in eventIds) {
