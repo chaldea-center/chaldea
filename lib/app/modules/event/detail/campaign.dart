@@ -97,10 +97,7 @@ class EventCampaignDetail extends StatelessWidget {
           leading: iconName == null ? null : db.getIconImage(AssetURL.i.eventUi(iconName), width: 28),
           title: Text('${S.current.passive_skill} $addPassiveSkillId'),
           subtitle: Text(
-            [
-              campaign.script?.addPassiveDescriptionDetail,
-              campaign.script?.addPassiveContentDetail,
-            ].whereType<String>().join(' '),
+            [campaign.script?.addPassiveDescriptionDetail, campaign.script?.addPassiveContentDetail].nonNulls.join(' '),
           ),
           trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
           onTap: () {

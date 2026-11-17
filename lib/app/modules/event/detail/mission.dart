@@ -31,9 +31,8 @@ class _EventMissionsPageState extends State<EventMissionsPage> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          final customMissions = (selected.toList()..sort2((e) => e.dispNo)).map(
-            (e) => CustomMission.fromEventMission(e),
-          );
+          final missions = selected.toList()..sort2((e) => e.dispNo);
+          final customMissions = <CustomMission>[for (final e in missions) ?CustomMission.fromEventMission(e)];
           int? warId;
           for (final int id in widget.event.warIds) {
             final war = db.gameData.wars[id];
@@ -44,10 +43,7 @@ class _EventMissionsPageState extends State<EventMissionsPage> {
             }
           }
           router.push(
-            child: CustomMissionPage(
-              initMissions: customMissions.whereType<CustomMission>().toList(),
-              initWarId: warId,
-            ),
+            child: CustomMissionPage(initMissions: customMissions, initWarId: warId),
           );
         },
         child: Text(selected.length.toString()),

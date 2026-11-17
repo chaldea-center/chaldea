@@ -239,11 +239,11 @@ class _MysticCodePageState extends State<MysticCodePage> {
       }
     }
     children.addAll(
-      [
+      <Widget?>[
         _oneGroup(S.current.icons, items, 80),
         _oneGroup(S.current.card_asset_face, masterFaces, 120),
         _oneGroup(S.current.illustration, masterFigures, 300),
-      ].whereType<Widget>(),
+      ].nonNulls,
     );
 
     return children;

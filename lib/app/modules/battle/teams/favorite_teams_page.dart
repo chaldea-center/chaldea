@@ -17,11 +17,10 @@ class _FavoriteTeamsPageState extends State<FavoriteTeamsPage> {
   final favoriteTeams = db.curUser.battleSim.favoriteTeams;
 
   List<Quest> getQuests() {
-    final quests = favoriteTeams.entries
-        .where((e) => e.value.isNotEmpty)
-        .map((e) => db.gameData.quests[e.key])
-        .whereType<Quest>()
-        .toList();
+    final quests = <Quest>[
+      for (final entry in favoriteTeams.entries)
+        if (entry.value.isNotEmpty) ?db.gameData.quests[entry.key],
+    ];
     quests.sortByList(
       (e) => [e.warId < 1000 ? -e.warId : -(e.war?.event?.startedAt ?? e.event?.startedAt ?? e.openedAt), e.priority],
     );

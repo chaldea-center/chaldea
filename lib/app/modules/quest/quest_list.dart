@@ -322,7 +322,7 @@ class _QuestListPageState extends State<QuestListPage> {
             PopupMenuItem(
               child: const Text('导出至Mooncell'),
               onTap: () {
-                final quests = questIds.map((e) => allQuestsMap[e]).whereType<Quest>().toList();
+                final quests = <Quest>[for (final id in questIds) ?allQuestsMap[id]];
                 router.pushPage(MCQuestListConvertPage(title: widget.title, quests: quests, war: widget.war));
               },
             ),

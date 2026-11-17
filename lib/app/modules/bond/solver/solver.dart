@@ -2178,11 +2178,7 @@ class FormationBondSolver {
   List<int> _svtLimits(Servant svt) => _svtLimitCache.putIfAbsent(svt.id, () {
     final released = _releasedCostumes;
     final candidates = <int>{
-      0,
-      1,
-      2,
-      3,
-      4,
+      ...[0, 1, 2, 3, 4],
       for (final costume in svt.costume.values)
         if (costume.costumeCollectionNo > 0 && (released == null || released.contains(costume.battleCharaId)))
           costume.battleCharaId,

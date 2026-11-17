@@ -15,7 +15,7 @@ void main() {
       final probe = BondPreparationProbe<int>(maxItems: 2, maxSteps: 3);
       for (final _ in probe.collect(source)) {}
       expect(probe.complete, isTrue);
-      expect(probe.items, source.whereType<int>().toList());
+      expect(probe.items, source.nonNulls.toList());
     }
     final storage = BondPreparationProbe<int>(maxItems: 1, maxSteps: 10);
     for (final _ in storage.collect([1, 2, 3])) {}

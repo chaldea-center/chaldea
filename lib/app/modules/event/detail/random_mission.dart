@@ -143,8 +143,8 @@ class _EventRandomMissionsPageState extends State<EventRandomMissionsPage> {
         final randomMissions = selected.where((e) => e.condNum == rank).toList();
         randomMissions.sort2((e) => allMissions[e.missionId]?.dispNo ?? e.missionId);
 
-        final customMissions = [
-          for (final m in randomMissions) CustomMission.fromEventMission(allMissions[m.missionId]),
+        final customMissions = <CustomMission>[
+          for (final m in randomMissions) ?CustomMission.fromEventMission(allMissions[m.missionId]),
         ];
 
         int? warId;
@@ -157,7 +157,7 @@ class _EventRandomMissionsPageState extends State<EventRandomMissionsPage> {
           }
         }
         router.push(
-          child: CustomMissionPage(initMissions: customMissions.whereType<CustomMission>().toList(), initWarId: warId),
+          child: CustomMissionPage(initMissions: customMissions, initWarId: warId),
         );
       },
       child: Text(selected.where((e) => e.condNum == rank).length.toString()),

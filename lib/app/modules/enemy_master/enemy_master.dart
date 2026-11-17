@@ -91,7 +91,7 @@ class _EnemyMasterDetailPageState extends State<EnemyMasterDetailPage> {
             }.toSet(),
             300,
           ),
-        ].whereType<Widget>().map((e) => Padding(padding: const EdgeInsetsDirectional.only(start: 16), child: e)),
+        ].nonNulls.map((e) => Padding(padding: const EdgeInsetsDirectional.only(start: 16), child: e)),
       ],
     );
   }

@@ -422,14 +422,12 @@ class GameplaySettings {
   /// Normalize persisted collection numbers once valid game data is available.
   bool normalizePinnedIds(GameData gameData) {
     if (!gameData.isValid) return false;
-    final svtIds = pinnedSvtIds
-        .map((value) => (gameData.servantsById[value] ?? gameData.servantsNoDup[value])?.id)
-        .whereType<int>()
-        .toSet();
-    final equipIds = pinnedSvtEquipIds
-        .map((value) => (gameData.craftEssencesById[value] ?? gameData.craftEssences[value])?.id)
-        .whereType<int>()
-        .toSet();
+    final svtIds = <int>{
+      for (final value in pinnedSvtIds) ?(gameData.servantsById[value] ?? gameData.servantsNoDup[value])?.id,
+    };
+    final equipIds = <int>{
+      for (final value in pinnedSvtEquipIds) ?(gameData.craftEssencesById[value] ?? gameData.craftEssences[value])?.id,
+    };
     final changed =
         !pinnedSvtIds.containsAll(svtIds) ||
         pinnedSvtIds.length != svtIds.length ||
@@ -556,8 +554,8 @@ class DisplaySettings {
     AdSetting? ad,
     PrivacySetting? privacy,
     this.showDebugFab = false,
-  }) : sortedSvtTabs = sortedSvtTabs?.whereType<SvtTab>().toList() ?? List.of(SvtTab.values),
-       hideSvtPlanDetails = hideSvtPlanDetails?.whereType<SvtPlanDetail>().toList() ?? [],
+  }) : sortedSvtTabs = sortedSvtTabs?.nonNulls.toList() ?? List.of(SvtTab.values),
+       hideSvtPlanDetails = hideSvtPlanDetails?.nonNulls.toList() ?? [],
        ad = ad ?? AdSetting(),
        privacy = privacy ?? PrivacySetting(),
        galleries = galleries ?? {} {

@@ -26,7 +26,7 @@ class _TraitSkillTabState extends State<TraitSkillTab> {
             sval.Individuality,
             sval.CardIndividuality,
             sval.GainNpTargetPassiveIndividuality,
-          ].whereType<int>().map((e) => [e]),
+          ].nonNulls.map((e) => [e]),
           ...<List<int>?>[
             sval.getAddIndividuality(),
             sval.ParamAddOpIndividuality,

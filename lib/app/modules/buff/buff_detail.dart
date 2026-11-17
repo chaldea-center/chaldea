@@ -310,11 +310,11 @@ class BuffInfoTable extends StatelessWidget {
             children: [
               TableCellData(text: "HP", isHeader: true),
               TableCellData(
-                text: [
-                  buff.script.HP_HIGHER?.format(percent: true, base: 10),
+                text: <String>[
+                  ?buff.script.HP_HIGHER?.format(percent: true, base: 10),
                   'HP',
-                  buff.script.HP_LOWER?.format(percent: true, base: 10),
-                ].where((e) => e != null).join(" ≤ "),
+                  ?buff.script.HP_LOWER?.format(percent: true, base: 10),
+                ].join(" ≤ "),
                 flex: 3,
               ),
             ],

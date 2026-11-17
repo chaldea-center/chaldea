@@ -237,10 +237,9 @@ class _MasterMissionPageState extends State<MasterMissionPage> with RegionBasedS
       children: [
         FilledButton.icon(
           onPressed: () {
-            final customMissions = masterMission.missions
-                .map((e) => CustomMission.fromEventMission(e))
-                .whereType<CustomMission>()
-                .toList();
+            final customMissions = <CustomMission>[
+              for (final e in masterMission.missions) ?CustomMission.fromEventMission(e),
+            ];
             int? warId;
             final region = widget.region ?? Region.jp;
             if (region != Region.jp) {

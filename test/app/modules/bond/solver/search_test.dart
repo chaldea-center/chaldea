@@ -310,10 +310,7 @@ void main() {
       expect(actual.best?.totalBond, expected, reason: 'trial $trial');
       if (actual.best != null) {
         expect(actual.best!.totalCost, lessThanOrEqualTo(problem.maxCost));
-        expect(
-          actual.best!.servantIds.whereType<int>().toSet().length,
-          actual.best!.servantIds.whereType<int>().length,
-        );
+        expect(actual.best!.servantIds.nonNulls.toSet().length, actual.best!.servantIds.nonNulls.length);
         final ces = actual.best!.ownedCeIds.expand((e) => e).map((id) => problem.ownedCeIdentities[id] ?? id).toList();
         expect(ces.toSet().length, ces.length);
       }
@@ -334,7 +331,7 @@ void main() {
     final result = BondSearch.solve(problem, maxNodes: 1);
     expect(result.provenOptimal, isFalse);
     expect(result.best, isNotNull);
-    expect(result.best!.servantIds.whereType<int>().toSet().length, 2);
+    expect(result.best!.servantIds.nonNulls.toSet().length, 2);
   });
 
   test('progress reports a feasible candidate before the score proof', () {

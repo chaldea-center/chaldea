@@ -644,14 +644,11 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
     final fromIndex = allSvts.indexOf(from), toIndex = allSvts.indexOf(to);
 
     if (fromIndex < 0 || toIndex < 0 || fromIndex == toIndex) return;
-    final fixedPositions = widget.eventDeckParam?.questPhase?.supportServants
-        .map((e) => e.script?.eventDeckIndex)
-        .whereType<int>()
-        .toList();
+    final fixedPositions = <int>[
+      for (final e in widget.eventDeckParam?.questPhase?.supportServants ?? const []) ?e.script?.eventDeckIndex,
+    ];
     bool hasFixedSupport =
-        fixedPositions != null &&
-        fixedPositions.isNotEmpty &&
-        (fixedPositions.contains(from.initPos) || fixedPositions.contains(to.initPos));
+        fixedPositions.isNotEmpty && (fixedPositions.contains(from.initPos) || fixedPositions.contains(to.initPos));
     if (hasFixedSupport &&
         widget.eventDeckParam?.questPhase?.flags.contains(QuestFlag.supportSvtEditablePosition) != true) {
       return;

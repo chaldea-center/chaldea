@@ -72,7 +72,7 @@ class TdDmgSolver {
     final List<Servant> servants;
     final releasedSvts = db.gameData.mappingData.entityRelease.ofRegion(options.region) ?? [];
     if (options.region != Region.jp && releasedSvts.isNotEmpty) {
-      servants = releasedSvts.map((e) => db.gameData.servantsById[e]).whereType<Servant>().toList();
+      servants = [for (final id in releasedSvts) ?db.gameData.servantsById[id]];
     } else {
       servants = db.gameData.servantsById.values.toList();
     }

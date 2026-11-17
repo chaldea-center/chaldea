@@ -670,7 +670,7 @@ class _TeamsQueryPageState extends State<TeamsQueryPage> with SearchableListStat
   }
 
   Widget buildShareDialog(BuildContext context, UserBattleData record) {
-    final urls = <String?>[record.toShortUri().toString(), record.toUriV2().toString()].whereType<String>().toList();
+    final urls = <String>[record.toShortUri().toString(), record.toUriV2().toString()];
 
     return SimpleDialog(
       title: Text(S.current.share),

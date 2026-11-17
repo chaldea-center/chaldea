@@ -212,7 +212,7 @@ class _SvtLoreTabState extends State<SvtLoreTab> {
         ProfileCommentCard(
           title: Text(title),
           subtitle: conds.any((e) => e != null)
-              ? Column(crossAxisAlignment: CrossAxisAlignment.start, children: conds.whereType<Widget>().toList())
+              ? Column(crossAxisAlignment: CrossAxisAlignment.start, children: conds.nonNulls.toList())
               : null,
           comment: lore.comment,
         ),

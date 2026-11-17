@@ -102,13 +102,13 @@ class _EventFilterPageState extends FilterPageState<EventFilterData, EventFilter
             },
             onFilterChanged: (value, last) {
               if (last == null) {
-                if (value.options.where((e) => e != null).length == Region.values.length) {
+                if (value.options.nonNulls.length == Region.values.length) {
                   value.options = {};
                 } else {
                   value.options = {null, ...Region.values};
                 }
               } else {
-                final options = value.options.where((e) => e != null).toSet();
+                final options = <Region?>{...value.options.nonNulls};
                 if (options.length == Region.values.length) {
                   options.add(null);
                 }

@@ -466,12 +466,12 @@ class CraftDetailBasePage extends StatelessWidget {
   }
 
   Iterable<Widget> getProfiles() sync* {
-    final profiles = <String?>{
+    final profiles = <String>{
       for (final comment in ce.profile.comments) comment.comment,
-      if (!Transl.isJP) ce.extra.profile.l,
-      ce.extra.profile.ofRegion(Region.jp),
+      if (!Transl.isJP) ?ce.extra.profile.l,
+      ?ce.extra.profile.ofRegion(Region.jp),
     };
-    for (final profile in profiles.whereType<String>()) {
+    for (final profile in profiles) {
       yield ProfileCommentCard(title: Text(S.current.card_description), comment: profile);
     }
   }

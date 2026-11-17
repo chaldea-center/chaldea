@@ -1291,17 +1291,15 @@ void main() {
     }
     for (final candidate in result.candidates) {
       expect(candidate.totalCost, lessThanOrEqualTo(result.maxCost));
-      final ownedServants = candidate.slots
-          .where((s) => !s.isSupport)
-          .map((s) => s.servantId)
-          .whereType<int>()
-          .toList();
+      final ownedServants = <int>[
+        for (final s in candidate.slots)
+          if (!s.isSupport) ?s.servantId,
+      ];
       expect(ownedServants.toSet().length, ownedServants.length);
-      final ownedCes = candidate.slots
-          .where((s) => !s.isSupport)
-          .expand((s) => [s.equip1?.id, s.equip3?.id])
-          .whereType<int>()
-          .toList();
+      final ownedCes = <int>[
+        for (final s in candidate.slots)
+          if (!s.isSupport) ...[?s.equip1?.id, ?s.equip3?.id],
+      ];
       final restricted = ownedCes
           .where((id) => BondCeIdentity.requiresUniqueOwnedIdentity(db.gameData.craftEssencesById[id]!))
           .map(BondCeIdentity.of)
@@ -1312,13 +1310,15 @@ void main() {
     for (final team in result.ties) {
       expect(team.totalBond, result.best!.totalBond);
       expect(team.totalCost, lessThanOrEqualTo(result.maxCost));
-      final ids = team.slots.where((slot) => !slot.isSupport).map((slot) => slot.servantId).whereType<int>().toList();
+      final ids = <int>[
+        for (final slot in team.slots)
+          if (!slot.isSupport) ?slot.servantId,
+      ];
       expect(ids.toSet().length, ids.length);
-      final ceIds = team.slots
-          .where((slot) => !slot.isSupport)
-          .expand((slot) => [slot.equip1?.id, slot.equip3?.id])
-          .whereType<int>()
-          .toList();
+      final ceIds = <int>[
+        for (final slot in team.slots)
+          if (!slot.isSupport) ...[?slot.equip1?.id, ?slot.equip3?.id],
+      ];
       final restricted = ceIds
           .where((id) => BondCeIdentity.requiresUniqueOwnedIdentity(db.gameData.craftEssencesById[id]!))
           .map(BondCeIdentity.of)

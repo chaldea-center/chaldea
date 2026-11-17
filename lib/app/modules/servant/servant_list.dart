@@ -391,12 +391,9 @@ class ServantListPageState extends State<ServantListPage> with SearchableListSta
 
   @override
   List<Widget> handleSlivers(List<Widget> slivers, bool useGrid) {
-    List<Servant> pingedSvts =
-        widget.pinged
-            ?.map((e) => db.gameData.servantsById[e] ?? db.gameData.servantsNoDup[e])
-            .whereType<Servant>()
-            .toList() ??
-        [];
+    List<Servant> pingedSvts = <Servant>[
+      for (final e in widget.pinged ?? const <int>[]) ?(db.gameData.servantsById[e] ?? db.gameData.servantsNoDup[e]),
+    ];
     pingedSvts.sort2((e) => e.collectionNo);
     if (pingedSvts.isNotEmpty) {
       slivers = [

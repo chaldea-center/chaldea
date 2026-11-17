@@ -1597,7 +1597,7 @@ class BattleData {
       return targetIndex;
     }
     if (isEnemy && niceQuest?.flags.contains(QuestFlag.enemyImmediateAppear) == true) {
-      final minUniqueId = Maths.min(actorList.whereType<BattleServantData>().map((e) => e.uniqueId), -1);
+      final minUniqueId = Maths.min(actorList.nonNulls.map((e) => e.uniqueId), -1);
       if (minUniqueId < 0) return -1;
       for (final (index, actor) in actorList.indexed) {
         if (actor?.uniqueId == minUniqueId) {

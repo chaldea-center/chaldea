@@ -207,11 +207,11 @@ class Quest with RouteInfo {
     if (names.maybeOf(null) == null && name.startsWith('強化クエスト')) {
       final match = RegExp(r'^強化クエスト (.*?)(\s+\d+)?$').firstMatch(name);
       if (match != null) {
-        final name2 = <String?>[
+        final name2 = <String>[
           Transl.questNames('強化クエスト').l,
           Transl.svtNames(match.group(1)!).l,
-          match.group(2)?.trim(),
-        ].whereType<String>().join(' ');
+          ?match.group(2)?.trim(),
+        ].join(' ');
         return Transl.questNames(name2);
       }
     }

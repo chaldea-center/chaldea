@@ -544,7 +544,7 @@ class BondSolverResultsTab extends StatelessWidget {
   }
 
   Future<void> _showCandidateCes(BuildContext context, List<int> ceIds) async {
-    final ces = ceIds.map((id) => db.gameData.craftEssencesById[id]).whereType<CraftEssence>().toList();
+    final ces = <CraftEssence>[for (final id in ceIds) ?db.gameData.craftEssencesById[id]];
     await router.showDialog<void>(
       context: context,
       builder: (context) => SimpleConfirmDialog(

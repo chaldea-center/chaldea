@@ -37,7 +37,7 @@ class _CombatActionSelectorState extends State<CombatActionSelector> {
         showCancel: false,
       );
     }
-    final validActions = combatActions.whereType<CombatAction>().toList();
+    final validActions = combatActions.nonNulls.toList();
     return SimpleConfirmDialog(
       title: Text(S.current.battle_select_card),
       contentPadding: const EdgeInsets.all(8),

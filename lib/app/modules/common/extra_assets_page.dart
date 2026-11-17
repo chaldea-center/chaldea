@@ -155,7 +155,7 @@ class ExtraAssetsPage extends StatelessWidget {
       spriteViewer(extraAssets),
       _oneGroup('Texture', _getUrls(extraAssets?.spriteModel), 300, showMerge: false),
       _oneGroup('8th Anniversary', anni8photos, 300),
-    ].whereType<Widget>().toList();
+    ].nonNulls.toList();
     if (scrollable) {
       return ListView(padding: const EdgeInsetsDirectional.fromSTEB(16, 8, 0, 48), children: children);
     } else {

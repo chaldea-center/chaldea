@@ -85,7 +85,7 @@ class ServantDetailPageState extends State<ServantDetailPage> with SingleTickerP
       return NotFoundPage(url: Routes.servantI(widget.id ?? 0));
     }
 
-    builders = db.settings.display.sortedSvtTabs.map((e) => _getBuilder(e)).whereType<_SubTabInfo>().toList();
+    builders = <_SubTabInfo>[for (final e in db.settings.display.sortedSvtTabs) ?_getBuilder(e)];
     return DefaultTabController(
       length: builders.length,
       child: Scaffold(

@@ -89,7 +89,7 @@ class DataVals {
         for (String v1 in v.split('|')) {
           v1 = v1.trim();
           if (v1.isEmpty) continue;
-          array.add(v1.split('/').map(int.tryParse).whereType<int>().toList());
+          array.add(<int>[for (final part in v1.split('/')) ?int.tryParse(part)]);
         }
         return array as List<List<T>>;
       } catch (e) {

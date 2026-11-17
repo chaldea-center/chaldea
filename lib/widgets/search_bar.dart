@@ -135,7 +135,7 @@ mixin SearchOptionsMixin<T> {
 
   String getCache(T datum, String subKey, List<String?> Function() ifAbsent) {
     int key = Object.hash(datum, subKey);
-    return _caches[key] ??= '${ifAbsent().whereType<String>().toSet().join('\t')}\t';
+    return _caches[key] ??= '${ifAbsent().nonNulls.toSet().join('\t')}\t';
   }
 
   Iterable<String?> getAllKeys(Transl<dynamic, String> transl, {Region? dft = Region.jp}) =>

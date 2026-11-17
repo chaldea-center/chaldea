@@ -33,7 +33,7 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
 
   List<UserServantEntity> get _npMaterials {
     _selection.materialUserSvtIds.removeWhere((id) => mstData.userSvt[id] == null);
-    return _selection.materialUserSvtIds.map((id) => mstData.userSvt[id]).whereType<UserServantEntity>().toList();
+    return [for (final id in _selection.materialUserSvtIds) ?mstData.userSvt[id]];
   }
 
   @override

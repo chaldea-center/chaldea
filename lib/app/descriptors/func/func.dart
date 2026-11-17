@@ -1694,10 +1694,7 @@ class FuncDescriptor extends StatelessWidget {
     final triggerSkills = _buildTrigger(context);
     final dependFunc = _buildDependFunc(context);
     if (triggerSkills.isNotEmpty || dependFunc != null) {
-      last = Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget?>[last, ...triggerSkills, dependFunc].whereType<Widget>().toList(),
-      );
+      last = Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [last, ...triggerSkills, ?dependFunc]);
     }
     last = Padding(padding: padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 4), child: last);
     return last;

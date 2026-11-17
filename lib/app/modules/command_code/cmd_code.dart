@@ -302,8 +302,8 @@ class CmdCodeDetailBasePage extends StatelessWidget {
   }
 
   Iterable<Widget> getProfiles() sync* {
-    final profiles = <String?>{cc.comment, if (!Transl.isJP) cc.extra.profile.l, cc.extra.profile.ofRegion(Region.jp)};
-    for (final profile in profiles.whereType<String>()) {
+    final profiles = <String>{cc.comment, if (!Transl.isJP) ?cc.extra.profile.l, ?cc.extra.profile.ofRegion(Region.jp)};
+    for (final profile in profiles) {
       yield ProfileCommentCard(title: Text(S.current.card_description), comment: profile);
     }
   }

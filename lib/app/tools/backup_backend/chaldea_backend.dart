@@ -101,9 +101,7 @@ class _ChooseBackupDialog extends StatelessWidget {
         ListTile(
           dense: true,
           title: Text(title),
-          subtitle: Text(
-            <String?>[backup.createdAt.sec2date().toStringShort(), backup.os].whereType<String>().join('\n'),
-          ),
+          subtitle: Text(<String>[backup.createdAt.sec2date().toStringShort(), ?backup.os].join('\n')),
           enabled: decoded != null,
           onTap: decoded == null
               ? null

@@ -234,12 +234,9 @@ class EventExtra {
   MappingBase<String> get resolvedBanner => titleBanner.merge(officialBanner);
 
   List<String> get allBanners {
-    List<String?> _banners = [];
-    for (final region in Region.values) {
-      _banners.add(resolvedBanner.ofRegion(region));
-      _banners.addAll(extraBanners.ofRegion(region) ?? []);
-    }
-    return _banners.whereType<String>().toList();
+    return <String>[
+      for (final region in Region.values) ...[?resolvedBanner.ofRegion(region), ...?extraBanners.ofRegion(region)],
+    ];
   }
 
   List<LimitedSummon> get relatedSummons {
@@ -289,12 +286,9 @@ class WarExtra {
   MappingBase<String> get resolvedBanner => titleBanner.merge(officialBanner);
 
   List<String> get allBanners {
-    List<String?> _banners = [];
-    for (final region in Region.values) {
-      _banners.add(resolvedBanner.ofRegion(region));
-      _banners.addAll(extraBanners.ofRegion(region) ?? []);
-    }
-    return _banners.whereType<String>().toList();
+    return <String>[
+      for (final region in Region.values) ...[?resolvedBanner.ofRegion(region), ...?extraBanners.ofRegion(region)],
+    ];
   }
 
   factory WarExtra.fromJson(Map<String, dynamic> json) => _$WarExtraFromJson(json);

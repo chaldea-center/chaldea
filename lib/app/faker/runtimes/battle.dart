@@ -593,7 +593,7 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
               if (!supportEquipMaxLimitBreak || svtInfo.equipTarget2?.limitCount == 4) svtInfo.equipTarget2?.svtId,
               if (!supportEquipMaxLimitBreak || svtInfo.equipTarget3?.limitCount == 4) svtInfo.equipTarget3?.svtId,
             ],
-          }.whereType<int>().toSet();
+          }.nonNulls.toSet();
           if (followerEquipIds.isEmpty) continue;
           if (followerEquipIds.isNotEmpty) {
             if (supportEquipIds.toSet().intersection(followerEquipIds).isEmpty) continue;

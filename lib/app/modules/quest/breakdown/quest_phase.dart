@@ -176,7 +176,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
-      children: divideTiles(children.whereType<Widget>(), divider: const Divider(height: 5, thickness: 0.5)),
+      children: divideTiles(children.nonNulls, divider: const Divider(height: 5, thickness: 0.5)),
     );
   }
 
@@ -538,10 +538,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
   }
 
   Widget? buildAiNpc(QuestPhase curPhase) {
-    final aiNpcs = [
-      curPhase.extraDetail?.aiNpc,
-      ...?curPhase.extraDetail?.aiMultiNpc,
-    ].whereType<QuestPhaseAiNpc>().toList();
+    final aiNpcs = <QuestPhaseAiNpc>[?curPhase.extraDetail?.aiNpc, ...?curPhase.extraDetail?.aiMultiNpc];
     if (aiNpcs.isEmpty) return null;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -620,7 +617,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
     final overwriteEquips = [
       curPhase.extraDetail?.overwriteEquipSkills,
       curPhase.extraDetail?.addEquipSkills,
-    ].whereType<OverwriteEquipSkills>().toList();
+    ].nonNulls.toList();
     for (final equip in overwriteEquips) {
       children.add(
         Row(

@@ -464,7 +464,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
       extraQuestIds.removeWhere((e) => db.gameData.quests[e]?.warId == WarId.advanced);
       extraQuestIds.addAll(advancedQuests.map((e) => e.id));
     }
-    final extraQuests = extraQuestIds.map((e) => db.gameData.quests[e]).whereType<Quest>().toList();
+    final extraQuests = <Quest>[for (final id in extraQuestIds) ?db.gameData.quests[id]];
 
     if (extraQuests.isNotEmpty) {
       children.add(addQuestCategoryTile(context: context, event: event, extraQuests: extraQuests));

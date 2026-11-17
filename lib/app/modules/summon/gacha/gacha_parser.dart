@@ -464,11 +464,11 @@ class JpGachaParser {
       if (card.collectionNo <= 0 || card.rarity != rarity || !classIds.contains(card.classId)) continue;
 
       final svt = db.gameData.servantsById[card.id];
-      final names = <String?>{
+      final names = <String>{
         card.name,
-        svt?.ascensionAdd.overWriteServantName.ascension[0],
+        ?svt?.ascensionAdd.overWriteServantName.ascension[0],
         for (final change in svt?.svtChange ?? <ServantChange>[]) ...[change.name, '${card.name}（${change.name}）'],
-      }.whereType<String>();
+      };
 
       if (names.any((e) => _normalizeName(e) == normalizedName)) {
         targets[card.id] = card;
