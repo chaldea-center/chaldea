@@ -446,15 +446,15 @@ class _SvtEquipCombinePageState extends State<SvtEquipCombinePage> with FakerRun
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  for (var index = 0; index < group.copies.length; index++)
-                    _limitBreakCard(
-                      group.copies[index],
-                      selected: selectedIds.contains(group.copies[index].id),
-                      isMaterial: group.isMaterial(group.copies[index]),
-                      onTap: group.isMaterial(group.copies[index])
-                          ? () => _toggleLimitBreakMaterial(group, group.copies[index].id)
-                          : () {},
-                    ),
+                  for (final card in group.copies)
+                    if (group.isMaterial(card))
+                      _limitBreakCard(
+                        card,
+                        selected: selectedIds.contains(card.id),
+                        onTap: () => _toggleLimitBreakMaterial(group, card.id),
+                      )
+                    else
+                      _limitBreakCard(card),
                 ],
               ),
             ),
@@ -492,16 +492,14 @@ class _SvtEquipCombinePageState extends State<SvtEquipCombinePage> with FakerRun
     });
   }
 
-  Widget _limitBreakCard(
-    UserServantEntity card, {
-    bool target = false,
-    bool selected = false,
-    bool isMaterial = false,
-    VoidCallback? onTap,
-  }) {
+  Widget _limitBreakCard(UserServantEntity card, {bool target = false, bool selected = false, VoidCallback? onTap}) {
     final ce = card.dbCE;
-    final colors = Theme.of(context).colorScheme;
-    final notSelectable = !target && !isMaterial;
+    final theme = Theme.of(context);
+    final colors = theme.colorScheme;
+    final notSelectable = !target && onTap == null;
+    final labelStyle = notSelectable
+        ? theme.textTheme.labelSmall?.copyWith(color: colors.onSurface.withValues(alpha: 0.6))
+        : theme.textTheme.labelSmall;
     Widget child = SizedBox(
       width: 60,
       child: Column(
@@ -515,16 +513,16 @@ class _SvtEquipCombinePageState extends State<SvtEquipCombinePage> with FakerRun
               borderRadius: BorderRadius.circular(6),
             ),
             child: Opacity(
-              opacity: notSelectable ? 0.55 : 1,
+              opacity: notSelectable ? 0.65 : 1,
               child:
-                  ce?.iconBuilder(context: context, width: 48, jumpToDetail: onTap == null) ??
+                  ce?.iconBuilder(context: context, width: 48, jumpToDetail: target) ??
                   const Icon(Icons.image_not_supported),
             ),
           ),
           Text(
             '${card.isLocked() ? "🔐" : ""}Lv.${card.lv}\n${card.limitCount}/4${card.isChoice() ? " ✴️" : ""}',
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.labelSmall,
+            style: labelStyle,
           ),
           Text(
             card.createdAt
@@ -532,10 +530,9 @@ class _SvtEquipCombinePageState extends State<SvtEquipCombinePage> with FakerRun
                 .toStringShort(omitSec: true)
                 .replaceFirstMapped(RegExp(r'^20\d\d'), (repl) => repl.group(0)!.substring(2)),
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.labelSmall,
+            style: labelStyle,
           ),
-          if (target || notSelectable)
-            Text(target ? S.current.target : '不可选', style: Theme.of(context).textTheme.labelSmall),
+          if (target || notSelectable) Text(target ? S.current.target : '不可选', style: labelStyle),
         ],
       ),
     );

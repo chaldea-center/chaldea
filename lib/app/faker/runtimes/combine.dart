@@ -10,14 +10,16 @@ import '_base.dart';
 
 class SvtEquipLimitBreakGroup {
   final UserServantEntity target;
-  final int totalCount;
   final List<UserServantEntity> copies;
   final List<UserServantEntity> materials;
 
-  SvtEquipLimitBreakGroup({required this.target, required this.totalCount, required List<UserServantEntity> copies})
+  SvtEquipLimitBreakGroup({required this.target, required List<UserServantEntity> copies})
     : copies = List.unmodifiable(copies),
-      materials = List.unmodifiable(copies.where((card) => card.limitCount == 0 && card.lv == 1));
+      materials = List.unmodifiable(copies.where(_canUseAsMaterial));
 
+  static bool _canUseAsMaterial(UserServantEntity card) => card.limitCount == 0 && card.lv == 1 && !card.isWithdraw();
+
+  int get totalCount => copies.length + 1;
   int get maxMaterialCount => 4 - target.limitCount;
 
   bool isMaterial(UserServantEntity card) => materials.contains(card);
@@ -75,8 +77,7 @@ class FakerRuntimeCombine extends FakerRuntimeBase {
       if (!limitBreakOnly && userSvt.isChoice()) {
         throw SilentException('CE in choice! $userSvtId');
       }
-      if (limitBreakOnly &&
-          (userSvt.svtId != target.svtId || userSvt.limitCount != 0 || userSvt.lv != 1 || userSvt.isWithdraw())) {
+      if (limitBreakOnly && (userSvt.svtId != target.svtId || !SvtEquipLimitBreakGroup._canUseAsMaterial(userSvt))) {
         throw SilentException('Invalid limit-break material: $userSvtId');
       }
     }
@@ -84,32 +85,24 @@ class FakerRuntimeCombine extends FakerRuntimeBase {
   }
 
   List<SvtEquipLimitBreakGroup> getSvtEquipLimitBreakGroups() {
-    final totalCounts = <int, int>{};
+    final inventoryBySvtId = <int, List<UserServantEntity>>{};
     for (final card in mstData.userSvt) {
-      totalCounts.update(card.svtId, (count) => count + 1, ifAbsent: () => 1);
+      inventoryBySvtId.putIfAbsent(card.svtId, () => []).add(card);
     }
     final ownedMaxLimitSvtIds = {
       for (final card in mstData.userSvtAndStorage)
         if (card.limitCount == 4) card.svtId,
     };
-    final bySvtId = <int, List<UserServantEntity>>{};
-    for (final card in mstData.userSvt) {
-      final ce = card.dbCE;
-      if (ce == null ||
-          ce.flags.contains(SvtFlag.svtEquipExp) ||
-          card.isWithdraw() ||
-          ce.rarity < 2 ||
-          ce.rarity > 5 ||
-          card.limitCount < 0 ||
-          card.limitCount >= 4) {
-        continue;
-      }
-      if (ce.rarity == 3 && ce.obtain == CEObtain.permanent && ownedMaxLimitSvtIds.contains(card.svtId)) continue;
-      bySvtId.putIfAbsent(card.svtId, () => []).add(card);
-    }
     final groups = <SvtEquipLimitBreakGroup>[];
-    for (final cards in bySvtId.values) {
-      cards.sort((a, b) {
+    for (final inventory in inventoryBySvtId.values) {
+      final ce = inventory.first.dbCE;
+      if (ce == null || ce.flags.contains(SvtFlag.svtEquipExp) || ce.rarity < 2 || ce.rarity > 5) continue;
+      if (ce.rarity == 3 && ce.obtain == CEObtain.permanent && ownedMaxLimitSvtIds.contains(ce.id)) continue;
+
+      final targets = inventory
+          .where((card) => !card.isWithdraw() && card.limitCount >= 0 && card.limitCount < 4)
+          .toList();
+      targets.sort((a, b) {
         if (a.isLocked() != b.isLocked()) return a.isLocked() ? -1 : 1;
         final limit = b.limitCount.compareTo(a.limitCount);
         if (limit != 0) return limit;
@@ -117,16 +110,17 @@ class FakerRuntimeCombine extends FakerRuntimeBase {
         if (level != 0) return level;
         return a.createdAt.compareTo(b.createdAt);
       });
-      final target = cards.first;
-      final copies = cards.skip(1).where((card) => target.limitCount + card.limitCount < 4).toList();
+      final target = targets.firstOrNull;
+      if (target == null) continue;
+      final copies = inventory.where((card) => card.id != target.id).toList();
       copies.sort((a, b) {
-        final isMaterialA = a.limitCount == 0 && a.lv == 1;
-        final isMaterialB = b.limitCount == 0 && b.lv == 1;
+        final isMaterialA = SvtEquipLimitBreakGroup._canUseAsMaterial(a);
+        final isMaterialB = SvtEquipLimitBreakGroup._canUseAsMaterial(b);
         if (isMaterialA != isMaterialB) return isMaterialA ? -1 : 1;
         if (a.isLocked() != b.isLocked()) return a.isLocked() ? 1 : -1;
         return b.createdAt.compareTo(a.createdAt);
       });
-      final group = SvtEquipLimitBreakGroup(target: target, totalCount: totalCounts[target.svtId] ?? 0, copies: copies);
+      final group = SvtEquipLimitBreakGroup(target: target, copies: copies);
       if (group.materials.isNotEmpty) groups.add(group);
     }
     groups.sort((a, b) {
@@ -232,11 +226,25 @@ class FakerRuntimeCombine extends FakerRuntimeBase {
     bool includeExp3 = false,
     bool includeExp4 = false,
   }) {
-    List<UserServantEntity> materialCEs = mstData.userSvt.where((userSvt) {
+    const minExpCopies = 3;
+    final ownedMaxLimitSvtIds = <int>{};
+    final remainingExpCopies = <int, int>{};
+    for (final card in mstData.userSvtAndStorage) {
+      final ce = card.dbCE;
+      if (ce == null) continue;
+      if (ce.flags.contains(SvtFlag.svtEquipExp)) {
+        remainingExpCopies.update(card.svtId, (count) => count + 1, ifAbsent: () => 1);
+      } else if (card.limitCount == 4) {
+        ownedMaxLimitSvtIds.add(card.svtId);
+      }
+    }
+
+    final candidates = mstData.userSvt.where((userSvt) {
       if (userSvt.id == baseUserSvtId) return false;
       final ce = db.gameData.craftEssencesById[userSvt.svtId];
       if (ce == null || userSvt.isLocked() || userSvt.isChoice() || userSvt.lv != 1) return false;
-      final bool isExp = ce.flags.contains(SvtFlag.svtEquipExp);
+      final isExp = ce.flags.contains(SvtFlag.svtEquipExp);
+      if (!isExp && (userSvt.limitCount != 0 || !ownedMaxLimitSvtIds.contains(userSvt.svtId))) return false;
       if (ce.rarity > 4) {
         return false;
       } else if (ce.rarity == 4) {
@@ -251,9 +259,19 @@ class FakerRuntimeCombine extends FakerRuntimeBase {
         return true;
       }
     }).toList();
-    materialCEs.sort2((e) => -e.createdAt);
-    materialCEs = materialCEs.take(20).toList();
-    return materialCEs;
+    candidates.sort2((e) => -e.createdAt);
+
+    final materials = <UserServantEntity>[];
+    for (final card in candidates) {
+      final remaining = remainingExpCopies[card.svtId];
+      if (remaining != null) {
+        if (remaining <= minExpCopies) continue;
+        remainingExpCopies[card.svtId] = remaining - 1;
+      }
+      materials.add(card);
+      if (materials.length == 20) break;
+    }
+    return materials;
   }
 
   //
