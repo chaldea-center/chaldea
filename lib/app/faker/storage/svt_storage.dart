@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
+
 import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/app/modules/common/filter_page_base.dart';
@@ -7,6 +9,7 @@ import 'package:chaldea/app/routes/delegate.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/mst_data.dart';
 import 'package:chaldea/models/models.dart';
+import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/basic.dart';
 import 'package:chaldea/utils/constants.dart';
 import 'package:chaldea/utils/extension.dart';
@@ -88,7 +91,7 @@ class _SvtStoragePageState extends State<SvtStoragePage> with FakerRuntimeStateM
 
   static const int kMaxSelectCount = 999;
   static const int kMaxSellCount = 100;
-  static final _kCellTextOption = ImageWithTextOption(padding: EdgeInsets.fromLTRB(4, 0, 4, 2), fontSize: 12);
+  static final _kCellTextOption = ImageWithTextOption(padding: EdgeInsets.fromLTRB(8, 0, 4, 2), fontSize: 12);
 
   // NPC-only entity types never shown in svt mode
   static const _kHiddenSvtTypes = {
@@ -104,8 +107,8 @@ class _SvtStoragePageState extends State<SvtStoragePage> with FakerRuntimeStateM
   static final _ceFilters = RouterValues<CraftFilterData>(
     () => CraftFilterData(sortKeys: CraftCompare.kRarityFirstKeys),
   );
-  static final _userSvtFilters = RouterValues(() => UserServantFilterData());
-  // management page wants all CEs by default, not locked-only like combine pages
+  // Storage management shows both lock states by default.
+  static final _userSvtFilters = RouterValues(() => UserServantFilterData()..locked.reset());
   static final _userEquipFilters = RouterValues(() => UserSvtEquipFilterData()..locked.reset());
 
   SvtFilterData get svtFilterData => widget.svtFilterData ?? _svtFilters.of(context);
@@ -117,6 +120,8 @@ class _SvtStoragePageState extends State<SvtStoragePage> with FakerRuntimeStateM
   late SvtSlot slot = widget.fixedSlot ?? SvtSlot.main;
   bool mergeStackable = true; // merged display of embers/fous, default on
   final selectedUserSvtIds = <int>{};
+  bool _rangeModeEnabled = false;
+  ({int index, bool select, List<int> order})? _rangeAnchor;
 
   TabController? _tabController;
 
@@ -133,6 +138,7 @@ class _SvtStoragePageState extends State<SvtStoragePage> with FakerRuntimeStateM
         setState(() {
           mode = newMode;
           selectedUserSvtIds.clear();
+          _rangeAnchor = null;
         });
       });
     }
@@ -229,6 +235,7 @@ class _SvtStoragePageState extends State<SvtStoragePage> with FakerRuntimeStateM
     if (card.isWithdraw()) return false;
     switch (mode) {
       case SvtStorageMode.svt:
+        if (!userSvtFilterData.locked.matchOne(card.isLocked())) return false;
         final entity = _entity(card);
         if (entity != null) {
           final svtType = entity.type == .heroine ? SvtType.normal : entity.type;
@@ -364,24 +371,27 @@ class _SvtStoragePageState extends State<SvtStoragePage> with FakerRuntimeStateM
   // capacity
   // -----------------------------------------------------------------------------
 
-  ({int capacity, int used}) _slotCapacity(SvtSlot targetSlot) {
+  ({int capacity, int used}) _slotCapacity(SvtSlot targetSlot, SvtStorageMode cardMode) {
     final isStorage = targetSlot == SvtSlot.storage;
+    final isServant = cardMode == SvtStorageMode.svt;
     final counts = mstData.countSvtKeep(isStorage: isStorage);
     final user = mstData.user;
     final int capacity;
     if (isStorage) {
       // (base + per-side adjust is inferred from UserGameEntity fields)
-      final adjust = mode == SvtStorageMode.svt ? user?.svtStorageAdjust ?? 0 : user?.svtEquipStorageAdjust ?? 0;
-      capacity = runtime.gameData.timerData.constants.maxUserSvtStorage + adjust;
+      final constants = runtime.gameData.timerData.constants;
+      capacity = isServant
+          ? constants.maxUserSvtStorage + (user?.svtStorageAdjust ?? 0)
+          : constants.maxUserSvtEquipStorage + (user?.svtEquipStorageAdjust ?? 0);
     } else {
-      capacity = mode == SvtStorageMode.svt ? user?.svtKeep ?? 0 : user?.svtEquipKeep ?? 0;
+      capacity = isServant ? user?.svtKeep ?? 0 : user?.svtEquipKeep ?? 0;
     }
-    final used = mode == SvtStorageMode.svt ? counts.svtCount : counts.svtEquipCount;
+    final used = isServant ? counts.svtCount : counts.svtEquipCount;
     return (capacity: capacity, used: used);
   }
 
-  int _moveRemainingCapacity() {
-    final target = _slotCapacity(slot == SvtSlot.main ? SvtSlot.storage : SvtSlot.main);
+  int _moveRemainingCapacity(SvtSlot targetSlot, SvtStorageMode cardMode) {
+    final target = _slotCapacity(targetSlot, cardMode);
     return target.capacity - target.used;
   }
 
@@ -395,14 +405,24 @@ class _SvtStoragePageState extends State<SvtStoragePage> with FakerRuntimeStateM
   Widget build(BuildContext context) {
     _validateSelection();
     final groups = _buildGroups();
+    final anchor = _rangeAnchor;
+    if (anchor != null &&
+        (!listEquals(anchor.order, _rangeOrder(groups)) ||
+            groups[anchor.index].length != 1 ||
+            _disableReason(groups[anchor.index]) != null)) {
+      _rangeAnchor = null;
+    }
     return Scaffold(
       appBar: AppBar(
-        title: Text('灵基保管室${selectedUserSvtIds.isEmpty ? "" : " (${selectedUserSvtIds.length})"}'),
+        title: const Text('灵基保管室'),
         actions: [
           if (mode == SvtStorageMode.svt)
             IconButton(
               tooltip: '合并种火/芙芙',
-              onPressed: () => setState(() => mergeStackable = !mergeStackable),
+              onPressed: () => setState(() {
+                mergeStackable = !mergeStackable;
+                _rangeAnchor = null;
+              }),
               icon: Icon(mergeStackable ? Icons.auto_awesome_motion : Icons.grid_view_outlined),
             ),
           IconButton(icon: const Icon(Icons.filter_alt), tooltip: S.current.filter, onPressed: _showFilterPage),
@@ -422,7 +442,10 @@ class _SvtStoragePageState extends State<SvtStoragePage> with FakerRuntimeStateM
       ),
       body: Column(
         children: [
-          if (widget.fixedSlot == null) _buildSlotRow(),
+          if (widget.fixedSlot == null)
+            _buildSlotRow(groups.length)
+          else
+            Align(alignment: AlignmentDirectional.centerStart, child: _buildRangeModeToggle()),
           Expanded(
             child: GridView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
@@ -433,7 +456,7 @@ class _SvtStoragePageState extends State<SvtStoragePage> with FakerRuntimeStateM
                 childAspectRatio: 132 / 144,
               ),
               itemCount: groups.length,
-              itemBuilder: (context, index) => _buildCell(groups[index]),
+              itemBuilder: (context, index) => _buildCell(groups, index),
             ),
           ),
           kDefaultDivider,
@@ -443,57 +466,121 @@ class _SvtStoragePageState extends State<SvtStoragePage> with FakerRuntimeStateM
     );
   }
 
-  Widget _buildSlotRow() {
-    final main = _slotCapacity(SvtSlot.main);
-    final storage = _slotCapacity(SvtSlot.storage);
-    final typeLabel = mode == SvtStorageMode.svt ? S.current.servant : S.current.craft_essence_short;
+  Widget _buildSlotRow(int shownCount) {
+    final main = _slotCapacity(SvtSlot.main, mode);
+    final storage = _slotCapacity(SvtSlot.storage, mode);
+    final mainCount = '${main.used}/${main.capacity}';
+    final storageCount = '${storage.used}/${storage.capacity}';
+    final selectedCount = selectedUserSvtIds.length;
+    final theme = Theme.of(context);
+    final summaryStyle = theme.textTheme.bodySmall;
+    const activeCapacityStyle = TextStyle(fontWeight: FontWeight.bold);
+    final inactiveCapacityStyle = TextStyle(color: theme.colorScheme.onSurfaceVariant);
+    // const countStyle = TextStyle(fontSize: 12);
+    // Widget capacityLabel(String label, String count) => Text.rich(
+    //   TextSpan(
+    //     text: '$label ',
+    //     children: [TextSpan(text: count, style: countStyle)],
+    //   ),
+    //   textAlign: TextAlign.center,
+    // );
+
+    Widget slotSwitch(Widget mainLabel, Widget storageLabel) => SegmentedButton<SvtSlot>(
+      segments: [
+        ButtonSegment(value: SvtSlot.main, label: mainLabel),
+        ButtonSegment(value: SvtSlot.storage, label: storageLabel),
+      ],
+      selected: {slot},
+      showSelectedIcon: false,
+      style: const ButtonStyle(visualDensity: VisualDensity.compact),
+      onSelectionChanged: (v) => setState(() {
+        slot = v.first;
+        _rangeAnchor = null;
+      }),
+    );
+
     return Padding(
       padding: const EdgeInsetsDirectional.only(start: 12, end: 12, top: 8, bottom: 2),
-      child: Row(
-        spacing: 8,
-        children: [
-          SegmentedButton<SvtSlot>(
-            segments: const [
-              ButtonSegment(value: SvtSlot.main, label: Text('所持')),
-              ButtonSegment(value: SvtSlot.storage, label: Text('保管')),
-            ],
-            selected: {slot},
-            showSelectedIcon: false,
-            style: const ButtonStyle(visualDensity: VisualDensity.compact),
-            onSelectionChanged: (v) => setState(() => slot = v.first),
-          ),
-          Expanded(
-            child: Text.rich(
-              TextSpan(
-                children: [
+      child: Align(
+        alignment: AlignmentDirectional.centerStart,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Wrap(
+            //   spacing: 8,
+            //   runSpacing: 2,
+            //   crossAxisAlignment: WrapCrossAlignment.center,
+            //   children: [
+            //     slotSwitch(capacityLabel('所持', mainCount), capacityLabel('保管', storageCount)),
+            //     Text(
+            //       '已选 $selectedCount · 显示 $shownCount',
+            //       style: summaryStyle,
+            //       maxLines: 1,
+            //       overflow: TextOverflow.ellipsis,
+            //     ),
+            //   ],
+            // ),
+            // const SizedBox(height: 4),
+            Wrap(
+              spacing: 12,
+              runSpacing: 2,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                slotSwitch(const Text('所持'), const Text('保管')),
+                Text.rich(
                   TextSpan(
-                    text: '$typeLabel ${main.used}/${main.capacity}',
-                    style: slot == .main ? const TextStyle(fontWeight: .bold) : const TextStyle(fontWeight: .normal),
+                    children: [
+                      TextSpan(
+                        text: '所持 $mainCount\n',
+                        style: slot == SvtSlot.main ? activeCapacityStyle : inactiveCapacityStyle,
+                      ),
+                      TextSpan(
+                        text: '保管 $storageCount',
+                        style: slot == SvtSlot.storage ? activeCapacityStyle : inactiveCapacityStyle,
+                      ),
+                    ],
                   ),
-                  const TextSpan(text: ' · '),
-                  TextSpan(
-                    text: '保管 ${storage.used}/${storage.capacity}',
-                    style: slot == .storage ? const TextStyle(fontWeight: .bold) : const TextStyle(fontWeight: .normal),
-                  ),
-                ],
-              ),
-              style: Theme.of(context).textTheme.bodySmall,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+                  style: summaryStyle,
+                ),
+                Text('已选 $selectedCount\n显示 $shownCount', style: summaryStyle),
+                _buildRangeModeToggle(),
+              ],
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildCell(List<UserServantEntity> cards) {
+  Widget _buildRangeModeToggle() {
+    return IconButton(
+      isSelected: _rangeModeEnabled,
+      icon: const Icon(Icons.playlist_add_check_outlined),
+      selectedIcon: Icon(Icons.playlist_add_check_circle, color: Theme.of(context).colorScheme.primary),
+      tooltip: _rangeModeEnabled ? '连选模式已开启，点击关闭' : '连选模式已关闭，点击开启',
+      visualDensity: VisualDensity.compact,
+      onPressed: () => setState(() {
+        _rangeModeEnabled = !_rangeModeEnabled;
+        _rangeAnchor = null;
+      }),
+    );
+  }
+
+  Widget _buildCell(List<List<UserServantEntity>> groups, int index) {
+    final cards = groups[index];
     final first = cards.first;
     final svt = _dbSvt(first);
     final ce = _dbCE(first);
     final entity = _entity(first);
     final reason = _disableReason(cards);
-    final selectedCount = cards.where((c) => selectedUserSvtIds.contains(c.id)).length;
+    final isSelected = cards.any((card) => selectedUserSvtIds.contains(card.id));
+    final isRangeAnchor = _rangeAnchor?.index == index;
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final selectionBorder = isDark ? Colors.amberAccent.shade400 : Colors.orange.shade900;
+    final anchorBorder = isDark ? Colors.cyanAccent.shade400 : Colors.cyan.shade800;
+    const borderWidth = 3.0;
 
     final String? status = reason == null
         ? widget.getStatus?.call(
@@ -532,22 +619,44 @@ class _SvtStoragePageState extends State<SvtStoragePage> with FakerRuntimeStateM
                 reason,
                 textAlign: TextAlign.center,
                 textScaler: const TextScaler.linear(0.7),
-                style: TextStyle(color: Theme.of(context).colorScheme.error),
+                style: TextStyle(color: theme.colorScheme.error),
               ),
             ),
           ),
-        if (selectedCount > 0)
-          Positioned(
-            top: 0,
-            right: 0,
-            child: Icon(Icons.check_circle, size: 16, color: Theme.of(context).colorScheme.primary),
+        if (isRangeAnchor || isSelected)
+          Positioned.fill(
+            child: IgnorePointer(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  border: Border.all(color: isRangeAnchor ? anchorBorder : selectionBorder, width: borderWidth),
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(borderWidth),
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: theme.colorScheme.surface),
+                      borderRadius: BorderRadius.circular(2),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ),
       ],
     );
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: reason == null ? () => _onTapCell(cards) : null,
+      onTap: reason == null
+          ? () {
+              if (_rangeModeEnabled) {
+                _onRangeTap(groups, index);
+              } else {
+                _onTapCell(cards);
+              }
+            }
+          : null,
       onLongPress: () {
         if (svt != null) {
           router.push(url: Routes.servantI(first.svtId));
@@ -600,9 +709,50 @@ class _SvtStoragePageState extends State<SvtStoragePage> with FakerRuntimeStateM
     setState(() {
       if (selectedUserSvtIds.contains(card.id)) {
         selectedUserSvtIds.remove(card.id);
-      } else if (selectedUserSvtIds.length < kMaxSelectCount) {
-        selectedUserSvtIds.add(card.id);
+      } else {
+        _addToSelection([card.id]);
       }
+    });
+  }
+
+  void _addToSelection(Iterable<int> ids) {
+    for (final id in ids) {
+      if (selectedUserSvtIds.length >= kMaxSelectCount) break;
+      selectedUserSvtIds.add(id);
+    }
+  }
+
+  List<int> _rangeOrder(List<List<UserServantEntity>> groups) => [for (final cards in groups) cards.first.id];
+
+  void _onRangeTap(List<List<UserServantEntity>> groups, int index) {
+    final anchor = _rangeAnchor;
+    if (anchor == null) {
+      final cards = groups[index];
+      if (cards.length > 1) {
+        _pickMergedCount(cards);
+        return;
+      }
+      setState(() {
+        _rangeAnchor = (
+          index: index,
+          select: !selectedUserSvtIds.contains(cards.single.id),
+          order: _rangeOrder(groups),
+        );
+      });
+      return;
+    }
+
+    final rangeIds = <int>[
+      for (final cards in groups.getRange(min(anchor.index, index), max(anchor.index, index) + 1))
+        if (cards.length == 1 && _disableReason(cards) == null) cards.single.id,
+    ];
+    setState(() {
+      if (anchor.select) {
+        _addToSelection(anchor.index <= index ? rangeIds : rangeIds.reversed);
+      } else {
+        selectedUserSvtIds.removeAll(rangeIds);
+      }
+      _rangeAnchor = null;
     });
   }
 
@@ -619,13 +769,23 @@ class _SvtStoragePageState extends State<SvtStoragePage> with FakerRuntimeStateM
         setState(() {
           selectedUserSvtIds.removeAll(cards.map((e) => e.id));
           // cards are sorted by createdAt asc: pick from the earliest
-          selectedUserSvtIds.addAll(cards.take(v).map((e) => e.id));
+          _addToSelection(cards.take(v).map((e) => e.id));
         });
       },
     ).showDialog(context);
   }
 
   void _showFilterPage() {
+    if (_rangeAnchor != null) setState(() => _rangeAnchor = null);
+
+    Widget lockStatusFilter(FilterGroupData<bool> values, VoidCallback update) => FilterGroup<bool>(
+      title: const Text('Lock status'),
+      options: const [false, true],
+      values: values,
+      optionBuilder: (v) => Text(v ? '🔐 Locked' : 'Unlocked'),
+      onFilterChanged: (_, _) => update(),
+    );
+
     switch (mode) {
       case SvtStorageMode.svt:
         FilterPage.show(
@@ -647,6 +807,7 @@ class _SvtStoragePageState extends State<SvtStoragePage> with FakerRuntimeStateM
                   update();
                 },
               ),
+              lockStatusFilter(userSvtFilterData.locked, update),
               FilterGroup<UserSvtCombineType>(
                 title: const Text('Available Combine Type'),
                 showMatchAll: true,
@@ -671,16 +832,7 @@ class _SvtStoragePageState extends State<SvtStoragePage> with FakerRuntimeStateM
               if (mounted) setState(() {});
             },
             extraFilters: (_, update) => [
-              FilterGroup<bool>(
-                title: const Text('Lock status'),
-                options: const [false, true],
-                values: userEquipFilterData.locked,
-                optionBuilder: (v) => Text(v ? '🔐 Locked' : 'Unlocked'),
-                onFilterChanged: (value, _) {
-                  if (mounted) setState(() {});
-                  update();
-                },
-              ),
+              lockStatusFilter(userEquipFilterData.locked, update),
               FilterGroup<bool>(
                 title: Text(S.current.max_limit_break),
                 showMatchAll: true,
@@ -712,12 +864,13 @@ class _SvtStoragePageState extends State<SvtStoragePage> with FakerRuntimeStateM
       final valid = selected.isNotEmpty && (maxCount == null || selected.length <= maxCount);
       buttons.add(buildCompactButton(enabled: valid, onPressed: _confirmPick, text: '确认 ×${selected.length}'));
     } else {
-      final remaining = _moveRemainingCapacity();
+      final targetSlot = slot == SvtSlot.main ? SvtSlot.storage : SvtSlot.main;
+      final remaining = _moveRemainingCapacity(targetSlot, mode);
       buttons.add(
         buildCompactButton(
           enabled: selected.isNotEmpty && selected.length <= remaining,
-          onPressed: () => _confirmMove(selected, remaining),
-          text: '移动到${_slotName(slot == SvtSlot.main ? SvtSlot.storage : SvtSlot.main)}(剩余$remaining)',
+          onPressed: _confirmMove,
+          text: '移动到${_slotName(targetSlot)}(剩余$remaining)',
         ),
       );
       if (slot == SvtSlot.main) {
@@ -734,13 +887,13 @@ class _SvtStoragePageState extends State<SvtStoragePage> with FakerRuntimeStateM
           enabled: selected.isNotEmpty,
           onPressed: () => setState(() {
             selectedUserSvtIds.clear();
+            _rangeAnchor = null;
           }),
           text: S.current.clear,
         ),
       );
     }
 
-    if (buttons.isEmpty) return const SizedBox.shrink();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: Wrap(alignment: WrapAlignment.center, spacing: 8, runSpacing: 2, children: buttons),
@@ -781,18 +934,22 @@ class _SvtStoragePageState extends State<SvtStoragePage> with FakerRuntimeStateM
     widget.onSelected!(cards);
   }
 
-  void _confirmMove(List<UserServantEntity> selected, int remaining) {
+  void _confirmMove() {
     _validateSelection();
     final cards = _selectedCards;
-    if (cards.isEmpty || cards.length > remaining) return;
+    final cardMode = mode;
     final targetSlot = slot == SvtSlot.main ? SvtSlot.storage : SvtSlot.main;
+    final remaining = _moveRemainingCapacity(targetSlot, cardMode);
+    if (cards.isEmpty || cards.length > remaining) return;
     SimpleConfirmDialog(
       title: Text('移动到${_slotName(targetSlot)}'),
       content: Text('共 ${cards.length} 张\n${_cardsSummary(cards)}\n目标剩余容量 $remaining'),
       onTapOk: () {
         final ids = cards.map((e) => e.id).toList();
         runtime.runTask(() {
-          if (slot == SvtSlot.main) {
+          final remaining = _moveRemainingCapacity(targetSlot, cardMode);
+          if (ids.length > remaining) throw SilentException('目标剩余容量 $remaining');
+          if (targetSlot == SvtSlot.storage) {
             return agent.storageTakein(userSvtIds: ids);
           } else {
             return agent.storageTakeout(userSvtIds: ids);
