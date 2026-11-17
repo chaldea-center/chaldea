@@ -8,7 +8,6 @@ import 'package:chaldea/app/app.dart';
 import 'package:chaldea/app/tools/app_window.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/models.dart';
-import 'package:chaldea/packages/ads/ads.dart';
 import 'package:chaldea/packages/app_info.dart';
 import 'package:chaldea/packages/language.dart';
 import 'package:chaldea/packages/logger.dart';
@@ -20,7 +19,6 @@ import 'package:chaldea/widgets/custom_dialogs.dart';
 import 'package:chaldea/widgets/tile_items.dart';
 
 import '../../root/global_fab.dart';
-import 'display_settings/ad_setting.dart';
 import 'display_settings/carousel_setting_page.dart';
 import 'display_settings/class_filter_style.dart';
 import 'display_settings/fav_option.dart';
@@ -372,14 +370,6 @@ class _DisplaySettingPageState extends State<DisplaySettingPage> {
                   },
                 ),
               ],
-              if (AppAds.instance.supported || kDebugMode)
-                ListTile(
-                  title: Text(S.current.ad),
-                  trailing: const Icon(Icons.keyboard_arrow_right),
-                  onTap: () {
-                    router.pushPage(const AdSettingPage());
-                  },
-                ),
               if (LocalNotificationUtil.supported)
                 ListTile(
                   title: const Text('Request Notification Permissions'),

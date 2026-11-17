@@ -454,9 +454,9 @@ class ItemScript with DataScriptBase {
 
   ItemScript();
 
-  factory ItemScript.fromJson(Map<String, dynamic> json) => _$ItemScriptFromJson(json);
+  factory ItemScript.fromJson(Map<String, dynamic> json) => _$ItemScriptFromJson(json)..setSource(json);
 
-  Map<String, dynamic> toJson() => _$ItemScriptToJson(this);
+  Map<String, dynamic> toJson() => Map.from(source)..addAll(_$ItemScriptToJson(this));
 }
 
 @JsonSerializable()

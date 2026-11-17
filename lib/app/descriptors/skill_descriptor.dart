@@ -84,6 +84,10 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescri
     final header = _buildHeader(context, cds);
     const divider = Divider(indent: 16, endIndent: 16, height: 2, thickness: 1);
     final detailText = skill.lDetail ?? '???';
+    final overwriteNames = {
+      for (final entry in overwrites)
+        if (entry.skillName.isNotEmpty && entry.skillName != skill.name) Transl.skillNames(entry.skillName).l,
+    }..remove(skill.lName.l);
 
     final loops = LoopTargets()..addSkill(skill.id);
     final costumeReleaseWidget = getEquipCostumeConditions(context, skill.skillSvts);
@@ -95,7 +99,7 @@ class SkillDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescri
         if (overwrites.isNotEmpty)
           _AscensionOverwriteSection(
             key: ValueKey('skill-overwrites-${skill.id}'),
-            previewName: Transl.skillNames(overwrites.first.skillName).l,
+            previewEntries: overwriteNames,
             indent: 16,
             children: [
               for (final entry in overwrites)
@@ -451,13 +455,13 @@ Widget _buildOverwriteEntry(BuildContext context, String condition, Widget heade
 }
 
 class _AscensionOverwriteSection extends StatefulWidget {
-  final String previewName;
+  final Iterable<String> previewEntries;
   final double indent;
   final List<Widget> children;
 
   const _AscensionOverwriteSection({
     super.key,
-    required this.previewName,
+    required this.previewEntries,
     required this.indent,
     required this.children,
   });
@@ -471,6 +475,8 @@ class _AscensionOverwriteSectionState extends State<_AscensionOverwriteSection> 
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final nameStyle = TextStyle(color: theme.colorScheme.primary);
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -481,12 +487,20 @@ class _AscensionOverwriteSectionState extends State<_AscensionOverwriteSection> 
             child: Row(
               children: [
                 Expanded(
-                  child: Text(
-                    '${S.current.ascension_info_changes}: ${widget.previewName}',
-                    maxLines: 1,
+                  child: Text.rich(
+                    TextSpan(
+                      text: S.current.ascension_info_changes,
+                      children: [
+                        if (widget.previewEntries.isNotEmpty) const TextSpan(text: ': '),
+                        ...divideList(
+                          widget.previewEntries.map((entry) => TextSpan(text: entry, style: nameStyle)),
+                          const TextSpan(text: ' / '),
+                        ),
+                      ],
+                    ),
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.labelSmall
-                        ?.copyWith(color: Theme.of(context).colorScheme.primary),
+                    style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
                   ),
                 ),
                 Icon(expanded ? Icons.expand_less : Icons.expand_more, size: 18),
@@ -575,7 +589,7 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescripto
         if (overwrites.isNotEmpty)
           _AscensionOverwriteSection(
             key: ValueKey('td-overwrites-${td.id}'),
-            previewName: _overwritePreview(overwrites.first),
+            previewEntries: _overwriteNames(),
             indent: 16,
             children: [
               for (final entry in overwrites)
@@ -709,12 +723,11 @@ class TdDescriptor extends StatelessWidget with FuncsDescriptor, _SkillDescripto
     );
   }
 
-  String _overwritePreview(OverwriteTDData entry) {
-    if (entry.tdName != null && entry.tdName != td.name) return Transl.tdNames(entry.tdName!).l;
-    if (entry.tdRuby != null && entry.tdRuby != td.ruby) return Transl.tdRuby(entry.tdRuby!).l;
-    if (entry.tdRank != null && entry.tdRank != td.rank) return 'Rank ${entry.tdRank}';
-    if (entry.tdTypeText != null && entry.tdTypeText != td.type) return Transl.tdTypes(entry.tdTypeText!).l;
-    return entry.tdFileName ?? td.lName.l;
+  Set<String> _overwriteNames() {
+    return {
+      for (final entry in overwrites)
+        if (entry.tdName case final String name when name.isNotEmpty && name != td.name) Transl.tdNames(name).l,
+    }..remove(td.lName.l);
   }
 }
 

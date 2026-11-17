@@ -214,13 +214,6 @@ class _SettingsPageState extends State<SettingsPage> {
                   router.popDetailAndPush(child: DisplaySettingPage());
                 },
               ),
-              ListTile(
-                title: Text(S.current.privacy_center),
-                trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
-                onTap: () {
-                  router.popDetailAndPush(child: const PrivacyCenterPage());
-                },
-              ),
             ],
           ),
           TileGroup(
@@ -235,6 +228,13 @@ class _SettingsPageState extends State<SettingsPage> {
                         style: TextStyle(color: Theme.of(context).colorScheme.error.withAlpha(200)),
                       ),
                 onTap: () => router.popDetailAndPush(child: AboutPage()),
+              ),
+              ListTile(
+                title: Text(S.current.privacy_center),
+                trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+                onTap: () {
+                  router.popDetailAndPush(child: const PrivacyCenterPage());
+                },
               ),
               ListTile(
                 title: Text(S.current.about_feedback),
