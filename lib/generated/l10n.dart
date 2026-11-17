@@ -1421,6 +1421,17 @@ class S {
     return Intl.message('Bond not maxed only', name: 'bond_not_full_only', desc: '', locale: localeName, args: []);
   }
 
+  /// `Only servant release time follows this date; CE availability and costume traits use JP data.`
+  String get bond_release_quest_closed_hint {
+    return Intl.message(
+      'Only servant release time follows this date; CE availability and costume traits use JP data.',
+      name: 'bond_release_quest_closed_hint',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Search fixed servant ascensions`
   String get bond_search_fixed_ascensions {
     return Intl.message(
@@ -1430,6 +1441,71 @@ class S {
       locale: localeName,
       args: [],
     );
+  }
+
+  /// `The active user changed. Reopen this page before solving.`
+  String get bond_solver_active_user_changed {
+    return Intl.message(
+      'The active user changed. Reopen this page before solving.',
+      name: 'bond_solver_active_user_changed',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Up to {n} candidate teams are retained; other feasible or equal-score teams may be omitted. The proof covers only the highest score under the current settings — lower-score teams are not globally ranked.`
+  String bond_solver_candidate_coverage(Object n) {
+    return Intl.message(
+      'Up to $n candidate teams are retained; other feasible or equal-score teams may be omitted. The proof covers only the highest score under the current settings — lower-score teams are not globally ranked.',
+      name: 'bond_solver_candidate_coverage',
+      desc: '',
+      locale: localeName,
+      args: [n],
+    );
+  }
+
+  /// `Maximum not proven`
+  String get bond_solver_maximum_not_proven {
+    return Intl.message(
+      'Maximum not proven',
+      name: 'bond_solver_maximum_not_proven',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Maximum proven`
+  String get bond_solver_maximum_proven {
+    return Intl.message('Maximum proven', name: 'bond_solver_maximum_proven', desc: '', locale: localeName, args: []);
+  }
+
+  /// `No feasible team`
+  String get bond_solver_no_feasible_team {
+    return Intl.message(
+      'No feasible team',
+      name: 'bond_solver_no_feasible_team',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Search results are outdated. Solve again.`
+  String get bond_solver_results_outdated {
+    return Intl.message(
+      'Search results are outdated. Solve again.',
+      name: 'bond_solver_results_outdated',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
+  /// `Solve max bond`
+  String get bond_solver_solve_max_bond {
+    return Intl.message('Solve max bond', name: 'bond_solver_solve_max_bond', desc: '', locale: localeName, args: []);
   }
 
   /// `Bootstrap Page`
@@ -1475,6 +1551,11 @@ class S {
   /// `Cancel`
   String get cancel {
     return Intl.message('Cancel', name: 'cancel', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Cancelled`
+  String get cancelled {
+    return Intl.message('Cancelled', name: 'cancelled', desc: '', locale: localeName, args: []);
   }
 
   /// `Figure`
@@ -2061,6 +2142,11 @@ class S {
       locale: localeName,
       args: [],
     );
+  }
+
+  /// `Completed`
+  String get completed {
+    return Intl.message('Completed', name: 'completed', desc: '', locale: localeName, args: []);
   }
 
   /// `Condition`
@@ -5661,6 +5747,11 @@ class S {
       locale: localeName,
       args: [region],
     );
+  }
+
+  /// `Phase`
+  String get quest_phase {
+    return Intl.message('Phase', name: 'quest_phase', desc: '', locale: localeName, args: []);
   }
 
   /// `Preferred Region`

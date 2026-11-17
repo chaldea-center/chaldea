@@ -10,24 +10,31 @@ import 'svt_option_editor.dart';
 class FormationCard extends StatelessWidget {
   static const double kCardWidth = 80;
   static const double kContentWidth = kCardWidth * 6 + 64;
+  static const double kMysticCodeWidth = 56;
 
   final BattleTeamFormation formation;
+  final QuestPhase? questPhase;
+  final Map<int, UserServantCollectionEntity>? userSvtCollections;
+  final int? maxSvtCount;
+  final bool showBond;
+  final bool showMysticCode;
   final bool showAllMysticCodeIcon;
   final bool fadeOutMysticCode;
-  final Map<int, UserServantCollectionEntity>? userSvtCollections;
-  final bool showBond;
-  final int? maxSvtCount;
-  final QuestPhase? questPhase;
+  final String? Function(SvtSaveData? storedData)? svtInfoBuilder;
+  final String? Function(SvtEquipSaveData? equip, SvtEquipTarget target)? ceInfoBuilder;
 
   const FormationCard({
     super.key,
     required this.formation,
+    this.questPhase,
+    this.userSvtCollections,
+    this.maxSvtCount,
+    this.showBond = false,
+    this.showMysticCode = true,
     this.showAllMysticCodeIcon = false,
     this.fadeOutMysticCode = false,
-    this.userSvtCollections,
-    this.showBond = false,
-    this.maxSvtCount,
-    this.questPhase,
+    this.svtInfoBuilder,
+    this.ceInfoBuilder,
   });
 
   @override
@@ -37,7 +44,7 @@ class FormationCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         for (final svt in formation.svts.take(maxSvtCount ?? 6)) _buildServantIcons(context, svt),
-        _buildMysticCode(context),
+        if (showMysticCode) _buildMysticCode(context),
       ],
     );
   }
@@ -45,7 +52,9 @@ class FormationCard extends StatelessWidget {
   Widget _buildServantIcons(BuildContext context, SvtSaveData? storedData) {
     String svtInfo = '';
     final svtCollection = storedData?.supportType.isSupport == true ? null : userSvtCollections?[storedData?.svtId];
-    if (storedData != null) {
+    if (svtInfoBuilder != null) {
+      svtInfo = svtInfoBuilder!(storedData) ?? '';
+    } else if (storedData != null) {
       if (storedData.svtId != null && storedData.svtId != 0) {
         svtInfo = [
           if (showBond && svtCollection != null && !storedData.supportType.isSupport)
@@ -176,7 +185,9 @@ class FormationCard extends StatelessWidget {
     final basicCe = db.gameData.entities[equip?.id];
 
     String ceInfo = "";
-    if (equip != null && (equip.id ?? 0) != 0) {
+    if (ceInfoBuilder != null) {
+      ceInfo = ceInfoBuilder!(equip, equipTarget) ?? '';
+    } else if (equip != null && (equip.id ?? 0) != 0) {
       ceInfo = ' Lv.${equip.lv}';
       if (equip.limitBreak) {
         ceInfo += ' $kStarChar2';
@@ -239,7 +250,7 @@ class FormationCard extends StatelessWidget {
                 child: db.getIconImage(
                   enabled ? icon : null,
                   aspectRatio: 1,
-                  width: 56,
+                  width: kMysticCodeWidth,
                   onTap: enabled
                       ? () => router.push(url: Routes.mysticCodeI(formation.mysticCode.mysticCodeId ?? 0))
                       : null,

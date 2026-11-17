@@ -77,22 +77,20 @@ enum BondSolverRunState {
   bool get isRunning => this == preparing || this == searching;
 
   String conclusion(BondSolverResult? result) {
-    if (result?.provenOptimal != true) return 'Maximum not proven';
-    return result!.best == null ? 'No feasible team' : 'Maximum proven';
+    if (result?.provenOptimal != true) return S.current.bond_solver_maximum_not_proven;
+    return result!.best == null ? S.current.bond_solver_no_feasible_team : S.current.bond_solver_maximum_proven;
   }
 
   String describe(BondSolverResult? result) => switch (this) {
-    idle => 'Not started',
-    preparing => 'Preparing…',
-    searching =>
-      result?.provenOptimal != true
-          ? 'Searching…'
-          : result!.best == null
-          ? 'No feasible team · Finishing…'
-          : 'Maximum proven · Collecting candidates…',
-    completed => result?.provenOptimal == true ? 'Completed · ${conclusion(result)}' : 'Ended · Maximum not proven',
-    cancelled => 'Cancelled · ${conclusion(result)}',
-    failed => 'Failed · ${conclusion(result)}',
+    idle => S.current.not_started,
+    preparing => '${S.current.search}…',
+    searching => result?.provenOptimal == true ? conclusion(result) : '${S.current.search}…',
+    completed =>
+      result?.provenOptimal == true
+          ? '${S.current.completed} · ${conclusion(result)}'
+          : '${S.current.ended} · ${conclusion(result)}',
+    cancelled => '${S.current.cancelled} · ${conclusion(result)}',
+    failed => S.current.failed,
   };
 }
 
@@ -184,6 +182,7 @@ class BondSolverResultsTab extends StatelessWidget {
             : Icons.info_outline,
     };
     final failed = runState == BondSolverRunState.failed;
+    final statusText = failed && error != null ? '${S.current.failed} · $error' : status;
     return Card(
       margin: const EdgeInsets.fromLTRB(12, 8, 12, 8),
       child: Column(
@@ -215,7 +214,7 @@ class BondSolverResultsTab extends StatelessWidget {
                 Expanded(
                   child: Semantics(
                     button: true,
-                    label: status,
+                    label: statusText,
                     hint: S.current.details,
                     child: Tooltip(
                       message: S.current.details,
@@ -225,7 +224,7 @@ class BondSolverResultsTab extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 4),
                           child: Text(
-                            status,
+                            statusText,
                             style: Theme.of(context).textTheme.bodySmall
                                 ?.copyWith(color: failed ? colorScheme.error : colorScheme.onSurfaceVariant),
                             maxLines: 1,
@@ -261,11 +260,7 @@ class BondSolverResultsTab extends StatelessWidget {
 
   String _formatBond(int value) => value.format(compact: false, groupSeparator: ',');
 
-  String get _candidateCoverage =>
-      'Up to ${option.maxCandidateTeams.clamp(1, 200)} candidate teams are retained. '
-      'Feasible or equal-score teams may be omitted. '
-      'The maximum proof applies only to the highest score under the selected settings; '
-      'lower-score candidates are not globally ranked.';
+  String get _candidateCoverage => S.current.bond_solver_candidate_coverage(option.maxCandidateTeams.clamp(1, 200));
 
   void _showStatusDetails(BuildContext context) {
     final message = [status, ?error, if (solved != null) _candidateCoverage].join('\n\n');
@@ -279,16 +274,8 @@ class BondSolverResultsTab extends StatelessWidget {
   }
 
   Widget _emptyState(BuildContext context, BondSolverResult? result) {
-    final message = result?.provenOptimal == true && result?.best == null
-        ? 'No feasible team under the current settings'
-        : switch (runState) {
-            BondSolverRunState.idle => 'Solve to collect candidate teams',
-            BondSolverRunState.preparing => 'Candidate teams will appear here',
-            BondSolverRunState.searching => 'No candidate teams yet',
-            BondSolverRunState.cancelled => 'No team found before cancellation',
-            BondSolverRunState.failed => 'No team available. Open search details for the error.',
-            BondSolverRunState.completed => 'No team found before the search ended',
-          };
+    if (result?.provenOptimal != true || result?.best != null) return const SizedBox.shrink();
+    final message = S.current.bond_solver_no_feasible_team;
     return Padding(
       padding: const EdgeInsets.all(24),
       child: Center(
@@ -316,7 +303,7 @@ class BondSolverResultsTab extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
             child: Text(
-              '$score ${S.current.bond} · score group',
+              '$score ${S.current.bond}',
               style: Theme.of(context).textTheme.titleSmall?.copyWith(color: Theme.of(context).colorScheme.primary),
             ),
           ),
@@ -327,14 +314,20 @@ class BondSolverResultsTab extends StatelessWidget {
             children: [
               ListTile(
                 dense: true,
-                title: Text('Team ${teamIndex + 1}: $score'),
+                title: Text('${S.current.team} ${teamIndex + 1}: $score'),
                 trailing: Text(
                   'COST ${team.totalCost}/${result.maxCost}',
                   style: Theme.of(context).textTheme.labelLarge,
                 ),
               ),
-              FormationCard(formation: _previewFormation(team), questPhase: quest),
-              Padding(padding: const EdgeInsets.fromLTRB(8, 0, 8, 4), child: _bondValues(context, team)),
+              FormationCard(
+                formation: _previewFormation(team),
+                questPhase: quest,
+                showMysticCode: false,
+                svtInfoBuilder: (_) => null,
+                ceInfoBuilder: (_, _) => null,
+              ),
+              Padding(padding: const EdgeInsets.only(bottom: 4), child: _bondValues(context, team)),
             ],
           ),
         ),
@@ -359,15 +352,17 @@ class BondSolverResultsTab extends StatelessWidget {
     final base = (quest?.bond ?? 0) * option.teapotTimes;
     final deltaGroup = AutoSizeGroup();
     final totalGroup = AutoSizeGroup();
-    return Center(
-      child: Container(
-        constraints: const BoxConstraints(maxWidth: FormationCard.kContentWidth),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            for (var p = 0; p < 6; p++)
-              Expanded(
-                flex: 10,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (var p = 0; p < 6; p++)
+          Flexible(
+            flex: 10,
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: FormationCard.kCardWidth),
+              child: SizedBox(
+                width: double.infinity,
                 child: Builder(
                   builder: (context) {
                     final slot = byPosition[p];
@@ -381,6 +376,7 @@ class BondSolverResultsTab extends StatelessWidget {
                       onTap: () => _showTraitBondCes(context, team, slot),
                       borderRadius: BorderRadius.circular(4),
                       child: Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 2),
                         decoration: requirement.restricted
                             ? BoxDecoration(
                                 border: Border(
@@ -412,10 +408,9 @@ class BondSolverResultsTab extends StatelessWidget {
                   },
                 ),
               ),
-            const Expanded(flex: 8, child: SizedBox.shrink()),
-          ],
-        ),
-      ),
+            ),
+          ),
+      ],
     );
   }
 
@@ -426,7 +421,13 @@ class BondSolverResultsTab extends StatelessWidget {
     final requirement = _ascensionRequirement(team, target);
     final targetSvt = db.gameData.servantsById[target.servantId] ?? db.gameData.entities[target.servantId];
     final formSvt = (target.fixedServant ? formation.svts[target.position].dispSvt : null) ?? targetSvt;
-    String limitName(int limit) => formSvt is Servant ? formSvt.getLimitName(limit) : '$limit';
+    String limitName(int limit) {
+      final name = formSvt is Servant ? formSvt.getLimitName(limit) : '$limit';
+      if (limit < 0 || limit > 4) return name;
+      final stage = Servant.limitCountToDispLimitCount(limit);
+      return '$name (${S.current.ascension_stage_short} $stage)';
+    }
+
     await router.showDialog<void>(
       context: context,
       builder: (context) => SimpleConfirmDialog(
@@ -571,18 +572,13 @@ class BondSolverResultsTab extends StatelessWidget {
   Widget _diagnostics(BondSolverResult solved) {
     final combinations = solved.possibleCombinations;
     final visitedNodeCountText = solved.visitedNodes.formatSep();
+    final evaluated = !solved.isCeFirst
+        ? '$visitedNodeCountText nodes'
+        : (combinations == null
+              ? '$visitedNodeCountText CE combinations'
+              : '$visitedNodeCountText/$combinations CE combinations');
     return SimpleAccordion(
-      headerBuilder: (context, expanded) => ListTile(
-        dense: true,
-        title: const Text('Search details'),
-        subtitle: Text(
-          !solved.isCeFirst
-              ? '$visitedNodeCountText nodes visited · total unknown'
-              : combinations == null
-              ? '$visitedNodeCountText CE combinations evaluated · total unknown'
-              : '$visitedNodeCountText/$combinations CE combinations evaluated',
-        ),
-      ),
+      headerBuilder: (context, expanded) => const ListTile(dense: true, title: Text('Search details')),
       contentBuilder: (context) => Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -591,14 +587,13 @@ class BondSolverResultsTab extends StatelessWidget {
             title: const Text('Method'),
             trailing: Text(solved.isCeFirst ? 'CE-first search' : 'General search'),
           ),
-          ListTile(
-            dense: true,
-            title: const Text('Last reported time'),
-            trailing: Text('${solved.elapsedMilliseconds} ms'),
+          ListTile(dense: true, title: const Text('Evaluated'), trailing: Text(evaluated)),
+          ListTile(dense: true, title: const Text('Elapsed'), trailing: Text('${solved.elapsedMilliseconds} ms')),
+          ListTile(dense: true, title: const Text('Candidate choices'), trailing: Text('${solved.itemCount}')),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: Text(_candidateCoverage, style: Theme.of(context).textTheme.bodySmall),
           ),
-          ListTile(dense: true, title: const Text('Candidate items'), trailing: Text('${solved.itemCount}')),
-          ListTile(dense: true, title: const Text('Search conclusion'), trailing: Text(runState.conclusion(solved))),
-          Padding(padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8), child: Text(_candidateCoverage)),
         ],
       ),
     );

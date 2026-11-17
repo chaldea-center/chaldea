@@ -14,6 +14,8 @@ class TeamSetupCard extends StatefulWidget {
   final bool showEmptyBackup;
   final VoidCallback? onChanged;
   final PreferPlayerSvtDataSource? playerSvtSource;
+  final String? Function(PlayerSvtData playerSvtData)? svtInfoBuilder;
+  final String? Function(SvtEquipData equip, SvtEquipTarget target)? ceInfoBuilder;
 
   const TeamSetupCard({
     super.key,
@@ -24,6 +26,8 @@ class TeamSetupCard extends StatefulWidget {
     this.showEmptyBackup = true,
     this.onChanged,
     this.playerSvtSource,
+    this.svtInfoBuilder,
+    this.ceInfoBuilder,
   });
 
   @override
@@ -77,6 +81,8 @@ class _TeamSetupCardState extends State<TeamSetupCard> {
                     onDragSvt: widget.enableEdit ? (svtFrom) => onDrag(svtFrom, svt, false) : null,
                     onDragCE: widget.enableEdit ? (svtFrom) => onDrag(svtFrom, svt, true) : null,
                     enableEdit: widget.enableEdit,
+                    svtInfoBuilder: widget.svtInfoBuilder,
+                    ceInfoBuilder: widget.ceInfoBuilder,
                   ),
                 ),
             ],

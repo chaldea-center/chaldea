@@ -101,7 +101,7 @@ class _FormationBondPageState extends State<FormationBondPage> with SingleTicker
       _runtime.clearResults();
     });
     if (_runtime.userBacked) db.notifyUserdata();
-    if (hadSearch) EasyLoading.showToast('Search results are outdated. Solve again.');
+    if (hadSearch) EasyLoading.showToast(S.current.bond_solver_results_outdated);
   }
 
   @override
@@ -203,17 +203,11 @@ class _FormationBondPageState extends State<FormationBondPage> with SingleTicker
     if (!_runtime.restored) return;
     final selectedQuest = questEntity;
     if (selectedQuest == null) {
-      setState(() {
-        _runtime.runState = BondSolverRunState.failed;
-        _runtime.solverError = 'Select a quest first';
-      });
+      EasyLoading.showError(S.current.battle_no_quest_phase);
       return;
     }
     if (_runtime.userBacked && db.userData.curUser.id != _user.id) {
-      setState(() {
-        _runtime.runState = BondSolverRunState.failed;
-        _runtime.solverError = 'The active user changed. Reopen this page before solving.';
-      });
+      EasyLoading.showError(S.current.bond_solver_active_user_changed);
       return;
     }
     final limit = option.maxServants.clamp(1, 6);
@@ -304,10 +298,8 @@ class _FormationBondPageState extends State<FormationBondPage> with SingleTicker
       await WidgetsBinding.instance.endOfFrame;
       if (!mounted || revision != _runtime.searchRevision) return;
       if (_runtime.userBacked && db.userData.curUser.id != _user.id) {
-        setState(() {
-          _runtime.runState = BondSolverRunState.failed;
-          _runtime.solverError = 'The active user changed. Reopen this page before solving.';
-        });
+        setState(_runtime.clearResults);
+        EasyLoading.showError(S.current.bond_solver_active_user_changed);
         return;
       }
       // Selection/restoration resolves missing phases before Solve is available.
@@ -346,6 +338,7 @@ class _FormationBondPageState extends State<FormationBondPage> with SingleTicker
                 _runtime.solverError = e.toString();
                 _runtime.runState = BondSolverRunState.failed;
               });
+              _showSearchError(e);
               if (kDebugMode) debugPrint('[BondSolver] search failed: $e');
             },
             onDone: () {
@@ -365,8 +358,19 @@ class _FormationBondPageState extends State<FormationBondPage> with SingleTicker
         _runtime.solverError = e.toString();
         _runtime.runState = BondSolverRunState.failed;
       });
+      _showSearchError(e);
       if (kDebugMode) debugPrint('[BondSolver] search failed during preparation: $e');
     }
+  }
+
+  void _showSearchError(Object error) {
+    SimpleConfirmDialog(
+      title: Text(S.current.failed),
+      content: SelectableText(error.toString()),
+      showCancel: false,
+      confirmText: S.current.ok,
+      scrollable: true,
+    ).showDialog(context);
   }
 
   void cancelSolve() {
@@ -393,13 +397,8 @@ class _FormationBondPageState extends State<FormationBondPage> with SingleTicker
 
   @override
   Widget build(BuildContext context) {
-    if (_runtime.userBacked && db.userData.curUser.id != _user.id) {
-      return Scaffold(
-        appBar: AppBar(title: const Text('Formation Bond')),
-        body: const Center(child: Text('The active user changed. Reopen Formation Bond to load this user’s team.')),
-      );
-    }
     final quest = questEntity;
+    final dateEnabled = BondReleaseRules.hasClosingDate(quest);
     final eventId = quest?.logicEventId;
     final eventSkillIds = {
       if (eventId != null)
@@ -428,6 +427,9 @@ class _FormationBondPageState extends State<FormationBondPage> with SingleTicker
       children: [
         TileGroup(
           header: '${S.current.quest} / ${S.current.bond}',
+          footer: option.releaseReference == BondReleaseReference.questClosedAt
+              ? S.current.bond_release_quest_closed_hint
+              : null,
           children: [
             _BondQuestPicker(
               info: option.quest,
@@ -442,12 +444,6 @@ class _FormationBondPageState extends State<FormationBondPage> with SingleTicker
               title: Text(
                 '${S.current.time}(${S.current.servant}/${S.current.craft_essence_short}/${S.current.costume})',
               ),
-              subtitle: option.releaseReference == BondReleaseReference.questClosedAt
-                  ? Text(
-                      'CE availability and costume traits currently use JP data.',
-                      style: Theme.of(context).textTheme.bodySmall,
-                    )
-                  : null,
               trailing: DropdownButton<BondReleaseReference>(
                 value: option.releaseReference,
                 underline: const SizedBox.shrink(),
@@ -455,14 +451,16 @@ class _FormationBondPageState extends State<FormationBondPage> with SingleTicker
                   for (final reference in BondReleaseReference.values)
                     DropdownMenuItem(
                       value: reference,
-                      enabled:
-                          reference != BondReleaseReference.questClosedAt || BondReleaseRules.hasClosingDate(quest),
+                      enabled: reference != BondReleaseReference.questClosedAt || dateEnabled,
                       child: Text(
                         reference == BondReleaseReference.questClosedAt
-                            ? (BondReleaseRules.hasClosingDate(quest)
+                            ? (dateEnabled
                                   ? Region.jp.getDateTimeByOffset(quest!.closedAt).toString().substring(0, 10)
                                   : S.current.date)
-                            : reference.region.upper,
+                            : reference.region.localName,
+                        style: reference == BondReleaseReference.questClosedAt && !dateEnabled
+                            ? TextStyle(color: Theme.of(context).disabledColor)
+                            : null,
                       ),
                     ),
                 ],
@@ -484,6 +482,8 @@ class _FormationBondPageState extends State<FormationBondPage> with SingleTicker
               playerSvtSource: option.favoriteSvtOnly
                   ? PreferPlayerSvtDataSource.current
                   : PreferPlayerSvtDataSource.none,
+              svtInfoBuilder: (_) => null,
+              ceInfoBuilder: (_, _) => null,
               onChanged: () => updateSharedInput(() {}),
             ),
             Center(
@@ -554,7 +554,7 @@ class _FormationBondPageState extends State<FormationBondPage> with SingleTicker
                 title: Text(S.current.event),
                 subtitle: Text(
                   '${(option.enableEvent ? 1 : 0) + eventCampaignToggles.where((entry) => entry.$3).length}'
-                  '/${eventCampaignToggles.length + 1} enabled',
+                  '/${eventCampaignToggles.length + 1}',
                 ),
               ),
               contentBuilder: (context) => Column(
@@ -710,7 +710,7 @@ class _FormationBondPageState extends State<FormationBondPage> with SingleTicker
               child: FilledButton.icon(
                 onPressed: _runtime.solving || !_runtime.restored || questEntity == null ? null : solve,
                 icon: const Icon(Icons.auto_awesome),
-                label: const Text('Solve max bond'),
+                label: Text(S.current.bond_solver_solve_max_bond),
               ),
             ),
             if (_runtime.solving) ...[
@@ -1012,7 +1012,7 @@ class _BondQuestPicker extends StatelessWidget {
       trailing: TextButton(
         onPressed: () {
           InputCancelOkDialog.number(
-            title: 'Quest ID',
+            title: '${S.current.quest} ID',
             initValue: info?.id ?? quest?.id,
             validate: (v) => v > 0,
             onSubmit: (v) async {
@@ -1028,14 +1028,14 @@ class _BondQuestPicker extends StatelessWidget {
               } else {
                 phase = await router.showDialog<int>(
                   builder: (context) => SimpleDialog(
-                    title: const Text("Quest Phase"),
+                    title: Text(S.current.quest_phase),
                     children: [
                       for (final phase in _quest.phases)
                         ListTile(
                           enabled: !_quest.phasesNoBattle.contains(phase),
                           contentPadding: const EdgeInsets.symmetric(horizontal: 24),
                           onTap: () => Navigator.pop(context, phase),
-                          title: Text('phase $phase'),
+                          title: Text('${S.current.quest_phase} $phase'),
                         ),
                     ],
                   ),

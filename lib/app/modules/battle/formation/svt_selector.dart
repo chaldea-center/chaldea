@@ -34,6 +34,9 @@ class ServantSelector extends StatelessWidget {
   final ValueNotifier<String?> hovered;
   final PreferPlayerSvtDataSource? playerSvtSource;
 
+  final String? Function(PlayerSvtData playerSvtData)? svtInfoBuilder;
+  final String? Function(SvtEquipData equip, SvtEquipTarget target)? ceInfoBuilder;
+
   ServantSelector({
     super.key,
     required this.playerSvtData,
@@ -45,6 +48,8 @@ class ServantSelector extends StatelessWidget {
     this.enableEdit = true,
     required this.hovered,
     this.playerSvtSource,
+    this.svtInfoBuilder,
+    this.ceInfoBuilder,
   });
 
   SvtFilterData get svtFilterData => db.runtimeData.svtFilters.current;
@@ -58,7 +63,9 @@ class ServantSelector extends StatelessWidget {
 
     // svt icon
     String svtInfo = '';
-    if (playerSvtData.svt != null) {
+    if (svtInfoBuilder != null) {
+      svtInfo = svtInfoBuilder!(playerSvtData) ?? '';
+    } else if (playerSvtData.svt != null) {
       svtInfo = [
         ' Lv.${playerSvtData.lv} NP${playerSvtData.tdLv}',
         if (playerSvtData.atkFou != 1000 || playerSvtData.hpFou != 1000)
@@ -173,12 +180,18 @@ class ServantSelector extends StatelessWidget {
     children.add(const SizedBox(height: 8));
 
     // ce icon
-    Widget _buildCeIcon(SvtEquipData equip, {bool showLv = false}) {
+    Widget _buildCeIcon(SvtEquipData equip, SvtEquipTarget target, {bool showLv = false}) {
       Widget _ceIcon = db.getIconImage(
         equip.ce?.extraAssets.equipFace.equip?[equip.ce?.id] ?? Atlas.common.emptyCeIcon,
         width: 80,
         aspectRatio: 150 / 68,
       );
+      String ceInfo = '';
+      if (ceInfoBuilder != null) {
+        ceInfo = ceInfoBuilder!(equip, target) ?? '';
+      } else if (showLv && equip.ce != null) {
+        ceInfo = 'Lv.${equip.lv}';
+      }
       List<Widget> _stackChildren = [
         if (equip.ce != null && equip.limitBreak)
           Positioned(
@@ -194,8 +207,8 @@ class ServantSelector extends StatelessWidget {
               child: Icon(Icons.auto_awesome, color: Colors.yellow[900], size: 14),
             ),
           ),
-        if (showLv && equip.ce != null)
-          Positioned(left: 1, bottom: 1, child: Text('Lv.${equip.lv}', style: TextStyle(fontSize: 12))),
+        if (ceInfo.isNotEmpty)
+          Positioned(left: 1, bottom: 1, child: Text(ceInfo, style: const TextStyle(fontSize: 12))),
       ];
       if (_stackChildren.isNotEmpty) {
         _ceIcon = Stack(alignment: Alignment.bottomRight, children: [_ceIcon, ..._stackChildren]);
@@ -203,7 +216,7 @@ class ServantSelector extends StatelessWidget {
       return _ceIcon;
     }
 
-    Widget equip1Icon = _buildCeIcon(playerSvtData.equip1);
+    Widget equip1Icon = _buildCeIcon(playerSvtData.equip1, SvtEquipTarget.normal);
 
     equip1Icon = _DragHover<_DragCEData>(
       enableEdit: enableEdit,
@@ -257,7 +270,9 @@ class ServantSelector extends StatelessWidget {
 
     // ce info
     String equip1Info = '';
-    if (playerSvtData.equip1.ce != null) {
+    if (ceInfoBuilder != null) {
+      equip1Info = ceInfoBuilder!(playerSvtData.equip1, SvtEquipTarget.normal) ?? '';
+    } else if (playerSvtData.equip1.ce != null) {
       equip1Info = 'Lv.${playerSvtData.equip1.lv}';
       if (playerSvtData.equip1.limitBreak) {
         equip1Info += ' ${S.current.max_limit_break}';
@@ -265,22 +280,24 @@ class ServantSelector extends StatelessWidget {
     } else {
       equip1Info = 'Lv.-';
     }
-    children.add(
-      SizedBox(
-        height: 18,
-        child: AutoSizeText(
-          equip1Info.breakWord,
-          maxLines: 1,
-          minFontSize: 10,
-          textAlign: TextAlign.center,
-          textScaleFactor: 0.9,
-          style: playerSvtData.equip1.ce == null ? notSelectedStyle : null,
+    if (equip1Info.isNotEmpty) {
+      children.add(
+        SizedBox(
+          height: 18,
+          child: AutoSizeText(
+            equip1Info.breakWord,
+            maxLines: 1,
+            minFontSize: 10,
+            textAlign: TextAlign.center,
+            textScaleFactor: 0.9,
+            style: playerSvtData.equip1.ce == null ? notSelectedStyle : null,
+          ),
         ),
-      ),
-    );
+      );
+    }
     if (playerSvtData.grandSvt) {
-      children.add(_buildCeIcon(playerSvtData.equip2, showLv: true));
-      children.add(_buildCeIcon(playerSvtData.equip3, showLv: true));
+      children.add(_buildCeIcon(playerSvtData.equip2, SvtEquipTarget.bond, showLv: true));
+      children.add(_buildCeIcon(playerSvtData.equip3, SvtEquipTarget.reward, showLv: true));
     }
 
     return Padding(
