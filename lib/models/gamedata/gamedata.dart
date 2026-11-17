@@ -2,8 +2,9 @@
 
 import 'dart:convert';
 
-import 'package:archive/archive.dart';
 import 'package:flutter/foundation.dart';
+
+import 'package:archive/archive.dart';
 
 import 'package:chaldea/utils/basic.dart';
 import 'package:chaldea/utils/constants.dart';

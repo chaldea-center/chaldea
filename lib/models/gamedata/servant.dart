@@ -790,12 +790,14 @@ class Servant extends BasicServant {
     Map<int, LvlUpMaterial> materials = {};
     final costs = db.gameData.constData.svtGrailCost[rarity];
     if (costs != null) {
+      // NPC/special servants have no coin data, so coins can be omitted.
+      final coinItem = coin?.item;
       for (final endLv in costs.keys) {
         if (collectionNo == 1 && endLv <= 2) continue;
         materials[endLv - 1] = LvlUpMaterial(
           items: [
             ItemAmount(amount: 1, item: Items.grail),
-            if (lvMax + costs[endLv]!.addLvMax > 100) ItemAmount(amount: 30, item: coin!.item),
+            if (coinItem != null && lvMax + costs[endLv]!.addLvMax > 100) ItemAmount(amount: 30, item: coinItem),
           ],
           qp: costs[endLv]!.qp,
         );

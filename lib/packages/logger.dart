@@ -37,6 +37,13 @@ class _LoggerWrap {
   void log(Level level, dynamic message, [dynamic error, StackTrace? stackTrace]) =>
       _l.log(level, message, error: error, stackTrace: stackTrace);
 
+  /// Console-only log, never written to the log file. Use it for expected and
+  /// self-healing failures (e.g. image download retries), which would only
+  /// pollute the log files that get attached to feedback reports.
+  void console(dynamic message) {
+    print(message);
+  }
+
   bool isClosed() => _l.isClosed();
 
   void close() => _l.close();

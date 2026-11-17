@@ -159,7 +159,7 @@ class _SvtPlanTabState extends State<SvtPlanTab> {
             },
             detailPageBuilder: (context) => LevelingCostPage(
               costList: {
-                if (svt.icon != null) 0: LvlUpMaterial(items: [ItemAmount(amount: 120, item: svt.coin!.item)], qp: 0),
+                if (svt.coin != null) 0: LvlUpMaterial(items: [ItemAmount(amount: 120, item: svt.coin!.item)], qp: 0),
                 ...svt.appendSkillMaterials,
               },
               title: '${S.current.append_skill} ${index + 1} - ${Transl.skillNames(skill.name).l}',

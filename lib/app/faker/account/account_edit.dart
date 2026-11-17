@@ -343,7 +343,7 @@ class _FakerAccountEditPageState extends State<FakerAccountEditPage> {
             final _runtime = runtime ??= await FakerRuntime.init(user, null);
             await showEasyLoading(
               () => _runtime.runTask(() async {
-                (_runtime.agent as FakerAgentCN).biliSdkLogin();
+                await (_runtime.agent as FakerAgentCN).biliSdkLogin();
               }),
             );
             if (mounted) setState(() {});
