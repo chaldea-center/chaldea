@@ -605,7 +605,10 @@ class _GachaGroupPageState extends State<GachaGroupPage> {
     if (gacha.isInvalid) {
       warning = '该卡池解析失败';
     } else {
-      if ((100 - gacha.guessTotalProb()).abs() < 0.05 && (100 - gacha.getTotalProb()).abs() < 0.06) {
+      final rowCount = gacha.groups.fold<int>(0, (sum, e) => sum + e.expectedCount);
+      // Per-card rates are truncated, so the raw sum may fall short within that bound.
+      if ((100 - gacha.guessTotalProb()).abs() < 0.05 &&
+          (100 - gacha.getTotalProb()).abs() <= rowCount * 0.001 + 0.01) {
         warningColor = Theme.of(context).colorScheme.primary;
       }
       warning =

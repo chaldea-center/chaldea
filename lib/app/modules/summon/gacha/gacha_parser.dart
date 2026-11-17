@@ -1,9 +1,13 @@
 import 'dart:convert';
+import 'dart:io';
+
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 import 'package:html/dom.dart' as htmldom;
 import 'package:html/parser.dart' as htmlparser;
 
 import 'package:chaldea/app/api/chaldea.dart';
+import 'package:chaldea/app/tools/icon_cache_manager.dart';
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/packages/logger.dart';
 import 'package:chaldea/utils/utils.dart';
@@ -11,6 +15,19 @@ import 'package:chaldea/utils/utils.dart';
 import '../../mc/converter.dart';
 
 const int _kJpNoticePages = 4;
+
+/// Table roles are identified by the section heading right before each table,
+/// because newer banners reorder or omit tables while keeping the headings.
+enum _GachaTableKind { summary, svtPickup, cePickup, svtPool, cePool, excluded, unknown }
+
+const Map<String, _GachaTableKind> _kGachaSectionKinds = {
+  '■ピックアップサーヴァント一覧': _GachaTableKind.svtPickup,
+  '■ピックアップ概念礼装': _GachaTableKind.cePickup,
+  '■サーヴァント一覧': _GachaTableKind.svtPool,
+  '■概念礼装': _GachaTableKind.cePool,
+  '■召喚対象外のサーヴァント': _GachaTableKind.excluded,
+  '提供割合': _GachaTableKind.summary,
+};
 
 enum GachaCardWarningReason { notFound, multipleFound }
 
@@ -42,6 +59,9 @@ class GachaProbData {
   String htmlText = "";
   List<GachaProbRow> groups = [];
   final List<GachaCardWarning> cardWarnings;
+
+  /// Official per-rarity totals from the banner's "提供割合" table, in percent.
+  final Map<(bool isSvt, int rarity), double> summaryProbs = {};
 
   GachaProbData(this.gacha, this.htmlText, this.groups, {this.cardWarnings = const []});
 
@@ -141,6 +161,10 @@ class GachaProbRow {
   /// rows fail to resolve, and must drive probability math to stay accurate.
   int expectedCount = 0;
 
+  /// Group total estimated from the banner's "提供割合" table. Per-card rates
+  /// are truncated to 3 decimals, so their product underestimates the total.
+  double? correctedTotal;
+
   GachaProbRow({
     required this.isSvt,
     required this.pickup,
@@ -160,8 +184,10 @@ class GachaProbRow {
   }
 
   double guessTotalProb() {
-    double v = (getTotalProb() * 10).round() / 10;
-    if (isSvt && rarity == 4 && expectedCount > 40 && v == 0.8) {
+    final source = correctedTotal ?? getTotalProb();
+    double v = (source * 10).round() / 10;
+    // Keep the legacy heuristic only when no summary total is available.
+    if (correctedTotal == null && isSvt && rarity == 4 && expectedCount > 40 && v == 0.8) {
       v = 0.9;
     }
     return double.parse(v.toString());
@@ -219,40 +245,63 @@ class JpGachaParser {
     return allData;
   }
 
+  Future<String?> _getCachedText(String url, {required bool refresh}) async {
+    if (refresh) {
+      await AtlasIconLoader.i.deleteFromDisk(url);
+    }
+    final fp = await AtlasIconLoader.i.get(url);
+    if (fp == null) return null;
+    try {
+      return await File(fp).readAsString();
+    } catch (e, s) {
+      logger.e('read cached gacha html failed', e, s);
+      await AtlasIconLoader.i.deleteFromDisk(url);
+      return null;
+    }
+  }
+
   Future<GachaProbData> parseProb(NiceGacha gacha, {bool refresh = false}) async {
     final data = GachaProbData(gacha, '', [], cardWarnings: []);
     final url = gacha.getHtmlUrl(Region.jp);
     if (url == null) return data;
-    final text = await CachedApi.cacheManager.getText(url, expireAfter: refresh ? Duration.zero : null);
+    final text = kIsWeb
+        ? await CachedApi.cacheManager.getText(url, expireAfter: refresh ? Duration.zero : null)
+        : await _getCachedText(url, refresh: refresh);
     if (text == null) return data;
 
     final doc = htmlparser.parse(text);
-    final tableCount = text.split("<table").length - 1;
-    List<(bool pickup, List<List<String>> table)> svtTables, ceTables;
-    if (tableCount == 4) {
-      // svt_class, rarity, name, prob
-      svtTables = [(false, _getProbTable(doc, 2, 4))];
-      // rarity, name, prob
-      ceTables = [(false, _getProbTable(doc, 3, 3))];
-    } else if (tableCount == 6) {
-      // 1, svt, ce, svt, ce, 6
-      svtTables = [(true, _getProbTable(doc, 2, 4)), (false, _getProbTable(doc, 4, 4))];
-      ceTables = [(true, _getProbTable(doc, 3, 3)), (false, _getProbTable(doc, 5, 3))];
-    } else if (tableCount == 5) {
-      const svtTitle = '■ピックアップサーヴァント一覧', ceTitle = '■ピックアップ概念礼装';
-      if (text.contains(svtTitle) && !text.contains(ceTitle)) {
-        // 1, svt, svt, ce, 5
-        svtTables = [(true, _getProbTable(doc, 2, 4)), (false, _getProbTable(doc, 3, 4))];
-        ceTables = [(false, _getProbTable(doc, 4, 3))];
-      } else if (!text.contains(svtTitle) && text.contains(ceTitle)) {
-        // 1, ce, svt, ce, 5
-        svtTables = [(false, _getProbTable(doc, 3, 4))];
-        ceTables = [(true, _getProbTable(doc, 2, 3)), (false, _getProbTable(doc, 4, 3))];
-      } else {
-        throw FormatException('Unexpected table count(5): $tableCount');
+    final tables = doc.getElementsByTagName('table');
+    final tableOffsets = <int>[];
+    var searchFrom = 0;
+    for (var i = 0; i < tables.length; i++) {
+      final offset = text.indexOf('<table', searchFrom);
+      if (offset < 0) break;
+      tableOffsets.add(offset);
+      searchFrom = offset + '<table'.length;
+    }
+    if (tableOffsets.length != tables.length) {
+      throw FormatException('Table offset mismatch: ${tables.length} tables, ${tableOffsets.length} offsets');
+    }
+
+    final svtTables = <(bool pickup, List<List<String>> table)>[];
+    final ceTables = <(bool pickup, List<List<String>> table)>[];
+    for (var i = 0; i < tables.length; i++) {
+      final kind = _classifyTable(text, tableOffsets[i]);
+      if (kind == _GachaTableKind.summary) {
+        for (final row in _getProbTable(doc, i + 1, 4)) {
+          final rarity = row[0].count(kStar);
+          final svt = _parsePercent(row[1]), ce = _parsePercent(row[3]);
+          if (svt != null) data.summaryProbs[(true, rarity)] = svt;
+          if (ce != null) data.summaryProbs[(false, rarity)] = ce;
+        }
+      } else if (kind == _GachaTableKind.svtPickup || kind == _GachaTableKind.svtPool) {
+        svtTables.add((kind == _GachaTableKind.svtPickup, _getProbTable(doc, i + 1, 4)));
+      } else if (kind == _GachaTableKind.cePickup || kind == _GachaTableKind.cePool) {
+        ceTables.add((kind == _GachaTableKind.cePickup, _getProbTable(doc, i + 1, 3)));
       }
-    } else {
-      throw FormatException('Unexpected table count: $tableCount');
+    }
+    if (svtTables.isEmpty && ceTables.isEmpty) {
+      throw FormatException('No probability table found: ${tables.length} tables');
     }
 
     final classNameMap = <String, List<int>>{};
@@ -333,6 +382,7 @@ class JpGachaParser {
     }
 
     final groups = groupMap.values.toList();
+    _applySummaryCorrection(data, groups);
     groups.sortByList((e) => [e.isSvt ? 0 : 1, e.pickup ? 0 : 1, -e.rarity, e.expectedCount]);
 
     data.htmlText = text;
@@ -340,21 +390,76 @@ class JpGachaParser {
     return data;
   }
 
+  /// Per-card rates are truncated, so distribute each rarity's official total
+  /// to the non-pickup group. Pickup totals are clean values and stay untouched.
+  void _applySummaryCorrection(GachaProbData data, List<GachaProbRow> groups) {
+    if (data.summaryProbs.isEmpty) return;
+    for (final entry in data.summaryProbs.entries) {
+      final (isSvt, rarity) = entry.key;
+      final target = entry.value;
+      final keyGroups = groups.where((e) => e.isSvt == isSvt && e.rarity == rarity).toList();
+      if (keyGroups.isEmpty) continue;
+      final rawSum = keyGroups.fold<double>(0, (sum, e) => sum + e.getTotalProb());
+      final residual = target - rawSum;
+      // A larger gap means the table is not explained by truncation; keep raw values.
+      if (residual.abs() > 0.2) continue;
+      final poolGroups = keyGroups.where((e) => !e.pickup).toList();
+      final targets = poolGroups.isNotEmpty ? poolGroups : keyGroups;
+      final base = targets.fold<double>(0, (sum, e) => sum + e.getTotalProb());
+      for (final group in targets) {
+        final share = base > 0 ? residual * group.getTotalProb() / base : residual / targets.length;
+        group.correctedTotal = group.getTotalProb() + share;
+      }
+    }
+  }
+
+  double? _parsePercent(String text) {
+    final value = text.trim();
+    if (!value.endsWith('%')) return null;
+    return double.tryParse(value.substring(0, value.length - 1));
+  }
+
+  /// Resolves a table role from the nearest section heading before it.
+  _GachaTableKind _classifyTable(String text, int tableOffset) {
+    final start = tableOffset > 2000 ? tableOffset - 2000 : 0;
+    final before = text.substring(start, tableOffset).replaceAll(RegExp(r'<[^>]+>'), '');
+    var kind = _GachaTableKind.unknown;
+    var lastIndex = -1;
+    for (final entry in _kGachaSectionKinds.entries) {
+      final index = before.lastIndexOf(entry.key);
+      if (index > lastIndex) {
+        lastIndex = index;
+        kind = entry.value;
+      }
+    }
+    return kind;
+  }
+
   List<List<String>> _getProbTable(htmldom.Document document, int tableIndex, int colCount) {
     List<List<String>> tableData = [];
     final table = document.getElementsByTagName('table')[tableIndex - 1];
-    final trs = table.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+    final body = table.getElementsByTagName('tbody').firstOrNull ?? table;
+    final trs = body.getElementsByTagName('tr');
     for (final tr in trs) {
       final tds = tr.getElementsByTagName('td');
       if (tds.isEmpty) continue;
-      tableData.add(tds.map((e) => e.text.trim()).toList().sublist(0, colCount));
+      final cells = tds.map((e) => e.text.trim()).toList();
+      if (cells.length < colCount) {
+        throw FormatException('Unexpected columns: expected $colCount, got ${cells.length}');
+      }
+      tableData.add(cells.sublist(0, colCount));
     }
     assert(tableData.isEmpty || tableData.map((e) => e.length).toSet().length == 1);
     return tableData;
   }
 
+  /// The raw HTML mixes halfwidth and fullwidth parentheses for alternate names,
+  /// while the generated alias strings always use fullwidth ones.
+  String _normalizeName(String name) => name.replaceAll('（', '(').replaceAll('）', ')').trim();
+
   (BasicServant?, GachaCardWarningReason?) _findCard(String name, int rarity, List<int> classIds) {
     Map<int, BasicServant> targets = {};
+    final normalizedName = _normalizeName(name);
     for (final card in db.gameData.entities.values) {
       if (card.collectionNo <= 0 || card.rarity != rarity || !classIds.contains(card.classId)) continue;
 
@@ -363,9 +468,9 @@ class JpGachaParser {
         card.name,
         svt?.ascensionAdd.overWriteServantName.ascension[0],
         for (final change in svt?.svtChange ?? <ServantChange>[]) ...[change.name, '${card.name}（${change.name}）'],
-      }.whereType<String>().toList();
+      }.whereType<String>();
 
-      if (names.contains(name)) {
+      if (names.any((e) => _normalizeName(e) == normalizedName)) {
         targets[card.id] = card;
       }
     }
