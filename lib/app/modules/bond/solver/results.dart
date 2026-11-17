@@ -425,7 +425,8 @@ class BondSolverResultsTab extends StatelessWidget {
     final bonuses = team.traitCeBonusesFor(target, quest, option);
     final requirement = _ascensionRequirement(team, target);
     final targetSvt = db.gameData.servantsById[target.servantId] ?? db.gameData.entities[target.servantId];
-    String limitName(int limit) => targetSvt is Servant ? targetSvt.getLimitName(limit) : '$limit';
+    final formSvt = (target.fixedServant ? formation.svts[target.position].dispSvt : null) ?? targetSvt;
+    String limitName(int limit) => formSvt is Servant ? formSvt.getLimitName(limit) : '$limit';
     await router.showDialog<void>(
       context: context,
       builder: (context) => SimpleConfirmDialog(

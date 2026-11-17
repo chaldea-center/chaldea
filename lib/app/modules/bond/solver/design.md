@@ -141,6 +141,8 @@ for each automatically selected owned CE where restricted(ce):
 
 CN、TW、NA 的 `costumeRelease` 名单非空时，自动搜索的灵基候选限定为 `0–4` 和按 `battleCharaId` 匹配到的实装灵衣。该名单独立于 `hasCostume` 特性。JP、日期模式和缺少有效名单的地区使用完整灵基范围。关闭固定灵基搜索时，直接使用手动锁定的灵基，与固定从者 ID 一样可以使用未实装内容，仍须满足关卡限制。求解和结果预览使用原始灵衣资料。
 
+求解器将已知灵衣的短 ID 统一转为 `battleCharaId`，用于候选、固定灵基、COST 和结果详情。固定变身从者用当前形态的灵衣资料解析 ID。仅剧情用的 `costumeCollectionNo == 0` 灵衣不进入候选或替换详情。关闭固定灵基搜索时，如果编队锁定了这类灵衣，开始搜索前提示更换灵基。
+
 ### 2.3 羁绊公式与效果提取
 
 对每个产出羁绊的自有位置，严格按 `SvtBondBonusResult.totalBond`：

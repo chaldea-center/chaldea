@@ -260,6 +260,14 @@ class _FormationBondPageState extends State<FormationBondPage> with SingleTicker
         showCancel: false,
       ).showDialog(context);
       return;
+    } on BondStoryCostumeError catch (error) {
+      final svt = formation.svts[error.position].dispSvt!;
+      await SimpleConfirmDialog(
+        title: Text(S.current.battle_change_ascension),
+        content: Text('#${error.position + 1}: ${svt.lName.l} · ${svt.getLimitName(error.limitCount)}'),
+        showCancel: false,
+      ).showDialog(context);
+      return;
     } on BondServantRestrictionError catch (error) {
       final svt = db.gameData.servantsById[error.servantId]!;
       await SimpleConfirmDialog(

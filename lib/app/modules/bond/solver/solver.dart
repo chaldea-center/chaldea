@@ -477,6 +477,15 @@ class BondServantRestrictionError extends StateError {
     : super('fixed servant $servantId at position ${position + 1} does not meet quest restrictions');
 }
 
+class BondStoryCostumeError extends StateError {
+  final int position;
+  final int servantId;
+  final int limitCount;
+
+  BondStoryCostumeError(this.position, this.servantId, this.limitCount)
+    : super('fixed servant $servantId at position ${position + 1} uses a story-only costume');
+}
+
 /// Converts game data into effect-equivalent search choices, then invokes the
 /// exact search core. The quest and formation are read only during preparation;
 /// [solveAsync] moves the prepared search problem to a background isolate.
@@ -511,7 +520,9 @@ class FormationBondSolver {
     for (final (position, deck) in formation.svts.take(option.maxServants.clamp(1, 6)).indexed) {
       final svt = deck.svt;
       if (deck.supportType.isSupport || svt == null) continue;
-      if (!_fixedSvtLimits(deck).any((limit) => _matchesQuestRestrictions(_traits(svt, limit)))) {
+      final limits = _fixedSvtLimits(deck);
+      if (limits.isEmpty) throw BondStoryCostumeError(position, svt.id, deck.limitCount);
+      if (!limits.any((limit) => _matchesQuestRestrictions(_traits(svt, limit)))) {
         throw BondServantRestrictionError(position, svt.id);
       }
     }
@@ -595,14 +606,12 @@ class FormationBondSolver {
       onComplete(const BondAscensionRequirement([], []));
       return;
     }
-    final limits = _svtLimits(svt);
-    final current = target.limitCount ?? 4;
-    final currentCostume = current >= 10 ? svt.getCostume(current)?.battleCharaId : null;
+    final formSvt = _formServant(target, svt);
+    final limits = _svtLimits(formSvt);
+    final current = _playableLimit(formSvt, target.limitCount ?? 4);
     final released = _releasedCostumes;
     // An unreleased form can still be part of the result when manually fixed.
-    final all = limits.contains(current) || (released?.contains(currentCostume) ?? false)
-        ? limits
-        : ([...limits, current]..sort());
+    final all = current == null || limits.contains(current) ? limits : ([...limits, current]..sort());
     final allowed = <int>[];
     for (final limit in all) {
       yield null;
@@ -613,8 +622,10 @@ class FormationBondSolver {
     final unreleased = released == null
         ? const <int>[]
         : ([
-            for (final costume in svt.costume.values)
-              if (costume.battleCharaId != currentCostume && !released.contains(costume.battleCharaId))
+            for (final costume in formSvt.costume.values)
+              if (costume.costumeCollectionNo > 0 &&
+                  costume.battleCharaId != current &&
+                  !released.contains(costume.battleCharaId))
                 costume.battleCharaId,
           ]..sort());
     onComplete(BondAscensionRequirement(all, allowed, unreleasedCostumes: unreleased));
@@ -630,13 +641,11 @@ class FormationBondSolver {
   }
 
   List<int> _preferredAscensions(BondSolvedSlot target, Servant svt) {
-    final limits = _svtLimits(svt);
-    final input = target.fixedServant ? formation.svts[target.position].limitCount : null;
-    // Saved formations can use a short costume ID instead of the battle character ID.
-    final costume = input == null ? null : svt.getCostume(input);
-    final preferInput = input != null && (limits.contains(input) || limits.contains(costume?.battleCharaId));
+    final formSvt = _formServant(target, svt);
+    final limits = _svtLimits(formSvt);
+    final input = target.fixedServant ? _playableLimit(formSvt, formation.svts[target.position].limitCount) : null;
     return [
-      if (preferInput) input,
+      if (input != null && limits.contains(input)) input,
       for (final limit in limits.reversed)
         if (limit < 10 && limit != input) limit,
       for (final limit in limits)
@@ -1214,7 +1223,7 @@ class FormationBondSolver {
         // Preserve the diagnostic item count without allocating the owned
         // servant/CE product when the separable search can bypass it.
         count = servants * ce1 * ce3 + (!fixed && deck.equip1.ce == null ? 1 : 0);
-        if (fixed && !option.searchFixedAscensions) _fixedCost += _svtCost(deck.svt!, deck.limitCount);
+        if (fixed && !option.searchFixedAscensions) _fixedCost += _svtCost(deck.svt!, _fixedSvtLimits(deck).single);
         _fixedCost += deck.equip1.ce?.cost ?? 0;
       }
       if (count == 0) throw StateError('no candidate at position ${p + 1}');
@@ -2157,6 +2166,15 @@ class FormationBondSolver {
     return released == null || released.isEmpty ? null : released.toSet();
   }
 
+  static int? _playableLimit(Servant svt, int limit) {
+    final costume = limit >= 10 ? svt.getCostume(limit) : null;
+    if (costume == null) return limit;
+    return costume.costumeCollectionNo > 0 ? costume.battleCharaId : null;
+  }
+
+  Servant _formServant(BondSolvedSlot target, Servant svt) =>
+      target.fixedServant ? formation.svts[target.position].dispSvt ?? svt : svt;
+
   List<int> _svtLimits(Servant svt) => _svtLimitCache.putIfAbsent(svt.id, () {
     final released = _releasedCostumes;
     final candidates = <int>{
@@ -2166,17 +2184,21 @@ class FormationBondSolver {
       3,
       4,
       for (final costume in svt.costume.values)
-        if (released == null || released.contains(costume.battleCharaId)) costume.battleCharaId,
-      if (released == null) ...{
-        ...svt.ascensionAdd.individuality2.all.keys,
-        ...svt.ascensionAdd.overwriteCost.all.keys,
-      },
+        if (costume.costumeCollectionNo > 0 && (released == null || released.contains(costume.battleCharaId)))
+          costume.battleCharaId,
     };
+    if (released == null) {
+      final extraLimits = svt.ascensionAdd.individuality2.all.keys.followedBy(svt.ascensionAdd.overwriteCost.all.keys);
+      candidates.addAll(extraLimits.map((limit) => _playableLimit(svt, limit)).nonNulls);
+    }
     return List.unmodifiable(candidates.toList()..sort());
   });
 
-  List<int> _fixedSvtLimits(PlayerSvtData deck) =>
-      option.searchFixedAscensions ? _svtLimits(deck.svt!) : [deck.limitCount];
+  List<int> _fixedSvtLimits(PlayerSvtData deck) {
+    final svt = deck.dispSvt!;
+    if (option.searchFixedAscensions) return _svtLimits(svt);
+    return [?_playableLimit(svt, deck.limitCount)];
+  }
 
   List<_SvtClass> _fixedSvtClasses(PlayerSvtData deck) {
     final svt = deck.svt!;
