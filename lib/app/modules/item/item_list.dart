@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
@@ -54,7 +53,6 @@ class ItemListPageState extends State<ItemListPage> with SingleTickerProviderSta
   bool useGrid = false;
 
   late TabController _tabController;
-  late List<TextEditingController> _itemRedundantControllers;
 
   Map<ItemCategory, List<int>> categorized = {};
   final shownCategories = [
@@ -73,10 +71,6 @@ class ItemListPageState extends State<ItemListPage> with SingleTickerProviderSta
   void initState() {
     super.initState();
     _tabController = TabController(length: shownCategories.length, vsync: this);
-    _itemRedundantControllers = List.generate(
-      3,
-      (index) => TextEditingController(text: db.userData.itemAbundantValue[index].toString()),
-    );
     for (final item in db.gameData.items.values) {
       if (!item.icon.contains('/JP/')) continue;
       categorized.putIfAbsent(item.category, () => []).add(item.id);
@@ -203,58 +197,7 @@ class ItemListPageState extends State<ItemListPage> with SingleTickerProviderSta
       return objective;
     }
 
-    SimpleConfirmDialog(
-      title: Text(S.current.item_exceed_hint, style: const TextStyle(fontSize: 16)),
-      confirmText: S.current.plan,
-      content: Wrap(
-        spacing: 6,
-        runSpacing: 6,
-        children: [
-          for (int index = 0; index < 3; index++)
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text([S.current.bronze, S.current.silver, S.current.gold][index]),
-                SizedBox(
-                  width: 40,
-                  child: TextFormField(
-                    controller: _itemRedundantControllers[index],
-                    keyboardType: const TextInputType.numberWithOptions(signed: true),
-                    textAlign: TextAlign.center,
-                    decoration: const InputDecoration(isDense: true),
-                    onChanged: (s) {
-                      if (s == '-') {
-                        db.userData.itemAbundantValue[index] = 0;
-                      } else {
-                        db.userData.itemAbundantValue[index] = int.tryParse(s) ?? db.userData.itemAbundantValue[index];
-                      }
-                    },
-                  ),
-                ),
-              ],
-            ),
-        ],
-      ),
-      onTapOk: () {
-        Future.delayed(const Duration(milliseconds: 500), () {
-          router.push(
-            url: Routes.freeCalc,
-            child: FreeQuestCalcPage(objectiveCounts: _getObjective()),
-          );
-        });
-      },
-      actions: [
-        TextButton(
-          onPressed: () {
-            for (final controller in _itemRedundantControllers) {
-              controller.text = '0';
-            }
-            db.userData.itemAbundantValue.fillRange(0, db.userData.itemAbundantValue.length, 0);
-          },
-          child: Text(S.current.clear),
-        ),
-      ],
-    ).showDialog(context);
+    FreeQuestCalcPage.showPlanDialog(context, _getObjective());
   }
 }
 

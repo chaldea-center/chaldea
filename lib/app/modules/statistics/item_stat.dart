@@ -7,6 +7,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 import '../common/filter_group.dart';
+import '../free_quest_calc/free_calculator_page.dart';
 import '../item/item.dart';
 
 class ItemStatTab extends StatefulWidget {
@@ -20,6 +21,10 @@ class ItemStatTab extends StatefulWidget {
 class _ItemStatTabState extends State<ItemStatTab> {
   late ScrollController _scrollController;
   Map<int, int> shownItems = {};
+
+  /// Demand before filtering non-positive values, so the free quest import
+  /// can still top up items that are covered by item abundance.
+  Map<int, int> shownItemsRaw = {};
   final svtParts = FilterGroupData<int>();
 
   bool get demandMode => widget.demandMode;
@@ -48,6 +53,7 @@ class _ItemStatTabState extends State<ItemStatTab> {
     } else {
       calculateConsumed();
     }
+    final freeQuestObjective = demandMode ? _freeQuestObjective() : const <int, int>{};
     return Column(
       children: [
         Expanded(
@@ -70,6 +76,17 @@ class _ItemStatTabState extends State<ItemStatTab> {
                   );
                 },
               ),
+              if (demandMode)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  child: FilledButton.icon(
+                    icon: const Icon(Icons.calculate_outlined),
+                    label: Text(S.current.planning_free_quest_btn),
+                    onPressed: freeQuestObjective.isEmpty
+                        ? null
+                        : () => FreeQuestCalcPage.showPlanDialog(context, freeQuestObjective),
+                  ),
+                ),
             ],
           ),
         ),
@@ -215,6 +232,23 @@ class _ItemStatTabState extends State<ItemStatTab> {
       if (subtractOwnedItems) Maths.multiplyDict(db.curUser.items, -1),
       if (subtractEventItems) Maths.multiplyDict(db.itemCenter.statObtain, -1),
     ], inPlace: true);
+    shownItemsRaw = Map.of(shownItems);
     shownItems.removeWhere((key, value) => value <= 0);
+  }
+
+  /// Current demand that can be farmed in free quests, with item abundance
+  /// (bronze/silver/gold only) added on top.
+  Map<int, int> _freeQuestObjective() {
+    final droppable = db.gameData.dropData.domusAurea.itemIds.toSet();
+    final objective = <int, int>{};
+    for (final entry in shownItemsRaw.entries) {
+      final itemId = entry.key;
+      if (!droppable.contains(itemId)) continue;
+      final rarity = db.gameData.items[itemId]?.rarity ?? -1;
+      final abundant = (rarity >= 1 && rarity <= 3) ? db.userData.itemAbundantValue[rarity - 1] : 0;
+      final count = entry.value + abundant;
+      if (count > 0) objective[itemId] = count;
+    }
+    return objective;
   }
 }
