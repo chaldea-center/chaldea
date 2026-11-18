@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/rendering.dart' show ScrollCacheExtent;
 
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image/image.dart' as img_lib;

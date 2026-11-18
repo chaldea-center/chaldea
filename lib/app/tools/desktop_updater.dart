@@ -7,9 +7,9 @@ import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:path/path.dart' as p;
-import 'package:window_manager/window_manager.dart';
 
 import 'package:chaldea/app/tools/app_update.dart';
+import 'package:chaldea/app/tools/app_window.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/packages/app_info.dart';
@@ -431,8 +431,7 @@ class DesktopUpgrader {
       logger.e('save data before upgrade exit failed', e, s);
     }
     try {
-      await windowManager.setPreventClose(false);
-      await windowManager.destroy();
+      AppWindowUtil.closeWindow();
     } catch (e, s) {
       logger.e('destroy window before upgrade exit failed', e, s);
     }

@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:intl/intl.dart';
-import 'package:window_manager/window_manager.dart';
 
 import 'package:chaldea/app/api/chaldea.dart';
 import 'package:chaldea/app/api/chaldea_server.dart';
@@ -42,7 +41,7 @@ class Chaldea extends StatefulWidget {
   _ChaldeaState createState() => _ChaldeaState();
 }
 
-class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WindowListener, WidgetsBindingObserver {
+class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WidgetsBindingObserver {
   final routeInformationParser = AppRouteInformationParser();
   final backButtonDispatcher = RootBackButtonDispatcher();
 
@@ -132,7 +131,6 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WindowListener
 
     // Keep the framework's lifecycle handler so a background launch can resume frame scheduling.
     WidgetsBinding.instance.addObserver(this);
-    windowManager.addListener(this);
   }
 
   @override
@@ -333,13 +331,7 @@ class _ChaldeaState extends State<Chaldea> with AfterLayoutMixin, WindowListener
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    windowManager.removeListener(this);
     super.dispose();
-  }
-
-  @override
-  void onWindowClose() {
-    AppWindowUtil.onWindowClose();
   }
 }
 

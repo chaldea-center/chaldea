@@ -20,6 +20,10 @@ import 'backup_backend/chaldea_backend.dart';
 class AppWindowUtil {
   const AppWindowUtil._();
 
+  static Window? _window;
+  static ListenerId? _closeListener;
+  static bool _handlingClose = false;
+
   // Keep the tray wrapper alive and retain menu wrappers for explicit disposal.
   static TrayIcon? _trayIcon;
   static Menu? _trayMenu;
@@ -27,11 +31,22 @@ class AppWindowUtil {
 
   static Future<void> init() async {
     if (PlatformU.isDesktop) {
-      await windowManager.ensureInitialized();
-      windowManager.setTitle(kAppName);
-      windowManager.setMinimumSize(kDebugMode ? const Size(100, 100) : const Size(375, 568));
-      // windowManager.setMaximumSize(Size.infinite); // ?
-      windowManager.setPreventClose(true);
+      final window = WindowManager.instance.getCurrent();
+      if (window == null) throw StateError('Unable to find the application window');
+      _window = window;
+      window.title = kAppName;
+      window.minimumSize = (kDebugMode ? const Size(100, 100) : const Size(375, 568)).toNative();
+      _closeListener = window.addListener((event) async {
+        if (event is! WindowCloseRequestedEvent) return;
+        event.request.cancel();
+        if (_handlingClose) return;
+        _handlingClose = true;
+        try {
+          await onWindowClose();
+        } finally {
+          _handlingClose = false;
+        }
+      });
     }
   }
 
@@ -39,17 +54,20 @@ class AppWindowUtil {
 
   static Future<void> minimizeWindow() async {
     if (PlatformU.isWindows) {
-      return windowManager.hide();
+      _window?.hide();
     } else if (PlatformU.isMacOS) {
-      return windowManager.minimize();
+      _window?.minimize();
     } else if (PlatformU.isLinux) {
-      return windowManager.minimize();
+      _window?.minimize();
     }
   }
 
   static Future<void> showWindow() async {
     if (PlatformU.isDesktop) {
-      return windowManager.show();
+      final window = _window;
+      if (window == null) return;
+      if (window.isMinimized) window.restore();
+      window.show();
     }
   }
 
@@ -59,15 +77,23 @@ class AppWindowUtil {
           .showDialog(kAppKey.currentContext!);
       if (confirm != true) return;
     }
-    await windowManager.setPreventClose(false);
-    await windowManager.destroy();
+    closeWindow();
     exit(0);
+  }
+
+  static void closeWindow() {
+    final window = _window;
+    if (window == null) return;
+    final listener = _closeListener;
+    if (listener != null) window.removeListener(listener);
+    _closeListener = null;
+    window.close();
   }
 
   static Future<void> setAlwaysOnTop([bool? onTop]) async {
     if (PlatformU.isDesktop) {
       onTop ??= db.settings.platform.alwaysOnTop;
-      windowManager.setAlwaysOnTop(onTop);
+      _window?.isAlwaysOnTop = onTop;
     }
   }
 
@@ -140,6 +166,7 @@ class AppWindowUtil {
       addMenuItem(S.current.quit, onClick: _quitFromTray);
 
       trayIcon.setContextMenu(menu);
+      trayIcon.setContextMenuTrigger(PlatformU.isLinux ? ContextMenuTrigger.clicked : ContextMenuTrigger.none);
       trayIcon.setVisible(true);
       // Linux panels handle tray clicks and open the menu themselves.
       trayIcon.addListener((event) {
@@ -203,8 +230,7 @@ class AppWindowUtil {
       return true;
     }
 
-    final visible = await windowManager.isVisible();
-    if (!visible) await windowManager.show();
+    if (_window?.isVisible == false) await showWindow();
 
     final ctx = kAppKey.currentContext;
     if (ctx == null || !ctx.mounted) return true;

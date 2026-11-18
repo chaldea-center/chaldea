@@ -185,7 +185,8 @@ class UserBackupData {
 
   static UserData? decode(String content) {
     try {
-      return UserData.fromJson(jsonDecode(utf8.decode(GZipDecoder().decodeBytes(base64Decode(content)))));
+      final bytes = GZipDecoder().decodeBytes(base64Decode(content), verify: true, throwOnError: true);
+      return UserData.fromJson(jsonDecode(utf8.decode(bytes)));
     } catch (e, s) {
       logger.e('decode user backup failed', e, s);
       return null;

@@ -72,10 +72,10 @@ class _ScriptCmdPageState extends State<ScriptCmdPage> {
     if (_dirController.text.isNotEmpty) {
       selectedDirectory = _dirController.text;
     } else {
-      final result = await FilePicker.getDirectoryPath();
-      if (result != null) {
-        selectedDirectory = result;
-        _dirController.text = result;
+      final result = await FilePicker.pickDirectory();
+      if (!mounted) return;
+      if (result != null && result.isScheme('file')) {
+        _dirController.text = selectedDirectory = result.toFilePath();
       }
     }
 

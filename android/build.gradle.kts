@@ -1,5 +1,5 @@
 plugins {
-    id("org.jetbrains.kotlin.android") version "2.4.0" apply false
+    id("org.jetbrains.kotlin.android") version "2.4.20" apply false
 }
 
 allprojects {
@@ -37,13 +37,13 @@ subprojects {
 }
 // Force Kotlin version alignment for plugin subprojects that declare their own
 // buildscript classpath (e.g. alarm 5.13.1 pins Kotlin 2.2.20,
-// which conflicts with the root project's Kotlin 2.4.0).
+// which conflicts with the root project's Kotlin 2.4.20).
 subprojects {
     buildscript {
         configurations.configureEach {
             resolutionStrategy {
-                force("org.jetbrains.kotlin:kotlin-serialization:2.4.0")
-                force("org.jetbrains.kotlin:kotlin-gradle-plugin:2.4.0")
+                force("org.jetbrains.kotlin:kotlin-serialization:2.4.20")
+                force("org.jetbrains.kotlin:kotlin-gradle-plugin:2.4.20")
             }
         }
     }

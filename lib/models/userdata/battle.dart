@@ -252,7 +252,8 @@ class BattleShareData {
   }
 
   static BattleShareData _parseGzip(String encoded) {
-    final data = jsonDecode(utf8.decode(GZipDecoder().decodeBytes(base64Decode(encoded))));
+    final bytes = GZipDecoder().decodeBytes(base64Decode(encoded), verify: true, throwOnError: true);
+    final data = jsonDecode(utf8.decode(bytes));
     return BattleShareData.fromJson(data);
   }
 
