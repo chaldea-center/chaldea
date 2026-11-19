@@ -21,6 +21,9 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
+  static String _bondFixedGrandsOverLimit(count, limit) =>
+      "The team has ${count} fixed owned Grand Servants, exceeding the selected limit of ${limit}. Increase the limit or change the team.";
+
   static String m13(n) =>
       "Up to ${n} candidate teams are retained; other feasible or equal-score teams may be omitted. The proof covers only the highest score under the current settings — lower-score teams are not globally ranked.";
 
@@ -345,7 +348,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "bond_excluded_unreleased_costumes": MessageLookupByLibrary.simpleMessage(
       "Unreleased costumes excluded from search",
     ),
+    "bond_fixed_grands_over_limit": _bondFixedGrandsOverLimit,
     "bond_limit": MessageLookupByLibrary.simpleMessage("Bond Limit"),
+    "bond_max_grand_servants": MessageLookupByLibrary.simpleMessage("Max Grand Servants (excluding support)"),
     "bond_max_servants": MessageLookupByLibrary.simpleMessage("Max servants"),
     "bond_not_full_only": MessageLookupByLibrary.simpleMessage("Bond not maxed only"),
     "bond_release_quest_closed_hint": MessageLookupByLibrary.simpleMessage(

@@ -21,6 +21,8 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'zh';
 
+  static String _bondFixedGrandsOverLimit(count, limit) => "队伍中已固定 ${count} 名自有冠位从者，超过所选上限 ${limit}。请提高上限或调整队伍。";
+
   static String m13(n) => "最多保留 ${n} 支候选队伍；其他可行或同分队伍可能被省略。证明仅覆盖当前设置下的最高分，较低分队伍不做全局排名。";
 
   static String m14(count, total) => "${total}张指令卡中有${count}张未攻击，请减少不必要的指令卡";
@@ -310,7 +312,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "bond_eff": MessageLookupByLibrary.simpleMessage("羁绊效率"),
     "bond_equip_change_skill": MessageLookupByLibrary.simpleMessage("切换羁绊礼装效果"),
     "bond_excluded_unreleased_costumes": MessageLookupByLibrary.simpleMessage("未计入的未实装灵衣"),
+    "bond_fixed_grands_over_limit": _bondFixedGrandsOverLimit,
     "bond_limit": MessageLookupByLibrary.simpleMessage("羁绊上限"),
+    "bond_max_grand_servants": MessageLookupByLibrary.simpleMessage("最多冠位数量（不考虑助战）"),
     "bond_max_servants": MessageLookupByLibrary.simpleMessage("最多从者数"),
     "bond_not_full_only": MessageLookupByLibrary.simpleMessage("仅限羁绊未满"),
     "bond_release_quest_closed_hint": MessageLookupByLibrary.simpleMessage("仅从者实装时间按该日期筛选；礼装可用性与灵衣特性使用日服数据。"),
