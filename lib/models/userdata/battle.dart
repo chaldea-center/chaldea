@@ -1427,6 +1427,7 @@ class FormationBondOption {
   /// Usable formation positions, including support.
   int maxServants;
   bool searchFixedAscensions;
+  int? maxGrandServants;
 
   FormationBondOption({
     BattleTeamFormation? teamFormation,
@@ -1448,6 +1449,7 @@ class FormationBondOption {
     this.maxCandidateTeams = 100,
     this.maxServants = 6,
     this.searchFixedAscensions = true,
+    this.maxGrandServants,
   }) : quest = quest ?? BattleQuestInfo(id: 94137202, phase: 1, enemyHash: null),
        teamFormation = teamFormation ?? BattleTeamFormation(),
        campaigns = campaigns ?? {},
@@ -1490,6 +1492,7 @@ class FormationBondOption {
       maxCandidateTeams: maxCandidateTeams,
       maxServants: maxServants,
       searchFixedAscensions: searchFixedAscensions,
+      maxGrandServants: maxGrandServants,
     );
     option.quest = quest?.copy();
     return option;
