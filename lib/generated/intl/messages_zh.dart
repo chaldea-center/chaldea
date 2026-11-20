@@ -304,6 +304,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "bgm": MessageLookupByLibrary.simpleMessage("BGM"),
     "blacklist": MessageLookupByLibrary.simpleMessage("黑名单"),
     "bond": MessageLookupByLibrary.simpleMessage("羁绊"),
+    "bond_all_ascensions_eligible": MessageLookupByLibrary.simpleMessage("所有灵基均适用。"),
     "bond_bonus": MessageLookupByLibrary.simpleMessage("羁绊加成"),
     "bond_clear_excess_positions": MessageLookupByLibrary.simpleMessage("将清空超出人数上限位置的从者、助战、礼装、冠位等设置。"),
     "bond_craft": MessageLookupByLibrary.simpleMessage("羁绊礼装"),

@@ -38,6 +38,7 @@ class ServantFilterPage extends FilterPage<SvtFilterData> {
     SvtStatus? svtStat,
     SvtPlan? svtPlan,
     Region useCostumeTraitForRegion = .jp,
+    Iterable<List<int>>? bondBonusTraits,
   }) {
     svtStat ??= svt.status;
     svtPlan ??= svt.curPlan;
@@ -181,25 +182,29 @@ class ServantFilterPage extends FilterPage<SvtFilterData> {
       return false;
     }
     if (filterData.bondBonusCeIds.isNotEmpty) {
-      final limits = {...range(5), ...svt.costume.keys, ...svt.ascensionAdd.individuality2.all.keys};
-
       bool _checkCe(List<int> selfTraits, int ceId) {
         final bonusData = db.gameData.others.bondBonusCes[ceId];
         if (bonusData == null) return false;
         return Individuality.checkSignedMultiIndividuality(selfArray: selfTraits, signedTargetsArray: bonusData.traits);
       }
 
-      if (!limits.any((limitCount) {
-        final traits = svt.getIndividuality(eventId, limitCount);
-        if (!useCostumeTraitForRegion.isJP && traits.contains(Trait.hasCostume.value)) {
-          if (!db.gameData.mappingData.isSvtTraitRelease(
-            svtCollectionNo: svt.collectionNo,
-            trait: Trait.hasCostume.value,
-            region: useCostumeTraitForRegion,
-          )) {
-            traits.removeWhere((e) => e == Trait.hasCostume.value);
-          }
-        }
+      final limits = {...range(5), ...svt.costume.keys, ...svt.ascensionAdd.individuality2.all.keys};
+      final traitsByLimit =
+          bondBonusTraits ??
+          limits.map((limitCount) {
+            final traits = svt.getIndividuality(eventId, limitCount);
+            if (!useCostumeTraitForRegion.isJP && traits.contains(Trait.hasCostume.value)) {
+              if (!db.gameData.mappingData.isSvtTraitRelease(
+                svtCollectionNo: svt.collectionNo,
+                trait: Trait.hasCostume.value,
+                region: useCostumeTraitForRegion,
+              )) {
+                traits.removeWhere((e) => e == Trait.hasCostume.value);
+              }
+            }
+            return traits;
+          });
+      if (!traitsByLimit.any((traits) {
         return (filterData.bondBonusCeIds.matchAll
             ? filterData.bondBonusCeIds.options.every
             : filterData.bondBonusCeIds.options.any)((ceId) => _checkCe(traits, ceId));

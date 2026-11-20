@@ -335,6 +335,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "bgm": MessageLookupByLibrary.simpleMessage("BGM"),
     "blacklist": MessageLookupByLibrary.simpleMessage("Blacklist"),
     "bond": MessageLookupByLibrary.simpleMessage("Bond"),
+    "bond_all_ascensions_eligible": MessageLookupByLibrary.simpleMessage("Applies to all ascensions."),
     "bond_bonus": MessageLookupByLibrary.simpleMessage("Bond Bonus"),
     "bond_clear_excess_positions": MessageLookupByLibrary.simpleMessage(
       "All settings in positions beyond this limit will be cleared (servants, support, CEs, Grand, etc.).",

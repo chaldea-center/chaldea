@@ -1358,6 +1358,17 @@ class S {
     return Intl.message('Bond', name: 'bond', desc: '', locale: localeName, args: []);
   }
 
+  /// `Applies to all ascensions.`
+  String get bond_all_ascensions_eligible {
+    return Intl.message(
+      'Applies to all ascensions.',
+      name: 'bond_all_ascensions_eligible',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Bond Bonus`
   String get bond_bonus {
     return Intl.message('Bond Bonus', name: 'bond_bonus', desc: '', locale: localeName, args: []);

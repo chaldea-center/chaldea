@@ -196,6 +196,7 @@
   "bgm": "BGM",
   "blacklist": "Blacklist",
   "bond": "Bond",
+  "bond_all_ascensions_eligible": "Applies to all ascensions.",
   "bond_bonus": "Bond Bonus",
   "bond_clear_excess_positions": "All settings in positions beyond this limit will be cleared (servants, support, CEs, Grand, etc.).",
   "bond_craft": "Bond Craft",

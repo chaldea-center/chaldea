@@ -90,6 +90,48 @@ class BondReleaseRules {
   static BondReleaseReference resolve(BondReleaseReference reference, QuestPhase? quest) =>
       reference == BondReleaseReference.questClosedAt && !hasClosingDate(quest) ? BondReleaseReference.jp : reference;
 
+  static Set<int>? releasedCostumeIds(Region? region) {
+    if (region == null || region.isJP) return null;
+    final released = db.gameData.mappingData.costumeRelease.ofRegion(region);
+    return released == null || released.isEmpty ? null : released.toSet();
+  }
+
+  static int? playableLimit(Servant svt, int limit) {
+    final costume = limit >= 10 ? svt.getCostume(limit) : null;
+    if (costume == null) return limit;
+    return costume.costumeCollectionNo > 0 ? costume.battleCharaId : null;
+  }
+
+  static List<int> ascensionLimits(Servant svt, Set<int>? releasedCostumes) {
+    final candidates = <int>{
+      0,
+      1,
+      2,
+      3,
+      4,
+      for (final costume in svt.costume.values)
+        if (costume.costumeCollectionNo > 0 &&
+            (releasedCostumes == null || releasedCostumes.contains(costume.battleCharaId)))
+          costume.battleCharaId,
+    };
+    if (releasedCostumes == null) {
+      final extraLimits = svt.ascensionAdd.individuality2.all.keys.followedBy(svt.ascensionAdd.overwriteCost.all.keys);
+      candidates.addAll(extraLimits.map((limit) => playableLimit(svt, limit)).nonNulls);
+    }
+    return candidates.toList()..sort();
+  }
+
+  static List<int> unreleasedCostumeLimits(Servant svt, Set<int>? releasedCostumes, {int? fixedLimit}) {
+    if (releasedCostumes == null) return const [];
+    return [
+      for (final costume in svt.costume.values)
+        if (costume.costumeCollectionNo > 0 &&
+            costume.battleCharaId != fixedLimit &&
+            !releasedCostumes.contains(costume.battleCharaId))
+          costume.battleCharaId,
+    ]..sort();
+  }
+
   static List<int> traits(Servant svt, int limit, int eventId, BondReleaseReference reference) {
     // Copy first: filtering must never mutate the shared game dataset.
     final traits = List<int>.of(svt.getAscended(limit, (a) => a.individuality2) ?? svt.traits);

@@ -518,7 +518,7 @@ class FormationBondSolver {
   final BattleTeamSetup formation;
   final bool pruneDominatedCes;
   BondReleaseReference get _releaseReference => BondReleaseRules.resolve(option.releaseReference, quest);
-  late final Set<int>? _releasedCostumes = _loadReleasedCostumes();
+  late final Set<int>? _releasedCostumes = BondReleaseRules.releasedCostumeIds(_releaseReference.region);
   final _svtLimitCache = <int, List<int>>{};
   int get _candidateLimit => option.maxCandidateTeams.clamp(1, 200).toInt();
 
@@ -638,8 +638,7 @@ class FormationBondSolver {
     }
     final formSvt = _formServant(target, svt);
     final limits = _svtLimits(formSvt);
-    final current = _playableLimit(formSvt, target.limitCount ?? 4);
-    final released = _releasedCostumes;
+    final current = BondReleaseRules.playableLimit(formSvt, target.limitCount ?? 4);
     // An unreleased form can still be part of the result when manually fixed.
     final all = current == null || limits.contains(current) ? limits : ([...limits, current]..sort());
     final allowed = <int>[];
@@ -649,15 +648,7 @@ class FormationBondSolver {
         allowed.add(limit);
       }
     }
-    final unreleased = released == null
-        ? const <int>[]
-        : ([
-            for (final costume in formSvt.costume.values)
-              if (costume.costumeCollectionNo > 0 &&
-                  costume.battleCharaId != current &&
-                  !released.contains(costume.battleCharaId))
-                costume.battleCharaId,
-          ]..sort());
+    final unreleased = BondReleaseRules.unreleasedCostumeLimits(formSvt, _releasedCostumes, fixedLimit: current);
     onComplete(BondAscensionRequirement(all, allowed, unreleasedCostumes: unreleased));
   }
 
@@ -673,7 +664,9 @@ class FormationBondSolver {
   List<int> _preferredAscensions(BondSolvedSlot target, Servant svt) {
     final formSvt = _formServant(target, svt);
     final limits = _svtLimits(formSvt);
-    final input = target.fixedServant ? _playableLimit(formSvt, formation.svts[target.position].limitCount) : null;
+    final input = target.fixedServant
+        ? BondReleaseRules.playableLimit(formSvt, formation.svts[target.position].limitCount)
+        : null;
     return [
       if (input != null && limits.contains(input)) input,
       for (final limit in limits.reversed)
@@ -2216,41 +2209,18 @@ class FormationBondSolver {
     _preparedItems = items;
   }
 
-  Set<int>? _loadReleasedCostumes() {
-    final region = _releaseReference.region;
-    if (region.isJP) return null;
-    final released = db.gameData.mappingData.costumeRelease.ofRegion(region);
-    return released == null || released.isEmpty ? null : released.toSet();
-  }
-
-  static int? _playableLimit(Servant svt, int limit) {
-    final costume = limit >= 10 ? svt.getCostume(limit) : null;
-    if (costume == null) return limit;
-    return costume.costumeCollectionNo > 0 ? costume.battleCharaId : null;
-  }
-
   Servant _formServant(BondSolvedSlot target, Servant svt) =>
       target.fixedServant ? formation.svts[target.position].dispSvt ?? svt : svt;
 
-  List<int> _svtLimits(Servant svt) => _svtLimitCache.putIfAbsent(svt.id, () {
-    final released = _releasedCostumes;
-    final candidates = <int>{
-      ...[0, 1, 2, 3, 4],
-      for (final costume in svt.costume.values)
-        if (costume.costumeCollectionNo > 0 && (released == null || released.contains(costume.battleCharaId)))
-          costume.battleCharaId,
-    };
-    if (released == null) {
-      final extraLimits = svt.ascensionAdd.individuality2.all.keys.followedBy(svt.ascensionAdd.overwriteCost.all.keys);
-      candidates.addAll(extraLimits.map((limit) => _playableLimit(svt, limit)).nonNulls);
-    }
-    return List.unmodifiable(candidates.toList()..sort());
-  });
+  List<int> _svtLimits(Servant svt) => _svtLimitCache.putIfAbsent(
+    svt.id,
+    () => List.unmodifiable(BondReleaseRules.ascensionLimits(svt, _releasedCostumes)),
+  );
 
   List<int> _fixedSvtLimits(PlayerSvtData deck) {
     final svt = deck.dispSvt!;
     if (option.searchFixedAscensions) return _svtLimits(svt);
-    return [?_playableLimit(svt, deck.limitCount)];
+    return [?BondReleaseRules.playableLimit(svt, deck.limitCount)];
   }
 
   List<_SvtClass> _fixedSvtClasses(PlayerSvtData deck) {

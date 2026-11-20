@@ -1,7 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 
 import 'package:chaldea/app/app.dart';
-import 'package:chaldea/app/battle/utils/battle_utils.dart' show BattleUtils;
 import 'package:chaldea/app/modules/common/builders.dart';
 import 'package:chaldea/app/modules/common/filter_group.dart';
 import 'package:chaldea/generated/l10n.dart';
@@ -15,6 +14,7 @@ import 'package:chaldea/widgets/widgets.dart';
 
 import '../common/filter_page_base.dart';
 import '../servant/filter.dart';
+import 'bond_rules.dart';
 
 const _kExtraPlayableSvtIds = <int>[505700];
 const int _kHiddenRate = -1000;
@@ -99,6 +99,8 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
   Map<int, ({CraftEssence ce, List<List<int>> traits, int rateCount})> allCeData = {};
   Map<int, Map<int, List<int>>> allCeMatchSvtData = {}; //<ceId, <svtId, [limitCount]>>
   Map<int, Map<int, List<int>>> allSvtMatchCeData = {}; //<svtId, <limitId, [ceIds]>>
+  final _svtForms = <int, ({Servant svt, Map<int, Set<int>> traitsByLimit, List<int> unreleasedCostumes})>{};
+  Region? _matchRegion;
   int maxTotalRateCount = 1000;
 
   final svtFilterData = SvtFilterData(sortKeys: SvtCompare.kRarityFirstKeys);
@@ -117,14 +119,11 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
   @override
   void initState() {
     super.initState();
-    initData(initFilters: true);
+    _loadCeData();
+    _updateMatches();
   }
 
-  void initData({bool initFilters = false}) {
-    allCeData.clear();
-    allCeMatchSvtData.clear();
-    allSvtMatchCeData.clear();
-    // ce data
+  void _loadCeData() {
     for (final ce in db.gameData.craftEssencesById.values) {
       if (ce.collectionNo <= 0 || ce.isRegionSpecific) continue;
       if (ce.rarity < 5) continue;
@@ -161,83 +160,69 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
 
     sortDict(allCeData, inPlace: true, compare: (a, b) => a.value.ce.collectionNo.compareTo(b.value.ce.collectionNo));
 
-    // ce mapping svt
-    final svts = getAllSvts();
-    for (final (:ce, :traits, rateCount: _) in allCeData.values) {
-      final svtLimitsData = allCeMatchSvtData[ce.id] ??= {};
-      for (final svt in svts) {
-        final limitCounts = getMatchedLimitCounts(svt, traits);
-        if (limitCounts.isEmpty) continue;
-        svtLimitsData[svt.id] = limitCounts;
+    for (final ceId in allCeData.keys) {
+      if (!isCeReleased(ceId, db.curUser.region)) {
+        extraFilterData.ceStates[ceId] = _FilterType.hide;
       }
     }
-    // svt mapping ce
-    for (final (ceId, svtLimits) in allCeMatchSvtData.items) {
-      for (final (svtId, limits) in svtLimits.items) {
-        for (final limit in limits) {
-          ((allSvtMatchCeData[svtId] ??= {})[limit] ??= []).add(ceId);
-        }
-      }
-    }
+  }
 
-    if (initFilters) {
-      // hide unreleased ces
-      for (final ceId in allCeData.keys) {
-        if (!isCeReleased(ceId, db.curUser.region)) {
-          extraFilterData.ceStates[ceId] = _FilterType.hide;
+  void _updateMatches() {
+    _matchRegion = svtFilterData.region.radioValue;
+    final releasedCostumes = BondReleaseRules.releasedCostumeIds(_matchRegion);
+    allCeMatchSvtData = {for (final ceId in allCeData.keys) ceId: {}};
+    allSvtMatchCeData.clear();
+    _svtForms.clear();
+    for (final svt in getAllSvts()) {
+      final traitsByLimit = {
+        for (final limit in BondReleaseRules.ascensionLimits(svt, releasedCostumes)) limit: _traitsForLimit(svt, limit),
+      };
+      _svtForms[svt.id] = (
+        svt: svt,
+        traitsByLimit: traitsByLimit,
+        unreleasedCostumes: BondReleaseRules.unreleasedCostumeLimits(svt, releasedCostumes),
+      );
+      for (final (:ce, :traits, rateCount: _) in allCeData.values) {
+        final limitCounts = [
+          for (final (limit, svtTraits) in traitsByLimit.items)
+            if (traits.any((group) => group.isNotEmpty && group.every(svtTraits.contains))) limit,
+        ];
+        if (limitCounts.isEmpty) continue;
+        allCeMatchSvtData[ce.id]![svt.id] = limitCounts;
+        final ceIdsByLimit = allSvtMatchCeData[svt.id] ??= {};
+        for (final limit in limitCounts) {
+          (ceIdsByLimit[limit] ??= []).add(ce.id);
         }
       }
     }
   }
 
-  List<int> getMatchedLimitCounts(Servant svt, List<List<int>> bonusTraitsList) {
-    final region = svtFilterData.region.radioValue;
-
-    final baseTraits = svt.traits;
-    List<int> matchedLimitCounts = [];
-    final allLimitCounts = _getSvtAllLimits(svt);
-    for (final limitCount in allLimitCounts) {
-      List<int> resultTraits = svt.ascensionAdd.individuality2.all[limitCount] ?? [];
-      if (resultTraits.isEmpty) resultTraits = baseTraits;
-      resultTraits = List.of(resultTraits);
-      final limitCount2 = limitCount < 100 ? limitCount : svt.costume[limitCount]?.id ?? limitCount;
-      for (final traitAdd in svt.traitAdd) {
-        if (traitAdd.eventId != 0 ||
-            traitAdd.condType != CondType.none ||
-            (traitAdd.endedAt > 0 && traitAdd.endedAt < kNeverClosedTimestamp)) {
-          continue;
-        }
-        if (traitAdd.limitCount == -1 || traitAdd.limitCount == limitCount2 || traitAdd.limitCount == limitCount) {
-          resultTraits.addAll(traitAdd.trait);
-        }
+  Set<int> _traitsForLimit(Servant svt, int limit) {
+    final traits = (svt.getAscended(limit, (a) => a.individuality2) ?? svt.traits).toSet();
+    final costumeId = svt.battleCharaToLimitCount(limit);
+    for (final traitAdd in svt.traitAdd) {
+      if (traitAdd.eventId != 0 ||
+          traitAdd.condType != CondType.none ||
+          (traitAdd.endedAt > 0 && traitAdd.endedAt < kNeverClosedTimestamp)) {
+        continue;
       }
-      if (extraFilterData.useCostumeTraitForRegion &&
-          region != null &&
-          !region.isJP &&
-          resultTraits.contains(Trait.hasCostume.value)) {
-        if (!db.gameData.mappingData.isSvtTraitRelease(
+      if (traitAdd.limitCount == -1 || traitAdd.limitCount == costumeId || traitAdd.limitCount == limit) {
+        traits.addAll(traitAdd.trait);
+      }
+    }
+    final region = _matchRegion;
+    if (extraFilterData.useCostumeTraitForRegion &&
+        region != null &&
+        !region.isJP &&
+        traits.contains(Trait.hasCostume.value) &&
+        !db.gameData.mappingData.isSvtTraitRelease(
           svtCollectionNo: svt.collectionNo,
           trait: Trait.hasCostume.value,
           region: region,
         )) {
-          resultTraits.removeWhere((e) => e == Trait.hasCostume.value);
-        }
-      }
-
-      bool matched = false;
-      for (final andTraits in bonusTraitsList) {
-        if (andTraits.isEmpty) continue;
-        if (andTraits.every((e) => resultTraits.contains(e))) {
-          matched = true;
-          break;
-        }
-      }
-      if (matched) {
-        matchedLimitCounts.add(limitCount);
-      }
+      traits.remove(Trait.hasCostume.value);
     }
-
-    return matchedLimitCounts;
+    return traits;
   }
 
   bool isCeReleased(int ceId, Region region) {
@@ -250,9 +235,15 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
   }
 
   List<_GroupItem> getGroupData() {
-    final allSvts = getAllSvts();
-    final shownSvts = List.of(allSvts)..retainWhere((e) => ServantFilterPage.filter(svtFilterData, e));
-    final shownSvtIds = shownSvts.map((e) => e.id).toSet();
+    final shownSvtIds = {
+      for (final (:svt, :traitsByLimit, unreleasedCostumes: _) in _svtForms.values)
+        if (ServantFilterPage.filter(
+          svtFilterData,
+          svt,
+          bondBonusTraits: traitsByLimit.values.map((traits) => traits.toList()),
+        ))
+          svt.id,
+    };
     final hiddenSvtIds = shownSvtIds.toSet();
 
     final List<int> allCeIds = allCeData.keys
@@ -294,8 +285,7 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
       List<({Servant svt, List<int> limitCounts})> svts = [];
       for (final svtId in sameSvtIds) {
         if (!shownSvtIds.contains(svtId)) continue;
-        final svt = _targetSvts[svtId] ?? db.gameData.servantsById[svtId];
-        if (svt == null) continue;
+        final svt = _svtForms[svtId]!.svt;
         final sameLimitCounts = intersectionSetList(
           usedCeIds.map((ceId) => allCeMatchSvtData[ceId]![svtId]?.toSet() ?? <int>{}).toList(),
         );
@@ -317,11 +307,8 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
     final bonusSvtIds = <int>{for (final v in allCeMatchSvtData.values) ...v.keys};
     List<({Servant svt, List<int> limitCounts})> noBonusSvts = [];
     for (final svtId in shownSvtIds) {
-      if (!shownSvtIds.contains(svtId)) continue;
-      final svt = db.gameData.servantsById[svtId];
-      if (svt == null) continue;
-      if (!bonusSvtIds.contains(svt.id)) {
-        noBonusSvts.add((svt: svt, limitCounts: []));
+      if (!bonusSvtIds.contains(svtId)) {
+        noBonusSvts.add((svt: _svtForms[svtId]!.svt, limitCounts: []));
       }
     }
     resultData.add((ceIds: [], rateCount: 0, svts: noBonusSvts));
@@ -344,10 +331,7 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
       resultData.add((
         ceIds: [],
         rateCount: _kHiddenRate,
-        svts: [
-          for (final svtId in hiddenSvtIds)
-            if (db.gameData.servantsById.containsKey(svtId)) (limitCounts: [], svt: db.gameData.servantsById[svtId]!),
-        ],
+        svts: [for (final svtId in hiddenSvtIds) (limitCounts: [], svt: _svtForms[svtId]!.svt)],
       ));
     }
 
@@ -435,9 +419,9 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
           Wrap(
             children: svts.map((x) {
               final (:svt, :limitCounts) = x;
-              final allLimitCounts = _getSvtAllLimits(svt);
-              final conditional = limitCounts.length != allLimitCounts.length && limitCounts.isNotEmpty;
-              Widget child = Container(
+              final (:traitsByLimit, :unreleasedCostumes, svt: _) = _svtForms[svt.id]!;
+              final conditional = limitCounts.isNotEmpty && limitCounts.length < traitsByLimit.length;
+              final child = Container(
                 decoration: BoxDecoration(
                   color: conditional ? Theme.of(context).colorScheme.error : null,
                   borderRadius: BorderRadius.circular(4),
@@ -448,31 +432,27 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
                   context: context,
                   // width: 32,
                   text: [
-                    if (conditional) '${limitCounts.length}/${allLimitCounts.length}',
+                    if (conditional) '${limitCounts.length}/${traitsByLimit.length}',
                     svt.status.favorite ? 'Lv${svt.status.bond}${svt.status.isReachBondLimit ? "*" : ""}' : '',
                   ].join('\n'),
                   option: ImageWithTextOption(fontSize: 12),
                   width: 48,
                 ),
               );
-              if (conditional) {
-                String msg = limitCounts
-                    .map((limitCount) {
-                      String name;
-                      if (limitCount < 10) {
-                        int stage = BattleUtils.limitCountToStage(limitCount);
-                        name = '${S.current.ascension_short} $limitCount (${S.current.ascension_stage_short} $stage)';
-                      } else {
-                        final costume = svt.costume[limitCount];
-                        name = costume?.lName.l ?? '${S.current.costume} $limitCount';
-                      }
-                      return '- $name';
-                    })
-                    .join('\n');
-                msg = '${svt.lName.l}\n$msg';
-                child = Tooltip(message: msg, child: child);
-              }
-              return child;
+              return Tooltip(
+                message: [
+                  svt.lName.l,
+                  if (conditional)
+                    for (final limit in limitCounts) '- ${_limitName(svt, limit)}'
+                  else if (limitCounts.isNotEmpty)
+                    S.current.bond_all_ascensions_eligible,
+                  if (unreleasedCostumes.isNotEmpty) ...[
+                    S.current.bond_excluded_unreleased_costumes,
+                    for (final limit in unreleasedCostumes) '- ${svt.getLimitName(limit)}',
+                  ],
+                ].join('\n'),
+                child: child,
+              );
             }).toList(),
           ),
         );
@@ -495,7 +475,10 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
           builder: (context) => ServantFilterPage(
             filterData: svtFilterData,
             onChanged: (_) {
-              if (mounted) setState(() {});
+              if (!mounted) return;
+              setState(() {
+                if (_matchRegion != svtFilterData.region.radioValue) _updateMatches();
+              });
             },
             planMode: false,
             extraFilters: (context, update) {
@@ -510,7 +493,6 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
                   values: extraFilterData.maxRateCountPerSvt,
                   optionBuilder: (v) => Text(v.format(percent: true, base: 10)),
                   onFilterChanged: (v, _) {
-                    if (mounted) setState(() {});
                     update();
                   },
                 ),
@@ -558,6 +540,7 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
               } else {
                 svtFilterData.region.reset();
               }
+              _updateMatches();
             });
           },
         ),
@@ -569,7 +552,7 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
           onChanged: (value) {
             setState(() {
               extraFilterData.useCostumeTraitForRegion = value;
-              initData();
+              _updateMatches();
             });
           },
         ),
@@ -687,7 +670,10 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
     return traitsList.map((ee) => ee.map((e) => Transl.traitName(e)).join('&')).join('/');
   }
 
-  Set<int> _getSvtAllLimits(Servant svt) {
-    return {...range(5), ...svt.costume.keys, ...svt.ascensionAdd.individuality2.all.keys};
+  String _limitName(Servant svt, int limit) {
+    final name = svt.getLimitName(limit);
+    if (limit < 0 || limit > 4) return name;
+    final stage = Servant.limitCountToDispLimitCount(limit);
+    return '$name (${S.current.ascension_stage_short} $stage)';
   }
 }
