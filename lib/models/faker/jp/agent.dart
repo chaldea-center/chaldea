@@ -103,11 +103,9 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
   }
 
   @override
-  Future<FResponse> homeTop() async {
+  Future<FResponse> homeTop() {
     final request = FRequestJP(network: network, path: '/home/top');
-    final resp = await request.beginRequestAndCheckError('home');
-    network.agentData.updateRaidInfo(homeResp: resp);
-    return resp;
+    return request.beginRequestAndCheckError('home');
   }
 
   @override
@@ -636,7 +634,7 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
     int32_t campaignItemId = 0,
     int32_t restartWave = 0,
     List<int32_t> useRewardAddItemIds = const [],
-  }) async {
+  }) {
     final request = FRequestJP(network: network, path: '/battle/setup');
     request.addFieldInt32("questId", questId);
     request.addFieldInt32("questPhase", questPhase);
@@ -671,9 +669,7 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
     request.addFieldInt32("campaignItemId", campaignItemId);
     request.addFieldInt32("restartWave", restartWave);
     request.addFieldStr("useRewardAddItemIds", jsonEncode(useRewardAddItemIds));
-    final resp = await request.beginRequestAndCheckError('battle_setup');
-    network.agentData.onBattleSetup(resp);
-    return resp;
+    return request.beginRequestAndCheckError('battle_setup');
   }
 
   @override
@@ -682,19 +678,13 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
     required int32_t questId,
     required int32_t questPhase,
     required List<int32_t> usedTurnList,
-  }) async {
+  }) {
     final request = FRequestJP(network: network, path: '/battle/resume');
     request.addFieldInt64("battleId", battleId);
     request.addFieldInt32("questId", questId);
     request.addFieldInt32("questPhase", questPhase);
     request.addFieldStr("routeSelect", jsonEncode(usedTurnList));
-    final resp = await request.beginRequestAndCheckError('battle_resume');
-    final battleEntity = resp.data.mstData.battles.firstOrNull;
-    if (battleEntity != null) {
-      network.agentData.lastBattle = network.agentData.curBattle ?? battleEntity;
-      network.agentData.curBattle = battleEntity;
-    }
-    return resp;
+    return request.beginRequestAndCheckError('battle_resume');
   }
 
   @override
@@ -727,7 +717,7 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
     required int32_t waveNum,
     Map<int32_t, int32_t> battleMissionValueDict = const {},
     Duration? sendDelay,
-  }) async {
+  }) {
     final request = FRequestJP(network: network, path: '/battle/result');
     if (sendDelay != null) request.sendDelay = sendDelay;
     final _battleResult = resultType.value, _winResult = winResult.value;
@@ -796,17 +786,13 @@ class FakerAgentJP extends FakerAgent<FRequestJP, AutoLoginDataJP, NetworkManage
     logger.t('battle_result.result=${jsonEncode(dictionary)}');
     request.addFieldStr('result', network.catMouseGame.encryptBattleResult(dictionary));
 
-    final resp = await request.beginRequestAndCheckError('battle_result');
-    network.agentData.onBattleResult(resp);
-    return resp;
+    return request.beginRequestAndCheckError('battle_result');
   }
 
   @override
-  Future<FResponse> battleTurn({required int64_t battleId}) async {
+  Future<FResponse> battleTurn({required int64_t battleId}) {
     final request = FRequestJP(network: network, path: '/battle/turn');
     request.addFieldInt64("battleId", battleId);
-    final resp = await request.beginRequestAndCheckError('battle_turn');
-    network.agentData.updateRaidInfo(battleTurnResp: resp);
-    return resp;
+    return request.beginRequestAndCheckError('battle_turn');
   }
 }

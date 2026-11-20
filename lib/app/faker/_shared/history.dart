@@ -219,6 +219,7 @@ class _FakerHistoryViewerState extends State<FakerHistoryViewer> {
 
   Widget buildRecord(BuildContext context, int index, String? key, FateTopLogin? resp, FRequestRecord? record) {
     final serverTime = resp?.serverTime;
+    final postErrors = record?.response?.postProcessErrors ?? const <FResponsePostProcessError>[];
     final footerStyle = TextStyle(
       color: Theme.of(context).textTheme.bodySmall?.color,
       fontSize: 13.0,
@@ -279,6 +280,12 @@ class _FakerHistoryViewerState extends State<FakerHistoryViewer> {
                 color: resp?.cache.isEmpty == true ? Colors.grey : Colors.blue,
                 onTap: () => _onTapMasterData(resp),
               ),
+              if (postErrors.isNotEmpty)
+                _buildBadge(
+                  label: '${S.current.error} (${postErrors.length})',
+                  color: Colors.red,
+                  onTap: () => _showPostProcessErrors(postErrors),
+                ),
             ],
           ),
           // trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
@@ -372,6 +379,17 @@ class _FakerHistoryViewerState extends State<FakerHistoryViewer> {
         color: color,
       ),
       child: child,
+    );
+  }
+
+  void _showPostProcessErrors(List<FResponsePostProcessError> errors) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(S.current.error),
+        content: SingleChildScrollView(child: SelectableText(errors.map((e) => e.toString()).join('\n\n'))),
+        actions: [TextButton(onPressed: () => Navigator.of(context).pop(), child: Text(S.current.ok))],
+      ),
     );
   }
 

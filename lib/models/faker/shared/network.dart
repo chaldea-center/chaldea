@@ -64,7 +64,23 @@ class FResponse {
   final Response rawResponse;
   final FateTopLogin data;
 
+  /// Errors thrown by response post-processing handlers. Server-side failures
+  /// are already listed in [data].responses and are not duplicated here.
+  final List<FResponsePostProcessError> postProcessErrors = [];
+
   FResponse.raw(this.request, this.rawResponse, this.data);
+
+  /// Runs a post-processing action and records its failure on this response so
+  /// that later handlers can still run. The stack trace goes to the logger
+  /// only; [postProcessErrors] keeps the nid and error for the history UI.
+  void runPostProcess(String? nid, void Function() action) {
+    try {
+      action();
+    } catch (e, s) {
+      logger.e('post-process${nid == null ? '' : ' [$nid]'} failed', e, s);
+      postProcessErrors.add(FResponsePostProcessError(nid, e));
+    }
+  }
 
   factory FResponse(FRequestBase request, Response rawResponse) {
     try {
@@ -96,6 +112,17 @@ class FResponse {
     }
     return this;
   }
+}
+
+class FResponsePostProcessError {
+  /// The nid whose handler failed, or null for nid-agnostic post-processing.
+  final String? nid;
+  final Object error;
+
+  const FResponsePostProcessError(this.nid, this.error);
+
+  @override
+  String toString() => '${nid ?? 'common'}: $error';
 }
 
 class NidCheckException implements Exception {
@@ -183,6 +210,28 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
     headers[key] = cookie;
   }
 
+  /// Applies side effects after a response is parsed. Runs exactly once per
+  /// HTTP response. Session-aware state stays here; domain state and per-nid
+  /// handlers live in [FakerAgentData.postProcessResponse].
+  void postProcessResponse(FResponse resp, {UserGameEntity? oldUserGame}) {
+    resp.runPostProcess(null, () {
+      final newUserGame = resp.data.mstData.user;
+      if (newUserGame != null) {
+        user.userGame = UserGameEntity.fromJson(newUserGame.toJson());
+      }
+      for (final itemId in Items.loginSaveItems) {
+        final count = resp.data.mstData.userItem[itemId]?.num;
+        if (count != null) {
+          user.userItems[itemId] = count;
+        }
+      }
+      agentData.updateLoginResult(resp.data);
+    });
+    resp.runPostProcess(null, () => agentData.postProcessResponse(resp));
+    final request = resp.request;
+    setLocalNotification(oldUserGame: oldUserGame, request: request is TRequest ? request : null);
+  }
+
   Future<FResponse> requestStart(TRequest request) async {
     if (request.disposed) {
       throw Exception('Already disposed');
@@ -265,21 +314,9 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
           mstData.updateCache(resp.data.cache);
 
           // post-processing
-          final newUserGame = resp.data.mstData.user;
-          if (newUserGame != null) {
-            user.userGame = UserGameEntity.fromJson(newUserGame.toJson());
-          }
-          for (final itemId in Items.loginSaveItems) {
-            final count = resp.data.mstData.userItem[itemId]?.num;
-            if (count != null) {
-              user.userItems[itemId] = count;
-            }
-          }
-          agentData.updateLoginResult(resp.data);
-          // end post-processing
+          postProcessResponse(resp, oldUserGame: oldUserGame);
 
           record.response = resp;
-          setLocalNotification(oldUserGame: oldUserGame, request: request);
           hasCalled = true;
           return resp;
         } on DioException catch (e, s) {
@@ -319,6 +356,7 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
       ..sendedAt = DateTime.now();
     // In case memory used out
     history.add(record);
+    final oldUserGame = mstData.user;
     try {
       final dio = Dio(BaseOptions(connectTimeout: const Duration(seconds: 10)));
       final Response rawResp = await dio.post(
@@ -337,13 +375,15 @@ abstract class NetworkManagerBase<TRequest extends FRequestBase, TUser extends A
       request.rawResponse = rawResp;
       request.receiveTime = getNowTimestamp();
       final resp = FResponse(request, rawResp);
+      // Rebuild request params from the saved form so post-processing sees the
+      // same request context as a normal request (e.g. battleId).
+      request.params = Uri.splitQueryString(saveData.formData);
       mstData.updateCache(resp.data.cache);
-      final newUserGame = resp.data.mstData.user;
-      if (newUserGame != null) {
-        user.userGame = UserGameEntity.fromJson(newUserGame.toJson());
-      }
+      postProcessResponse(resp, oldUserGame: oldUserGame);
       record.response = resp;
-      return resp;
+      // No expected nid is stored for a replayed request, so raise on any
+      // failed response. Post-processing above has already run for every nid.
+      return resp.throwError(null);
     } finally {
       _runningTask = null;
       notifyListeners();

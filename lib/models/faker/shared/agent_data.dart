@@ -12,6 +12,32 @@ class FakerAgentData {
   // login result
   final loginResultHistory = <LoginResultData>[];
 
+  // battle
+  BattleEntity? curBattle;
+  BattleEntity? lastBattle;
+  BattleResultData? lastBattleResultData;
+  BattleResultData? lastBattleWinResultData;
+  FResponse? lastResp;
+
+  final battleTotalRewards = <int, int>{};
+  final totalDropStat = _DropStatData();
+  final curLoopDropStat = _DropStatData();
+
+  // raid
+  Map<int, Map<int, EventRaidInfoRecord>> raidRecords = {};
+
+  // gacha
+  final gachaResultStat = _GachaDrawStatData();
+
+  // event
+  final randomMissionStat = _RandomMissionLoopStat();
+
+  final treasureBoxStat = _TreasureBoxDrawStat();
+  final recipeStat = _RecipeCreateStat();
+
+  // ---------------------------------------------------------------------------
+  // response post-processing
+
   LoginResultData? updateLoginResult(FateTopLogin resp) {
     LoginResultData? result;
     for (final response in resp.responses) {
@@ -32,27 +58,47 @@ class FakerAgentData {
     return result;
   }
 
-  // battle
-  BattleEntity? curBattle;
-  BattleEntity? lastBattle;
-  BattleResultData? lastBattleResultData;
-  BattleResultData? lastBattleWinResultData;
-  FResponse? lastResp;
-
-  final battleTotalRewards = <int, int>{};
-  final totalDropStat = _DropStatData();
-  final curLoopDropStat = _DropStatData();
-
-  void onBattleSetup(FResponse resp) {
-    final battleEntity = resp.data.mstData.battles.firstOrNull;
-    if (battleEntity != null) {
-      lastBattle = curBattle ?? battleEntity;
-      curBattle = battleEntity;
+  /// Entry point for response side effects owned by faker state: cache-table
+  /// effects first, then per-nid handlers. Each handler is isolated so that one
+  /// failure does not prevent the remaining handlers from running.
+  void postProcessResponse(FResponse resp) {
+    resp.runPostProcess(null, () => _postProcessCacheTables(resp.data));
+    for (final detail in resp.data.responses) {
+      _postProcessDetail(detail, resp);
     }
-    updateRaidInfo(battleSetupResp: resp);
   }
 
-  void onBattleResult(FResponse resp) {
+  void _postProcessDetail(FateResponseDetail detail, FResponse resp) {
+    resp.runPostProcess(detail.nid, () {
+      switch (detail.nid) {
+        case 'battle_setup':
+          _postBattleSetup(detail, resp);
+          break;
+        case 'battle_resume':
+          _postBattleResume(detail, resp);
+          break;
+        case 'battle_result':
+          _postBattleResult(detail, resp);
+          break;
+        case 'battle_turn':
+          _postBattleTurn(detail, resp);
+          break;
+      }
+    });
+  }
+
+  void _postBattleSetup(FateResponseDetail detail, FResponse resp) {
+    if (!detail.isSuccess()) return;
+    _updateCurrentBattle(resp);
+  }
+
+  void _postBattleResume(FateResponseDetail detail, FResponse resp) {
+    if (!detail.isSuccess()) return;
+    _updateCurrentBattle(resp);
+  }
+
+  void _postBattleResult(FateResponseDetail detail, FResponse resp) {
+    if (!detail.isSuccess()) return;
     lastBattle = curBattle;
     curBattle = null;
     try {
@@ -66,89 +112,101 @@ class FakerAgentData {
     mstData_.battles.clear();
   }
 
-  // raid
-  Map<int, Map<int, EventRaidInfoRecord>> raidRecords = {};
+  /// Raid progress carried by the `battle_turn` success payload rather than the
+  /// cache tables, so it stays a nid-based handler.
+  void _postBattleTurn(FateResponseDetail detail, FResponse resp) {
+    if (!detail.isSuccess()) return;
+    final turnSuccess = resp.data.getResponseNull('battle_turn')?.success;
+    if (turnSuccess == null) return;
+    final now = DateTime.now().timestamp;
+    final raidInfos = (turnSuccess['raidInfo'] as List?) ?? [];
+    final battleId = int.tryParse(resp.request.params['battleId'] ?? '');
+    if (battleId == null) return;
+    int? eventId;
+    for (final (eId, records) in raidRecords.items) {
+      if (records.values.expand((e) => e.history).any((e) => e.battleId == battleId)) {
+        eventId = eId;
+        break;
+      }
+    }
+    if (eventId == null) return;
+    for (final rawRaid in raidInfos) {
+      final raid = BattleRaidInfo.fromJson(Map<String, dynamic>.from(rawRaid as Map));
+      getRaidRecord(
+        eventId,
+        raid.day,
+      ).history.add((timestamp: resp.data.serverTime?.timestamp ?? now, raidInfo: raid, battleId: battleId));
+    }
+  }
+
+  void _updateCurrentBattle(FResponse resp) {
+    final battleEntity = resp.data.mstData.battles.firstOrNull;
+    if (battleEntity == null) return;
+    lastBattle = curBattle ?? battleEntity;
+    curBattle = battleEntity;
+  }
 
   EventRaidInfoRecord getRaidRecord(int eventId, int day) =>
       raidRecords.putIfAbsent(eventId, () => {}).putIfAbsent(day, () => EventRaidInfoRecord());
 
-  void updateRaidInfo({FResponse? homeResp, FResponse? battleSetupResp, FResponse? battleTurnResp}) {
-    final now = DateTime.now().timestamp;
-    // home top
-    if (homeResp != null) {
-      for (final eventRaid in homeResp.data.mstData.mstEventRaid) {
-        getRaidRecord(eventRaid.eventId, eventRaid.day).eventRaid = eventRaid;
-      }
-      for (final totalRaid in homeResp.data.mstData.totalEventRaid) {
-        final record = getRaidRecord(totalRaid.eventId, totalRaid.day);
-        record.totalRaid = totalRaid;
-        record.history.add((
-          timestamp: homeResp.data.serverTime?.timestamp ?? now,
-          raidInfo: BattleRaidInfo(
-            day: totalRaid.day,
-            uniqueId: 0,
-            maxHp: record.eventRaid?.maxHp ?? 0,
-            totalDamage: totalRaid.totalDamage,
-          ),
-          battleId: null,
-        ));
-      }
+  /// Post-processing driven by master data cache changes. Raid tables such as
+  /// `mstEventRaid` and `battles` only exist in the response cache, so these
+  /// handlers intentionally do not depend on the response nid.
+  void _postProcessCacheTables(FateTopLogin data) {
+    final updated = (data.cache['updated'] as Map?) ?? const {};
+    final replaced = (data.cache['replaced'] as Map?) ?? const {};
+    bool changed(String table) => updated.containsKey(table) || replaced.containsKey(table);
 
-      // shrink
-      const raidHistoryMaxLength = 100;
-      for (final record in raidRecords.values.expand((e) => e.values)) {
-        if (record.history.length > raidHistoryMaxLength) {
-          record.history.removeRange(0, record.history.length - raidHistoryMaxLength);
-        }
-      }
+    final now = DateTime.now().timestamp;
+    if (changed('mstEventRaid') || changed('totalEventRaid')) {
+      _updateRaidInfoFromTables(data, now);
+      _shrinkRaidHistory();
     }
-    // battle setup
-    final battleEntity = battleSetupResp?.data.mstData.battles.firstOrNull;
-    final setupRaidInfos = battleEntity?.battleInfo?.raidInfo ?? [];
-    if (battleEntity != null && setupRaidInfos.isNotEmpty) {
-      for (final raid in setupRaidInfos) {
-        getRaidRecord(battleEntity.eventId, raid.day).history.add((
-          timestamp: battleSetupResp?.data.serverTime?.timestamp ?? now,
-          raidInfo: raid,
-          battleId: battleEntity.id,
-        ));
-      }
-    }
-    // battle turn
-    final turnSuccess = battleTurnResp?.data.getResponseNull('battle_turn')?.success;
-    if (battleTurnResp != null && turnSuccess != null) {
-      final raidInfos = (turnSuccess['raidInfo'] as List?) ?? [];
-      final battleId = int.tryParse(battleTurnResp.request.params['battleId'] ?? '');
-      if (battleId != null) {
-        int? eventId;
-        for (final (eId, records) in raidRecords.items) {
-          if (records.values.expand((e) => e.history).any((e) => e.battleId == battleId)) {
-            eventId = eId;
-            break;
-          }
-        }
-        if (eventId != null) {
-          for (final rawRaid in raidInfos) {
-            final raid = BattleRaidInfo.fromJson(Map<String, dynamic>.from(rawRaid as Map));
-            getRaidRecord(eventId, raid.day).history.add((
-              timestamp: battleTurnResp.data.serverTime?.timestamp ?? now,
-              raidInfo: raid,
-              battleId: battleId,
-            ));
-          }
-        }
-      }
+    if (changed('battles')) {
+      _updateRaidInfoFromBattleSetup(data, now);
     }
   }
 
-  // gacha
-  final gachaResultStat = _GachaDrawStatData();
+  void _updateRaidInfoFromTables(FateTopLogin data, int now) {
+    for (final eventRaid in data.mstData.mstEventRaid) {
+      getRaidRecord(eventRaid.eventId, eventRaid.day).eventRaid = eventRaid;
+    }
+    for (final totalRaid in data.mstData.totalEventRaid) {
+      final record = getRaidRecord(totalRaid.eventId, totalRaid.day);
+      record.totalRaid = totalRaid;
+      record.history.add((
+        timestamp: data.serverTime?.timestamp ?? now,
+        raidInfo: BattleRaidInfo(
+          day: totalRaid.day,
+          uniqueId: 0,
+          maxHp: record.eventRaid?.maxHp ?? 0,
+          totalDamage: totalRaid.totalDamage,
+        ),
+        battleId: null,
+      ));
+    }
+  }
 
-  // event
-  final randomMissionStat = _RandomMissionLoopStat();
+  void _updateRaidInfoFromBattleSetup(FateTopLogin data, int now) {
+    final battleEntity = data.mstData.battles.firstOrNull;
+    final setupRaidInfos = battleEntity?.battleInfo?.raidInfo ?? [];
+    if (battleEntity == null || setupRaidInfos.isEmpty) return;
+    for (final raid in setupRaidInfos) {
+      getRaidRecord(
+        battleEntity.eventId,
+        raid.day,
+      ).history.add((timestamp: data.serverTime?.timestamp ?? now, raidInfo: raid, battleId: battleEntity.id));
+    }
+  }
 
-  final treasureBoxStat = _TreasureBoxDrawStat();
-  final recipeStat = _RecipeCreateStat();
+  void _shrinkRaidHistory() {
+    const raidHistoryMaxLength = 100;
+    for (final record in raidRecords.values.expand((e) => e.values)) {
+      if (record.history.length > raidHistoryMaxLength) {
+        record.history.removeRange(0, record.history.length - raidHistoryMaxLength);
+      }
+    }
+  }
 }
 
 class EventRaidInfoRecord {

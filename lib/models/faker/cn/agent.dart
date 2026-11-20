@@ -417,10 +417,8 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
   }
 
   @override
-  Future<FResponse> homeTop() async {
-    final resp = await _acPhp(key: 'home', nid: 'home');
-    network.agentData.updateRaidInfo(homeResp: resp);
-    return resp;
+  Future<FResponse> homeTop() {
+    return _acPhp(key: 'home', nid: 'home');
   }
 
   @override
@@ -941,8 +939,8 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
     int32_t campaignItemId = 0,
     int32_t restartWave = 0,
     List<int32_t> useRewardAddItemIds = const [],
-  }) async {
-    final resp = await _acPhp(
+  }) {
+    return _acPhp(
       key: 'battlesetup',
       nid: 'battle_setup',
       params1: {
@@ -987,8 +985,6 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
         "useRewardAddItemIds": jsonEncode(useRewardAddItemIds),
       },
     );
-    network.agentData.onBattleSetup(resp);
-    return resp;
   }
 
   @override
@@ -997,19 +993,12 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
     required int32_t questId,
     required int32_t questPhase,
     required List<int32_t> usedTurnList,
-  }) async {
-    final resp = await _acPhp(
+  }) {
+    return _acPhp(
       key: 'battleresume',
       nid: 'battle_resume',
       params3: {"battleId": battleId, "questId": questId, "questPhase": questPhase, "usedTurnList": usedTurnList},
     );
-
-    final battleEntity = resp.data.mstData.battles.firstOrNull;
-    if (battleEntity != null) {
-      network.agentData.lastBattle = network.agentData.curBattle ?? battleEntity;
-      network.agentData.curBattle = battleEntity;
-    }
-    return resp;
   }
 
   @override
@@ -1041,7 +1030,7 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
     required int32_t waveNum,
     Map<int32_t, int32_t> battleMissionValueDict = const {},
     Duration? sendDelay,
-  }) async {
+  }) {
     final _battleResult = resultType.value, _winResult = winResult.value;
 
     Map<String, dynamic> dictionary = {
@@ -1109,7 +1098,7 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
 
     logger.t('battle_result.result=${jsonEncode(dictionary)}');
 
-    final resp = await _acPhp(
+    return _acPhp(
       key: 'battleresult',
       nid: 'battle_result',
       params2: {
@@ -1119,14 +1108,10 @@ class FakerAgentCN extends FakerAgent<FRequestCN, AutoLoginDataCN, NetworkManage
       },
       sendDelay: sendDelay,
     );
-    network.agentData.onBattleResult(resp);
-    return resp;
   }
 
   @override
-  Future<FResponse> battleTurn({required int64_t battleId}) async {
-    final resp = await _acPhp(key: 'battleturn', nid: 'battle_turn', params2: {"battleId": battleId});
-    network.agentData.updateRaidInfo(battleTurnResp: resp);
-    return resp;
+  Future<FResponse> battleTurn({required int64_t battleId}) {
+    return _acPhp(key: 'battleturn', nid: 'battle_turn', params2: {"battleId": battleId});
   }
 }
