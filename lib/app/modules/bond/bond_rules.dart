@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:chaldea/models/models.dart';
 import 'package:chaldea/utils/constants.dart';
 
@@ -5,6 +7,7 @@ import 'package:chaldea/utils/constants.dart';
 /// Its game effect is party-wide, so both the manual calculator and solver
 /// apply the same narrow correction when resolving the target scope.
 const int kHeroicSpiritPortraitDariusCeId = 9401060;
+const int kBond15BonusRate = 250;
 
 /// Automatic Grand selection is verified for the 48 Final Chapter recollection
 /// battles. They allow Grand effects in every slot and one support in the team.
@@ -151,6 +154,28 @@ class BondReleaseRules {
       traits.removeWhere((trait) => trait == Trait.hasCostume.value);
     }
     return traits.toSet().toList()..sort();
+  }
+}
+
+extension FormationBondCampaigns on FormationBondOption {
+  Iterable<({Event event, int rate})> campaignBonusesFor(int servantId) sync* {
+    for (final eventEntry in campaigns.entries) {
+      final event = db.gameData.events[eventEntry.key];
+      if (event == null) continue;
+      for (final campaign in event.campaigns) {
+        if (eventEntry.value[campaign.idx] != true || campaign.target != CombineAdjustTarget.questFriendship) {
+          continue;
+        }
+        // Quest-wide campaigns specify the applicable quests and omit servant IDs.
+        if (campaign.targetIds.isNotEmpty && !campaign.targetIds.contains(servantId)) continue;
+        final rate = switch (campaign.calcType) {
+          EventCombineCalc.addition => math.max(0, campaign.value),
+          EventCombineCalc.multiplication => math.max(0, campaign.value - 1000),
+          EventCombineCalc.fixedValue || EventCombineCalc.none => 0,
+        };
+        if (rate != 0) yield (event: event, rate: rate);
+      }
+    }
   }
 }
 

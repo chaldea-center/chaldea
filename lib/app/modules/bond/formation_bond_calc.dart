@@ -212,25 +212,9 @@ extension FormationBondOptionCalc on FormationBondOption {
           checkAddFunctions(skill, false);
         }
       }
-      // check campaign bonus
-      for (final (eventId, eventCampaigns) in campaigns.items) {
-        final event = db.gameData.events[eventId];
-        if (event == null) continue;
-        for (final (idx, enabled) in eventCampaigns.items) {
-          final campaign = event.campaigns.firstWhereOrNull((e) => e.idx == idx);
-          if (campaign == null || !enabled) continue;
-          if (svt != null && campaign.targetIds.contains(svt.id)) {
-            switch (campaign.calcType) {
-              case EventCombineCalc.addition:
-                selfResult.eventAddRate += max(0, campaign.value);
-                break;
-              case EventCombineCalc.multiplication:
-                selfResult.eventAddRate += max(0, campaign.value - 1000);
-              case EventCombineCalc.fixedValue:
-              case EventCombineCalc.none:
-                break;
-            }
-          }
+      if (svt != null && !deckSvt.supportType.isSupport) {
+        for (final bonus in campaignBonusesFor(svt.id)) {
+          selfResult.eventAddRate += bonus.rate;
         }
       }
       // check ce bonus (normal + event)
@@ -273,7 +257,7 @@ extension FormationBondOptionCalc on FormationBondOption {
       // check bond 15
       if (extraBonus.isBond15 && !deckSvt.supportType.isSupport) {
         for (final result in results) {
-          result.customAddRate += 250;
+          result.customAddRate += kBond15BonusRate;
         }
       }
 

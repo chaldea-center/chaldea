@@ -306,6 +306,102 @@ void main() {
     }
   });
 
+  test('quest-wide and servant campaigns agree with the score and recipient details', () {
+    final first = db.gameData.servantsById[100100]!;
+    final second = db.gameData.servantsById[200100]!;
+    final quest = QuestPhase(id: 9900001, bond: 1000, openedAt: 100, closedAt: 200);
+    final event = Event(
+      id: 9900002,
+      name: 'Test campaign',
+      startedAt: 50,
+      endedAt: 250,
+      campaignQuests: [EventQuest(questId: quest.id)],
+      campaigns: [
+        EventCampaign(
+          idx: 1,
+          target: CombineAdjustTarget.questFriendship,
+          calcType: EventCombineCalc.multiplication,
+          value: 1200,
+        ),
+        EventCampaign(
+          idx: 2,
+          target: CombineAdjustTarget.questFriendship,
+          targetIds: [first.id],
+          calcType: EventCombineCalc.addition,
+          value: 300,
+        ),
+      ],
+    );
+    db.gameData.events[event.id] = event;
+    final originalPassives = first.extraPassive;
+    addTearDown(() {
+      db.gameData.events.remove(event.id);
+      first.extraPassive = originalPassives;
+    });
+    final skill = NiceSkill(
+      id: 9900003,
+      name: 'Test bond passive',
+      extraPassive: [ExtraPassive(num: 1, priority: 1, startedAt: 50, endedAt: 250)],
+      functions: [
+        NiceFunction(
+          funcId: 9900004,
+          funcType: FuncType.servantFriendshipUp,
+          funcTargetType: FuncTargetType.self,
+          svals: [
+            DataVals({'RateCount': 100, 'AddCount': 17}),
+          ],
+        ),
+      ],
+    );
+    first.extraPassive = [skill];
+    final ce = db.gameData.craftEssencesById[kHeroicSpiritPortraitDariusCeId]!;
+    final formation = BattleTeamSetup();
+    formation.svts[0] = PlayerSvtData.svt(first)..equip1 = SvtEquipData(ce: ce);
+    formation.svts[1] = PlayerSvtData.svt(second);
+    final option = FormationBondOption(
+      maxServants: 2,
+      maxCost: 999,
+      searchFixedAscensions: false,
+      excludedCes: db.gameData.craftEssencesById.keys.toSet(),
+    )..validate(quest);
+    option.svtBonus[0]
+      ..addRate = 50
+      ..addValue = 3;
+    option.svtBonus[1].isBond15 = true;
+
+    for (final (eventSkillEnabled, targetedCampaignEnabled, expectedFirst) in [
+      (true, true, 2350),
+      (false, true, 2213),
+      (false, false, 1853),
+    ]) {
+      option.enableEvent = eventSkillEnabled;
+      option.campaigns[event.id]![2] = targetedCampaignEnabled;
+      final expected = [expectedFirst, 1790];
+      expect(option.calcResults(quest, formation).take(2).map((bonus) => bonus.totalBond), expected);
+      for (final fast in [false, true]) {
+        final result = FormationBondSolver.solve(option: option, quest: quest, formation: formation, useCeFirst: fast);
+        expect(result.isCeFirst, fast);
+        final team = result.best!;
+        expect(team.slots.map((slot) => slot.bond), expected);
+        final details = FormationBondSolver.recipientDetails(
+          team: team,
+          target: team.slots[0],
+          option: option,
+          quest: quest,
+          formation: formation,
+        )!;
+        expect(details.campaigns.map((bonus) => bonus.rate), [200, if (targetedCampaignEnabled) 300]);
+        expect(details.eventSkills.map((bonus) => (bonus.skill.id, bonus.rate, bonus.value)), [
+          if (eventSkillEnabled) (skill.id, 100, 17),
+        ]);
+        expect(details.craftEssences.single.value, 50);
+        expect(details.frontlineRate, 200);
+        expect(details.bond15Sources.single.servantId, second.id);
+        expect(details.uncappedRate, 500 + (targetedCampaignEnabled ? 300 : 0) + (eventSkillEnabled ? 100 : 0));
+      }
+    }
+  });
+
   test('streaming handles Grand identity, budgets and both progressive execution paths', () async {
     final formation = BattleTeamSetup();
     formation.svts[0] = PlayerSvtData.svt(db.gameData.servantsById[100100]!)..grandSvt = true;

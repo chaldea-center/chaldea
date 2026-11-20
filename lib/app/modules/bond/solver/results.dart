@@ -11,6 +11,7 @@ import 'package:chaldea/widgets/widgets.dart';
 
 import '../../battle/formation/formation_card.dart';
 import '../../common/builders.dart';
+import '../bond_rules.dart';
 import 'solver.dart';
 
 /// The card grid shared by the two solver exclusion lists.
@@ -103,6 +104,7 @@ class BondSolverResultsTab extends StatelessWidget {
   final BondSolverResult? solved;
   final BattleTeamSetup formation;
   final FormationBondOption option;
+  final int teapotTimes;
   final QuestPhase? quest;
   final BondSolverRunState runState;
 
@@ -116,6 +118,7 @@ class BondSolverResultsTab extends StatelessWidget {
     required this.solved,
     required this.formation,
     required this.option,
+    required this.teapotTimes,
     required this.quest,
     required this.runState,
     required this.error,
@@ -183,7 +186,7 @@ class BondSolverResultsTab extends StatelessWidget {
               children: [
                 Text('Highest', style: Theme.of(context).textTheme.labelSmall),
                 Text(
-                  best == null ? '—' : _formatBond(best.totalBond * option.teapotTimes),
+                  best == null ? '—' : _formatBond(best.totalBond * teapotTimes),
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(color: colorScheme.primary),
                 ),
               ],
@@ -237,17 +240,28 @@ class BondSolverResultsTab extends StatelessWidget {
     final baseBond = quest?.bond;
     if (baseBond == null) return '${S.current.base_bond} —';
     final baseText = _formatBond(baseBond);
-    if (option.teapotTimes <= 1) return '${S.current.base_bond} $baseText';
-    final adjustedBase = _formatBond(baseBond * option.teapotTimes);
-    return '${S.current.base_bond} $baseText × ${option.teapotTimes} = $adjustedBase';
+    if (teapotTimes <= 1) return '${S.current.base_bond} $baseText';
+    final adjustedBase = _formatBond(baseBond * teapotTimes);
+    return '${S.current.base_bond} $baseText × $teapotTimes = $adjustedBase';
   }
 
   String _formatBond(int value) => value.format(compact: false, groupSeparator: ',');
 
-  String get _candidateCoverage => S.current.bond_solver_candidate_coverage(option.maxCandidateTeams.clamp(1, 200));
+  String? _bondMultiplier(int totalBond, int baseBond) =>
+      baseBond > 0 ? '(×${(totalBond / baseBond).toStringAsFixed(2)})' : null;
+
+  TextSpan _bondMultiplierSpan(BuildContext context, String text) {
+    final theme = Theme.of(context);
+    return TextSpan(
+      text: text,
+      style: theme.textTheme.labelSmall?.copyWith(color: theme.colorScheme.onSurfaceVariant),
+    );
+  }
+
+  String get _resultsHelp => S.current.bond_solver_results_help(option.maxCandidateTeams.clamp(1, 200));
 
   void _showStatusDetails(BuildContext context) {
-    final message = [status, ?error, if (solved != null) _candidateCoverage].join('\n\n');
+    final message = [status, ?error, if (solved != null) _resultsHelp].join('\n\n');
     SimpleConfirmDialog(
       title: Text(S.current.search),
       content: SelectableText(message),
@@ -279,7 +293,16 @@ class BondSolverResultsTab extends StatelessWidget {
     final team = teams[teamIndex].previewTeam;
     final quest = this.quest;
     if (quest == null) return const SizedBox.shrink();
-    final score = team.totalBond * option.teapotTimes;
+    final score = team.totalBond * teapotTimes;
+    final ownSlots = option.maxServants.clamp(1, 6) - team.slots.where((slot) => slot.isSupport).length;
+    final teamBaseBond = quest.bond * ownSlots;
+    final multiplier = _bondMultiplier(score, teamBaseBond);
+    final title = Text.rich(
+      TextSpan(
+        text: '${S.current.team} ${teamIndex + 1}: $score',
+        children: [if (multiplier != null) _bondMultiplierSpan(context, ' $multiplier')],
+      ),
+    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -298,20 +321,34 @@ class BondSolverResultsTab extends StatelessWidget {
             children: [
               ListTile(
                 dense: true,
-                title: Text('${S.current.team} ${teamIndex + 1}: $score'),
+                title: multiplier == null
+                    ? title
+                    : Tooltip(
+                        message:
+                            '${S.current.base_bond} ${_formatBond(quest.bond)} × $ownSlots'
+                            ' = ${_formatBond(teamBaseBond)}',
+                        child: title,
+                      ),
                 trailing: Text(
                   'COST ${team.totalCost}/${result.maxCost}',
                   style: Theme.of(context).textTheme.labelLarge,
                 ),
               ),
-              FormationCard(
-                formation: _previewFormation(team),
-                questPhase: quest,
-                showMysticCode: false,
-                svtInfoBuilder: (_) => null,
-                ceInfoBuilder: (_, _) => null,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  children: [
+                    FormationCard(
+                      formation: _previewFormation(team),
+                      questPhase: quest,
+                      showMysticCode: false,
+                      svtInfoBuilder: (_) => null,
+                      ceInfoBuilder: (_, _) => null,
+                    ),
+                    Padding(padding: const EdgeInsets.only(bottom: 4), child: _bondValues(context, team)),
+                  ],
+                ),
               ),
-              Padding(padding: const EdgeInsets.only(bottom: 4), child: _bondValues(context, team)),
             ],
           ),
         ),
@@ -333,7 +370,7 @@ class BondSolverResultsTab extends StatelessWidget {
 
   Widget _bondValues(BuildContext context, BondSolvedTeam team) {
     final byPosition = {for (final slot in team.slots) slot.position: slot};
-    final base = (quest?.bond ?? 0) * option.teapotTimes;
+    final base = (quest?.bond ?? 0) * teapotTimes;
     final deltaGroup = AutoSizeGroup();
     final totalGroup = AutoSizeGroup();
     return Row(
@@ -354,10 +391,10 @@ class BondSolverResultsTab extends StatelessWidget {
                       return Center(child: Text('–', style: Theme.of(context).textTheme.bodySmall));
                     }
                     final requirement = _ascensionRequirement(team, slot);
-                    final total = slot.bond * option.teapotTimes;
+                    final total = slot.bond * teapotTimes;
                     final delta = total == 0 ? 0 : total - base;
                     return InkWell(
-                      onTap: () => _showTraitBondCes(context, team, slot),
+                      onTap: () => _showBondDetails(context, team, slot),
                       borderRadius: BorderRadius.circular(4),
                       child: Container(
                         margin: const EdgeInsets.symmetric(horizontal: 2),
@@ -398,12 +435,21 @@ class BondSolverResultsTab extends StatelessWidget {
     );
   }
 
-  Future<void> _showTraitBondCes(BuildContext context, BondSolvedTeam team, BondSolvedSlot target) async {
+  Future<void> _showBondDetails(BuildContext context, BondSolvedTeam team, BondSolvedSlot target) async {
     final quest = this.quest;
     if (quest == null) return;
-    final bonuses = team.traitCeBonusesFor(target, quest, option);
+    final totalBond = target.bond * teapotTimes;
+    final multiplier = _bondMultiplier(totalBond, quest.bond);
+    final details = FormationBondSolver.recipientDetails(
+      team: team,
+      target: target,
+      option: option,
+      quest: quest,
+      formation: formation,
+    );
     final requirement = _ascensionRequirement(team, target);
     final targetSvt = db.gameData.servantsById[target.servantId] ?? db.gameData.entities[target.servantId];
+    final status = !target.isSupport && targetSvt is Servant ? targetSvt.status : null;
     final formSvt = (target.fixedServant ? formation.svts[target.position].dispSvt : null) ?? targetSvt;
     String limitName(int limit) {
       final name = formSvt is Servant ? formSvt.getLimitName(limit) : '$limit';
@@ -435,6 +481,15 @@ class BondSolverResultsTab extends StatelessWidget {
           child: Column(
             mainAxisSize: .min,
             children: [
+              if (status?.favorite == true)
+                _bondDetailRow('${S.current.bond} Lv.', '${status!.bond}/${status.cur.bondLimit}'),
+              _bondDetailRow(S.current.base_bond, _formatBond(quest.bond)),
+              _bondDetailRow(
+                '${S.current.total} ${S.current.bond}',
+                _formatBond(totalBond),
+                amountSuffix: multiplier == null ? null : _bondMultiplierSpan(context, '\n$multiplier'),
+              ),
+              kDefaultDivider,
               if (requirement.restricted)
                 ListTile(
                   dense: true,
@@ -449,40 +504,110 @@ class BondSolverResultsTab extends StatelessWidget {
                   title: Text(S.current.bond_excluded_unreleased_costumes),
                   subtitle: Text(requirement.unreleasedCostumes.map(limitName).join(' / ')),
                 ),
-              if (bonuses.isEmpty) const Text('—'),
-              ...bonuses.map((bonus) {
-                final ce = db.gameData.craftEssencesById[bonus.ce.id];
-                final wearer = team.slots.firstWhere((slot) => slot.position == bonus.wearerPosition);
-                final effects = <String>[
-                  if (bonus.rate != 0) bonus.rate.format(percent: true, base: 10),
-                  if (bonus.value != 0) '+${bonus.value}',
-                ];
-                final traitSummary = bonus.targetTraitGroups
-                    .map((group) => group.map((trait) => Transl.traitName(trait)).join(' & '))
-                    .join(' / ');
-                return ListTile(
-                  dense: true,
-                  contentPadding: .zero,
-                  leading: ce?.iconBuilder(context: context, width: 40, jumpToDetail: false),
-                  title: Text(ce?.lName.l ?? '#${bonus.ce.id}', maxLines: 1, overflow: TextOverflow.ellipsis),
-                  subtitle: Text(
-                    [
-                      '#${bonus.wearerPosition + 1}${wearer.isSupport ? ' · ${S.current.support_servant}' : ''}',
-                      if (traitSummary.isNotEmpty) traitSummary,
-                    ].join('\n'),
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  trailing: Text(effects.join(' · ')),
-                  onTap: ce?.routeTo,
-                );
-              }),
+              if (details?.atBondLimit == true)
+                _bondDetailRow(S.current.bond_limit, 'Lv.MAX')
+              else if (details != null) ...[
+                ..._bonusRows(context, team, details),
+                if (teapotTimes > 1) _bondDetailRow(Transl.itemNames('星見のティーポット').l, '×$teapotTimes'),
+              ],
             ],
           ),
         ),
       ),
     );
   }
+
+  Iterable<Widget> _bonusRows(BuildContext context, BondSolvedTeam team, BondRecipientDetails details) sync* {
+    final frontlineBonuses = [
+      if (details.frontlineRate != 0) (S.current.team_starting_member, details.frontlineRate),
+      if (details.supportFrontlineRate != 0)
+        ('${S.current.team_starting_member} · ${S.current.support_servant}', details.supportFrontlineRate),
+    ];
+    if (frontlineBonuses.isNotEmpty) {
+      yield _bondDetailRow(
+        frontlineBonuses.map((bonus) => bonus.$1).join('\n'),
+        frontlineBonuses.map((bonus) => _bonusText(bonus.$2, 0)).join('\n'),
+      );
+    }
+    for (final bonus in details.craftEssences) {
+      final ce = db.gameData.craftEssencesById[bonus.ce.id];
+      final wearer = team.slots.firstWhere((slot) => slot.position == bonus.wearerPosition);
+      final traitSummary = bonus.targetTraitGroups
+          .map((group) => group.map((trait) => Transl.traitName(trait)).join(' & '))
+          .join(' / ');
+      final title = [
+        '#${bonus.wearerPosition + 1}',
+        if (wearer.isSupport) S.current.support_servant,
+        ce?.lName.l ?? '#${bonus.ce.id}',
+      ].join(' · ');
+      yield _bondDetailRow(
+        title,
+        _bonusText(bonus.rate, bonus.value),
+        maxTitleLines: 1,
+        leading: ce?.iconBuilder(context: context, width: 40, jumpToDetail: false),
+        subtitle: traitSummary.isEmpty ? null : traitSummary,
+        onTap: ce?.routeTo,
+      );
+    }
+    for (final bonus in details.eventSkills) {
+      yield _bondDetailRow(
+        bonus.skill.lName.l,
+        _bonusText(bonus.rate, bonus.value),
+        subtitle: S.current.event_skill,
+        onTap: () => router.push(url: Routes.skillI(bonus.skill.id)),
+      );
+    }
+    for (final bonus in details.campaigns) {
+      yield _bondDetailRow(
+        bonus.event.lShortName.l,
+        _bonusText(bonus.rate, 0),
+        subtitle: S.current.event_campaign,
+        onTap: bonus.event.routeTo,
+      );
+    }
+    if (details.customRate != 0 || details.customValue != 0) {
+      yield _bondDetailRow(S.current.general_custom, _bonusText(details.customRate, details.customValue));
+    }
+    for (final source in details.bond15Sources) {
+      final servant = db.gameData.servantsById[source.servantId];
+      yield _bondDetailRow(
+        '${S.current.bond} Lv. 15',
+        _bonusText(kBond15BonusRate, 0),
+        subtitle: '#${source.position + 1} · ${servant?.lName.l ?? source.servantId}',
+      );
+    }
+    final cap = ConstData.constants.maxFriendShipUpRatio;
+    final uncappedRate = details.uncappedRate;
+    if (uncappedRate > cap) {
+      yield _bondDetailRow(S.current.bond_bonus, '${_bonusText(uncappedRate, 0)} → ${_bonusText(cap, 0)}');
+    }
+  }
+
+  String _bonusText(int rate, int value) => [
+    if (rate != 0) '${rate > 0 ? '+' : ''}${rate.format(percent: true, base: 10)}',
+    if (value != 0) '${value > 0 ? '+' : ''}${_formatBond(value)}',
+  ].join(' · ');
+
+  Widget _bondDetailRow(
+    String title,
+    String amount, {
+    int maxTitleLines = 2,
+    TextSpan? amountSuffix,
+    String? subtitle,
+    Widget? leading,
+    VoidCallback? onTap,
+  }) => ListTile(
+    dense: true,
+    contentPadding: EdgeInsets.zero,
+    leading: leading,
+    title: Text(title, maxLines: maxTitleLines, overflow: TextOverflow.ellipsis),
+    subtitle: subtitle == null ? null : Text(subtitle, maxLines: 3, overflow: TextOverflow.ellipsis),
+    trailing: Text.rich(
+      TextSpan(text: amount, children: [?amountSuffix]),
+      textAlign: TextAlign.end,
+    ),
+    onTap: onTap,
+  );
 
   /// How much the search was allowed to draw from. A null id list means that
   /// pool was never built — the team had no free slot for it — so the whole
@@ -576,7 +701,7 @@ class BondSolverResultsTab extends StatelessWidget {
           ListTile(dense: true, title: const Text('Candidate choices'), trailing: Text('${solved.itemCount}')),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Text(_candidateCoverage, style: Theme.of(context).textTheme.bodySmall),
+            child: Text(_resultsHelp, style: Theme.of(context).textTheme.bodySmall),
           ),
         ],
       ),

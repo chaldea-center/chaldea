@@ -22,7 +22,7 @@ class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
   static String m13(n) =>
-      "Up to ${n} candidate teams are retained; other feasible or equal-score teams may be omitted. The proof covers only the highest score under the current settings — lower-score teams are not globally ranked.";
+      "Up to ${n} candidate teams are retained; other feasible or equal-score teams may be omitted. The proof covers only the highest score under the current settings — lower-score teams are not globally ranked.\n\nTap a Bond value to view its bonus breakdown. A red underline indicates an Ascension restriction for that Servant in this team.";
 
   static String m14(count, total) =>
       "${count} of total ${total} command cards didn\'t attack, please remove unnecessary cards";
@@ -360,10 +360,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "bond_solver_active_user_changed": MessageLookupByLibrary.simpleMessage(
       "The active user changed. Reopen this page before solving.",
     ),
-    "bond_solver_candidate_coverage": m13,
     "bond_solver_maximum_not_proven": MessageLookupByLibrary.simpleMessage("Maximum not proven"),
     "bond_solver_maximum_proven": MessageLookupByLibrary.simpleMessage("Maximum proven"),
     "bond_solver_no_feasible_team": MessageLookupByLibrary.simpleMessage("No feasible team"),
+    "bond_solver_results_help": m13,
     "bond_solver_results_outdated": MessageLookupByLibrary.simpleMessage("Search results are outdated. Solve again."),
     "bond_solver_solve_max_bond": MessageLookupByLibrary.simpleMessage("Solve max bond"),
     "bootstrap_page_title": MessageLookupByLibrary.simpleMessage("Bootstrap Page"),

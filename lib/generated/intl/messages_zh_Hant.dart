@@ -21,7 +21,8 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'zh_Hant';
 
-  static String m13(n) => "最多保留 ${n} 支候选队伍；其他可行或同分队伍可能被省略。证明仅覆盖当前设置下的最高分，较低分队伍不做全局排名。";
+  static String m13(n) =>
+      "最多保留 ${n} 支候选队伍；其他可行或同分队伍可能被省略。证明仅覆盖当前设置下的最高分，较低分队伍不做全局排名。\n\n点击羁绊数值可查看加成详情。红色下划线表示该从者在此队伍中有灵基限制。";
 
   static String m14(count, total) => "${total}張指令卡中有${count}張未攻擊，請減少不必要的指令卡";
 
@@ -319,10 +320,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "bond_release_quest_closed_hint": MessageLookupByLibrary.simpleMessage("仅从者实装时间按该日期筛选；礼装可用性与灵衣特性使用日服数据。"),
     "bond_search_fixed_ascensions": MessageLookupByLibrary.simpleMessage("搜索固定从者灵基"),
     "bond_solver_active_user_changed": MessageLookupByLibrary.simpleMessage("当前账号已切换，请重新打开本页后再求解。"),
-    "bond_solver_candidate_coverage": m13,
     "bond_solver_maximum_not_proven": MessageLookupByLibrary.simpleMessage("未证明最优"),
     "bond_solver_maximum_proven": MessageLookupByLibrary.simpleMessage("已证明最优"),
     "bond_solver_no_feasible_team": MessageLookupByLibrary.simpleMessage("无可行队伍"),
+    "bond_solver_results_help": m13,
     "bond_solver_results_outdated": MessageLookupByLibrary.simpleMessage("搜索结果已过期，请重新求解。"),
     "bond_solver_solve_max_bond": MessageLookupByLibrary.simpleMessage("求解最高羁绊"),
     "bootstrap_page_title": MessageLookupByLibrary.simpleMessage("引導頁"),

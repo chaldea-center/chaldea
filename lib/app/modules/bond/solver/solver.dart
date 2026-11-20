@@ -43,6 +43,37 @@ class BondCeRecipientBonus {
   });
 }
 
+class BondRecipientDetails {
+  final List<BondCeRecipientBonus> craftEssences;
+  final List<({NiceSkill skill, int rate, int value})> eventSkills;
+  final List<({Event event, int rate})> campaigns;
+  final List<BondSolvedSlot> bond15Sources;
+  final int frontlineRate;
+  final int supportFrontlineRate;
+  final int customRate;
+  final int customValue;
+  final bool atBondLimit;
+
+  const BondRecipientDetails({
+    required this.craftEssences,
+    required this.eventSkills,
+    required this.campaigns,
+    required this.bond15Sources,
+    required this.frontlineRate,
+    required this.supportFrontlineRate,
+    required this.customRate,
+    required this.customValue,
+    required this.atBondLimit,
+  });
+
+  int get uncappedRate =>
+      customRate +
+      bond15Sources.length * kBond15BonusRate +
+      craftEssences.fold<int>(0, (total, bonus) => total + bonus.rate) +
+      eventSkills.fold<int>(0, (total, bonus) => total + bonus.rate) +
+      campaigns.fold<int>(0, (total, bonus) => total + bonus.rate);
+}
+
 class BondSolvedSlot {
   final int position;
   final int? servantId;
@@ -124,26 +155,41 @@ class BondSolvedTeam {
   const BondSolvedTeam(this.totalBond, this.totalCost, this.slots);
 
   /// Lists concrete CE instances whose trait-targeted effects apply to [target].
-  List<BondCeRecipientBonus> traitCeBonusesFor(BondSolvedSlot target, QuestPhase quest, FormationBondOption option) {
+  List<BondCeRecipientBonus> traitCeBonusesFor(BondSolvedSlot target, QuestPhase quest, FormationBondOption option) =>
+      _ceBonusesFor(target, quest, option, traitOnly: true);
+
+  List<BondCeRecipientBonus> _ceBonusesFor(
+    BondSolvedSlot target,
+    QuestPhase quest,
+    FormationBondOption option, {
+    bool traitOnly = false,
+  }) {
     final reference = BondReleaseRules.resolve(option.releaseReference, quest);
     final targetSvt = target.servantId == null ? null : db.gameData.servantsById[target.servantId];
     if (targetSvt == null) return const [];
-    final targetTraits = BondReleaseRules.traits(targetSvt, target.limitCount ?? 4, quest.logicEventId ?? 0, reference);
+    final eventId = quest.logicEventId ?? 0;
+    final targetTraits = BondReleaseRules.traits(targetSvt, target.limitCount ?? 4, eventId, reference);
     final bonuses = <BondCeRecipientBonus>[];
     for (final wearer in slots) {
       final wearerSvt = wearer.servantId == null ? null : db.gameData.servantsById[wearer.servantId];
       final wearerTraits = wearer.isSupport || wearerSvt == null
           ? const <int>[]
-          : BondReleaseRules.traits(wearerSvt, wearer.limitCount ?? 4, quest.logicEventId ?? 0, reference);
+          : BondReleaseRules.traits(wearerSvt, wearer.limitCount ?? 4, eventId, reference);
       for (final equipped in [wearer.equip1, wearer.equip3]) {
         if (equipped == null) continue;
         final ce = db.gameData.craftEssencesById[equipped.id];
         if (ce == null) continue;
-        final effects = CeBondEffect.extractAll(ce, equipped.limitBreak, quest, support: wearer.isSupport);
+        final effects = CeBondEffect.extractAll(
+          ce,
+          equipped.limitBreak,
+          quest,
+          support: wearer.isSupport,
+          logicEventId: eventId,
+        );
         var rate = 0, value = 0;
         final targetTraitGroups = <List<int>>[];
         for (final effect in effects) {
-          if (!effect.hasCondition || !effect.wearerMatches(wearerTraits)) continue;
+          if ((traitOnly && !effect.hasCondition) || !effect.wearerMatches(wearerTraits)) continue;
           if (effect.scope == BondEffectScope.self && wearer.position != target.position) continue;
           if (!effect.targetMatches(targetTraits)) continue;
           rate += effect.rate;
@@ -626,6 +672,41 @@ class FormationBondSolver {
     return requirement;
   }
 
+  static BondRecipientDetails? recipientDetails({
+    required BondSolvedTeam team,
+    required BondSolvedSlot target,
+    required FormationBondOption option,
+    required QuestPhase quest,
+    required BattleTeamSetup formation,
+  }) {
+    final servant = db.gameData.servantsById[target.servantId];
+    if (target.isSupport || servant == null) return null;
+    final evaluator = FormationBondSolver._(option, quest, formation, false);
+    final traits = evaluator._traits(servant, target.limitCount ?? 4);
+    final eventSkills = <({NiceSkill skill, int rate, int value})>[];
+    for (final skill in evaluator._activeEventSkills(servant)) {
+      var rate = 0, value = 0;
+      for (final effect in evaluator._eventSkillEffects(skill)) {
+        if (!effect.wearerMatches(traits) || !effect.targetMatches(traits)) continue;
+        rate += effect.rate;
+        value += effect.value;
+      }
+      if (rate != 0 || value != 0) eventSkills.add((skill: skill, rate: rate, value: value));
+    }
+    final custom = option.svtBonus[target.position];
+    return BondRecipientDetails(
+      craftEssences: team._ceBonusesFor(target, quest, option),
+      eventSkills: eventSkills,
+      campaigns: option.campaignBonusesFor(servant.id).toList(),
+      bond15Sources: team.slots.where(evaluator._grantsBond15).toList(),
+      frontlineRate: evaluator._frontlineRate(target),
+      supportFrontlineRate: evaluator._supportFrontlineRate(team),
+      customRate: custom.addRate,
+      customValue: custom.addValue,
+      atBondLimit: target.fixedServant && custom.isBondReachLimit,
+    );
+  }
+
   Iterable<void> _ascensionRequirementSteps(
     BondSolvedTeam team,
     BondSolvedSlot target, {
@@ -721,9 +802,9 @@ class FormationBondSolver {
         if (slot.equip1 != null) cost += db.gameData.craftEssencesById[slot.equip1!.id]!.cost;
         rates[p] += _campaignRate(svt.id) + option.svtBonus[slot.position].addRate;
         values[p] += option.svtBonus[slot.position].addValue;
-        if (slot.fixedServant && option.svtBonus[slot.position].isBond15) {
+        if (_grantsBond15(slot)) {
           for (var r = 0; r < rates.length; r++) {
-            rates[r] += 250;
+            rates[r] += kBond15BonusRate;
           }
         }
       }
@@ -745,7 +826,7 @@ class FormationBondSolver {
         }
       }
     }
-    final supportFront = option.frontlineBonus ? team.slots.where((s) => s.isSupport && s.position < 3).length : 0;
+    final supportFrontlineRate = _supportFrontlineRate(team);
     final bonds = List<int>.filled(team.slots.length, 0);
     for (final (p, slot) in team.slots.indexed) {
       if (slot.isSupport ||
@@ -753,13 +834,21 @@ class FormationBondSolver {
           (slot.fixedServant && option.svtBonus[slot.position].isBondReachLimit)) {
         continue;
       }
-      final front = option.frontlineBonus ? (slot.position < 3 ? 200 : 0) + 40 * supportFront : 0;
+      final front = _frontlineRate(slot) + supportFrontlineRate;
       final first = (quest.bond * (1 + front / 1000)).floor();
       final rate = math.min(rates[p], ConstData.constants.maxFriendShipUpRatio);
       bonds[p] = (first * (1 + rate / 1000)).floor() + values[p];
     }
     return (bonds, cost);
   }
+
+  bool _grantsBond15(BondSolvedSlot slot) =>
+      !slot.isSupport && slot.servantId != null && slot.fixedServant && option.svtBonus[slot.position].isBond15;
+
+  int _frontlineRate(BondSolvedSlot slot) => option.frontlineBonus && slot.position < 3 ? 200 : 0;
+
+  int _supportFrontlineRate(BondSolvedTeam team) =>
+      option.frontlineBonus ? 40 * team.slots.where((slot) => slot.isSupport && slot.position < 3).length : 0;
 
   /// Concrete representatives are stable; rearrangements preserve the source multiset.
   BondSolvedTeam _normalizeTeam(BondSolvedTeam team) {
@@ -1627,7 +1716,7 @@ class FormationBondSolver {
       if (fixedServant && bonus.isBond15) {
         for (var r = 0; r < baseRates.length; r++) {
           yield null;
-          baseRates[r] += 250;
+          baseRates[r] += kBond15BonusRate;
         }
       }
       final servants = <_CeFirstServant>[];
@@ -2145,7 +2234,7 @@ class FormationBondSolver {
           final teamRates = List<int>.of(effect.teamRates);
           if (fixedSvt && bonus.isBond15) {
             for (var r = 0; r < teamRates.length; r++) {
-              teamRates[r] += 250;
+              teamRates[r] += kBond15BonusRate;
             }
           }
           final ceIds = <Set<int>>[];
@@ -2320,40 +2409,15 @@ class FormationBondSolver {
 
   int _svtCost(Servant svt, int limit) => svt.getAscended(limit, (a) => a.overwriteCost) ?? svt.cost;
 
-  int _campaignRate(int svtId) {
-    var rate = 0;
-    for (final eventEntry in option.campaigns.entries) {
-      final event = db.gameData.events[eventEntry.key];
-      if (event == null) continue;
-      for (final campaignEntry in eventEntry.value.entries) {
-        if (!campaignEntry.value) continue;
-        for (final campaign in event.campaigns) {
-          if (campaign.idx != campaignEntry.key || !campaign.targetIds.contains(svtId)) continue;
-          switch (campaign.calcType) {
-            case EventCombineCalc.addition:
-              rate += math.max(0, campaign.value);
-            case EventCombineCalc.multiplication:
-              rate += math.max(0, campaign.value - 1000);
-            case EventCombineCalc.fixedValue:
-            case EventCombineCalc.none:
-              break;
-          }
-        }
-      }
-    }
-    return rate;
-  }
+  int _campaignRate(int svtId) => option.campaignBonusesFor(svtId).fold(0, (total, bonus) => total + bonus.rate);
 
-  List<CeBondEffect> _eventEffects(Servant svt) => _eventCache.putIfAbsent(svt.id, () {
-    if (!option.enableEvent) return const [];
-    // The solver models event servant bonuses as effects earned by that
-    // servant. Team-wide extra passives (currently Mash only, besides the
-    // separately configured Bond 15 skill) are outside the requested scope.
-    return _extractEffects(
-      svt.resolveBondEventSkills(quest, logicEventId: _eventId),
-      support: false,
-    ).where((effect) => effect.scope == BondEffectScope.self).toList();
-  });
+  List<NiceSkill> _activeEventSkills(Servant svt) =>
+      option.enableEvent ? svt.resolveBondEventSkills(quest, logicEventId: _eventId) : const [];
+
+  List<CeBondEffect> _eventEffects(Servant svt) => _eventCache.putIfAbsent(
+    svt.id,
+    () => [for (final skill in _activeEventSkills(svt)) ..._eventSkillEffects(skill)],
+  );
 
   _CeVariant _ceVariant(CraftEssence ce, bool lb) {
     return _ceCache.putIfAbsent('${ce.id}|$lb', () {
@@ -2366,41 +2430,33 @@ class FormationBondSolver {
     });
   }
 
-  List<CeBondEffect> _extractEffects(Iterable<NiceSkill> skills, {required bool support}) {
+  List<CeBondEffect> _eventSkillEffects(NiceSkill skill) {
     final effects = <CeBondEffect>[];
-    for (final skill in skills) {
-      for (final func in skill.functions) {
-        if (func.funcType != FuncType.servantFriendshipUp) continue;
-        if (func.funcquestTvals.isNotEmpty &&
-            !Individuality.checkSignedIndivPartialMatch(self: _questTraits, signedTarget: func.funcquestTvals)) {
-          continue;
-        }
-        final vals = support ? (func.followerVals?.firstOrNull ?? func.svals.firstOrNull) : func.svals.firstOrNull;
-        if (vals == null) continue;
-        if (support && vals.ApplySupportSvt == 0) continue;
-        if (vals.EventId != null && vals.EventId != 0 && vals.EventId != _eventId) continue;
-        final rate = vals.RateCount ?? 0;
-        final value = vals.AddCount ?? 0;
-        if (rate == 0 && value == 0) continue;
-        final scope = switch (func.funcTargetType) {
-          FuncTargetType.self => BondEffectScope.self,
-          FuncTargetType.ptFull => BondEffectScope.team,
-          _ => null,
-        };
-        if (scope == null) continue; // manual page does not target other scopes
-        final targetOrAll = func.getOverwriteTvalsList();
-        effects.add(
-          CeBondEffect(
-            scope: scope,
-            rate: rate,
-            value: value,
-            wearerActIndiv: skill.actIndividuality,
-            wearerRequiredIndiv: vals.Individuality ?? 0,
-            targetOrAll: targetOrAll,
-            targetPartial: targetOrAll.isEmpty ? func.functvals : const [],
-          ),
-        );
+    for (final func in skill.functions) {
+      // Activity passives contribute only to their owner in the solver.
+      if (func.funcType != FuncType.servantFriendshipUp || func.funcTargetType != FuncTargetType.self) continue;
+      if (func.funcquestTvals.isNotEmpty &&
+          !Individuality.checkSignedIndivPartialMatch(self: _questTraits, signedTarget: func.funcquestTvals)) {
+        continue;
       }
+      final vals = func.svals.firstOrNull;
+      if (vals == null) continue;
+      if (vals.EventId != null && vals.EventId != 0 && vals.EventId != _eventId) continue;
+      final rate = vals.RateCount ?? 0;
+      final value = vals.AddCount ?? 0;
+      if (rate == 0 && value == 0) continue;
+      final targetOrAll = func.getOverwriteTvalsList();
+      effects.add(
+        CeBondEffect(
+          scope: BondEffectScope.self,
+          rate: rate,
+          value: value,
+          wearerActIndiv: skill.actIndividuality,
+          wearerRequiredIndiv: vals.Individuality ?? 0,
+          targetOrAll: targetOrAll,
+          targetPartial: targetOrAll.isEmpty ? func.functvals : const [],
+        ),
+      );
     }
     return effects;
   }

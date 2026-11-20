@@ -33,6 +33,7 @@ class _FormationBondRuntime {
   bool restored = false;
   BondSolverResult? solverResult;
   QuestPhase? resultQuest;
+  FormationBondOption? resultOption;
   String? solverError;
   BondSolverRunState runState = BondSolverRunState.idle;
   bool get solving => runState.isRunning;
@@ -49,6 +50,7 @@ class _FormationBondRuntime {
   void clearResults() {
     solverResult = null;
     resultQuest = null;
+    resultOption = null;
     solverError = null;
     runState = BondSolverRunState.idle;
   }
@@ -315,6 +317,7 @@ class _FormationBondPageState extends State<FormationBondPage> with SingleTicker
       _runtime.resultQuest = solveQuest;
       final solveFormation = formation.copy();
       final solveOption = _buildSolverRequest(solveQuest, solveFormation);
+      _runtime.resultOption = solveOption;
       if (_runtime.userBacked) {
         saveData();
         await db.saveUserData();
@@ -694,7 +697,8 @@ class _FormationBondPageState extends State<FormationBondPage> with SingleTicker
               builder: (context, _, child) => BondSolverResultsTab(
                 solved: _runtime.solverResult,
                 formation: formation,
-                option: option,
+                option: _runtime.resultOption ?? option,
+                teapotTimes: option.teapotTimes,
                 quest: _runtime.resultQuest ?? questEntity,
                 runState: _runtime.runState,
                 error: _runtime.solverError,

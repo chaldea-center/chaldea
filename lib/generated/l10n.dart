@@ -1487,17 +1487,6 @@ class S {
     );
   }
 
-  /// `Up to {n} candidate teams are retained; other feasible or equal-score teams may be omitted. The proof covers only the highest score under the current settings — lower-score teams are not globally ranked.`
-  String bond_solver_candidate_coverage(Object n) {
-    return Intl.message(
-      'Up to $n candidate teams are retained; other feasible or equal-score teams may be omitted. The proof covers only the highest score under the current settings — lower-score teams are not globally ranked.',
-      name: 'bond_solver_candidate_coverage',
-      desc: '',
-      locale: localeName,
-      args: [n],
-    );
-  }
-
   /// `Maximum not proven`
   String get bond_solver_maximum_not_proven {
     return Intl.message(
@@ -1522,6 +1511,17 @@ class S {
       desc: '',
       locale: localeName,
       args: [],
+    );
+  }
+
+  /// `Up to {n} candidate teams are retained; other feasible or equal-score teams may be omitted. The proof covers only the highest score under the current settings — lower-score teams are not globally ranked.\n\nTap a Bond value to view its bonus breakdown. A red underline indicates an Ascension restriction for that Servant in this team.`
+  String bond_solver_results_help(Object n) {
+    return Intl.message(
+      'Up to $n candidate teams are retained; other feasible or equal-score teams may be omitted. The proof covers only the highest score under the current settings — lower-score teams are not globally ranked.\n\nTap a Bond value to view its bonus breakdown. A red underline indicates an Ascension restriction for that Servant in this team.',
+      name: 'bond_solver_results_help',
+      desc: '',
+      locale: localeName,
+      args: [n],
     );
   }
 
