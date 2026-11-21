@@ -1317,18 +1317,26 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
             continue;
         }
 
-        if (!event.isCampaignQuest(battleOption.questId)) continue;
+        if (!runtime.battle.isQuestCampaign(campaign, event, battleOption.questId)) continue;
 
         campaigns.add(event);
         break;
       }
     }
+    final apCampaigns = runtime.battle.questApCampaigns(battleOption.questId);
+    final baseConsume = questPhase?.consume ?? quest?.consume ?? 0;
     if (campaigns.isNotEmpty) {
       children.add(
         ListTile(
           dense: true,
           title: Text(campaigns.map((e) => e.lName.l).join(' · '), maxLines: 1, overflow: TextOverflow.ellipsis),
-          subtitle: Text('${campaigns.length} ${S.current.event_campaign}'),
+          subtitle: Text(
+            [
+              '${campaigns.length} ${S.current.event_campaign}',
+              if (apCampaigns.isNotEmpty && baseConsume > 0)
+                'AP ${runtime.battle.getQuestApConsume(battleOption.questId, baseConsume)}',
+            ].join(' · '),
+          ),
           onTap: () {
             SimpleDialog(
               title: Text(S.current.event_campaign),

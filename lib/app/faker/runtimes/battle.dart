@@ -392,7 +392,7 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
 
     final curAp = mstData.user!.calCurAp();
     if (questPhaseEntity.consumeType.useAp) {
-      final consume = options.isApHalf ? questPhaseEntity.consume ~/ 2 : questPhaseEntity.consume;
+      final consume = getQuestApConsume(options.questId, questPhaseEntity.consume);
       if (curAp < consume) {
         throw Exception('AP not enough: $curAp<$consume');
       }
@@ -960,7 +960,7 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
       }
     }
     if (quest.consumeType.useAp) {
-      final apConsume = option.isApHalf ? quest.consume ~/ 2 : quest.consume;
+      final apConsume = getQuestApConsume(quest.id, quest.consume);
       if (mstData.user!.calCurAp() >= apConsume) return;
       List<int> recoverIds = option.recoverIds.toList();
       if (option.goldApplePrior && recoverIds.length > 1) {
@@ -1027,6 +1027,78 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
         return;
       }
       throw SilentException('AP not enough: ${mstData.user!.calCurAp()}<$apConsume');
+    }
+  }
+
+  /// Quest AP campaigns (`questAp` / `questApFirstTime`) in effect right now.
+  List<EventCampaign> questApCampaigns(int questId) {
+    final now = DateTime.now().timestamp;
+    final userQuest = mstData.userQuest[questId];
+    final isCleared = userQuest != null && userQuest.clearNum > 0;
+    final result = <EventCampaign>[];
+    for (final event in runtime.gameData.timerData.events.values) {
+      if (event.startedAt > now || event.endedAt <= now) continue;
+      for (final campaign in event.campaigns) {
+        switch (campaign.target) {
+          case .questAp:
+            break;
+          case .questApFirstTime:
+            if (isCleared) continue;
+            break;
+          default:
+            continue;
+        }
+        if (!isQuestCampaign(campaign, event, questId)) continue;
+        result.add(campaign);
+      }
+    }
+    return result;
+  }
+
+  /// Whether [campaign] of [event] targets [questId]. A campaign may narrow its
+  /// scope via its own target lists, otherwise the event quest list applies.
+  bool isQuestCampaign(EventCampaign campaign, Event event, int questId) {
+    if (campaign.targetIds.contains(questId)) return true;
+    final quest = runtime.gameData.timerData.allQuests[questId] ?? db.gameData.quests[questId];
+    if (quest != null) {
+      if (campaign.warIds.contains(quest.warId)) return true;
+      final war = quest.war;
+      if (war != null &&
+          campaign.warGroupIds.isNotEmpty &&
+          war.groups.any((e) => campaign.warGroupIds.contains(e.id))) {
+        return true;
+      }
+    }
+    // `isCampaignQuest` ignores the phase of EventQuest entries.
+    return campaign.targetIds.isEmpty &&
+        campaign.warIds.isEmpty &&
+        campaign.warGroupIds.isEmpty &&
+        event.isCampaignQuest(questId);
+  }
+
+  /// The AP cost of one battle. An effective campaign replaces the manual
+  /// [AutoBattleOptions.isApHalf]; several campaigns fall back to it because
+  /// Atlas does not export the server's groupId/priority data.
+  int getQuestApConsume(int questId, int baseConsume) {
+    final campaigns = questApCampaigns(questId);
+    final campaignConsume = campaigns.length == 1 ? calcCampaignApConsume(baseConsume, campaigns.single) : null;
+    return campaignConsume ?? (battleOption.isApHalf ? baseConsume ~/ 2 : baseConsume);
+  }
+
+  /// Mirrors `QuestEntity.GetCampaignCostCalcValue` + `getActConsume`:
+  /// `multiplication` holds a per-mille value, `fixedValue` is the absolute AP.
+  static int? calcCampaignApConsume(int baseConsume, EventCampaign campaign) {
+    switch (campaign.calcType) {
+      case EventCombineCalc.fixedValue:
+        return campaign.value;
+      case EventCombineCalc.multiplication:
+        if (campaign.value < 1) return baseConsume;
+        if (baseConsume == 0) return 0;
+        final total = baseConsume * campaign.value;
+        return total < 1000 ? 1 : total ~/ 1000;
+      case EventCombineCalc.addition:
+      case EventCombineCalc.none:
+        return null;
     }
   }
 
