@@ -784,7 +784,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "sprites": MessageLookupByLibrary.simpleMessage("스프라이트"),
     "sq_fragment_convert": MessageLookupByLibrary.simpleMessage("21성정편 = 3 성정석"),
     "sq_short": MessageLookupByLibrary.simpleMessage("돌"),
-    "stage_opening_movie": MessageLookupByLibrary.simpleMessage("오프닝 영상"),
     "start": MessageLookupByLibrary.simpleMessage("시작"),
     "statistics_title": MessageLookupByLibrary.simpleMessage("통계"),
     "story_ce": MessageLookupByLibrary.simpleMessage("스토리 예장"),

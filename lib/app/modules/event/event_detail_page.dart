@@ -405,7 +405,7 @@ class _EventItemsOverviewState extends State<EventItemsOverview> {
     if (moviesByUrl.isNotEmpty) {
       children.add(
         TileGroup(
-          header: S.current.stage_opening_movie,
+          header: S.current.opening_movie,
           children: [
             for (final (url, movie) in moviesByUrl.items)
               ListTile(

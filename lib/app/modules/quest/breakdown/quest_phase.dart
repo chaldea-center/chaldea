@@ -153,6 +153,21 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
     QuestPhase? curPhase = questPhase ?? getCachedData();
     List<Widget?> children = [getPhaseHeader(phase, curPhase)];
     if (curPhase != null) {
+      final extraDetail = curPhase.extraDetail;
+      if (!curPhase.stages.any((stage) => stage.wave == 1) &&
+          [
+            extraDetail?.movieFolder,
+            extraDetail?.maleMovieFolder,
+            extraDetail?.femaleMovieFolder,
+          ].nonNulls.any((folder) => folder.trim().isNotEmpty)) {
+        children.add(
+          ListTile(
+            leading: const Icon(Icons.play_circle_outline),
+            title: Text(S.current.opening_movie),
+            onTap: () => router.pushPage(WaveInfoPage(questPhase: curPhase, region: widget.region)),
+          ),
+        );
+      }
       for (final stage in curPhase.stages) {
         children.add(buildStage(curPhase, stage));
         final stageCutin = stage.cutin;
@@ -244,6 +259,7 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
         ((curPhase?.consumeType ?? phaseDetail?.consumeType2 ?? effPhase.consumeType) == ConsumeType.ap &&
         (phaseDetail?.actConsume ?? effPhase.consume) == 0);
     final questSelects = curPhase?.extraDetail?.questSelect;
+    final phaseRouteSelect = curPhase?.extraDetail?.phaseRouteSelect ?? 0;
     List<Widget> headerRows = [
       Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -319,6 +335,20 @@ class _QuestPhaseWidgetState extends State<QuestPhaseWidget> {
                     text: ' $selectId ',
                     onTap: () => router.push(url: Routes.questI(selectId)),
                   ),
+            ],
+          ),
+          textAlign: TextAlign.center,
+        ),
+      if (phaseRouteSelect > 0 && phaseRouteSelect != effPhase.id)
+        Text.rich(
+          TextSpan(
+            text: '${S.current.branch_quest}(${S.current.quest_phase} $phase): ',
+            children: [
+              SharedBuilder.textButtonSpan(
+                context: context,
+                text: ' $phaseRouteSelect ',
+                onTap: () => router.push(url: Routes.questI(phaseRouteSelect), region: widget.region),
+              ),
             ],
           ),
           textAlign: TextAlign.center,

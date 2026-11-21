@@ -1820,6 +1820,7 @@ class QuestPhaseAiNpc {
 @JsonSerializable()
 class QuestPhaseExtraDetail with DataScriptBase {
   List<int>? questSelect;
+  int? get phaseRouteSelect => getScript('phaseRouteSelect');
   QuestPhaseAiNpc? aiNpc;
   List<QuestPhaseAiNpc>? aiMultiNpc;
   OverwriteEquipSkills? overwriteEquipSkills;
@@ -1846,6 +1847,9 @@ class QuestPhaseExtraDetail with DataScriptBase {
   int? get ignoreSyncEquipGrand => getScript('ignoreSyncEquipGrand');
   int? get isInfinityCost => getScript('isInfinityCost');
   String? get battleFinishMovie => getScript("battleFinishMovie");
+  String? get movieFolder => getScript('movieFolder');
+  String? get maleMovieFolder => getScript('maleMovieFolder');
+  String? get femaleMovieFolder => getScript('femaleMovieFolder');
   int? get eventDeckIndex => getScript("eventDeckIndex"); // Support Init Deck Index
 
   QuestPhaseExtraDetail({

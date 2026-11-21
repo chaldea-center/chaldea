@@ -1031,7 +1031,6 @@ class MessageLookup extends MessageLookupByLibrary {
     "sq_buy_pack_unit": MessageLookupByLibrary.simpleMessage("Пак(и)"),
     "sq_fragment_convert": MessageLookupByLibrary.simpleMessage("21 фрагмент = 3 кварца"),
     "sq_short": MessageLookupByLibrary.simpleMessage("Кварц"),
-    "stage_opening_movie": MessageLookupByLibrary.simpleMessage("Вступительный фильм"),
     "start": MessageLookupByLibrary.simpleMessage("Начать"),
     "statistics_title": MessageLookupByLibrary.simpleMessage("Статистика"),
     "story_ce": MessageLookupByLibrary.simpleMessage("CE из стории"),

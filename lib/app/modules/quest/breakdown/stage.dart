@@ -3,6 +3,7 @@ import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/app.dart';
@@ -217,54 +218,63 @@ class QuestWave extends StatelessWidget {
 
 class WaveInfoPage extends StatelessWidget {
   final QuestPhase questPhase;
-  final Stage stage;
+  final Stage? stage;
   final Region? region;
-  const WaveInfoPage({super.key, required this.questPhase, required this.stage, this.region});
+  const WaveInfoPage({super.key, required this.questPhase, this.stage, this.region});
 
   @override
   Widget build(BuildContext context) {
-    final originalScript = Map<String, dynamic>.of(stage.originalScript);
+    final stage = this.stage;
+    final originalScript = Map<String, dynamic>.of(stage?.originalScript ?? const {});
     originalScript.remove('aiFieldIds');
+    final extraDetail = questPhase.extraDetail;
+    final movieTitle = '[${S.current.quest}] ${S.current.opening_movie}';
     return Scaffold(
-      appBar: AppBar(title: Text('Wave ${stage.wave}')),
+      appBar: AppBar(title: Text(stage == null ? S.current.opening_movie : 'Wave ${stage.wave}')),
       body: ListView(
         children: [
-          if (stage.bgm != null && stage.bgm?.id != 0)
-            ListTile(
-              title: Text(S.current.bgm),
-              trailing: Text(stage.bgm!.tooltip, textAlign: TextAlign.end),
-              onTap: stage.bgm!.routeTo,
-            ),
-          if (stage.turn != null)
-            ListTile(
-              title: Text('[${S.current.quest_wave}] ${S.current.turn_remain_limit}'),
-              subtitle: Text(stage.limitAct?.shownName ?? "?"),
-              trailing: Text(stage.turn.toString()),
-            ),
-          if (questPhase.extraDetail?.turn != null)
-            ListTile(
-              title: Text('[${S.current.quest}] ${S.current.turn_remain_limit}'),
-              subtitle: Text(questPhase.extraDetail?.LimitAct?.shownName ?? "?"),
-              trailing: Text((questPhase.extraDetail?.turn).toString()),
-            ),
-          if (stage.enemyFieldPosCount != null)
-            ListTile(title: Text(S.current.max_enemy_on_stage), trailing: Text(stage.enemyFieldPosCount.toString())),
-          if (stage.enemyActCount != null)
-            ListTile(title: Text(S.current.max_enemy_act_count), trailing: Text(stage.enemyActCount.toString())),
-          if (stage.fieldAis.isNotEmpty) buildFieldAis(context, stage.fieldAis),
-          if (stage.aiAllocations?.isNotEmpty == true) buildAiAllocations(context, stage.aiAllocations!),
-          if ((questPhase.extraDetail?.masterImageId ?? 0) > 0)
-            buildMasterImage(masterImageId: questPhase.extraDetail?.masterImageId),
-          if ((stage.battleMasterImageId ?? 0) > 0) buildMasterImage(battleMasterImageId: stage.battleMasterImageId),
-          for (final masterId in [
-            if (stage.enemyMasterBattleId != null) stage.enemyMasterBattleId!,
-            ...?stage.enemyMasterBattleIdByPlayerGender,
-          ])
-            buildEnemyMaster(masterId),
-          for (final movie in stage.waveStartMovies)
-            ..._buildMovie(S.current.stage_opening_movie, movie.waveStartMovie),
-          if (questPhase.extraDetail?.battleFinishMovie != null)
-            ..._buildMovie('Battle End Movie', questPhase.extraDetail!.battleFinishMovie!),
+          if (stage != null) ...[
+            if (stage.bgm != null && stage.bgm?.id != 0)
+              ListTile(
+                title: Text(S.current.bgm),
+                trailing: Text(stage.bgm!.tooltip, textAlign: TextAlign.end),
+                onTap: stage.bgm!.routeTo,
+              ),
+            if (stage.turn != null)
+              ListTile(
+                title: Text('[${S.current.quest_wave}] ${S.current.turn_remain_limit}'),
+                subtitle: Text(stage.limitAct?.shownName ?? "?"),
+                trailing: Text(stage.turn.toString()),
+              ),
+            if (questPhase.extraDetail?.turn != null)
+              ListTile(
+                title: Text('[${S.current.quest}] ${S.current.turn_remain_limit}'),
+                subtitle: Text(questPhase.extraDetail?.LimitAct?.shownName ?? "?"),
+                trailing: Text((questPhase.extraDetail?.turn).toString()),
+              ),
+            if (stage.enemyFieldPosCount != null)
+              ListTile(title: Text(S.current.max_enemy_on_stage), trailing: Text(stage.enemyFieldPosCount.toString())),
+            if (stage.enemyActCount != null)
+              ListTile(title: Text(S.current.max_enemy_act_count), trailing: Text(stage.enemyActCount.toString())),
+            if (stage.fieldAis.isNotEmpty) buildFieldAis(context, stage.fieldAis),
+            if (stage.aiAllocations?.isNotEmpty == true) buildAiAllocations(context, stage.aiAllocations!),
+            if ((questPhase.extraDetail?.masterImageId ?? 0) > 0)
+              buildMasterImage(masterImageId: questPhase.extraDetail?.masterImageId),
+            if ((stage.battleMasterImageId ?? 0) > 0) buildMasterImage(battleMasterImageId: stage.battleMasterImageId),
+            for (final masterId in [
+              if (stage.enemyMasterBattleId != null) stage.enemyMasterBattleId!,
+              ...?stage.enemyMasterBattleIdByPlayerGender,
+            ])
+              buildEnemyMaster(masterId),
+          ],
+          if (stage == null || stage.wave == 1) ...[
+            ?_buildExtendedMovie(context, movieTitle, extraDetail?.movieFolder),
+            ?_buildExtendedMovie(context, '$movieTitle (${S.current.guda_male})', extraDetail?.maleMovieFolder),
+            ?_buildExtendedMovie(context, '$movieTitle (${S.current.guda_female})', extraDetail?.femaleMovieFolder),
+          ],
+          for (final movie in stage?.waveStartMovies ?? const <StageStartMovie>[])
+            ..._buildMovie(S.current.opening_movie, movie.waveStartMovie),
+          if (stage != null) ..._buildMovie('Battle End Movie', extraDetail?.battleFinishMovie),
           if (originalScript.isNotEmpty) ...[
             kDefaultDivider,
             Card(
@@ -280,8 +290,42 @@ class WaveInfoPage extends StatelessWidget {
     );
   }
 
+  Widget? _buildExtendedMovie(BuildContext context, String title, String? folder) {
+    if (folder == null) return null;
+    final segments = Uri.tryParse(folder.trim())?.pathSegments.where((segment) => segment.isNotEmpty);
+    final packId = segments?.lastOrNull;
+    if (packId == null || !RegExp(r'^[A-Za-z0-9_][A-Za-z0-9_-]*$').hasMatch(packId)) return null;
+    final manifest = Uri.parse(
+      '${HostsX.atlasAssetHost}/${(region ?? Region.jp).upper}/Movie/extend/$packId/movie.json',
+    );
+    return ListTile(
+      leading: const Icon(Icons.movie_outlined),
+      title: Text(title),
+      trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
+      onTap: () async {
+        final url = await showEasyLoading(
+          () => AtlasApi.cacheManager.getModel<String>(manifest.toString(), (data) {
+            if (data case {'fileName': final String fileName}
+                when RegExp(r'^[A-Za-z0-9_][A-Za-z0-9_.-]*\.mp4$').hasMatch(fileName)) {
+              return manifest.resolve(fileName).toString();
+            }
+            throw const FormatException('Invalid extended movie manifest');
+          }),
+          mask: true,
+        );
+        if (!context.mounted || ModalRoute.isCurrentOf(context) == false) return;
+        if (url == null) {
+          EasyLoading.showError(S.current.error_no_data_found);
+          return;
+        }
+        router.pushPage(VideoPlayPage(url: url, title: title));
+      },
+    );
+  }
+
   List<Widget> _buildMovie(String title, String? url) {
     if (url == null) return [];
+    final name = RegExp(r'/([^\/]+)\.[^\.]+$').firstMatch(url)?.group(1);
     return [
       ListTile(
         title: Text(title),
@@ -289,7 +333,7 @@ class WaveInfoPage extends StatelessWidget {
           onPressed: () {
             launch(url, external: true);
           },
-          child: Text(RegExp(r'/([^\/]+)\.[^\.]+$').firstMatch(url)?.group(1) ?? S.current.open),
+          child: Text(name ?? S.current.open),
         ),
       ),
       MyVideoPlayer.url(url: url, autoPlay: false),

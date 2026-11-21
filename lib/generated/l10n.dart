@@ -5224,6 +5224,11 @@ class S {
     return Intl.message('Open Settings', name: 'open_settings', desc: '', locale: localeName, args: []);
   }
 
+  /// `Opening Movie`
+  String get opening_movie {
+    return Intl.message('Opening Movie', name: 'opening_movie', desc: '', locale: localeName, args: []);
+  }
+
   /// `Opening Time`
   String get opening_time {
     return Intl.message('Opening Time', name: 'opening_time', desc: '', locale: localeName, args: []);
@@ -6649,11 +6654,6 @@ class S {
   /// `SQ`
   String get sq_short {
     return Intl.message('SQ', name: 'sq_short', desc: '', locale: localeName, args: []);
-  }
-
-  /// `Opening Movie`
-  String get stage_opening_movie {
-    return Intl.message('Opening Movie', name: 'stage_opening_movie', desc: '', locale: localeName, args: []);
   }
 
   /// `Start`
