@@ -324,10 +324,7 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
                         initiallyExpanded: true,
                         title: const Text('script'),
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                            child: JsonViewer(extraDetail.source),
-                          ),
+                          JsonViewer.card(extraDetail.source, margin: const EdgeInsets.symmetric(horizontal: 8)),
                         ],
                       ),
                   ],

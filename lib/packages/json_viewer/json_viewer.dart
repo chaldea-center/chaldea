@@ -4,14 +4,64 @@
 import 'package:material_ui/material_ui.dart';
 
 import 'package:chaldea/widgets/inherit_selection_area.dart';
+import 'package:chaldea/widgets/theme.dart';
 
 const double _kIndentWidth = 10.0;
+
+ThemeData _resolveTheme(BuildContext context, ThemeMode? themeMode) {
+  final theme = Theme.of(context);
+  final brightness = switch (themeMode) {
+    null => theme.brightness,
+    ThemeMode.system => MediaQuery.platformBrightnessOf(context),
+    ThemeMode.light => Brightness.light,
+    ThemeMode.dark => Brightness.dark,
+  };
+  if (brightness == theme.brightness) return theme;
+  return (brightness == Brightness.dark ? AppTheme.dark() : AppTheme.light()).copyWith(platform: theme.platform);
+}
+
+class _JsonColors {
+  final Color key;
+  final Color muted;
+  final Color number;
+  final Color string;
+  final Color boolean;
+
+  const _JsonColors({
+    required this.key,
+    required this.muted,
+    required this.number,
+    required this.string,
+    required this.boolean,
+  });
+
+  static const light = _JsonColors(
+    key: Color(0xFF6A3289),
+    muted: Color(0xFF535967),
+    number: Color(0xFF006054),
+    string: Color(0xFFA42A25),
+    boolean: Color(0xFF254E9B),
+  );
+
+  static const dark = _JsonColors(
+    key: Color(0xFFE4B7FF),
+    muted: Color(0xFFBBC2D0),
+    number: Color(0xFF81DDC3),
+    string: Color(0xFFFFADA5),
+    boolean: Color(0xFFA8C8FF),
+  );
+
+  static _JsonColors of(BuildContext context) => Theme.of(context).brightness == Brightness.dark ? dark : light;
+}
 
 class JsonViewerPage extends StatefulWidget {
   final dynamic jsonObj;
   final bool defaultOpen;
 
-  const JsonViewerPage(this.jsonObj, {super.key, this.defaultOpen = false});
+  /// Overrides the inherited theme mode for this page when provided.
+  final ThemeMode? themeMode;
+
+  const JsonViewerPage(this.jsonObj, {super.key, this.defaultOpen = false, this.themeMode});
 
   @override
   State<JsonViewerPage> createState() => _JsonViewerPageState();
@@ -22,8 +72,7 @@ class _JsonViewerPageState extends State<JsonViewerPage> {
 
   @override
   Widget build(BuildContext context) {
-    final lightTheme = ThemeData.light();
-    return Scaffold(
+    final page = Scaffold(
       appBar: AppBar(
         title: const Text("Json Viewer"),
         actions: [
@@ -38,30 +87,61 @@ class _JsonViewerPageState extends State<JsonViewerPage> {
           ),
         ],
       ),
-      backgroundColor: lightTheme.scaffoldBackgroundColor,
-      body: Theme(
-        data: lightTheme,
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(8),
-          child: JsonViewer(widget.jsonObj, defaultOpen: defaultOpen, key: Key('_json_viewer_key_$defaultOpen')),
-        ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(8),
+        child: JsonViewer(widget.jsonObj, defaultOpen: defaultOpen, key: Key('_json_viewer_key_$defaultOpen')),
       ),
     );
+    return Theme(data: _resolveTheme(context, widget.themeMode), child: page);
   }
 }
 
 class JsonViewer extends StatelessWidget {
   final dynamic jsonObj;
   final bool defaultOpen;
-  JsonViewer(this.jsonObj, {super.key, this.defaultOpen = false});
+
+  /// Null inherits the nearest [Theme]. An explicit mode paints a matching surface.
+  final ThemeMode? themeMode;
+
+  const JsonViewer(this.jsonObj, {super.key, this.defaultOpen = false, this.themeMode});
+
+  /// Displays a small JSON tree using the current Material card style.
+  static Widget card(
+    dynamic jsonObj, {
+    Key? key,
+    bool defaultOpen = false,
+    ThemeMode? themeMode,
+    EdgeInsetsGeometry? margin,
+    EdgeInsetsGeometry padding = const EdgeInsets.all(8),
+  }) {
+    return Builder(
+      key: key,
+      builder: (context) => Theme(
+        data: _resolveTheme(context, themeMode),
+        child: Card(
+          margin: margin,
+          child: Padding(
+            padding: padding,
+            child: JsonViewer(jsonObj, defaultOpen: defaultOpen),
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return InheritSelectionArea(
+    final viewer = InheritSelectionArea(
       child: Directionality(
         textDirection: TextDirection.ltr,
         child: Align(alignment: Alignment.centerLeft, child: getContentWidget(jsonObj, defaultOpen)),
       ),
+    );
+    if (themeMode == null) return viewer;
+    final theme = _resolveTheme(context, themeMode);
+    return Theme(
+      data: theme,
+      child: Material(color: theme.colorScheme.surface, child: viewer),
     );
   }
 
@@ -104,6 +184,14 @@ class JsonObjectViewer extends StatefulWidget {
 class JsonObjectViewerState extends State<JsonObjectViewer> {
   Map<String, bool> openFlag = {};
 
+  late _JsonColors _colors;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _colors = _JsonColors.of(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     if (widget.notRoot) {
@@ -128,14 +216,14 @@ class JsonObjectViewerState extends State<JsonObjectViewer> {
               WidgetSpan(
                 child: extensible
                     ? ((openFlag[entry.key] ?? widget.defaultOpen)
-                          ? Icon(Icons.arrow_drop_down, size: 14, color: Colors.grey[700])
-                          : Icon(Icons.arrow_right, size: 14, color: Colors.grey[700]))
+                          ? Icon(Icons.arrow_drop_down, size: 14, color: _colors.muted)
+                          : Icon(Icons.arrow_right, size: 14, color: _colors.muted))
                     : const Icon(Icons.arrow_right, color: Color.fromARGB(0, 0, 0, 0), size: 14),
               ),
               (extensible && ink)
                   ? WidgetSpan(
                       child: InkWell(
-                        child: Text(entry.key, style: TextStyle(color: isNullEmpty ? Colors.grey : Colors.purple[900])),
+                        child: Text(entry.key, style: TextStyle(color: isNullEmpty ? _colors.muted : _colors.key)),
                         onTap: () {
                           setState(() {
                             openFlag[entry.key] = !(openFlag[entry.key] ?? widget.defaultOpen);
@@ -145,11 +233,11 @@ class JsonObjectViewerState extends State<JsonObjectViewer> {
                     )
                   : TextSpan(
                       text: entry.key,
-                      style: TextStyle(color: isNullEmpty ? Colors.grey : Colors.purple[900]),
+                      style: TextStyle(color: isNullEmpty ? _colors.muted : _colors.key),
                     ),
-              const TextSpan(
+              TextSpan(
                 text: ': ',
-                style: TextStyle(color: Colors.grey),
+                style: TextStyle(color: _colors.muted),
               ),
               getValueWidget(entry),
             ],
@@ -176,40 +264,40 @@ class JsonObjectViewerState extends State<JsonObjectViewer> {
   InlineSpan getValueWidget(MapEntry entry) {
     final value = entry.value;
     if (value == null) {
-      return const TextSpan(
+      return TextSpan(
         text: 'null',
-        style: TextStyle(color: Colors.grey),
+        style: TextStyle(color: _colors.muted),
       );
     } else if (value is int) {
       return TextSpan(
         text: value.toString(),
-        style: const TextStyle(color: Colors.teal),
+        style: TextStyle(color: _colors.number),
       );
     } else if (value is String) {
       return TextSpan(
         text: '"${_limitStrLength(value)}"',
-        style: const TextStyle(color: Colors.redAccent),
+        style: TextStyle(color: _colors.string),
       );
     } else if (value is bool) {
       return TextSpan(
         text: value.toString(),
-        style: const TextStyle(color: Colors.purple),
+        style: TextStyle(color: _colors.boolean),
       );
     } else if (value is double) {
       return TextSpan(
         text: value.toString(),
-        style: const TextStyle(color: Colors.teal),
+        style: TextStyle(color: _colors.number),
       );
     } else if (value is List) {
       if (value.isEmpty) {
-        return const TextSpan(
+        return TextSpan(
           text: 'Array[0]',
-          style: TextStyle(color: Colors.grey),
+          style: TextStyle(color: _colors.muted),
         );
       } else {
         return WidgetSpan(
           child: InkWell(
-            child: Text('<${_getTypeName(value[0])}>[${value.length}]', style: const TextStyle(color: Colors.grey)),
+            child: Text('<${_getTypeName(value[0])}>[${value.length}]', style: TextStyle(color: _colors.muted)),
             onTap: () {
               setState(() {
                 openFlag[entry.key] = !(openFlag[entry.key] ?? widget.defaultOpen);
@@ -221,7 +309,7 @@ class JsonObjectViewerState extends State<JsonObjectViewer> {
     }
     return WidgetSpan(
       child: InkWell(
-        child: const Text('Object', style: TextStyle(color: Colors.grey)),
+        child: Text('Object', style: TextStyle(color: _colors.muted)),
         onTap: () {
           setState(() {
             openFlag[entry.key] = !(openFlag[entry.key] ?? widget.defaultOpen);
@@ -246,6 +334,14 @@ class JsonArrayViewer extends StatefulWidget {
 
 class _JsonArrayViewerState extends State<JsonArrayViewer> {
   late List<bool> openFlag;
+
+  late _JsonColors _colors;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _colors = _JsonColors.of(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -277,12 +373,12 @@ class _JsonArrayViewerState extends State<JsonArrayViewer> {
                 const Icon(Icons.arrow_right, color: Colors.transparent, size: 14),
                 Text(
                   '[$skipStartIndex~$skipEndIndex]',
-                  style: TextStyle(color: content == null ? Colors.grey : Colors.purple[900]),
+                  style: TextStyle(color: content == null ? _colors.muted : _colors.key),
                 ),
-                const Text(':', style: TextStyle(color: Colors.grey)),
+                Text(':', style: TextStyle(color: _colors.muted)),
                 const SizedBox(width: 3),
-                const Expanded(
-                  child: Text('too long - hidden', style: TextStyle(color: Colors.grey)),
+                Expanded(
+                  child: Text('too long - hidden', style: TextStyle(color: _colors.muted)),
                 ),
               ],
             ),
@@ -298,15 +394,15 @@ class _JsonArrayViewerState extends State<JsonArrayViewer> {
           children: <Widget>[
             ex
                 ? ((openFlag[i])
-                      ? Icon(Icons.arrow_drop_down, size: 14, color: Colors.grey[700])
-                      : Icon(Icons.arrow_right, size: 14, color: Colors.grey[700]))
+                      ? Icon(Icons.arrow_drop_down, size: 14, color: _colors.muted)
+                      : Icon(Icons.arrow_right, size: 14, color: _colors.muted))
                 : const Icon(Icons.arrow_right, color: Colors.transparent, size: 14),
             (ex && ink)
-                ? getInkWell(i)
-                : Text('[$i]', style: TextStyle(color: content == null ? Colors.grey : Colors.purple[900])),
-            const Text(':', style: TextStyle(color: Colors.grey)),
+                ? _getInkWell(i)
+                : Text('[$i]', style: TextStyle(color: content == null ? _colors.muted : _colors.key)),
+            Text(':', style: TextStyle(color: _colors.muted)),
             const SizedBox(width: 3),
-            getValueWidget(content, i),
+            _getValueWidget(content, i),
           ],
         ),
       );
@@ -318,9 +414,9 @@ class _JsonArrayViewerState extends State<JsonArrayViewer> {
     return list;
   }
 
-  Widget getInkWell(int index) {
+  Widget _getInkWell(int index) {
     return InkWell(
-      child: Text('[$index]', style: TextStyle(color: Colors.purple[900])),
+      child: Text('[$index]', style: TextStyle(color: _colors.key)),
       onTap: () {
         setState(() {
           openFlag[index] = !(openFlag[index]);
@@ -329,33 +425,33 @@ class _JsonArrayViewerState extends State<JsonArrayViewer> {
     );
   }
 
-  Widget getValueWidget(dynamic content, int index) {
+  Widget _getValueWidget(dynamic content, int index) {
     if (content == null) {
-      return const Expanded(
-        child: Text('null', style: TextStyle(color: Colors.grey)),
+      return Expanded(
+        child: Text('null', style: TextStyle(color: _colors.muted)),
       );
     } else if (content is int) {
       return Expanded(
-        child: Text(content.toString(), style: const TextStyle(color: Colors.teal)),
+        child: Text(content.toString(), style: TextStyle(color: _colors.number)),
       );
     } else if (content is String) {
       return Expanded(
-        child: Text('"${_limitStrLength(content)}"', style: const TextStyle(color: Colors.redAccent)),
+        child: Text('"${_limitStrLength(content)}"', style: TextStyle(color: _colors.string)),
       );
     } else if (content is bool) {
       return Expanded(
-        child: Text(content.toString(), style: const TextStyle(color: Colors.purple)),
+        child: Text(content.toString(), style: TextStyle(color: _colors.boolean)),
       );
     } else if (content is double) {
       return Expanded(
-        child: Text(content.toString(), style: const TextStyle(color: Colors.teal)),
+        child: Text(content.toString(), style: TextStyle(color: _colors.number)),
       );
     } else if (content is List) {
       if (content.isEmpty) {
-        return const Text('Array[0]', style: TextStyle(color: Colors.grey));
+        return Text('Array[0]', style: TextStyle(color: _colors.muted));
       } else {
         return InkWell(
-          child: Text('Array<${_getTypeName(content)}>[${content.length}]', style: const TextStyle(color: Colors.grey)),
+          child: Text('Array<${_getTypeName(content)}>[${content.length}]', style: TextStyle(color: _colors.muted)),
           onTap: () {
             setState(() {
               openFlag[index] = !(openFlag[index]);
@@ -365,7 +461,7 @@ class _JsonArrayViewerState extends State<JsonArrayViewer> {
       }
     }
     return InkWell(
-      child: const Text('Object', style: TextStyle(color: Colors.grey)),
+      child: Text('Object', style: TextStyle(color: _colors.muted)),
       onTap: () {
         setState(() {
           openFlag[index] = !(openFlag[index]);

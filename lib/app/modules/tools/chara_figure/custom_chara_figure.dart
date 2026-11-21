@@ -363,8 +363,7 @@ class _CustomCharaFigurePageState extends State<CustomCharaFigurePage> {
               subtitle: Text(source.explorerFolderUrl),
               onTap: () => launch(source.explorerFolderUrl),
             ),
-          const Divider(),
-          JsonViewer(source.script?.toJson(), defaultOpen: true),
+          JsonViewer.card(source.script?.toJson(), defaultOpen: true),
         ],
       ),
     ).showDialog(context);
