@@ -72,14 +72,7 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
     if (battleOption.recoverIds.isNotEmpty && battleOption.waitApRecover) {
       throw SilentException('Do not turn on both apple recover and wait AP recover');
     }
-    final questPhaseEntity = await AtlasApi.questPhase(
-      battleOption.questId,
-      battleOption.questPhase,
-      region: agent.user.region,
-    );
-    if (questPhaseEntity == null) {
-      throw SilentException('quest not found');
-    }
+    QuestPhase questPhaseEntity = await _loadQuestPhase(battleOption.questPhase);
     final userQuest = mstData.userQuest[battleOption.questId];
     if (questPhaseEntity.flags.contains(QuestFlag.dropFirstTimeOnly) &&
         userQuest != null &&
@@ -97,10 +90,32 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
         throw SilentException('Do not loop dropFirstTimeOnly quests');
       }
     }
-    if (battleOption.loopCount > 1 &&
-        !(questPhaseEntity.afterClear == QuestAfterClearType.repeatLast &&
-            battleOption.questPhase == questPhaseEntity.phases.lastOrNull)) {
-      throw SilentException('Not repeatable quest or phase');
+    if (battleOption.loopCount > 1) {
+      final phaseError = _loopPhaseError(questPhaseEntity);
+      if (phaseError != null) {
+        throw SilentException(phaseError);
+      }
+      // Quest progresses phase by phase instead of repeating, so make the
+      // "will advance and then stop" behavior explicit before starting.
+      if (!_isRepeatablePhase(questPhaseEntity)) {
+        if (!runtime.mounted) {
+          throw SilentException('Loop ×${battleOption.loopCount} needs confirmation but not mounted');
+        }
+        final confirm = await runtime.showLocalDialog(
+          SimpleConfirmDialog(
+            title: Text('Loop ×${battleOption.loopCount}: Non-repeatable Quest'),
+            content: Text(
+              '${questPhaseEntity.lNameWithChapter}  '
+              'P${battleOption.questPhase}/${questPhaseEntity.phases.lastOrNull}\n'
+              '${userQuest?.getText() ?? 'Not started'}\n'
+              'This quest advances to the next phase after each clear and stops when all phases are cleared.',
+            ),
+          ),
+        );
+        if (confirm != true) {
+          throw SilentException('Cancel looping a non-repeatable quest');
+        }
+      }
     }
     if (battleOption.winTargetItemNum.isNotEmpty && !questPhaseEntity.flags.contains(QuestFlag.actConsumeBattleWin)) {
       throw SilentException('Win target drops should be used only if Quest has flag actConsumeBattleWin');
@@ -157,6 +172,14 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
       if (stopLoopFlag) {
         stopLoopFlag = false;
         throw SilentException('Manual Stop Loop');
+      }
+
+      // Re-read the current phase each round so AP/flags/afterClear follow the
+      // phase actually being fought instead of the one the loop started with.
+      questPhaseEntity = await _loadQuestPhase(battleOption.questPhase);
+      final phaseError = _loopPhaseError(questPhaseEntity);
+      if (phaseError != null) {
+        throw SilentException('$phaseError, stopped at $finishedCount/$totalCount battles');
       }
 
       runtime.checkSvtKeep();
@@ -264,8 +287,9 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
       }
 
       final userQuest = mstData.userQuest[questPhaseEntity.id];
-      if (userQuest != null && userQuest.clearNum == 0 && questPhaseEntity.phases.contains(userQuest.questPhase + 1)) {
-        battleOption.questPhase = userQuest.questPhase + 1;
+      if (userQuest != null && userQuest.clearNum == 0) {
+        final nextPhase = questPhaseEntity.phases.where((e) => e > userQuest.questPhase).firstOrNull;
+        if (nextPhase != null) battleOption.questPhase = nextPhase;
       }
       for (final item in resultResp.data.mstData.userItem) {
         runtime.agentData.battleTotalRewards.addNum(item.itemId, 0);
@@ -293,6 +317,36 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
         barrierDismissible: false,
       );
     }
+  }
+
+  Future<QuestPhase> _loadQuestPhase(int phase) async {
+    final questPhase = await AtlasApi.questPhase(battleOption.questId, phase, region: agent.user.region);
+    if (questPhase == null) {
+      throw SilentException('Quest ${battleOption.questId}/$phase not found');
+    }
+    return questPhase;
+  }
+
+  /// Only the last phase of a `repeatLast` quest can be fought again after clear.
+  bool _isRepeatablePhase(QuestPhase questPhase) {
+    return questPhase.afterClear == QuestAfterClearType.repeatLast &&
+        battleOption.questPhase == questPhase.phases.lastOrNull;
+  }
+
+  /// A quest progresses phase by phase: an uncleared phase is playable, while a
+  /// cleared phase that cannot repeat means every phase has been cleared.
+  /// Checked before each setup request so the loop never fights a closed phase.
+  String? _loopPhaseError(QuestPhase questPhase) {
+    if (_isRepeatablePhase(questPhase)) return null;
+    final userQuest = mstData.userQuest[battleOption.questId];
+    if (userQuest == null) return null;
+    if (userQuest.clearNum > 0) {
+      return 'All phases cleared (${userQuest.getText()})';
+    }
+    if (userQuest.questPhase >= questPhase.phase) {
+      return 'Phase ${questPhase.phase} is not repeatable (${userQuest.getText()})';
+    }
+    return null;
   }
 
   Future<FResponse> battleSetupWithOptions(AutoBattleOptions options) async {
@@ -328,7 +382,7 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
       throw SilentException('Finding support but not supported flags: $notSupportedFlags');
     }
 
-    await _checkQuestCondition(questPhaseEntity, options.checkQuestCondition);
+    await _checkQuestCondition(questPhaseEntity, options.questCondDefault);
 
     if (questPhaseEntity.restrictions.any(
       (restriction) => restriction.restriction.type == RestrictionType.dataLostBattleUniqueSvt,
@@ -795,27 +849,33 @@ class FakerRuntimeBattle extends FakerRuntimeBase {
     _sentFriendRequestIds.add(friendId);
   }
 
-  Future<void> _checkQuestCondition(QuestPhase questPhase, bool checkCond) async {
+  Future<void> _checkQuestCondition(QuestPhase questPhase, bool? condDefault) async {
     final now = DateTime.now().timestamp;
     if (questPhase.openedAt > now || questPhase.closedAt < now) {
-      throw SilentException('quest not open');
+      final userQuest = mstData.userQuest[questPhase.id];
+      if (userQuest != null && userQuest.hasStatusFlag(.purchasedRarePri)) {
+        // rp open
+      } else {
+        throw SilentException('quest not open');
+      }
     }
 
-    if (checkCond) {
-      for (final release in questPhase.releaseOverwrites) {
-        if (release.startedAt > now || now > release.endedAt) continue;
-        if (runtime.condCheck.isCondOpen(release.condType, release.condId, release.condNum) ?? false) {
-          return;
-        }
+    if (condDefault == null) return;
+    // `isCondOpen` covers quest/quest phase clear and other common types;
+    // [condDefault] is the result for types it cannot evaluate.
+    for (final release in questPhase.releaseOverwrites) {
+      if (release.startedAt > now || now > release.endedAt) continue;
+      if (runtime.condCheck.isCondOpen(release.condType, release.condId, release.condNum) ?? condDefault) {
+        return;
       }
+    }
 
-      for (final release in questPhase.releaseConditions) {
-        if (!(runtime.condCheck.isCondOpen(release.type, release.targetId, release.value) ?? false)) {
-          throw SilentException(
-            'Condition failed: ${release.type.name}-${release.targetId}-${release.value}\n${release.closedMessage}'
-                .trim(),
-          );
-        }
+    for (final release in questPhase.releaseConditions) {
+      if (!(runtime.condCheck.isCondOpen(release.type, release.targetId, release.value) ?? condDefault)) {
+        throw SilentException(
+          'Condition failed: ${release.type.name}-${release.targetId}-${release.value}\n${release.closedMessage}'
+              .trim(),
+        );
       }
     }
   }

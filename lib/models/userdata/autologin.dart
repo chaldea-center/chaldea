@@ -338,7 +338,7 @@ class AutoBattleOptions {
   int npcSupportId = 0;
   bool useCampaignItem;
   int campaignItemId = 0;
-  bool checkQuestCondition;
+  bool? questCondDefault;
   // result
   bool stopIfBondLimit;
   BattleResultType resultType;
@@ -376,7 +376,7 @@ class AutoBattleOptions {
     this.npcSupportId = 0,
     this.useCampaignItem = false,
     this.campaignItemId = 0,
-    this.checkQuestCondition = false,
+    this.questCondDefault,
     this.stopIfBondLimit = true,
     this.resultType = BattleResultType.win,
     this.winType = BattleWinResultType.normal,

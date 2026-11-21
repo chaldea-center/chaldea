@@ -2426,6 +2426,8 @@ class UserQuestEntity with DataEntityBase<_IntStr> {
     return questPhase;
   }
 
+  List<UserQuestStatusFlag> get statusFlags => UserQuestStatusFlag.values.where(hasStatusFlag).toList();
+
   bool hasStatusFlag(UserQuestStatusFlag flag) {
     return (status & flag.value) != 0;
   }

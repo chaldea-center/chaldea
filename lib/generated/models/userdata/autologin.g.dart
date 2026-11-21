@@ -287,7 +287,7 @@ AutoBattleOptions _$AutoBattleOptionsFromJson(Map json) => $checkedCreate('AutoB
     npcSupportId: $checkedConvert('npcSupportId', (v) => (v as num?)?.toInt() ?? 0),
     useCampaignItem: $checkedConvert('useCampaignItem', (v) => v as bool? ?? false),
     campaignItemId: $checkedConvert('campaignItemId', (v) => (v as num?)?.toInt() ?? 0),
-    checkQuestCondition: $checkedConvert('checkQuestCondition', (v) => v as bool? ?? false),
+    questCondDefault: $checkedConvert('questCondDefault', (v) => v as bool?),
     stopIfBondLimit: $checkedConvert('stopIfBondLimit', (v) => v as bool? ?? true),
     resultType: $checkedConvert(
       'resultType',
@@ -346,7 +346,7 @@ Map<String, dynamic> _$AutoBattleOptionsToJson(AutoBattleOptions instance) => <S
   'npcSupportId': instance.npcSupportId,
   'useCampaignItem': instance.useCampaignItem,
   'campaignItemId': instance.campaignItemId,
-  'checkQuestCondition': instance.checkQuestCondition,
+  'questCondDefault': instance.questCondDefault,
   'stopIfBondLimit': instance.stopIfBondLimit,
   'resultType': _$BattleResultTypeEnumMap[instance.resultType]!,
   'winType': _$BattleWinResultTypeEnumMap[instance.winType]!,

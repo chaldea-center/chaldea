@@ -1791,17 +1791,25 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
             });
           },
         ),
-        SwitchListTile.adaptive(
+        ListTile(
           dense: true,
-          value: battleOption.checkQuestCondition,
-          title: const Text("Check quest release condition"),
-          onChanged: (v) {
-            runtime.lockTask(() {
-              setState(() {
-                battleOption.checkQuestCondition = v;
+          title: const Text("Quest release condition default"),
+          trailing: DropdownButton<bool?>(
+            value: battleOption.questCondDefault,
+            underline: const SizedBox(),
+            items: const [
+              DropdownMenuItem<bool?>(value: true, child: Text('Unknown: Open')),
+              DropdownMenuItem<bool?>(value: false, child: Text('Unknown: Fail')),
+              DropdownMenuItem<bool?>(value: null, child: Text('Off')),
+            ],
+            onChanged: (v) {
+              runtime.lockTask(() {
+                setState(() {
+                  battleOption.questCondDefault = v;
+                });
               });
-            });
-          },
+            },
+          ),
         ),
         SwitchListTile.adaptive(
           dense: true,
@@ -2187,7 +2195,7 @@ class _FakeGrandOrderState extends State<FakeGrandOrder> with FakerRuntimeStateM
           text: 'b.setup',
         ),
       buildCompactButton(
-        enabled: !running,
+        enabled: !running && !inBattle,
         onPressed: () async {
           if (agent.user.lastRequestOptions?.success == false) {
             final confirm = await SimpleConfirmDialog(
