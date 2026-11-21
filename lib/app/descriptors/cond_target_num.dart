@@ -634,9 +634,9 @@ class CondTargetNumDescriptor extends HookWidget with DescriptorBase {
       case CondType.shopGroupLimitNum:
         return localized(
           jp: null,
-          cn: () => rich('同组(${targetIds.join(",")})商店最多可兑换$targetNum次'),
-          tw: () => rich('同組(${targetIds.join(",")})商店最多可兌換$targetNum次'),
-          na: () => rich('Max $targetNum time(s) purchasing shop group ${targetIds.join(",")}'),
+          cn: () => rich('商店组 ', shopGroups(context), ' 累计兑换次数 ≥ $targetNum 次时不可兑换'),
+          tw: () => rich('商店組 ', shopGroups(context), ' 累計兌換次數 ≥ $targetNum 次時不可兌換'),
+          na: () => rich('Exchange closes when purchases in shop group ', shopGroups(context), ' ≥ $targetNum'),
           kr: null,
         );
       case CondType.eventTotalPoint:

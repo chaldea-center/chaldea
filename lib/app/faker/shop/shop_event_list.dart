@@ -25,11 +25,12 @@ class ShopEventListPage extends StatelessWidget {
 
     children.add(
       ListTile(
-        title: Text('Shop ID'),
+        dense: true,
+        title: Text('${S.current.shop} ID'),
         trailing: IconButton(
           onPressed: () {
             InputCancelOkDialog.number(
-              title: 'Shop ID',
+              title: '${S.current.shop} ID',
               validate: (v) => v > 0,
               onSubmit: (value) async {
                 final shop = await showEasyLoading<NiceShop?>(() => AtlasApi.shop(value, region: runtime.region));
@@ -38,6 +39,41 @@ class ShopEventListPage extends StatelessWidget {
                   return;
                 }
                 router.pushPage(UserShopsPage(runtime: runtime, title: S.current.shop, shops: [shop]));
+              },
+            ).showDialog(context);
+          },
+          icon: Icon(Icons.edit),
+        ),
+      ),
+    );
+
+    children.add(
+      ListTile(
+        dense: true,
+        title: Text('${S.current.event} ID'),
+        trailing: IconButton(
+          onPressed: () {
+            InputCancelOkDialog.number(
+              title: '${S.current.event} ID',
+              validate: (v) => v > 0,
+              onSubmit: (value) async {
+                final region = runtime.region;
+                final event = region == .jp
+                    ? db.gameData.events[value]
+                    : await showEasyLoading<Event?>(() => AtlasApi.event(value, region: region));
+                if (!context.mounted) return;
+                if (event == null) {
+                  EasyLoading.showError('Event $value not found');
+                  return;
+                }
+                router.pushPage(
+                  UserShopsPage(
+                    runtime: runtime,
+                    title: event.lShortName.l.setMaxLines(1),
+                    shops: event.shop,
+                    event: event,
+                  ),
+                );
               },
             ).showDialog(context);
           },

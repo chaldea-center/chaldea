@@ -506,6 +506,14 @@ class CondTargetValueDescriptor extends StatelessWidget with DescriptorBase {
             kr: null,
           );
         }
+      case CondType.notShopGroupLimitNum:
+        return localized(
+          jp: null,
+          cn: () => rich('商店组 ', shopGroups(context), ' 累计兑换次数 < $value 次'),
+          tw: () => rich('商店組 ', shopGroups(context), ' 累計兌換次數 < $value 次'),
+          na: () => rich('Purchases in shop group ', shopGroups(context), ' < $value'),
+          kr: null,
+        );
       // redirect to CondTargetNum
       case CondType.costumeGet:
       case CondType.notCostumeGet:

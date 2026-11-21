@@ -6,6 +6,7 @@ import 'package:chaldea/utils/utils.dart';
 import 'package:chaldea/widgets/widgets.dart';
 
 import '../app.dart';
+import '../modules/shop/shop_list.dart';
 
 class MultiDescriptor {
   const MultiDescriptor._();
@@ -287,6 +288,16 @@ class MultiDescriptor {
     ];
   }
 
+  static List<InlineSpan> shopGroups(BuildContext context, List<int> targetIds, {bool? useAnd}) {
+    return list(context, targetIds, (context, id) {
+      return inkWell(
+        context: context,
+        onTap: () => router.pushPage(ShopListPage.groupId(groupId: id)),
+        text: '$id',
+      );
+    }, useAnd);
+  }
+
   static List<InlineSpan> classBoards(BuildContext context, List<int> targetIds, {bool? useAnd}) {
     if (targetIds.length <= 3) {
       return list(context, targetIds, (context, id) {
@@ -298,7 +309,7 @@ class MultiDescriptor {
       }, useAnd);
     }
     return [
-      collapsed(context, targetIds, S.current.shop, (context, id) {
+      collapsed(context, targetIds, S.current.class_board, (context, id) {
         return ListTile(
           dense: true,
           leading: db.getIconImage(db.gameData.classBoards[id]?.btnIcon),

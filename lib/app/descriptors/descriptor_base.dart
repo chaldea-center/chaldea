@@ -97,6 +97,7 @@ mixin DescriptorBase {
       emptyHint([TextSpan(children: MultiDescriptor.events(context, targetIds), style: const TextStyle(fontSize: 14))]);
   List<InlineSpan> wars(BuildContext context) => emptyHint(MultiDescriptor.wars(context, targetIds));
   List<InlineSpan> shops(BuildContext context) => emptyHint(MultiDescriptor.shops(context, targetIds));
+  List<InlineSpan> shopGroups(BuildContext context) => emptyHint(MultiDescriptor.shopGroups(context, targetIds));
   List<InlineSpan> classBoards(BuildContext context) => emptyHint(MultiDescriptor.classBoards(context, targetIds));
   List<InlineSpan> masterEquips(BuildContext context) =>
       emptyHint(MultiDescriptor.masterEquips(context, targetIds, useAnd: useAnd));

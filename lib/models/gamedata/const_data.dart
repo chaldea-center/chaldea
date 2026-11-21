@@ -66,6 +66,7 @@ class ConstGameData {
   final Map<int, int> shopDailyTargets;
   final Map<int, BattlePoint> battlePoints;
   final ConstDataConfig config;
+  final Map<int, List<int>> shopGroups;
 
   static Map<String, Map<String, int>> deprecatedEnums = {};
 
@@ -117,6 +118,7 @@ class ConstGameData {
     this.routeSelects = const {},
     this.shopDailyTargets = const {},
     this.battlePoints = const {},
+    this.shopGroups = const {},
   }) : buffTypeActionMap = {} {
     _fixBuffActions();
     // sameQuestRemap: multiple keys may map to same value

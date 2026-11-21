@@ -116,17 +116,19 @@ class _ShopListHomeState extends State<ShopListHome> {
 }
 
 class ShopListPage extends StatefulWidget {
-  final ShopType type;
+  final ShopType? type;
+  final int? groupId;
   final Region? region;
 
-  const ShopListPage({super.key, required this.type, this.region});
+  const ShopListPage({super.key, required ShopType this.type, this.region}) : groupId = null;
+  const ShopListPage.groupId({super.key, required int this.groupId, this.region}) : type = null;
 
   @override
   State<ShopListPage> createState() => _ShopListPageState();
 }
 
 class _ShopListPageState extends State<ShopListPage> with SearchableListState<NiceShop, ShopListPage> {
-  bool _loading = true;
+  bool _loading = false;
   final filterData = ShopFilterData();
 
   List<NiceShop> shops = [];
@@ -136,11 +138,20 @@ class _ShopListPageState extends State<ShopListPage> with SearchableListState<Ni
   @override
   void initState() {
     super.initState();
-    AtlasApi.searchShop(type: widget.type, eventId: 0, region: widget.region ?? Region.jp).then((value) {
-      if (value != null) shops = value;
-      _loading = false;
-      if (mounted) setState(() {});
-    });
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    _loading = true;
+    List<NiceShop>? _shops;
+    if (widget.type != null) {
+      _shops = await AtlasApi.searchShop(type: widget.type, eventId: 0, region: widget.region ?? Region.jp);
+    } else if (widget.groupId != null) {
+      _shops = await AtlasApi.searchShop(groupId: widget.groupId, region: widget.region ?? Region.jp);
+    }
+    if (_shops != null) shops = _shops;
+    _loading = false;
+    if (mounted) setState(() {});
   }
 
   @override
@@ -159,9 +170,18 @@ class _ShopListPageState extends State<ShopListPage> with SearchableListState<Ni
       },
     );
 
+    String title;
+    if (widget.type != null) {
+      title = Transl.enums(widget.type!, (enums) => enums.shopType).l;
+    } else if (widget.groupId != null) {
+      title = 'ShopGroup ${widget.groupId}';
+    } else {
+      title = 'Shop List';
+    }
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(Transl.enums(widget.type, (enums) => enums.shopType).l),
+        title: Text(title),
         bottom: showSearchBar ? searchBar : null,
         actions: [
           searchIcon,

@@ -284,7 +284,7 @@ class _UserShopsPageState extends State<UserShopsPage>
       return;
     }
     for (final release in shop.releaseConditions) {
-      if (!isReleaseOpen(release)) {
+      if (!runtime.condCheck.isShopReleaseOpen(release)) {
         EasyLoading.showError('Release condition failed: ${release.condType.name} ${release.closedMessage}');
         return;
       }
@@ -343,11 +343,9 @@ class _UserShopsPageState extends State<UserShopsPage>
 
   bool isShopReleased(NiceShop shop) {
     final now = DateTime.now().timestamp;
-    return shop.openedAt <= now && shop.closedAt > now && shop.releaseConditions.every(isReleaseOpen);
-  }
-
-  bool isReleaseOpen(ShopRelease release) {
-    return runtime.condCheck.isCondOpen2(release.condType, release.condValues, release.condNum) ?? true;
+    return shop.openedAt <= now &&
+        shop.closedAt > now &&
+        shop.releaseConditions.every(runtime.condCheck.isShopReleaseOpen);
   }
 
   @override

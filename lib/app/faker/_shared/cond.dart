@@ -132,7 +132,12 @@ class FakerCondCheck {
         return mstData.userCommandCodeCollection[targetId]?.isGet == true;
       case CondType.equipGet:
         return mstData.userEquip.any((e) => e.equipId == targetId);
-
+      case .shopGroupLimitNum:
+      case .notShopGroupLimitNum:
+        final shopIds = ConstData.shopGroups[targetId];
+        if (shopIds == null || shopIds.isEmpty) return null;
+        final buyCount = Maths.sum(shopIds.map((shopId) => mstData.userShop[shopId]?.num ?? 0));
+        return condType == .shopGroupLimitNum ? buyCount >= condValue : buyCount < condValue;
       case .shopReleased:
         // targetId=shopGroupId
         break;
@@ -193,6 +198,14 @@ class FakerCondCheck {
       default:
         return isCondOpen2(condType, targetIds, targetNum);
     }
+  }
+
+  bool isShopReleaseOpen(ShopRelease release) {
+    final result = isCondOpen2(release.condType, release.condValues, release.condNum);
+    if (result == null) return true;
+    // fgo-pseudo: ShopReleaseMaster__IsPreparation special-cases type 82.
+    // A true result means the group limit was reached, so the shop locks this entry.
+    return release.condType == .shopGroupLimitNum ? !result : result;
   }
 
   bool isOpenForGacha(GachaRelease release) {

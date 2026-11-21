@@ -430,19 +430,20 @@ class AtlasApi {
   static Future<List<NiceShop>?> searchShop({
     ShopType? type,
     int? eventId,
+    int? groupId,
     PayType? payType,
     PurchaseType? purchaseType,
     int? limit,
     Region region = Region.jp,
     Duration? expireAfter,
   }) async {
-    if (type == null && eventId == null && payType == null) return [];
     return cacheManager.getModel(
       Uri.parse('$atlasApiHost/nice/${region.upper}/shop/search')
           .replace(
             queryParameters: <String, String>{
               'type': ?type?.name,
               'eventId': ?eventId?.toString(),
+              if (groupId != null && groupId != 0) 'groupId': groupId.toString(),
               'payType': ?payType?.name,
               'purchaseType': ?purchaseType?.name,
               'limit': ?limit?.toString(),

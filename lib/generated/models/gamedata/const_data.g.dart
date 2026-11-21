@@ -145,6 +145,11 @@ ConstGameData _$ConstGameDataFromJson(Map json) => ConstGameData(
         (k, e) => MapEntry(int.parse(k as String), BattlePoint.fromJson(Map<String, dynamic>.from(e as Map))),
       ) ??
       const {},
+  shopGroups:
+      (json['shopGroups'] as Map?)?.map(
+        (k, e) => MapEntry(int.parse(k as String), (e as List<dynamic>).map((e) => (e as num).toInt()).toList()),
+      ) ??
+      const {},
 );
 
 Map<String, dynamic> _$ConstGameDataToJson(ConstGameData instance) => <String, dynamic>{
@@ -189,6 +194,7 @@ Map<String, dynamic> _$ConstGameDataToJson(ConstGameData instance) => <String, d
   'shopDailyTargets': instance.shopDailyTargets.map((k, e) => MapEntry(k.toString(), e)),
   'battlePoints': instance.battlePoints.map((k, e) => MapEntry(k.toString(), e.toJson())),
   'config': instance.config.toJson(),
+  'shopGroups': instance.shopGroups.map((k, e) => MapEntry(k.toString(), e)),
 };
 
 ConstDataConfig _$ConstDataConfigFromJson(Map json) => ConstDataConfig(
