@@ -459,6 +459,7 @@ SvtCombineOption _$SvtCombineOptionFromJson(Map json) => $checkedCreate('SvtComb
       'svtMaterialRarities',
       (v) => (v as List<dynamic>?)?.map((e) => (e as num).toInt()).toSet(),
     ),
+    svtMaterialClassBonus: $checkedConvert('svtMaterialClassBonus', (v) => v as bool?),
     doubleExp: $checkedConvert('doubleExp', (v) => v as bool? ?? false),
   );
   return val;
@@ -469,6 +470,7 @@ Map<String, dynamic> _$SvtCombineOptionToJson(SvtCombineOption instance) => <Str
   'maxMaterialCount': instance.maxMaterialCount,
   'loopCount': instance.loopCount,
   'svtMaterialRarities': instance.svtMaterialRarities.toList(),
+  'svtMaterialClassBonus': instance.svtMaterialClassBonus,
   'doubleExp': instance.doubleExp,
 };
 

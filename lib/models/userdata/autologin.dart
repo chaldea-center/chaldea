@@ -536,6 +536,7 @@ class SvtCombineOption {
   int maxMaterialCount;
   int loopCount;
   Set<int> svtMaterialRarities;
+  bool? svtMaterialClassBonus;
   bool doubleExp = false;
 
   SvtCombineOption({
@@ -543,6 +544,7 @@ class SvtCombineOption {
     this.maxMaterialCount = 20,
     this.loopCount = 0,
     Set<int>? svtMaterialRarities,
+    this.svtMaterialClassBonus,
     this.doubleExp = false,
   }) : svtMaterialRarities = svtMaterialRarities ?? {};
 

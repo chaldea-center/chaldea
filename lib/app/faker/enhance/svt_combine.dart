@@ -163,7 +163,7 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
                   if (userSvt.isLocked()) {
                     final confirm = await SimpleConfirmDialog(
                       title: const Text('解锁从者'),
-                      content: Text('确定解锁 ${userSvt.dbSvt?.lName.l ?? "#${userSvt.svtId}"}？'),
+                      content: Text('确定解锁 ${(userSvt.dbSvt ?? userSvt.dbEntity)?.lName.l ?? "#${userSvt.svtId}"}？'),
                     ).showDialog(context);
                     if (!mounted || confirm != true) return;
                   }
@@ -182,7 +182,27 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
       ),
       DividerWithTitle(title: S.current.enhance),
       FilterGroup<int>(
-        title: Text(S.current.rarity),
+        title: Wrap(
+          spacing: 8,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            Text('${S.current.rarity}  ('),
+            DropdownButtonHideUnderline(
+              child: DropdownButton<bool?>(
+                value: options.svtMaterialClassBonus,
+                style: Theme.of(context).textTheme.bodyMedium,
+                alignment: .centerEnd,
+                items: const [
+                  DropdownMenuItem(value: null, child: Text('职阶不限')),
+                  DropdownMenuItem(value: true, child: Text('有职阶加成')),
+                  DropdownMenuItem(value: false, child: Text('无职阶加成')),
+                ],
+                onChanged: (value) => runtime.lockTask(() => options.svtMaterialClassBonus = value),
+              ),
+            ),
+            const Text(')'),
+          ],
+        ),
         options: const [1, 2, 3, 4, 5],
         values: FilterGroupData(options: options.svtMaterialRarities),
         onFilterChanged: (v, _) async {
@@ -701,7 +721,7 @@ class _SvtCombinePageState extends State<SvtCombinePage> with FakerRuntimeStateM
             onAdd: npLv >= 5 ? null : _selectNpMaterials,
             onRemove: (e) => setState(() => _selection.materialUserSvtIds.remove(e.id)),
             itemBuilder: (context, item) =>
-                item.dbSvt?.iconBuilder(
+                (item.dbSvt ?? item.dbEntity)?.iconBuilder(
                   context: context,
                   overrideIcon: item.icon,
                   text: '${item.isLocked() ? "🔐" : ""}Lv${item.lv}\nNP${item.treasureDeviceLv1}',

@@ -291,14 +291,21 @@ class FakerRuntimeCombine extends FakerRuntimeBase {
       if (maxLv == null || baseUserSvt.lv >= maxLv) {
         throw SilentException('Lv.${baseUserSvt.lv}>=maxLv $maxLv');
       }
+      bool isSameClass(int classId) => classId != SvtClass.ALL.value && classId == baseSvt.classId;
+      bool getsClassBonus(int classId) => classId == SvtClass.ALL.value || isSameClass(classId);
+      final classBonusFilter = options.svtMaterialClassBonus;
+
       List<UserServantEntity> candidateMaterialSvts = mstData.userSvt.where((userSvt) {
         final svt = userSvt.dbEntity;
         if (svt == null || svt.type != SvtType.combineMaterial) return false;
         if (userSvt.isLocked() || userSvt.lv != 1) return false;
         if (!options.svtMaterialRarities.contains(svt.rarity)) return false;
-        return true;
+        return classBonusFilter == null || classBonusFilter == getsClassBonus(svt.classId);
       }).toList();
-      candidateMaterialSvts.sort2((e) => e.dbEntity?.rarity ?? 999);
+      candidateMaterialSvts.sortByList((userSvt) {
+        final svt = userSvt.dbEntity!;
+        return [isSameClass(svt.classId) ? 0 : 1, svt.rarity];
+      });
 
       List<int> materialSvtIds = [];
       final curLvExp = baseSvt.expGrowth.getOrNull(baseUserSvt.lv - 1),
@@ -310,8 +317,8 @@ class FakerRuntimeCombine extends FakerRuntimeBase {
       int totalGetExp = 0, totalUseQp = 0;
       for (final userSvt in candidateMaterialSvts) {
         final svt = userSvt.dbEntity!;
-        final sameClass = svt.classId == SvtClass.ALL.value || svt.classId == baseSvt.classId;
-        int getExp = (1000 * (pow(3, svt.rarity - 1)) * (sameClass ? 1.2 : 1)).round();
+        final classMultiplier = getsClassBonus(svt.classId) ? 1.2 : 1;
+        int getExp = (1000 * pow(3, svt.rarity - 1) * classMultiplier).round();
         int useQp = ((100 + (baseUserSvt.lv - 1) * 30) * ([1, 1.5, 2, 4, 6][baseSvt.rarity - 1])).round();
         if (totalGetExp >= needExp || materialSvtIds.length >= options.maxMaterialCount) break;
         if (options.doubleExp) getExp *= 2;
