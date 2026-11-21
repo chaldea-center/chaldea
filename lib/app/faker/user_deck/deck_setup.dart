@@ -76,6 +76,9 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
 
   late final bool isEventDeck = widget.activeDeckId == 0 && (eventDeckParam?.deckNo ?? 0) != 0;
 
+  int? get maxDeckCost =>
+      (eventDeckParam?.questPhase?.extraDetail?.isInfinityCost ?? 0) != 0 ? null : mstData.user?.costMax ?? 0;
+
   @override
   void initState() {
     super.initState();
@@ -111,6 +114,11 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
     refreshDeckInfo();
     final eventParam = widget.eventDeckParam;
     final questPhase = eventParam?.questPhase;
+    final extraDetail = questPhase?.extraDetail;
+    final grandBoardDetails = [
+      'ignoreSyncEquipGrand ${(extraDetail?.ignoreSyncEquipGrand ?? 0) != 0 ? '✅' : '❌'}',
+      if (extraDetail?.isUseGrandBoardInitPos case final positions?) 'isUseGrandBoardInitPos [${positions.join(',')}]',
+    ];
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -171,7 +179,7 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
                       showBond: true,
                     ),
                   ),
-                  DividerWithTitle(title: '${S.current.edit} (COST ${getTotalCost()}/${mstData.user?.costMax})'),
+                  DividerWithTitle(title: '${S.current.edit} (COST ${getTotalCost()}/${maxDeckCost ?? '∞'})'),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     child: Row(
@@ -273,6 +281,12 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
                       trailing: Icon(DirectionalIcons.keyboard_arrow_forward(context)),
                       onTap: questPhase.routeTo,
                     ),
+                    if (questPhase.isUseGrandBoard)
+                      ListTile(
+                        dense: true,
+                        title: Text(S.current.grand_board_war),
+                        subtitle: Text(grandBoardDetails.join(' / ')),
+                      ),
                     if (questPhase.restrictions.isNotEmpty)
                       ListTile(
                         dense: true,
@@ -304,6 +318,17 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
                             ], const TextSpan(text: ' / ')),
                           ),
                         ),
+                      ),
+                    if (extraDetail != null)
+                      ExpansionTile(
+                        initiallyExpanded: true,
+                        title: const Text('script'),
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            child: JsonViewer(extraDetail.source),
+                          ),
+                        ],
                       ),
                   ],
                 ],
@@ -356,6 +381,10 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
   Widget buildSvt(DeckServantData deckSvt) {
     final questPhase = widget.eventDeckParam?.questPhase;
     final userSvt = mstData.userSvt[deckSvt.userSvtId];
+    final grand =
+        questPhase?.isUseGrandBoard == true && userSvt != null && !deckSvt.isFollowerSvt && !deckSvt.isFollowerNPC
+        ? mstData.userSvtGrand.firstWhereOrNull((e) => e.userSvtId == userSvt.id)
+        : null;
     final userSvtCollection = mstData.userSvtCollection[userSvt?.svtId];
     final mySvt = db.gameData.servantsById[userSvt?.svtId];
     final npc = deckSvt.npcFollowerSvtId == 0
@@ -393,11 +422,14 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
                   runtime: runtime,
                   inUseUserSvtIds: deckInfo.svts.map((e) => e.userSvtId).toList(),
                   onSelected: (selectedUserSvt) {
+                    if (deckSvt.userSvtId == selectedUserSvt.id) return;
+                    _clearGrandEffects(deckSvt);
                     deckSvt.userSvtId = selectedUserSvt.id;
                     for (final _deckSvt in deckInfo.svts) {
                       if (_deckSvt != deckSvt && _deckSvt.userSvtId == deckSvt.userSvtId) {
                         _deckSvt.userSvtId = 0;
                         _deckSvt.userSvtEquipIds = [0];
+                        _deckSvt.equipTarget2SkillChange = 0;
                       }
                     }
                     if (mounted) setState(() {});
@@ -442,6 +474,25 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
                 ),
               ),
               kDefaultDivider,
+              if (grand != null)
+                ListTile(
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 24),
+                  title: Text(deckSvt.isGrandSvt() ? 'Disable Grand Servant Effects' : 'Enable Grand Servant Effects'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    if (deckSvt.isGrandSvt()) {
+                      _clearGrandEffects(deckSvt);
+                    } else {
+                      deckSvt.userSvtEquipIds = [
+                        grand.equipTarget1?.userSvtId ?? 0,
+                        grand.equipTarget2?.userSvtId ?? 0,
+                        grand.equipTarget3?.userSvtId ?? 0,
+                      ];
+                      deckSvt.equipTarget2SkillChange = grand.equipTarget2SkillChange;
+                    }
+                    if (mounted) setState(() {});
+                  },
+                ),
               ListTile(
                 contentPadding: const EdgeInsets.symmetric(horizontal: 24),
                 title: Text(S.current.clear),
@@ -546,6 +597,16 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
     );
   }
 
+  void _clearGrandEffects(DeckServantData svt) {
+    svt.userSvtEquipIds = [svt.userSvtEquipIds.firstOrNull ?? 0];
+    svt.equipTarget2SkillChange = 0;
+  }
+
+  bool _canEditEquip(DeckServantData svt) =>
+      !svt.isFollowerSvt &&
+      !svt.isFollowerNPC &&
+      (!svt.isGrandSvt() || (eventDeckParam?.questPhase?.extraDetail?.ignoreSyncEquipGrand ?? 0) != 0);
+
   Widget buildSvtEquip(DeckServantData deckSvt, int position) {
     if (deckSvt.userSvtEquipIds.length <= position) deckSvt.userSvtEquipIds.fixLength(position + 1, () => 0);
     final userSvtEquip = mstData.userSvt[deckSvt.userSvtEquipIds[position]];
@@ -574,7 +635,7 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
         // fontSize: 14,
         alignment: Alignment.bottomLeft,
       ),
-      onTap: deckSvt.isFollowerSvt || deckSvt.isGrandSvt()
+      onTap: !_canEditEquip(deckSvt)
           ? null
           : () {
               router.pushBuilder(
@@ -582,31 +643,26 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
                   runtime: runtime,
                   inUseUserSvtIds: deckInfo.svts.expand((e) => e.userSvtEquipIds).toList(),
                   onSelected: (selectedSvtEquip) {
-                    if (deckSvt.userSvtEquipIds.isEmpty) deckSvt.userSvtEquipIds = [0];
-                    final grandSvtUserEquipIds = deckInfo.svts
-                        .where((e) => e.isGrandSvt())
-                        .expand((e) => e.userSvtEquipIds)
-                        .toList();
-                    if (grandSvtUserEquipIds.contains(selectedSvtEquip.id)) {
-                      EasyLoading.showInfo('Already in-use by Grand Svt');
-                      return;
-                    }
-                    deckSvt.userSvtEquipIds[0] = selectedSvtEquip.id;
-                    for (final _deckSvt in deckInfo.svts) {
-                      if (_deckSvt != deckSvt && _deckSvt.userSvtEquipIds.firstOrNull == selectedSvtEquip.id) {
-                        _deckSvt.userSvtEquipIds[0] = 0;
+                    if (deckSvt.userSvtEquipIds[position] == selectedSvtEquip.id) return;
+                    for (final svt in deckInfo.svts) {
+                      if (svt.isFollowerSvt || svt.isFollowerNPC) continue;
+                      final usedPosition = svt.userSvtEquipIds.indexOf(selectedSvtEquip.id);
+                      if (usedPosition >= 0) {
+                        EasyLoading.showInfo('CE already in use at pos ${svt.id}, equip${usedPosition + 1}');
+                        return;
                       }
                     }
+                    deckSvt.userSvtEquipIds[position] = selectedSvtEquip.id;
+                    if (position == 1) deckSvt.equipTarget2SkillChange = 0;
                     if (mounted) setState(() {});
                   },
                 ),
               );
             },
     );
-    if (!deckSvt.isFollowerSvt && userSvtEquip != null) {
+    if (_canEditEquip(deckSvt) && userSvtEquip != null) {
       baseSvtEquipWidget = GestureDetector(
         onLongPress: () {
-          if (deckSvt.userSvtEquipIds.firstOrNull == 0) return;
           SimpleConfirmDialog(
             title: Text('Clear CE'),
             content: Text.rich(
@@ -620,7 +676,8 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
               ),
             ),
             onTapOk: () {
-              deckSvt.userSvtEquipIds[0] = 0;
+              deckSvt.userSvtEquipIds[position] = 0;
+              if (position == 1) deckSvt.equipTarget2SkillChange = 0;
               if (mounted) setState(() {});
             },
           ).showDialog(context);
@@ -628,6 +685,7 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
         child: baseSvtEquipWidget,
       );
     }
+    if (position != 0 || !_canEditEquip(deckSvt)) return baseSvtEquipWidget;
     Widget svtEquipIcon = DragTarget<_DragCEData>(
       builder: (context, candidateData, rejectedData) => baseSvtEquipWidget,
       onAcceptWithDetails: (detail) {
@@ -654,12 +712,8 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
       return;
     }
     if (isCE) {
-      if (from.isFollowerSvt || to.isFollowerSvt) return;
+      if (!_canEditEquip(from) || !_canEditEquip(to)) return;
       if (from.userSvtId == 0 || to.userSvtId == 0) return;
-      if (from.isGrandSvt() || to.isGrandSvt()) {
-        EasyLoading.showInfo('Do edit grand svt inside game');
-        return;
-      }
       if (hasFixedSupport) return;
       assert(from.userSvtEquipIds.isNotEmpty && to.userSvtEquipIds.isNotEmpty);
       if (from.userSvtEquipIds.isEmpty) from.userSvtEquipIds.add(0);
@@ -680,10 +734,7 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
   Widget buildMasterEquip() {
     final userEquip = mstData.userEquip[deckInfo.userEquipId];
     final equip = db.gameData.mysticCodes[userEquip?.equipId];
-    int cost = getTotalCost(), maxCost = mstData.user?.costMax ?? 0;
-    if ((widget.eventDeckParam?.questPhase?.extraDetail?.isInfinityCost ?? 0) != 0) {
-      maxCost = 9999;
-    }
+    final cost = getTotalCost(), maxCost = maxDeckCost;
     Widget child = Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -694,7 +745,9 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
         Text(
           cost.toString(),
           style: TextStyle(
-            color: cost > maxCost ? Theme.of(context).colorScheme.error : Theme.of(context).textTheme.bodySmall?.color,
+            color: maxCost != null && cost > maxCost
+                ? Theme.of(context).colorScheme.error
+                : Theme.of(context).textTheme.bodySmall?.color,
           ),
           textScaler: const TextScaler.linear(0.9),
         ),
@@ -724,6 +777,20 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
     return entity2;
   }
 
+  void _checkDuplicateEquips() {
+    final equippedAt = <int, String>{};
+    for (final svt in deckInfo.svts) {
+      if (svt.isFollowerSvt || svt.isFollowerNPC) continue;
+      for (final (index, equipId) in svt.userSvtEquipIds.indexed) {
+        if (equipId == 0) continue;
+        final location = 'pos ${svt.id}, equip${index + 1}';
+        final previous = equippedAt[equipId];
+        if (previous != null) throw SilentException('Duplicate CE at $previous and $location');
+        equippedAt[equipId] = location;
+      }
+    }
+  }
+
   Future<void> doUserDeckSetup() async {
     refreshDeckInfo();
     final userDeckEntity = _userDeckEntity == null ? null : makeUserDeckCopy(_userDeckEntity!);
@@ -746,10 +813,9 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
         throw SilentException('pos=${index + 1} id=${svt.id} not equal');
       }
     }
-    if (getTotalCost() > (mstData.user?.costMax ?? 0)) {
-      throw SilentException('COST ${getTotalCost()}>${mstData.user?.costMax}');
-    }
+    _checkTotalCost();
     final newUserDeck = userDeckEntity..deckInfo = deckInfo;
+    _checkDuplicateEquips();
     await runtime.agent.deckSetup(activeDeckId: widget.activeDeckId, userDeck: newUserDeck);
     initData();
     if (mounted) setState(() {});
@@ -775,9 +841,9 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
         throw SilentException('pos=${index + 1} id=${svt.id} not equal');
       }
     }
-    if (getTotalCost() > (mstData.user?.costMax ?? 0)) {
-      throw SilentException('COST ${getTotalCost()}>${mstData.user?.costMax}');
-    }
+    _checkTotalCost();
+    _checkDuplicateEquips();
+    // In the game client, grandSvtInfo carries changes to the account's registered loadout.
     await runtime.agent.eventDeckSetup(
       userEventDeck: null,
       deckInfo: deckInfo,
@@ -810,6 +876,13 @@ class _UserDeckSetupPageState extends State<UserDeckSetupPage> with FakerRuntime
     if (name.length > _kMaxDeckNameLength) return false; // PARTY_ORGANIZATION_INPUT_DECK_NAME_EXPLANATION
     // LocalizationManager.ReplaceNameTag(name)
     return true;
+  }
+
+  void _checkTotalCost() {
+    final maxCost = maxDeckCost;
+    if (maxCost == null) return;
+    final cost = getTotalCost();
+    if (cost > maxCost) throw SilentException('COST $cost>$maxCost');
   }
 
   int getTotalCost() {

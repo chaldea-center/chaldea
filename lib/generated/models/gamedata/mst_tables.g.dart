@@ -115,6 +115,7 @@ UserServantGrandEntity _$UserServantGrandEntityFromJson(Map json) => UserServant
           .toList() ??
       const [],
   commandCardParam: json['commandCardParam'],
+  script: (json['script'] as Map?)?.map((k, e) => MapEntry(k as String, e)),
   updatedAt: json['updatedAt'],
   grandSvt: json['grandSvt'],
 );

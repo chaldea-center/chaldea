@@ -827,9 +827,11 @@ class UserServantGrandEntity with DataEntityBase<int> {
   List<AppendPassiveSkillInfo> appendPassiveSkill;
   List<CommandCodeStatus> commandCode;
   List<int> commandCardParam;
-  // Map<String, dynamic> script;
+  Map<String, dynamic>? script;
   int updatedAt;
   int grandSvt; // not shown in schema
+
+  int get equipTarget2SkillChange => _toInt(script?['equipTarget2SkillChange']);
 
   @override
   int get primaryKey => grandGraphId;
@@ -865,7 +867,7 @@ class UserServantGrandEntity with DataEntityBase<int> {
     this.appendPassiveSkill = const [],
     this.commandCode = const [],
     dynamic commandCardParam,
-    // Map<String, dynamic> script,
+    this.script,
     dynamic updatedAt,
     dynamic grandSvt,
   }) : userId = _toInt(userId),

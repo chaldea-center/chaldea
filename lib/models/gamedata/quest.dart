@@ -1843,6 +1843,7 @@ class QuestPhaseExtraDetail with DataScriptBase {
   String? get masterSkillDelayInfo => getScript('masterSkillDelayInfo');
   int? get isUseGrandBoard => getScript('isUseGrandBoard');
   List<int>? get isUseGrandBoardInitPos => toList('isUseGrandBoardInitPos');
+  int? get ignoreSyncEquipGrand => getScript('ignoreSyncEquipGrand');
   int? get isInfinityCost => getScript('isInfinityCost');
   String? get battleFinishMovie => getScript("battleFinishMovie");
   int? get eventDeckIndex => getScript("eventDeckIndex"); // Support Init Deck Index

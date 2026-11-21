@@ -490,7 +490,9 @@ extension BattleTeamFormationX on BattleTeamFormation {
         //  disabledExtraSkills,
         //  customPassives,
         //  customPassiveLvs,
-        grandSvt: mstData.userSvtGrand.any((e) => e.userSvtId == userSvt.id),
+        grandSvt: questPhase?.isUseGrandBoard == true
+            ? svtData.isGrandSvt()
+            : mstData.userSvtGrand.any((e) => e.userSvtId == userSvt.id),
         classBoardData: ClassBoardStatisticsData(
           grandBondEquipSkillChange: (svtData.equipTarget2SkillChange ?? 0) != 0,
         ),
