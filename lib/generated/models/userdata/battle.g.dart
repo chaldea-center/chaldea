@@ -807,6 +807,7 @@ FormationBondOption _$FormationBondOptionFromJson(Map json) => $checkedCreate('F
     maxCandidateTeams: $checkedConvert('maxCandidateTeams', (v) => (v as num?)?.toInt() ?? 100),
     maxServants: $checkedConvert('maxServants', (v) => (v as num?)?.toInt() ?? 6),
     searchFixedAscensions: $checkedConvert('searchFixedAscensions', (v) => v as bool? ?? true),
+    maxGrandServants: $checkedConvert('maxGrandServants', (v) => (v as num?)?.toInt()),
   );
   return val;
 });
@@ -831,6 +832,7 @@ Map<String, dynamic> _$FormationBondOptionToJson(FormationBondOption instance) =
   'maxCandidateTeams': instance.maxCandidateTeams,
   'maxServants': instance.maxServants,
   'searchFixedAscensions': instance.searchFixedAscensions,
+  'maxGrandServants': instance.maxGrandServants,
 };
 
 const _$BondReleaseReferenceEnumMap = {

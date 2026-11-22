@@ -6,6 +6,38 @@ import 'package:chaldea/utils/constants.dart';
 /// apply the same narrow correction when resolving the target scope.
 const int kHeroicSpiritPortraitDariusCeId = 9401060;
 
+/// Automatic Grand selection is verified for the 48 Final Chapter recollection
+/// battles. They allow Grand effects in every slot and one support in the team.
+abstract final class BondGrandSearchRules {
+  static int? autoGrandOwnedLimit(QuestPhase? quest) {
+    if (quest == null || !quest.isUseGrandBoard || quest.phase != 1 || quest.id < 4000801 || quest.id > 4000848) {
+      return null;
+    }
+
+    // Require explicit Grand eligibility in all six slots for automatic search.
+    const allSlots = {1, 2, 3, 4, 5, 6};
+    final scripted = quest.extraDetail?.isUseGrandBoardInitPos;
+    if (scripted == null || scripted.length != allSlots.length || !scripted.toSet().containsAll(allSlots)) {
+      return null;
+    }
+    for (final entry in quest.restrictions) {
+      final restriction = entry.restriction;
+      if (restriction.type != RestrictionType.activeGrandBoard) continue;
+      if (restriction.rangeType != RestrictionRangeType.equal ||
+          restriction.targetVals.length != allSlots.length ||
+          !restriction.targetVals.toSet().containsAll(allSlots)) {
+        return null;
+      }
+    }
+    return 5;
+  }
+
+  static int? resolveAutoGrandLimit(QuestPhase? quest, int? requested) {
+    final limit = autoGrandOwnedLimit(quest);
+    return limit == null ? null : (requested ?? limit).clamp(0, limit);
+  }
+}
+
 /// IDs in one family share owned-team capacity and free-choice exclusions.
 /// Support capacity is independent. Keep concrete fixed IDs for presentation.
 class BondCeIdentity {

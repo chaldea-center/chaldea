@@ -26,6 +26,7 @@ class BondSearchItem {
   final int? servantClassIndex;
   final List<int> ownedCeClassIndices;
   final int? wornCeCount;
+  final bool isGrandServant;
 
   /// Stable order within a set of equivalent formation positions.
   final int symmetryOrder;
@@ -45,6 +46,7 @@ class BondSearchItem {
     this.servantClassIndex,
     this.ownedCeClassIndices = const [],
     this.wornCeCount,
+    this.isGrandServant = false,
     this.symmetryOrder = 0,
     this.payload,
   });
@@ -72,6 +74,7 @@ class BondSearchProblem {
   final List<int> servantClassCapacities;
   final List<int> ownedCeClassCapacities;
   final Map<int, int> ownedCeIdentities;
+  final int maxGrandServants;
 
   const BondSearchProblem({
     required this.baseBond,
@@ -82,6 +85,7 @@ class BondSearchProblem {
     this.servantClassCapacities = const [],
     this.ownedCeClassCapacities = const [],
     this.ownedCeIdentities = const {},
+    this.maxGrandServants = 6,
   });
 }
 
@@ -153,6 +157,7 @@ class BondSearch {
   late final List<BondSearchItem?> _chosen;
   late final List<int> _servantClassUsed;
   late final List<int> _ownedCeClassUsed;
+  int _grandServantsUsed = 0;
   late final List<BondSearchWitness> _ties;
   late final List<BondSearchWitness> _candidates;
   final Set<String> _candidateKeys = {};
@@ -716,6 +721,7 @@ class BondSearch {
   }
 
   bool _capacityAvailable(BondSearchItem item) {
+    if (item.isGrandServant && _grandServantsUsed >= problem.maxGrandServants) return false;
     final si = item.servantClassIndex;
     if (si != null && _servantClassUsed[si] >= problem.servantClassCapacities[si]) return false;
     // Formation items have at most equip1/equip3. Check their full demand
@@ -742,6 +748,7 @@ class BondSearch {
   }
 
   void _changeCapacity(BondSearchItem item, int delta) {
+    if (item.isGrandServant) _grandServantsUsed += delta;
     final si = item.servantClassIndex;
     if (si != null) _servantClassUsed[si] += delta;
     for (final ci in item.ownedCeClassIndices) {

@@ -345,7 +345,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "bond_excluded_unreleased_costumes": MessageLookupByLibrary.simpleMessage(
       "Unreleased costumes excluded from search",
     ),
+    "bond_fixed_grands_over_limit": MessageLookupByLibrary.simpleMessage(
+      "The team exceeds the limit for fixed owned Grand Servants. Increase the limit or change the team.",
+    ),
     "bond_limit": MessageLookupByLibrary.simpleMessage("Bond Limit"),
+    "bond_max_grand_servants": MessageLookupByLibrary.simpleMessage("Max Grand Servants (excluding support)"),
     "bond_max_servants": MessageLookupByLibrary.simpleMessage("Max servants"),
     "bond_not_full_only": MessageLookupByLibrary.simpleMessage("Bond not maxed only"),
     "bond_release_quest_closed_hint": MessageLookupByLibrary.simpleMessage(

@@ -1406,9 +1406,31 @@ class S {
     );
   }
 
+  /// `The team exceeds the limit for fixed owned Grand Servants. Increase the limit or change the team.`
+  String get bond_fixed_grands_over_limit {
+    return Intl.message(
+      'The team exceeds the limit for fixed owned Grand Servants. Increase the limit or change the team.',
+      name: 'bond_fixed_grands_over_limit',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
+  }
+
   /// `Bond Limit`
   String get bond_limit {
     return Intl.message('Bond Limit', name: 'bond_limit', desc: '', locale: localeName, args: []);
+  }
+
+  /// `Max Grand Servants (excluding support)`
+  String get bond_max_grand_servants {
+    return Intl.message(
+      'Max Grand Servants (excluding support)',
+      name: 'bond_max_grand_servants',
+      desc: '',
+      locale: localeName,
+      args: [],
+    );
   }
 
   /// `Max servants`

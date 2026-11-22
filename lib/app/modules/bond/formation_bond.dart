@@ -254,6 +254,13 @@ class _FormationBondPageState extends State<FormationBondPage> with SingleTicker
         showCancel: false,
       ).showDialog(context);
       return;
+    } on BondGrandLimitError {
+      await SimpleConfirmDialog(
+        title: Text(S.current.bond_max_grand_servants),
+        content: Text(S.current.bond_fixed_grands_over_limit),
+        showCancel: false,
+      ).showDialog(context);
+      return;
     } on BondStoryCostumeError catch (error) {
       final svt = formation.svts[error.position].dispSvt!;
       await SimpleConfirmDialog(
@@ -437,6 +444,7 @@ class _FormationBondPageState extends State<FormationBondPage> with SingleTicker
               onChanged: (v) => updateSharedInput(() {
                 questEntity = v;
                 option.quest = v == null ? null : BattleQuestInfo.quest(v);
+                option.maxGrandServants = null;
               }),
             ),
             ListTile(
@@ -724,6 +732,7 @@ class _FormationBondPageState extends State<FormationBondPage> with SingleTicker
   }
 
   List<Widget> _solverSection() {
+    final grandLimit = BondGrandSearchRules.autoGrandOwnedLimit(questEntity);
     final standardCost = ConstData.userLevel[ConstData.maxUserLevel]?.maxCost ?? 0;
     return [
       Card(
@@ -799,6 +808,18 @@ class _FormationBondPageState extends State<FormationBondPage> with SingleTicker
             value: option.searchFixedAscensions,
             onChanged: (v) => updateSharedInput(() => option.searchFixedAscensions = v),
           ),
+          if (grandLimit != null)
+            ListTile(
+              dense: true,
+              title: Text(S.current.bond_max_grand_servants),
+              trailing: DropdownButton<int>(
+                value: BondGrandSearchRules.resolveAutoGrandLimit(questEntity, option.maxGrandServants),
+                items: [for (int n = 0; n <= grandLimit; n++) DropdownMenuItem(value: n, child: Text('$n'))],
+                onChanged: (n) {
+                  if (n != null) updateSharedInput(() => option.maxGrandServants = n);
+                },
+              ),
+            ),
           SwitchListTile.adaptive(
             dense: true,
             title: Text(S.current.favorite),
