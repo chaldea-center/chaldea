@@ -12,12 +12,6 @@ class UserServantFilterData with FilterDataMixin {
 
   @override
   List<FilterGroupData> get groups => [svtType, availableCombines, locked];
-
-  @override
-  void reset() {
-    super.reset();
-    eventId = 0;
-  }
 }
 
 enum UserSvtCombineType {
@@ -62,10 +56,4 @@ class UserSvtEquipFilterData with FilterDataMixin {
 
   @override
   List<FilterGroupData> get groups => [maxLimitBreak, locked];
-
-  @override
-  void reset() {
-    super.reset();
-    eventId = 0;
-  }
 }

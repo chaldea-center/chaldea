@@ -795,6 +795,7 @@ class _SvtStoragePageState extends State<SvtStoragePage> with FakerRuntimeStateM
             onChanged: (_) {
               if (mounted) setState(() {});
             },
+            onReset: userSvtFilterData.reset,
             planMode: false,
             extraFilters: (_, update) => [
               FilterGroup<SvtType>(
@@ -831,6 +832,7 @@ class _SvtStoragePageState extends State<SvtStoragePage> with FakerRuntimeStateM
             onChanged: (_) {
               if (mounted) setState(() {});
             },
+            onReset: userEquipFilterData.reset,
             extraFilters: (_, update) => [
               lockStatusFilter(userEquipFilterData.locked, update),
               FilterGroup<bool>(

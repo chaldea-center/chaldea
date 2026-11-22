@@ -10,7 +10,7 @@ import '../common/filter_page_base.dart';
 import '../effect_search/util.dart';
 
 class CraftFilterPage extends FilterPage<CraftFilterData> {
-  const CraftFilterPage({super.key, required super.filterData, super.onChanged, super.extraFilters});
+  const CraftFilterPage({super.key, required super.filterData, super.onChanged, super.onReset, super.extraFilters});
 
   @override
   _CraftFilterPageState createState() => _CraftFilterPageState();
@@ -82,6 +82,7 @@ class _CraftFilterPageState extends FilterPageState<CraftFilterData, CraftFilter
       actions: getDefaultActions(
         onTapReset: () {
           filterData.reset();
+          widget.onReset?.call();
           update();
         },
       ),

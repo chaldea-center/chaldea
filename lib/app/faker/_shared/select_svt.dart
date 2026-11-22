@@ -194,6 +194,10 @@ class _SelectUserSvtPageState extends State<SelectUserSvtPage> {
                     setState(() {});
                   }
                 },
+                onReset: () {
+                  userSvtFilterData.locked.options = {true};
+                  userSvtFilterData.availableCombines.reset();
+                },
                 planMode: false,
                 extraFilters: (_, update) => [
                   FilterGroup<bool>(

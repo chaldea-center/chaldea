@@ -98,6 +98,7 @@ class ShopFilter extends FilterPage<ShopFilterData> {
     super.key,
     required super.filterData,
     super.onChanged,
+    super.onReset,
     this.purchaseTypes = const [],
     super.extraFilters,
   });
@@ -114,6 +115,7 @@ class _ShopFilterState extends FilterPageState<ShopFilterData, ShopFilter> {
       actions: getDefaultActions(
         onTapReset: () {
           filterData.reset();
+          widget.onReset?.call();
           update();
         },
       ),

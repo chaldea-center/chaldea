@@ -11,9 +11,10 @@ typedef ExtraFilterBuilder = List<Widget> Function(BuildContext context, VoidCal
 abstract class FilterPage<T> extends StatefulWidget {
   final T filterData;
   final ValueChanged<T>? onChanged;
+  final VoidCallback? onReset;
   final ExtraFilterBuilder? extraFilters;
 
-  const FilterPage({super.key, required this.filterData, this.onChanged, this.extraFilters});
+  const FilterPage({super.key, required this.filterData, this.onChanged, this.onReset, this.extraFilters});
 
   static void show({required BuildContext context, required WidgetBuilder builder}) {
     if (SplitRoute.isSplit(context)) {

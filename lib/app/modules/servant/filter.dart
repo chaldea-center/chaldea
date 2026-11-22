@@ -21,6 +21,7 @@ class ServantFilterPage extends FilterPage<SvtFilterData> {
     super.key,
     required super.filterData,
     super.onChanged,
+    super.onReset,
     required this.planMode,
     this.showSort = true,
     this.showPlans = true,
@@ -289,6 +290,7 @@ class _ServantFilterPageState extends FilterPageState<SvtFilterData, ServantFilt
             filterData.favorite = FavoriteState.all;
           }
           _lastResetTime = now;
+          widget.onReset?.call();
           update();
         },
       ),

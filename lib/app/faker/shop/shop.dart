@@ -103,6 +103,7 @@ class _UserShopsPageState extends State<UserShopsPage>
                   onChanged: (_) {
                     if (mounted) setState(() {});
                   },
+                  onReset: shopStatus.reset,
                   purchaseTypes: purchaseTypes.toList(),
                   extraFilters: (context, update) {
                     return [

@@ -133,6 +133,10 @@ class _SelectUserSvtEquipPageState extends State<SelectUserSvtEquipPage> {
                     setState(() {});
                   }
                 },
+                onReset: () {
+                  userSvtFilterData.locked.options = {true};
+                  userSvtFilterData.maxLimitBreak.reset();
+                },
                 extraFilters: (_, update) => [
                   FilterGroup<bool>(
                     title: Text('Lock status'),

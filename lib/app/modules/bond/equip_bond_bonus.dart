@@ -88,9 +88,16 @@ enum _FilterType {
 
 class _ExtraFilterData {
   final ceStates = <int, _FilterType>{};
-  bool useCostumeTraitForRegion = false;
+  bool useCostumeTraitForRegion = true;
   final maxRateCountPerSvt = FilterRadioData<int>();
+
+  void reset() {
+    useCostumeTraitForRegion = true;
+    maxRateCountPerSvt.reset();
+  }
 }
+
+typedef _MatchSettings = ({Region? region, bool useCostumeTraitForRegion});
 
 /// functvals: traits
 /// DataVals: [RateCount], [AddCount] (ignore)
@@ -100,7 +107,7 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
   Map<int, Map<int, List<int>>> allCeMatchSvtData = {}; //<ceId, <svtId, [limitCount]>>
   Map<int, Map<int, List<int>>> allSvtMatchCeData = {}; //<svtId, <limitId, [ceIds]>>
   final _svtForms = <int, ({Servant svt, Map<int, Set<int>> traitsByLimit, List<int> unreleasedCostumes})>{};
-  Region? _matchRegion;
+  _MatchSettings? _lastMatchSettings;
   int maxTotalRateCount = 1000;
 
   final svtFilterData = SvtFilterData(sortKeys: SvtCompare.kRarityFirstKeys);
@@ -168,14 +175,20 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
   }
 
   void _updateMatches() {
-    _matchRegion = svtFilterData.region.radioValue;
-    final releasedCostumes = BondReleaseRules.releasedCostumeIds(_matchRegion);
+    final _MatchSettings settings = (
+      region: svtFilterData.region.radioValue,
+      useCostumeTraitForRegion: extraFilterData.useCostumeTraitForRegion,
+    );
+    if (_lastMatchSettings == settings) return;
+
+    final releasedCostumes = BondReleaseRules.releasedCostumeIds(settings.region);
     allCeMatchSvtData = {for (final ceId in allCeData.keys) ceId: {}};
     allSvtMatchCeData.clear();
     _svtForms.clear();
     for (final svt in getAllSvts()) {
       final traitsByLimit = {
-        for (final limit in BondReleaseRules.ascensionLimits(svt, releasedCostumes)) limit: _traitsForLimit(svt, limit),
+        for (final limit in BondReleaseRules.ascensionLimits(svt, releasedCostumes))
+          limit: _traitsForLimit(svt, limit, settings),
       };
       _svtForms[svt.id] = (
         svt: svt,
@@ -195,9 +208,10 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
         }
       }
     }
+    _lastMatchSettings = settings;
   }
 
-  Set<int> _traitsForLimit(Servant svt, int limit) {
+  Set<int> _traitsForLimit(Servant svt, int limit, _MatchSettings settings) {
     final traits = (svt.getAscended(limit, (a) => a.individuality2) ?? svt.traits).toSet();
     final costumeId = svt.battleCharaToLimitCount(limit);
     for (final traitAdd in svt.traitAdd) {
@@ -210,8 +224,8 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
         traits.addAll(traitAdd.trait);
       }
     }
-    final region = _matchRegion;
-    if (extraFilterData.useCostumeTraitForRegion &&
+    final (:region, :useCostumeTraitForRegion) = settings;
+    if (useCostumeTraitForRegion &&
         region != null &&
         !region.isJP &&
         traits.contains(Trait.hasCostume.value) &&
@@ -476,10 +490,9 @@ class _EquipBondBonusTabState extends State<EquipBondBonusTab> {
             filterData: svtFilterData,
             onChanged: (_) {
               if (!mounted) return;
-              setState(() {
-                if (_matchRegion != svtFilterData.region.radioValue) _updateMatches();
-              });
+              setState(_updateMatches);
             },
+            onReset: extraFilterData.reset,
             planMode: false,
             extraFilters: (context, update) {
               List<int> validValues = <int>{
