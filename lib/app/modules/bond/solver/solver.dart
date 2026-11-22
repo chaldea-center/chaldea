@@ -587,7 +587,7 @@ class FormationBondSolver {
 
   late final int _eventId = quest.logicEventId ?? 0;
   late final List<int> _questTraits = quest.questIndividuality;
-  late final int? _maxGrandServants = quest.resolveAutoGrandLimit(option.maxGrandServants);
+  late final int? _maxGrandServants = BondGrandSearchRules.resolveAutoGrandLimit(quest, option.maxGrandServants);
 
   late final int _fixedOwnedGrandCount = formation.svts
       .take(option.maxServants.clamp(1, 6))
@@ -1936,21 +1936,22 @@ class FormationBondSolver {
 
   Iterable<void> _buildSvtClassesSteps() sync* {
     final byKey = <String, _SvtClass>{};
+    final searchAutoGrands = _searchAutoGrands;
     for (final variant in _svtVariants) {
       yield null;
       final profile = _profileOf(variant.traits);
       final effect = _contribution(variant.eventEffects, _profiles[profile]);
       final status = variant.svt.status;
-      final grand = (_maxGrandServants ?? 0) > 0 && status.favorite && status.grandSvt;
-      if (grand && !_searchAutoGrands) continue;
-      final key = '${variant.cost}|$profile|${variant.campaignRate}|${effect.signature}|$grand';
-      final existing = byKey[key];
-      if (existing == null) {
-        byKey[key] = _SvtClass(variant.cost, profile, variant.campaignRate, effect, {
-          variant.svt.id: variant.limitCount,
-        }, grandSvt: grand);
-      } else {
-        existing.limits.putIfAbsent(variant.svt.id, () => variant.limitCount);
+      final canBeGrand = searchAutoGrands && status.favorite && status.grandSvt;
+      final effectKey = '${variant.cost}|$profile|${variant.campaignRate}|${effect.signature}';
+      // Both states share the same servant ID so identity matching can only
+      // place that servant once, even across different classes.
+      for (final grand in canBeGrand ? const [false, true] : const [false]) {
+        final cls = byKey.putIfAbsent(
+          '$effectKey|$grand',
+          () => _SvtClass(variant.cost, profile, variant.campaignRate, effect, {}, grandSvt: grand),
+        );
+        cls.limits.putIfAbsent(variant.svt.id, () => variant.limitCount);
       }
     }
     _svtClasses.addAll(byKey.values);

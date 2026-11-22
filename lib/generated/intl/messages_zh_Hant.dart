@@ -21,8 +21,6 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'zh_Hant';
 
-  static String _bondFixedGrandsOverLimit(count, limit) => "隊伍中已固定 ${count} 名自有冠位從者，超過所選上限 ${limit}。請提高上限或調整隊伍。";
-
   static String m13(n) => "最多保留 ${n} 支候选队伍；其他可行或同分队伍可能被省略。证明仅覆盖当前设置下的最高分，较低分队伍不做全局排名。";
 
   static String m14(count, total) => "${total}張指令卡中有${count}張未攻擊，請減少不必要的指令卡";
@@ -312,7 +310,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "bond_eff": MessageLookupByLibrary.simpleMessage("羈絆效率"),
     "bond_equip_change_skill": MessageLookupByLibrary.simpleMessage("切换羁绊礼装效果"),
     "bond_excluded_unreleased_costumes": MessageLookupByLibrary.simpleMessage("未計入的未實裝靈衣"),
-    "bond_fixed_grands_over_limit": _bondFixedGrandsOverLimit,
+    "bond_fixed_grands_over_limit": MessageLookupByLibrary.simpleMessage("已固定的自有冠位從者超過上限。請提高上限或調整隊伍。"),
     "bond_limit": MessageLookupByLibrary.simpleMessage("羈絆上限"),
     "bond_max_grand_servants": MessageLookupByLibrary.simpleMessage("最多冠位數量（不考慮助戰）"),
     "bond_max_servants": MessageLookupByLibrary.simpleMessage("最多从者数"),

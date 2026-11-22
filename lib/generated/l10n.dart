@@ -1406,14 +1406,14 @@ class S {
     );
   }
 
-  /// `The team has {count} fixed owned Grand Servants, exceeding the selected limit of {limit}. Increase the limit or change the team.`
-  String bond_fixed_grands_over_limit(Object count, Object limit) {
+  /// `The team exceeds the limit for fixed owned Grand Servants. Increase the limit or change the team.`
+  String get bond_fixed_grands_over_limit {
     return Intl.message(
-      'The team has $count fixed owned Grand Servants, exceeding the selected limit of $limit. Increase the limit or change the team.',
+      'The team exceeds the limit for fixed owned Grand Servants. Increase the limit or change the team.',
       name: 'bond_fixed_grands_over_limit',
       desc: '',
       locale: localeName,
-      args: [count, limit],
+      args: [],
     );
   }
 

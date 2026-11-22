@@ -38,11 +38,16 @@ void main() {
   test('automatic Grand limits are scoped to verified recollection phases', () {
     final extra = QuestPhaseExtraDetail()..setValue('isUseGrandBoard', 1);
     final quest = QuestPhase(id: 4000848, extraDetail: extra);
-    expect(quest.resolveAutoGrandLimit(null), 5);
-    expect(quest.resolveAutoGrandLimit(9), 5);
-    expect(quest.resolveAutoGrandLimit(0), 0);
-    expect(QuestPhase(id: 4000848, phase: 2, extraDetail: extra).resolveAutoGrandLimit(5), isNull);
-    expect(QuestPhase(id: 94145437, extraDetail: extra).resolveAutoGrandLimit(5), isNull);
+    expect(BondGrandSearchRules.autoGrandOwnedLimit(quest), isNull);
+    extra.setValue('isUseGrandBoardInitPos', [1, 2, 3, 4, 5, 6]);
+    expect(BondGrandSearchRules.resolveAutoGrandLimit(quest, null), 5);
+    expect(BondGrandSearchRules.resolveAutoGrandLimit(quest, 9), 5);
+    expect(BondGrandSearchRules.resolveAutoGrandLimit(quest, 0), 0);
+    expect(
+      BondGrandSearchRules.resolveAutoGrandLimit(QuestPhase(id: 4000848, phase: 2, extraDetail: extra), 5),
+      isNull,
+    );
+    expect(BondGrandSearchRules.resolveAutoGrandLimit(QuestPhase(id: 94145437, extraDetail: extra), 5), isNull);
     final restriction = Restriction(
       id: 94151711,
       type: RestrictionType.activeGrandBoard,
@@ -50,15 +55,15 @@ void main() {
       targetVals: [1, 2, 3, 4, 5, 6],
     );
     quest.restrictions = [QuestPhaseRestriction(restriction: restriction)];
-    expect(quest.autoGrandOwnedLimit, 5);
+    expect(BondGrandSearchRules.autoGrandOwnedLimit(quest), 5);
     extra.setValue('isUseGrandBoardInitPos', [1, 2, 3]);
-    expect(quest.autoGrandOwnedLimit, isNull);
+    expect(BondGrandSearchRules.autoGrandOwnedLimit(quest), isNull);
     extra.setValue('isUseGrandBoardInitPos', [1, 2, 3, 4, 5, 6]);
     restriction.targetVals.removeLast();
-    expect(quest.autoGrandOwnedLimit, isNull);
+    expect(BondGrandSearchRules.autoGrandOwnedLimit(quest), isNull);
     restriction.targetVals.add(6);
     extra.setValue('isUseGrandBoard', 0);
-    expect(quest.autoGrandOwnedLimit, isNull);
+    expect(BondGrandSearchRules.autoGrandOwnedLimit(quest), isNull);
   });
 
   test('account Grand search selects multiple crowns and applies their free reward slots', () async {
@@ -82,7 +87,9 @@ void main() {
         ..favorite = true
         ..grandSvt = svt.id != normal.id;
     }
-    final extra = QuestPhaseExtraDetail()..setValue('isUseGrandBoard', 1);
+    final extra = QuestPhaseExtraDetail()
+      ..setValue('isUseGrandBoard', 1)
+      ..setValue('isUseGrandBoardInitPos', [1, 2, 3, 4, 5, 6]);
     final quest = QuestPhase(
       id: 4000848,
       bond: 1000,
@@ -178,6 +185,21 @@ void main() {
     final disabled = FormationBondSolver.solve(option: option, quest: quest, formation: formation).best!;
     expect(disabled.totalBond, lessThan(best.totalBond));
     expect(disabled.slots.every((slot) => !slot.grandSvt && slot.equip3 == null), isTrue);
+
+    final twoEligible = option.copy()..excludedSvts.add(normal.id);
+    final fixedEquips = BattleTeamSetup()
+      ..svts[0].equip1.ce = ces[0]
+      ..svts[1].equip1.ce = ces[1];
+    final zeroCap = FormationBondSolver.solve(option: twoEligible, quest: quest, formation: fixedEquips).best!;
+    expect(zeroCap.slots.map((slot) => slot.servantId), unorderedEquals([first.id, second.id]));
+    expect(zeroCap.slots.where((slot) => slot.grandSvt), isEmpty);
+    twoEligible.maxGrandServants = 1;
+    final oneCap = FormationBondSolver.solve(option: twoEligible, quest: quest, formation: fixedEquips).best;
+    expect(oneCap, isNotNull);
+    expect(oneCap!.slots.map((slot) => slot.servantId), unorderedEquals([first.id, second.id]));
+    expect(oneCap.slots.where((slot) => slot.grandSvt), hasLength(1));
+    expect(oneCap.totalBond, greaterThanOrEqualTo(zeroCap.totalBond));
+
     option.maxGrandServants = 5;
     first.status.favorite = false;
     final unowned = FormationBondSolver.solve(option: option, quest: quest, formation: formation).best!;
@@ -210,7 +232,7 @@ void main() {
     final onePinnedGrand = BattleTeamSetup()..svts[0] = (PlayerSvtData.svt(first)..grandSvt = true);
     final fixedAtLimit = FormationBondSolver.solve(option: option, quest: quest, formation: onePinnedGrand).best!;
     expect(fixedAtLimit.slots[0].equip3, isNotNull);
-    expect(fixedAtLimit.slots.map((s) => s.servantId), isNot(contains(second.id)));
+    expect(fixedAtLimit.slots.map((s) => s.servantId), unorderedEquals([first.id, second.id, normal.id]));
     expect(fixedAtLimit.slots.skip(1).every((s) => !s.grandSvt && s.equip3 == null), isTrue);
 
     final ordinaryQuest = QuestPhase(id: 94145437, bond: 1000, extraDetail: extra);

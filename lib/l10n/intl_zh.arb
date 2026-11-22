@@ -202,7 +202,7 @@
   "bond_eff": "羁绊效率",
   "bond_equip_change_skill": "切换羁绊礼装效果",
   "bond_excluded_unreleased_costumes": "未计入的未实装灵衣",
-  "bond_fixed_grands_over_limit": "队伍中已固定 {count} 名自有冠位从者，超过所选上限 {limit}。请提高上限或调整队伍。",
+  "bond_fixed_grands_over_limit": "已固定的自有冠位从者超过上限。请提高上限或调整队伍。",
   "bond_limit": "羁绊上限",
   "bond_max_grand_servants": "最多冠位数量（不考虑助战）",
   "bond_max_servants": "最多从者数",

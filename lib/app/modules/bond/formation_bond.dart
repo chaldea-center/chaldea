@@ -254,10 +254,10 @@ class _FormationBondPageState extends State<FormationBondPage> with SingleTicker
         showCancel: false,
       ).showDialog(context);
       return;
-    } on BondGrandLimitError catch (error) {
+    } on BondGrandLimitError {
       await SimpleConfirmDialog(
         title: Text(S.current.bond_max_grand_servants),
-        content: Text(S.current.bond_fixed_grands_over_limit(error.count, error.limit)),
+        content: Text(S.current.bond_fixed_grands_over_limit),
         showCancel: false,
       ).showDialog(context);
       return;
@@ -732,7 +732,7 @@ class _FormationBondPageState extends State<FormationBondPage> with SingleTicker
   }
 
   List<Widget> _solverSection() {
-    final grandLimit = questEntity?.autoGrandOwnedLimit;
+    final grandLimit = BondGrandSearchRules.autoGrandOwnedLimit(questEntity);
     final standardCost = ConstData.userLevel[ConstData.maxUserLevel]?.maxCost ?? 0;
     return [
       Card(
@@ -813,7 +813,7 @@ class _FormationBondPageState extends State<FormationBondPage> with SingleTicker
               dense: true,
               title: Text(S.current.bond_max_grand_servants),
               trailing: DropdownButton<int>(
-                value: questEntity?.resolveAutoGrandLimit(option.maxGrandServants),
+                value: BondGrandSearchRules.resolveAutoGrandLimit(questEntity, option.maxGrandServants),
                 items: [for (int n = 0; n <= grandLimit; n++) DropdownMenuItem(value: n, child: Text('$n'))],
                 onChanged: (n) {
                   if (n != null) updateSharedInput(() => option.maxGrandServants = n);

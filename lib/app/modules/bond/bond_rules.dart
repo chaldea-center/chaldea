@@ -8,18 +8,19 @@ const int kHeroicSpiritPortraitDariusCeId = 9401060;
 
 /// Automatic Grand selection is verified for the 48 Final Chapter recollection
 /// battles. They allow Grand effects in every slot and one support in the team.
-extension BondGrandSearchRules on QuestPhase {
-  int? get autoGrandOwnedLimit {
-    if (!isUseGrandBoard || phase != 1 || id < 4000801 || id > 4000848) return null;
-
-    // Nice data can omit the script positions. If either source reports a
-    // different rule, keep manual formation until that phase is verified again.
-    const allSlots = {1, 2, 3, 4, 5, 6};
-    final scripted = extraDetail?.isUseGrandBoardInitPos;
-    if (scripted != null && (scripted.length != allSlots.length || !scripted.toSet().containsAll(allSlots))) {
+abstract final class BondGrandSearchRules {
+  static int? autoGrandOwnedLimit(QuestPhase? quest) {
+    if (quest == null || !quest.isUseGrandBoard || quest.phase != 1 || quest.id < 4000801 || quest.id > 4000848) {
       return null;
     }
-    for (final entry in restrictions) {
+
+    // Require explicit Grand eligibility in all six slots for automatic search.
+    const allSlots = {1, 2, 3, 4, 5, 6};
+    final scripted = quest.extraDetail?.isUseGrandBoardInitPos;
+    if (scripted == null || scripted.length != allSlots.length || !scripted.toSet().containsAll(allSlots)) {
+      return null;
+    }
+    for (final entry in quest.restrictions) {
       final restriction = entry.restriction;
       if (restriction.type != RestrictionType.activeGrandBoard) continue;
       if (restriction.rangeType != RestrictionRangeType.equal ||
@@ -31,8 +32,8 @@ extension BondGrandSearchRules on QuestPhase {
     return 5;
   }
 
-  int? resolveAutoGrandLimit(int? requested) {
-    final limit = autoGrandOwnedLimit;
+  static int? resolveAutoGrandLimit(QuestPhase? quest, int? requested) {
+    final limit = autoGrandOwnedLimit(quest);
     return limit == null ? null : (requested ?? limit).clamp(0, limit);
   }
 }
