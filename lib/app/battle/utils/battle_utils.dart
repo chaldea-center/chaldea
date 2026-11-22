@@ -3,11 +3,10 @@ import 'package:chaldea/app/battle/utils/battle_exception.dart';
 import 'package:chaldea/models/db.dart';
 import 'package:chaldea/models/gamedata/gamedata.dart';
 import 'package:chaldea/packages/float.dart';
-import 'package:chaldea/utils/extension.dart';
 
 import '../../../utils/basic.dart';
+import '../models/battle.dart' show BattleData;
 import '../models/command_card.dart' show BattleChainType;
-import 'battle_logger.dart';
 
 const kBattleFuncMiss = 'MISS';
 const kBattleFuncNoEffect = 'NO EFFECT';
@@ -520,15 +519,15 @@ class InstantDeathParameters {
   bool get isManualSuccess => success && activateRate > 0 && activateRate < 1000;
 }
 
-Future<BaseFunction> getDependFunc(BattleLogger logger, DataVals dataVals) async {
+Future<BaseFunction> getDependFunc(BattleData battleData, DataVals dataVals) async {
   BaseFunction? dependFunction;
   if (dataVals.DependFuncId != null) {
     dependFunction =
         db.gameData.baseFunctions[dataVals.DependFuncId!] ??
-        await showEasyLoading(() => AtlasApi.func(dataVals.DependFuncId!), mask: true);
+        await battleData.fetchResource('Function', dataVals.DependFuncId!, () => AtlasApi.func(dataVals.DependFuncId!));
   }
   if (dependFunction == null) {
-    logger.error('DependFunctionId=${dataVals.DependFuncId} not found');
+    battleData.battleLogger.error('DependFunctionId=${dataVals.DependFuncId} not found');
     throw ArgumentError('DependFunctionId=${dataVals.DependFuncId} not found');
   }
   return dependFunction;

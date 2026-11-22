@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:chaldea/app/api/atlas.dart';
 import 'package:chaldea/app/battle/functions/function_executor.dart';
 import 'package:chaldea/generated/l10n.dart';
 import 'package:chaldea/models/gamedata/individuality.dart';
@@ -207,7 +206,7 @@ class BattleSkillInfoData {
             }
             break;
         }
-        final branchSkill = await AtlasApi.baseSkill(branch.skillId);
+        final branchSkill = await battleData.loadSkill(branch.skillId, showLoading: false);
         if (branchSkill == null) {
           battleData.battleLogger.error(
             'Skill ${skill?.id} condBranchSkillInfo: branch skill ${branch.skillId} not found',

@@ -20,7 +20,7 @@ class GainHpFromTargets {
       return;
     }
 
-    final dependFunction = await getDependFunc(battleData.battleLogger, dataVals);
+    final dependFunction = await getDependFunc(battleData, dataVals);
     final dependVal = dataVals.DependFuncVals!;
     final checkValue = dependVal.Value!;
 

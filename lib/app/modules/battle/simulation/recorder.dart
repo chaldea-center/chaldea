@@ -417,6 +417,8 @@ class BattleRecorderPanelBase extends StatelessWidget {
     if (!justStarted) {
       List<(double, Widget)> groupChildren = [];
       RecordBreakMode? groupKind;
+      List<BattleErrorMessageRecord> pendingErrors = [];
+
       void flushGroup() {
         if (groupChildren.isEmpty) return;
         items.add(
@@ -436,10 +438,38 @@ class BattleRecorderPanelBase extends StatelessWidget {
         groupKind = null;
       }
 
+      void flushErrors({RecordBreakMode? nextMode}) {
+        if (pendingErrors.isEmpty) return;
+        final errors = pendingErrors;
+        pendingErrors = [];
+        final height = errors.first.estimatedHeight;
+        final widget = buildErrorGroup(context, errors);
+        if (groupKind == nextMode && groupKind != null) {
+          groupChildren.add((height, widget));
+          return;
+        }
+        flushGroup();
+        items.add(
+          _SplitItem(
+            estimatedHeight: height,
+            widget: widget,
+            breakMode: errors.first.breakMode,
+            startsCard: false,
+            wrapInCard: true,
+          ),
+        );
+      }
+
       for (final record in records) {
+        if (record is BattleErrorMessageRecord) {
+          pendingErrors.add(record);
+          continue;
+        }
         final child = buildRecordWidget(context, record);
         if (child == null) continue;
         final mode = record.breakMode;
+        // Hidden records do not interrupt a run of visible errors.
+        flushErrors(nextMode: mode);
         if (mode == RecordBreakMode.groupSkill || mode == RecordBreakMode.groupAttack) {
           if (groupKind != null && groupKind != mode) flushGroup();
           groupKind ??= mode;
@@ -457,6 +487,7 @@ class BattleRecorderPanelBase extends StatelessWidget {
           ),
         );
       }
+      flushErrors();
       flushGroup();
     }
 
@@ -570,11 +601,54 @@ class BattleRecorderPanelBase extends StatelessWidget {
           child = Align(alignment: r.alignment!, child: child);
         }
         return (r.estimatedHeight, child);
+      case BattleErrorMessageRecord _:
       case BattleSkillActivationRecord _:
       case BattleLossHpRecord _:
       case BattleReduceHpRecord _:
         return null;
     }
+  }
+
+  Widget buildErrorGroup(BuildContext context, List<BattleErrorMessageRecord> errors) {
+    final title = '${S.current.error} ×${errors.length}';
+    final color = Theme.of(context).colorScheme.error;
+    String formatError(BattleErrorMessageRecord error) => '${error.message} · ${error.label} #${error.id}';
+    return InkWell(
+      onTap: () => showDialog<void>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(title),
+          content: SizedBox(
+            width: 480,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * 0.5),
+              child: ListView.separated(
+                shrinkWrap: true,
+                itemCount: errors.length,
+                itemBuilder: (context, index) => SelectableText(formatError(errors[index])),
+                separatorBuilder: (context, index) => const Divider(),
+              ),
+            ),
+          ),
+          actions: [TextButton(onPressed: () => Navigator.pop(context), child: Text(S.current.ok))],
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 6),
+        child: Row(
+          children: [
+            Icon(Icons.error_outline, color: color, size: 16),
+            const SizedBox(width: 4),
+            Text(
+              title,
+              style: TextStyle(color: color, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(width: 8),
+            Expanded(child: Text(formatError(errors.first), maxLines: 1, overflow: TextOverflow.ellipsis)),
+          ],
+        ),
+      ),
+    );
   }
 
   /// Null when no valid split exists; ties prefer a wave-card boundary.

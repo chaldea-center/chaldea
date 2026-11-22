@@ -33,7 +33,8 @@ class TransformServant {
   static Future<void> _transformAlly(BattleData battleData, DataVals dataVals, BattleServantData target) async {
     final targetSvtId = dataVals.Value!;
     Servant? targetSvt =
-        db.gameData.servantsById[targetSvtId] ?? await showEasyLoading(() => AtlasApi.svt(targetSvtId), mask: true);
+        db.gameData.servantsById[targetSvtId] ??
+        await battleData.fetchResource(S.current.servant, targetSvtId, () => AtlasApi.svt(targetSvtId));
     if (targetSvt == null) {
       battleData.battleLogger.error('${S.current.not_found}: $targetSvtId');
       return;

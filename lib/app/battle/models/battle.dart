@@ -671,7 +671,7 @@ class BattleData {
       fieldAi = FieldAiManager();
     }
     if (options.simulateAi) {
-      await fieldAi.fetchAiData();
+      await fieldAi.fetchAiData(this);
     }
   }
 
@@ -816,6 +816,24 @@ class BattleData {
 
   bool _executing = false;
   bool get isRunning => _executing;
+
+  Future<T?> fetchResource<T>(String label, Object id, Future<T?> Function() fetch, {bool showLoading = true}) async {
+    final message = '${S.current.download} ${S.current.failed}';
+    try {
+      final data = await (showLoading ? showEasyLoading(fetch, mask: true) : fetch());
+      if (data == null) recorder.error(label: label, id: id, message: message);
+      return data;
+    } catch (_) {
+      recorder.error(label: label, id: id, message: message);
+      rethrow;
+    }
+  }
+
+  Future<BaseSkill?> loadSkill(int id, {bool showLoading = true}) async {
+    return db.gameData.baseSkills[id] ??
+        await fetchResource(S.current.skill, id, () => AtlasApi.skill(id), showLoading: showLoading);
+  }
+
   Future<T?> tryAcquire<T>(Future<T> Function() task) async {
     if (_executing) {
       EasyLoading.showError('Previous task is still running');
@@ -937,8 +955,7 @@ class BattleData {
 
     if (criticalStars >= 20) {
       final aiSkillId = 94152227;
-      BaseSkill? skill = db.gameData.baseSkills[aiSkillId];
-      skill ??= await showEasyLoading(() => AtlasApi.skill(aiSkillId), mask: true);
+      final skill = await loadSkill(aiSkillId);
       if (skill != null) {
         final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.fieldAi);
         battleLogger.action('Final Chapter No.2 Raid - Field AI Skill: ${skill.lName.l}');
@@ -949,8 +966,7 @@ class BattleData {
     }
     if (criticalStars >= 30) {
       final aiSkillId = 94152228;
-      BaseSkill? skill = db.gameData.baseSkills[aiSkillId];
-      skill ??= await showEasyLoading(() => AtlasApi.skill(aiSkillId), mask: true);
+      final skill = await loadSkill(aiSkillId);
       if (skill != null) {
         final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.fieldAi);
         battleLogger.action('Final Chapter No.2 Raid - Field AI Skill: ${skill.lName.l}');

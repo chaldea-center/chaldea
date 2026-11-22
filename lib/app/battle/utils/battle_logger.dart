@@ -78,6 +78,10 @@ class BattleRecordManager {
     records.add(msg);
   }
 
+  void error({required String label, required Object id, required String message}) {
+    records.add(BattleErrorMessageRecord(label: label, id: id, message: message));
+  }
+
   void progressWave(int wave) {
     records.add(BattleProgressWaveRecord(wave));
   }
@@ -587,6 +591,23 @@ class BattleMessageRecord extends BattleRecord {
 
   @override
   RecordBreakMode get breakMode => RecordBreakMode.groupSkill;
+}
+
+class BattleErrorMessageRecord extends BattleRecord {
+  final String label;
+  final Object id;
+  final String message;
+
+  BattleErrorMessageRecord({required this.label, required this.id, required this.message});
+
+  @override
+  BattleErrorMessageRecord copy() => this;
+
+  @override
+  double get estimatedHeight => _kOneRowRecordHeight;
+
+  @override
+  RecordBreakMode get breakMode => RecordBreakMode.free;
 }
 
 class BattleSkipWaveRecord extends BattleRecord {

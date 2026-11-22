@@ -307,7 +307,9 @@ class BattleServantData {
     if (niceEnemy == null) return;
     final svtId = niceEnemy!.svt.id;
     if (niceSvt != null && niceSvt!.id == svtId) return;
-    niceSvt = db.gameData.servantsById[svtId] ?? await showEasyLoading(() => AtlasApi.svt(svtId), mask: true);
+    niceSvt =
+        db.gameData.servantsById[svtId] ??
+        await battleData.fetchResource(S.current.servant, svtId, () => AtlasApi.svt(svtId));
     if (niceSvt == null) {
       battleData.battleLogger.error("failed to load servant data for enemy $svtId - ${niceEnemy?.lShownName}");
     }
@@ -402,7 +404,7 @@ class BattleServantData {
   Future<void> loadAi(BattleData battleData) async {
     svtAi = SvtAiManager(niceEnemy?.ai);
     if (battleData.options.simulateAi) {
-      await svtAi.fetchAiData();
+      await svtAi.fetchAiData(battleData);
     }
   }
 
@@ -439,8 +441,7 @@ class BattleServantData {
       final ascensionAdds = niceSvt!.getAscended(limitCount, (attr) => attr.overwriteClassPassive);
       if (ascensionAdds != null) {
         for (final skillId in ascensionAdds) {
-          BaseSkill? skill = db.gameData.baseSkills[skillId];
-          skill ??= await showEasyLoading(() => AtlasApi.skill(skillId), mask: true);
+          final skill = await battleData.loadSkill(skillId);
           if (skill == null) {
             battleData.battleLogger.debug('Buff ID [$skillId}]: ${S.current.skill} [$skillId] ${S.current.not_found}');
             continue;
@@ -514,7 +515,7 @@ class BattleServantData {
     if (battleData.isUseGrandBoard && isPlayer && isGrandSvt) {
       if (playerSvtData!.classBoardData.grandBondEquipSkillChange && equip2 != null) {
         final skillId = ConstData.constants.grandFriendshipEquipSkillId;
-        final changeSkill = db.gameData.baseSkills[skillId] ?? await AtlasApi.skill(skillId);
+        final changeSkill = await battleData.loadSkill(skillId, showLoading: false);
         final skillInfo = BattleSkillInfoData(changeSkill, type: SkillInfoType.svtEquip);
         await skillInfo.activate(battleData, activator: this);
       } else {
@@ -541,7 +542,7 @@ class BattleServantData {
         await skillInfo.activate(battleData, activator: this);
       }
       for (final skillId in playerSvtData!.allowedExtraSkills) {
-        final skill = db.gameData.baseSkills[skillId] ?? await AtlasApi.skill(skillId);
+        final skill = await battleData.loadSkill(skillId, showLoading: false);
         final skillInfo = BattleSkillInfoData(skill, type: SkillInfoType.svtOtherPassive);
         await skillInfo.activate(battleData, activator: this);
       }
@@ -737,7 +738,7 @@ class BattleServantData {
       final tdId = buff.vals.CounterId ?? 0;
       final tdLv = buff.vals.CounterLv ?? 1;
       NiceTd? td = niceSvt?.noblePhantasms.firstWhereOrNull((e) => e.id == tdId);
-      td ??= await showEasyLoading(() => AtlasApi.td(tdId), mask: true);
+      td ??= await battleData.fetchResource(S.current.noble_phantasm, tdId, () => AtlasApi.td(tdId));
       if (td == null) {
         battleData.battleLogger.error('CounterId=$tdId not found');
         return null;
@@ -1816,8 +1817,7 @@ class BattleServantData {
       if (skillId != null &&
           skillLv != null &&
           await buff.shouldActivateBuff(battleData, getTraits(addTraits: niceTd.getIndividuality()))) {
-        BaseSkill? skill = db.gameData.baseSkills[skillId];
-        skill ??= await showEasyLoading(() => AtlasApi.skill(skillId), mask: true);
+        final skill = await battleData.loadSkill(skillId);
         final replacementFunction = skill?.functions.firstOrNull;
         final selectedDataVal = replacementFunction?.svals.getOrNull(skillLv - 1);
         if (skill == null || replacementFunction == null || selectedDataVal == null) {
@@ -2357,8 +2357,7 @@ class BattleServantData {
           );
         } else {
           final skillId = buff.param;
-          skill = db.gameData.baseSkills[skillId];
-          skill ??= await showEasyLoading(() => AtlasApi.skill(skillId), mask: true);
+          skill = await battleData.loadSkill(skillId);
           if (skill == null) {
             battleData.battleLogger.debug(
               'Buff ID [${buff.buff.id}]: ${S.current.skill} [$skillId] ${S.current.not_found}',
@@ -2400,8 +2399,7 @@ class BattleServantData {
     for (final buff in buffs.toList()) {
       if (await buff.shouldActivateBuff(battleData, selfTraits)) {
         final skillId = buff.param;
-        BaseSkill? skill = db.gameData.baseSkills[skillId];
-        skill ??= await showEasyLoading(() => AtlasApi.skill(skillId), mask: true);
+        final skill = await battleData.loadSkill(skillId);
         if (skill == null) {
           battleData.battleLogger.debug(
             'Buff ID [${buff.buff.id}]: ${S.current.skill} [$skillId] ${S.current.not_found}',

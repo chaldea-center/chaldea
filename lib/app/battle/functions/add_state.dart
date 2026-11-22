@@ -293,7 +293,11 @@ class AddState {
           ? (svt.playerSvtData?.svt?.noblePhantasms ?? [])
           : (svt.niceSvt?.noblePhantasms ?? [svt.niceEnemy?.noblePhantasm.noblePhantasm]);
       targetTd = tds.lastWhereOrNull((e) => e?.id == tdId);
-      targetTd ??= await showEasyLoading(() => AtlasApi.td(tdId, svtId: svt.svtId), mask: true);
+      targetTd ??= await battleData.fetchResource(
+        S.current.noble_phantasm,
+        tdId,
+        () => AtlasApi.td(tdId, svtId: svt.svtId),
+      );
     }
     return targetTd;
   }

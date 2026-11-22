@@ -48,8 +48,7 @@ class FunctionExecutor {
     BattleServantData? target,
     int? skillLv,
   }) async {
-    BaseSkill? skill = db.gameData.baseSkills[skillId];
-    skill ??= await showEasyLoading(() => AtlasApi.skill(skillId), mask: true);
+    final skill = await battleData.loadSkill(skillId);
     final actSkillLv = skillLv ?? 1;
     if (skill != null) {
       await FunctionExecutor.executeFunctions(
@@ -168,8 +167,7 @@ class FunctionExecutor {
         final askillId = script.additionalSkillId!.getOrNull(skillLevel - 1);
         final askillLv = script.additionalSkillLv?.getOrNull(skillLevel - 1) ?? 1;
         if (askillId != null && askillId != 0) {
-          final askill =
-              db.gameData.baseSkills[askillId] ?? await showEasyLoading(() => AtlasApi.skill(askillId), mask: true);
+          final askill = await battleData.loadSkill(askillId);
           final aSkillInfo = BattleSkillInfoData(
             askill,
             type: skillInfoType ?? SkillInfoType.skillAdditional,
@@ -321,7 +319,7 @@ class FunctionExecutor {
 
       battleData.curFunc = function;
 
-      if (!await _checkCommonRelease(activator: activator, dataVals: dataVals)) {
+      if (!await _checkCommonRelease(battleData, activator: activator, dataVals: dataVals)) {
         battleData.updateLastFuncResults(function.funcId, funcIndex);
         return true;
       }
@@ -1253,11 +1251,19 @@ class FunctionExecutor {
     return false;
   }
 
-  static Future<bool> _checkCommonRelease({required BattleServantData? activator, required DataVals dataVals}) async {
+  static Future<bool> _checkCommonRelease(
+    BattleData battleData, {
+    required BattleServantData? activator,
+    required DataVals dataVals,
+  }) async {
     final commonReleaseId = dataVals.CommonReleaseId;
     if (commonReleaseId == null || commonReleaseId == 0) return true;
 
-    final releases = await showEasyLoading(() => AtlasApi.commonRelease(commonReleaseId), mask: true);
+    final releases = await battleData.fetchResource(
+      'Common Release',
+      commonReleaseId,
+      () => AtlasApi.commonRelease(commonReleaseId),
+    );
 
     if (releases == null || releases.isEmpty) return true;
 

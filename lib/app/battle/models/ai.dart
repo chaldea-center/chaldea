@@ -23,10 +23,10 @@ class FieldAiManager with _AiManagerBase {
 
   List<NiceAiCollection> fieldAis = [];
 
-  Future<void> fetchAiData() async {
+  Future<void> fetchAiData(BattleData battleData) async {
     final List<NiceAiCollection> ais = [];
     for (final aiId in aiIds) {
-      final ai = await showEasyLoading(() => AtlasApi.ai(AiType.field, aiId.id), mask: true);
+      final ai = await battleData.fetchResource('Field AI', aiId.id, () => AtlasApi.ai(AiType.field, aiId.id));
       if (ai != null) {
         ais.add(ai);
       }
@@ -42,7 +42,8 @@ class FieldAiManager with _AiManagerBase {
         if (ai.timing != timing.value) continue;
         if (ai.cond == NiceAiCond.none ||
             (ai.cond == NiceAiCond.turn && ai.vals.firstOrNull == 1) ||
-            (ai.cond == NiceAiCond.commonReleaseId && await AiCondEvaluator.isAllowedCommonRelease(ai.vals))) {
+            (ai.cond == NiceAiCond.commonReleaseId &&
+                await AiCondEvaluator.isAllowedCommonRelease(battleData, ai.vals))) {
           if (ai.aiAct.type == NiceAiActType.skillId && ai.aiAct.target == NiceAiActTarget.random) {
             final skill = ai.aiAct.skill;
             if (skill == null) continue;
@@ -86,10 +87,10 @@ class SvtAiManager with _AiManagerBase {
   SvtAiManager(this.enemyAi);
   NiceAiCollection? aiCollection;
 
-  Future<void> fetchAiData() async {
+  Future<void> fetchAiData(BattleData battleData) async {
     final aiId = enemyAi?.aiId ?? 0;
     if (aiId == 0) return;
-    aiCollection = await showEasyLoading(() => AtlasApi.ai(AiType.svt, aiId), mask: true);
+    aiCollection = await battleData.fetchResource('Servant AI', aiId, () => AtlasApi.ai(AiType.svt, aiId));
   }
 
   Future<void> reactionWaveStart(BattleData battleData, BattleServantData actor) async {
@@ -234,7 +235,7 @@ class AiCondEvaluator {
       case NiceAiCond.turn:
         result = battleData.turnCount == ai.vals.firstOrNull;
       case NiceAiCond.commonReleaseId:
-        result = await isAllowedCommonRelease(ai.vals);
+        result = await isAllowedCommonRelease(battleData, ai.vals);
       case NiceAiCond.checkSelfIndividuality:
         result = Individuality.checkSignedIndividualities2(
           self: actor.getTraits(),
@@ -284,11 +285,15 @@ class AiCondEvaluator {
     return result;
   }
 
-  static Future<bool> isAllowedCommonRelease(List<int> aiVals) async {
+  static Future<bool> isAllowedCommonRelease(BattleData battleData, List<int> aiVals) async {
     if (aiVals.isEmpty) return true;
     final commonReleaseId = aiVals.first;
     assert(aiVals.where((e) => e > 10).length == 1, 'Ai contains multiple ids for common release cond: $aiVals');
-    final releases = await showEasyLoading(() => AtlasApi.commonRelease(commonReleaseId), mask: true);
+    final releases = await battleData.fetchResource(
+      'Common Release',
+      commonReleaseId,
+      () => AtlasApi.commonRelease(commonReleaseId),
+    );
     if (releases == null) return true;
     if (CommonRelease.check(releases, _checkOneRelease) == false) {
       return false;

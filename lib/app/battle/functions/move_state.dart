@@ -19,7 +19,7 @@ class MoveState {
       return;
     }
 
-    final dependFunction = await getDependFunc(battleData.battleLogger, dataVals);
+    final dependFunction = await getDependFunc(battleData, dataVals);
     final dependVal = dataVals.DependFuncVals!;
     final affectTraits = dependFunction.traitVals;
 
