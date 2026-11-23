@@ -40,6 +40,8 @@ class _CeFirstPosition {
   final bool bondLimit;
   final bool freeCe1;
   final bool freeCe3;
+  final bool autoGrand;
+  bool get requiresServant => fixedServant || fixedCe1 != null || autoGrand;
   final int first;
   final BondSolvedCe? fixedCe1;
   final BondSolvedCe? fixedCe3;
@@ -54,6 +56,7 @@ class _CeFirstPosition {
     required this.bondLimit,
     required this.freeCe1,
     required this.freeCe3,
+    this.autoGrand = false,
     required this.first,
     required this.fixedCe1,
     required this.fixedCe3,
@@ -61,6 +64,21 @@ class _CeFirstPosition {
     required this.servants,
     required this.supportChoices,
   });
+
+  _CeFirstPosition withGrandReward(Set<int> eligible) => _CeFirstPosition(
+    support: false,
+    fixedServant: false,
+    bondLimit: bondLimit,
+    freeCe1: freeCe1,
+    freeCe3: true,
+    autoGrand: true,
+    first: first,
+    fixedCe1: fixedCe1,
+    fixedCe3: null,
+    fixedCe1Cost: fixedCe1Cost,
+    servants: servants.where((svt) => eligible.contains(svt.id)).toList(),
+    supportChoices: const [],
+  );
 }
 
 class _CeFirstProblem {
@@ -88,7 +106,9 @@ class _CeFirstProblem {
     this.streaming = false,
   });
 
-  _CeFirstProblem asStreaming() => _CeFirstProblem(
+  _CeFirstProblem asStreaming() => withPositions(positions);
+
+  _CeFirstProblem withPositions(List<_CeFirstPosition> positions) => _CeFirstProblem(
     maxCost: maxCost,
     rateCap: rateCap,
     fixedCost: fixedCost,
@@ -101,7 +121,7 @@ class _CeFirstProblem {
   );
 }
 
-class _CeFirstResult {
+class _ConcreteBondSearchResult {
   final BondSolvedTeam? best;
   final List<BondSolvedTeam> ties;
   final List<BondSolvedTeam> candidates;
@@ -111,7 +131,7 @@ class _CeFirstResult {
   final int? possibleCombinations;
   final int? firstFeasibleMilliseconds;
 
-  const _CeFirstResult(
+  const _ConcreteBondSearchResult(
     this.best,
     this.ties,
     this.candidates,
@@ -246,6 +266,8 @@ class _CeFirstSearch {
   final _CeFirstProblem problem;
   final int maxTies;
   final int maxCandidates;
+  final int? minimumBond;
+  final bool collectCandidates;
   BondSolvedTeam? _best;
   final List<BondSolvedTeam> _ties = [];
   final List<BondSolvedTeam> _candidates = [];
@@ -261,9 +283,15 @@ class _CeFirstSearch {
   BondAssignmentCache<_CeFirstScoredServant>? _assignmentCache;
   final _servantCostGroups = <int, List<_CeFirstServantCostGroup>>{};
 
-  _CeFirstSearch(this.problem, {this.maxTies = 20, this.maxCandidates = 100});
+  _CeFirstSearch(
+    this.problem, {
+    this.maxTies = 20,
+    this.maxCandidates = 100,
+    this.minimumBond,
+    this.collectCandidates = true,
+  });
 
-  _CeFirstResult _snapshot(bool proven, int? possible) => _CeFirstResult(
+  _ConcreteBondSearchResult _snapshot(bool proven, int? possible) => _ConcreteBondSearchResult(
     _best,
     List<BondSolvedTeam>.unmodifiable(_ties),
     List<BondSolvedTeam>.unmodifiable(_candidates),
@@ -275,8 +303,8 @@ class _CeFirstSearch {
   );
 
   _CeFirstSolution? _evaluatedSolution;
-  _CeFirstResult solve({int? maxEvaluations, void Function(_CeFirstResult)? onProgress}) {
-    late _CeFirstResult result;
+  _ConcreteBondSearchResult solve({int? maxEvaluations, void Function(_ConcreteBondSearchResult)? onProgress}) {
+    late _ConcreteBondSearchResult result;
     for (final _ in solveSteps(
       maxEvaluations: maxEvaluations,
       onProgress: onProgress,
@@ -287,8 +315,8 @@ class _CeFirstSearch {
 
   Iterable<void> solveSteps({
     int? maxEvaluations,
-    void Function(_CeFirstResult)? onProgress,
-    required void Function(_CeFirstResult) onComplete,
+    void Function(_ConcreteBondSearchResult)? onProgress,
+    required void Function(_ConcreteBondSearchResult) onComplete,
   }) sync* {
     if (maxTies < 1) throw ArgumentError.value(maxTies, 'maxTies');
     if (maxCandidates < 1) throw ArgumentError.value(maxCandidates, 'maxCandidates');
@@ -334,8 +362,10 @@ class _CeFirstSearch {
         if (problem.positions[p].freeCe1) p,
     ];
     final ce3Slots = [
-      for (var p = 0; p < problem.positions.length; p++)
-        if (problem.positions[p].freeCe3) p,
+      for (final (p, slot) in problem.positions.indexed)
+        if (slot.autoGrand) p,
+      for (final (p, slot) in problem.positions.indexed)
+        if (slot.freeCe3 && !slot.autoGrand) p,
     ];
     final supportSlots = [
       for (var p = 0; p < problem.positions.length; p++)
@@ -694,7 +724,7 @@ class _CeFirstSearch {
     if (remainingCost < 0) return;
     final mandatoryMask = freePositions.indexed.fold<int>(0, (mask, entry) {
       final (bit, p) = entry;
-      return !problem.positions[p].fixedServant && problem.positions[p].fixedCe1 == null ? mask : mask | (1 << bit);
+      return problem.positions[p].requiresServant ? mask | (1 << bit) : mask;
     });
     final freeCe1Mask = freePositions.indexed.fold<int>(0, (mask, entry) {
       final (bit, p) = entry;
@@ -852,6 +882,7 @@ class _CeFirstSearch {
           equip3: ce3,
           isSupport: position.support,
           fixedServant: position.fixedServant,
+          enableGrand: position.autoGrand,
           fixedEquip1: position.fixedCe1 != null,
           fixedEquip3: position.fixedCe3 != null,
           bond: bond,
@@ -929,6 +960,7 @@ class _CeFirstSearch {
         equip3: original.equip3,
         isSupport: false,
         fixedServant: false,
+        enableGrand: original.enableGrand,
         fixedEquip1: original.fixedEquip1,
         fixedEquip3: original.fixedEquip3,
         bond: neighbor.bond,

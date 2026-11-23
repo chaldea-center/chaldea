@@ -13,9 +13,39 @@ extension _CeFirstStreaming on _CeFirstSearch {
     List<int> supportSlots, {
     required int? maxEvaluations,
     required void Function(_CeFirstSolution, int?) remember,
-    required void Function(_CeFirstResult)? onProgress,
-    required void Function(_CeFirstResult) onComplete,
+    required void Function(_ConcreteBondSearchResult)? onProgress,
+    required void Function(_ConcreteBondSearchResult) onComplete,
   }) sync* {
+    final requiredRewards = problem.positions.where((position) => position.autoGrand).length;
+    // Reserve COST for mandatory servants before enumerating equip1. The
+    // position minima may reuse an ID and the distinct minima may reuse a
+    // position, so both are lower bounds on the actual assignment cost.
+    var mandatoryCount = 0;
+    var minimumPositionCost = 0;
+    final minimumCostById = <int, int>{};
+    for (final position in problem.positions) {
+      if (position.support || !position.variableServant || !position.requiresServant) continue;
+      mandatoryCount++;
+      var cheapest = problem.maxCost + 1;
+      for (final servant in position.servants) {
+        cheapest = math.min(cheapest, servant.cost);
+        minimumCostById.update(servant.id, (cost) => math.min(cost, servant.cost), ifAbsent: () => servant.cost);
+        if (++_workTicks % 64 == 0) yield null;
+      }
+      minimumPositionCost += cheapest;
+    }
+    if (minimumCostById.length < mandatoryCount) {
+      onComplete(_snapshot(true, null));
+      return;
+    }
+    final minimumCosts = minimumCostById.values.toList()..sort();
+    final minimumDistinctCost = minimumCosts.take(mandatoryCount).fold<int>(0, (sum, cost) => sum + cost);
+    final minimumServantCost = math.max(minimumPositionCost, minimumDistinctCost);
+    final maxCeCost = problem.maxCost - minimumServantCost;
+    if (problem.fixedCost > maxCeCost) {
+      onComplete(_snapshot(true, null));
+      return;
+    }
     final profiles = problem.fixedRates.length;
     final rates = List<int>.of(problem.fixedRates);
     final values = List<int>.of(problem.fixedValues);
@@ -84,15 +114,16 @@ extension _CeFirstStreaming on _CeFirstSearch {
     // Slot kinds independently borrow remaining class capacity. Shared
     // identities, joint equip1 COST and source compatibility stay relaxed.
     Iterable<void> bound(int slots1Left, int slots3Left, int supportIndex, {int start1 = 0, int start3 = 0}) sync* {
+      final costLeft = maxCeCost - cost;
       for (var r = 0; r < profiles; r++) {
         upperRates[r] =
             rates[r] +
-            sourceBound.contribution(r, slots1Left, start1, counts, value: false, costLeft: problem.maxCost - cost) +
+            sourceBound.contribution(r, slots1Left, start1, counts, value: false, costLeft: costLeft) +
             sourceBound.contribution(r, slots3Left, start3, counts, value: false) +
             supportRates[supportIndex][r];
         upperValues[r] =
             values[r] +
-            sourceBound.contribution(r, slots1Left, start1, counts, value: true, costLeft: problem.maxCost - cost) +
+            sourceBound.contribution(r, slots1Left, start1, counts, value: true, costLeft: costLeft) +
             sourceBound.contribution(r, slots3Left, start3, counts, value: true) +
             supportValues[supportIndex][r];
         if (++_workTicks % 64 == 0) yield null;
@@ -118,10 +149,11 @@ extension _CeFirstStreaming on _CeFirstSearch {
     }
 
     bool getPruned() {
-      if (interrupted || collectionStopped || cost > problem.maxCost) return true;
+      if (interrupted || collectionStopped) return true;
       if (collecting) {
         return _candidates.length >= maxCandidates && upper < _candidates.last.totalBond;
       }
+      if (minimumBond != null && upper < minimumBond!) return true;
       return _best != null && upper <= _best!.totalBond;
     }
 
@@ -135,8 +167,8 @@ extension _CeFirstStreaming on _CeFirstSearch {
         ? BondCeMatchCache(problem.ownCes, problem.fixedCeIdentities, maxSlots: ce1Slots.length + ce3Slots.length)
         : null;
 
-    Iterable<void> third(int start) sync* {
-      if (interrupted || collectionStopped || cost > problem.maxCost) return;
+    Iterable<void> third(int start, {bool seed = false}) sync* {
+      if (interrupted || collectionStopped) return;
       final selected = [...selected1, ...selected3];
       final matched = matchCache != null ? matchCache.match(selected) : _matchCeIds(problem, selected);
       if (matched == null) return;
@@ -150,13 +182,16 @@ extension _CeFirstStreaming on _CeFirstSearch {
           counts[i]++;
           selected3.add(i);
           change(ce.rates, ce.values, 1);
-          yield* third(j);
+          yield* third(j, seed: seed);
           change(ce.rates, ce.values, -1);
           selected3.removeLast();
           counts[i]--;
-          if (interrupted || collectionStopped) return;
+          if (interrupted || collectionStopped || (seed && _evaluated > 0)) return;
         }
       }
+      // Layouts contain only rewarded auto-Grands. A Grand with no reward
+      // has an equivalent ordinary assignment in a smaller layout.
+      if (selected3.length < requiredRewards) return;
       // Stopping at this prefix leaves the remaining equipment slots empty.
       yield* bound(0, 0, supportSlots.length);
       if (getPruned()) return;
@@ -184,7 +219,7 @@ extension _CeFirstStreaming on _CeFirstSearch {
     }
 
     Iterable<void> first(int start) sync* {
-      if (interrupted || collectionStopped || cost > problem.maxCost) return;
+      if (interrupted || collectionStopped) return;
       if ((matchCache != null ? matchCache.match(selected1) : _matchCeIds(problem, selected1)) == null) return;
       yield* bound(ce1Slots.length - selected1.length, ce3Slots.length, supportSlots.length, start1: start);
       if (getPruned()) return;
@@ -192,7 +227,7 @@ extension _CeFirstStreaming on _CeFirstSearch {
         for (var j = start; j < ceOrder.length; j++) {
           if (++_workTicks % 64 == 0) yield null;
           final i = ceOrder[j], ce = problem.ownCes[i];
-          if (!ce.canAdd(counts[i]) || cost + ce.cost > problem.maxCost) continue;
+          if (!ce.canAdd(counts[i]) || cost + ce.cost > maxCeCost) continue;
           counts[i]++;
           selected1.add(i);
           cost += ce.cost;
@@ -209,10 +244,16 @@ extension _CeFirstStreaming on _CeFirstSearch {
     }
 
     Iterable<void> support(int index) sync* {
-      if (interrupted || collectionStopped || cost > problem.maxCost) return;
+      if (interrupted || collectionStopped) return;
       yield* bound(ce1Slots.length, ce3Slots.length, index);
       if (getPruned()) return;
       if (index == supportSlots.length) {
+        // Try one reward-only combination before equip1 can use the COST
+        // needed to field the Grand servants. The normal traversal proves
+        // the maximum using this feasible team as an incumbent.
+        if (requiredRewards > 0 && _evaluated == 0 && !collecting && maxEvaluations != 0) {
+          yield* third(0, seed: true);
+        }
         yield* first(0);
         return;
       }
@@ -231,8 +272,8 @@ extension _CeFirstStreaming on _CeFirstSearch {
     final proven = !interrupted;
     if (proven && _best != null) {
       onProgress?.call(_snapshot(true, null));
-      if (_bestSolution != null) yield* _rememberNearbyServantsSteps(_bestSolution!);
-      if (maxEvaluations == null) {
+      if (collectCandidates && _bestSolution != null) yield* _rememberNearbyServantsSteps(_bestSolution!);
+      if (collectCandidates && maxEvaluations == null) {
         collecting = true;
         yield* support(0);
       }

@@ -132,29 +132,27 @@ class BondSolverResultsTab extends StatelessWidget {
     final teams = result == null || best == null
         ? const <BondSolvedTeam>[]
         : (result.candidates.isEmpty ? [best] : result.candidates);
+    final showDiagnostics = solving || result != null;
+    final leadingItems = showDiagnostics ? 1 : 0;
     return Column(
       children: [
-        _summary(context, result),
+        _summary(context, result, teams.length),
         Expanded(
-          child: teams.isEmpty
-              ? ListView(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  children: [_emptyState(context, result), if (result != null) _diagnostics(result)],
-                )
-              : ListView.builder(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  itemCount: teams.length + (result == null ? 0 : 1),
-                  itemBuilder: (context, index) {
-                    if (index == 0) return _diagnostics(result!);
-                    return _candidateCard(context, result!, teams, index - 1);
-                  },
-                ),
+          child: ListView.builder(
+            padding: const EdgeInsets.only(bottom: 12),
+            itemCount: leadingItems + (teams.isEmpty ? 1 : teams.length),
+            itemBuilder: (context, index) {
+              if (showDiagnostics && index == 0) return _diagnostics(result);
+              if (teams.isEmpty) return _emptyState(context, result);
+              return _candidateCard(context, result!, teams, index - leadingItems);
+            },
+          ),
         ),
       ],
     );
   }
 
-  Widget _summary(BuildContext context, BondSolverResult? result) {
+  Widget _summary(BuildContext context, BondSolverResult? result, int teamCount) {
     final best = result?.best;
     final colorScheme = Theme.of(context).colorScheme;
     final statusIcon = switch (runState) {
@@ -170,6 +168,9 @@ class BondSolverResultsTab extends StatelessWidget {
     };
     final failed = runState == BondSolverRunState.failed;
     final statusText = failed && error != null ? '${S.current.failed} · $error' : status;
+    final countText = runState == BondSolverRunState.idle ? null : '$teamCount ${S.current.team}';
+    final statusStyle = Theme.of(context).textTheme.bodySmall
+        ?.copyWith(color: failed ? colorScheme.error : colorScheme.onSurfaceVariant);
     return Card(
       margin: const EdgeInsets.fromLTRB(12, 8, 12, 8),
       child: Column(
@@ -201,7 +202,7 @@ class BondSolverResultsTab extends StatelessWidget {
                 Expanded(
                   child: Semantics(
                     button: true,
-                    label: statusText,
+                    label: countText == null ? statusText : '$countText, $statusText',
                     hint: S.current.details,
                     child: Tooltip(
                       message: S.current.details,
@@ -210,12 +211,18 @@ class BondSolverResultsTab extends StatelessWidget {
                         onTap: () => _showStatusDetails(context),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 4),
-                          child: Text(
-                            statusText,
-                            style: Theme.of(context).textTheme.bodySmall
-                                ?.copyWith(color: failed ? colorScheme.error : colorScheme.onSurfaceVariant),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                          child: Row(
+                            children: [
+                              if (countText != null) Text('$countText · ', style: statusStyle),
+                              Flexible(
+                                child: Text(
+                                  statusText,
+                                  style: statusStyle,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -258,7 +265,7 @@ class BondSolverResultsTab extends StatelessWidget {
     );
   }
 
-  String get _resultsHelp => S.current.bond_solver_results_help(option.maxCandidateTeams.clamp(1, 200));
+  String get _resultsHelp => S.current.bond_solver_results_help;
 
   void _showStatusDetails(BuildContext context) {
     final message = [status, ?error, if (solved != null) _resultsHelp].join('\n\n');
@@ -614,8 +621,8 @@ class BondSolverResultsTab extends StatelessWidget {
   /// row collapses rather than reporting a misleading zero.
   Widget _candidatePools(BuildContext context, BondSolverResult result) {
     final svtIds = result.candidateSvtIds;
-    final ceIds = result.candidateCeIds;
-    if (svtIds == null && ceIds == null) return const SizedBox.shrink();
+    final ces = result.candidateCes;
+    if (svtIds == null && ces == null) return const SizedBox.shrink();
     final colorScheme = Theme.of(context).colorScheme;
     final style = Theme.of(context).textTheme.bodySmall;
     Widget label(IconData icon, String text, {Color? color, bool tappable = false}) => Row(
@@ -637,12 +644,12 @@ class BondSolverResultsTab extends StatelessWidget {
         runSpacing: 4,
         children: [
           if (svtIds != null) label(Icons.person_outline, '${S.current.servant} ${svtIds.length}'),
-          if (ceIds != null)
+          if (ces != null)
             InkWell(
-              onTap: () => _showCandidateCes(context, ceIds),
+              onTap: () => _showCandidateCes(context, ces),
               child: label(
                 Icons.style_outlined,
-                '${S.current.craft_essence} ${ceIds.length}',
+                '${S.current.craft_essence} ${ces.traitRestricted.length}+',
                 color: colorScheme.primary,
                 tappable: true,
               ),
@@ -652,24 +659,42 @@ class BondSolverResultsTab extends StatelessWidget {
     );
   }
 
-  Future<void> _showCandidateCes(BuildContext context, List<int> ceIds) async {
-    final ces = <CraftEssence>[for (final id in ceIds) ?db.gameData.craftEssencesById[id]];
+  Future<void> _showCandidateCes(BuildContext context, BondCandidateCes ces) async {
+    final groups = [
+      ('Trait-restricted', ces.traitRestricted, null),
+      ('Limited repeats', ces.limited, null),
+      ('Unlimited repeats', ces.repeatable, '∞'),
+    ];
+    final sections = [
+      for (final (title, ids, badge) in groups)
+        if (ids.isNotEmpty) (title, [for (final id in ids) ?db.gameData.craftEssencesById[id]], badge),
+    ];
     await router.showDialog<void>(
       context: context,
       builder: (context) => SimpleConfirmDialog(
         showCancel: false,
-        title: Text('${S.current.craft_essence} ${ces.length}'),
+        title: Text(S.current.craft_essence),
         content: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 420),
-          child: ces.isEmpty
+          child: sections.isEmpty
               ? const Text('—')
               : ConstrainedBox(
                   constraints: const BoxConstraints(maxHeight: 320),
                   child: SingleChildScrollView(
-                    child: SharedBuilder.grid<CraftEssence>(
-                      context: context,
-                      items: ces,
-                      builder: (context, ce) => ce.iconBuilder(context: context, width: 42),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: 8,
+                      children: [
+                        for (final (title, cards, badge) in sections) ...[
+                          Text(title, style: Theme.of(context).textTheme.titleSmall),
+                          SharedBuilder.grid<CraftEssence>(
+                            context: context,
+                            items: cards,
+                            builder: (context, ce) => ce.iconBuilder(context: context, width: 42, text: badge),
+                          ),
+                        ],
+                      ],
                     ),
                   ),
                 ),
@@ -678,27 +703,34 @@ class BondSolverResultsTab extends StatelessWidget {
     );
   }
 
-  Widget _diagnostics(BondSolverResult solved) {
-    final combinations = solved.possibleCombinations;
-    final visitedNodeCountText = solved.visitedNodes.formatSep();
-    final evaluated = !solved.isCeFirst
-        ? '$visitedNodeCountText nodes'
-        : (combinations == null
-              ? '$visitedNodeCountText CE combinations'
-              : '$visitedNodeCountText/$combinations CE combinations');
+  Widget _diagnostics(BondSolverResult? solved) {
+    final combinations = solved?.possibleCombinations;
+    final visited = solved?.visitedNodes.formatSep();
+    final method = solved == null ? '—' : (solved.isCeFirst ? 'CE-first search' : 'General search');
+    final evaluated = switch (solved?.isCeFirst) {
+      null => '—',
+      false => '$visited nodes',
+      true => combinations == null ? '$visited CE combinations' : '$visited/$combinations CE combinations',
+    };
+    final elapsed = switch (solved?.elapsedMilliseconds) {
+      null => '—',
+      final ms when ms < 1000 => '$ms ms',
+      final ms when ms < 60000 => '${(ms / 1000).toStringAsFixed(3)} s',
+      final ms => '${ms ~/ 60000} m ${ms ~/ 1000 % 60} s',
+    };
     return SimpleAccordion(
       headerBuilder: (context, expanded) => const ListTile(dense: true, title: Text('Search details')),
       contentBuilder: (context) => Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          ListTile(dense: true, title: const Text('Method'), trailing: Text(method)),
+          ListTile(dense: true, title: const Text('Evaluated'), trailing: Text(evaluated)),
+          ListTile(dense: true, title: const Text('Elapsed'), trailing: Text(elapsed)),
           ListTile(
             dense: true,
-            title: const Text('Method'),
-            trailing: Text(solved.isCeFirst ? 'CE-first search' : 'General search'),
+            title: const Text('Candidate choices'),
+            trailing: Text(solved?.itemCount.toString() ?? '—'),
           ),
-          ListTile(dense: true, title: const Text('Evaluated'), trailing: Text(evaluated)),
-          ListTile(dense: true, title: const Text('Elapsed'), trailing: Text('${solved.elapsedMilliseconds} ms')),
-          ListTile(dense: true, title: const Text('Candidate choices'), trailing: Text('${solved.itemCount}')),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: Text(_resultsHelp, style: Theme.of(context).textTheme.bodySmall),

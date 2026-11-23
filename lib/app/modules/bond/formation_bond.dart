@@ -736,7 +736,7 @@ class _FormationBondPageState extends State<FormationBondPage> with SingleTicker
   }
 
   List<Widget> _solverSection() {
-    final grandLimit = BondGrandSearchRules.autoGrandOwnedLimit(questEntity);
+    final grandRules = BondGrandRules.forQuest(questEntity);
     final standardCost = ConstData.userLevel[ConstData.maxUserLevel]?.maxCost ?? 0;
     return [
       Card(
@@ -781,6 +781,21 @@ class _FormationBondPageState extends State<FormationBondPage> with SingleTicker
               },
             ),
           ),
+          if (grandRules != null)
+            ListTile(
+              dense: true,
+              title: Text(S.current.bond_max_grand_servants),
+              trailing: DropdownButton<int>(
+                value: grandRules.ownedLimit(option.maxGrandServants),
+                items: [
+                  for (var count = 0; count <= grandRules.maxOwned; count++)
+                    DropdownMenuItem(value: count, child: Text('$count')),
+                ],
+                onChanged: (count) {
+                  if (count != null) updateSharedInput(() => option.maxGrandServants = count);
+                },
+              ),
+            ),
           // ListTile(
           //   dense: true,
           //   title: const Text('Max teams kept'),
@@ -812,18 +827,6 @@ class _FormationBondPageState extends State<FormationBondPage> with SingleTicker
             value: option.searchFixedAscensions,
             onChanged: (v) => updateSharedInput(() => option.searchFixedAscensions = v),
           ),
-          if (grandLimit != null)
-            ListTile(
-              dense: true,
-              title: Text(S.current.bond_max_grand_servants),
-              trailing: DropdownButton<int>(
-                value: BondGrandSearchRules.resolveAutoGrandLimit(questEntity, option.maxGrandServants),
-                items: [for (int n = 0; n <= grandLimit; n++) DropdownMenuItem(value: n, child: Text('$n'))],
-                onChanged: (n) {
-                  if (n != null) updateSharedInput(() => option.maxGrandServants = n);
-                },
-              ),
-            ),
           SwitchListTile.adaptive(
             dense: true,
             title: Text(S.current.favorite),

@@ -9,18 +9,19 @@ import 'package:chaldea/utils/constants.dart';
 const int kHeroicSpiritPortraitDariusCeId = 9401060;
 const int kBond15BonusRate = 250;
 
-/// Automatic Grand selection is verified for the 48 Final Chapter recollection
-/// battles. They allow Grand effects in every slot and one support in the team.
-abstract final class BondGrandSearchRules {
-  static int? autoGrandOwnedLimit(QuestPhase? quest) {
+/// Rules verified for the Final Chapter Fantasy Tree Recollection phases.
+final class BondGrandRules {
+  final Set<int> positions;
+
+  const BondGrandRules._(this.positions);
+
+  static BondGrandRules? forQuest(QuestPhase? quest) {
     if (quest == null || !quest.isUseGrandBoard || quest.phase != 1 || quest.id < 4000801 || quest.id > 4000848) {
       return null;
     }
-
-    // Require explicit Grand eligibility in all six slots for automatic search.
     const allSlots = {1, 2, 3, 4, 5, 6};
-    final scripted = quest.extraDetail?.isUseGrandBoardInitPos;
-    if (scripted == null || scripted.length != allSlots.length || !scripted.toSet().containsAll(allSlots)) {
+    final positions = quest.extraDetail?.isUseGrandBoardInitPos;
+    if (positions == null || positions.length != allSlots.length || !positions.toSet().containsAll(allSlots)) {
       return null;
     }
     for (final entry in quest.restrictions) {
@@ -32,13 +33,12 @@ abstract final class BondGrandSearchRules {
         return null;
       }
     }
-    return 5;
+    return const BondGrandRules._({0, 1, 2, 3, 4, 5});
   }
 
-  static int? resolveAutoGrandLimit(QuestPhase? quest, int? requested) {
-    final limit = autoGrandOwnedLimit(quest);
-    return limit == null ? null : (requested ?? limit).clamp(0, limit);
-  }
+  int get maxOwned => positions.length;
+
+  int ownedLimit(int? requested) => (requested ?? maxOwned).clamp(0, maxOwned);
 }
 
 /// IDs in one family share owned-team capacity and free-choice exclusions.

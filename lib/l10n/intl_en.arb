@@ -214,7 +214,7 @@
   "bond_solver_maximum_not_proven": "Maximum not proven",
   "bond_solver_maximum_proven": "Maximum proven",
   "bond_solver_no_feasible_team": "No feasible team",
-  "bond_solver_results_help": "Up to {n} candidate teams are retained; other feasible or equal-score teams may be omitted. The proof covers only the highest score under the current settings — lower-score teams are not globally ranked.\n\nTap a Bond value to view its bonus breakdown. A red underline indicates an Ascension restriction for that Servant in this team.",
+  "bond_solver_results_help": "By default, up to 100 candidate teams are retained. Other feasible or equal-score teams may be omitted. The proof covers only the highest score under the current settings — lower-score teams are not globally ranked.\n\nTap a Bond value to view its bonus breakdown. A red underline indicates an Ascension restriction for that Servant in this team.",
   "bond_solver_results_outdated": "Search results are outdated. Solve again.",
   "bond_solver_solve_max_bond": "Solve max bond",
   "bootstrap_page_title": "Bootstrap Page",
