@@ -182,7 +182,7 @@ class UserDeckListPageState extends State<UserDeckListPage> {
     final bool isGrand = deck.id == 0;
     final deckInfo = deck.deckInfo;
     final maxSvtCount = isGrand && deckInfo != null ? Maths.max(deckInfo.svts.map((svt) => svt.id), 0) : null;
-    final formationCard = FormationCard(
+    Widget formationCard = FormationCard(
       formation: BattleTeamFormationX.fromUserDeck(
         deckInfo: deckInfo,
         mstData: mstData,
@@ -193,6 +193,31 @@ class UserDeckListPageState extends State<UserDeckListPage> {
       showBond: true,
       maxSvtCount: maxSvtCount,
     );
+    if (maxSvtCount != null) {
+      final content = formationCard;
+      formationCard = LayoutBuilder(
+        builder: (context, constraints) {
+          final scale = (constraints.maxWidth / FormationCard.kContentWidth).clamp(0.0, 1.0);
+          return Center(
+            child: ScrollConfiguration(
+              behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+              child: ScrollControlWidget(
+                builder: (context, controller) => Scrollbar(
+                  controller: controller,
+                  thumbVisibility: true,
+                  child: SingleChildScrollView(
+                    controller: controller,
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.only(bottom: 8),
+                    child: SizedBox(width: (FormationCard.kCardWidth * maxSvtCount + 64) * scale, child: content),
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      );
+    }
     List<Widget> buttons = [
       if (widget.enableEdit && widget.runtime != null && deck.id > 0 && !isGrand)
         FilledButton.tonal(
@@ -222,34 +247,7 @@ class UserDeckListPageState extends State<UserDeckListPage> {
                 : TextStyle(fontSize: Theme.of(context).textTheme.bodySmall?.fontSize),
           ),
         ),
-        if (maxSvtCount != null)
-          LayoutBuilder(
-            builder: (context, constraints) {
-              final scale = (constraints.maxWidth / FormationCard.kContentWidth).clamp(0.0, 1.0);
-              return Center(
-                child: ScrollConfiguration(
-                  behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
-                  child: ScrollControlWidget(
-                    builder: (context, controller) => Scrollbar(
-                      controller: controller,
-                      thumbVisibility: true,
-                      child: SingleChildScrollView(
-                        controller: controller,
-                        scrollDirection: Axis.horizontal,
-                        padding: const EdgeInsets.only(bottom: 8),
-                        child: SizedBox(
-                          width: (FormationCard.kCardWidth * maxSvtCount + 64) * scale,
-                          child: formationCard,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              );
-            },
-          )
-        else
-          formationCard,
+        formationCard,
         if (buttons.isNotEmpty)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 4),
